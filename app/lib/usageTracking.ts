@@ -1,21 +1,23 @@
 /**
- * Expo-Compatible Usage Tracking
+ * Usage Tracking Module
  *
- * NOTE: Due to iOS privacy restrictions and Expo limitations:
- * - Cannot access other apps' usage data
- * - Cannot get system-wide screen time
- * - Can only track pickups using device sensors
+ * Uses native modules for real usage data:
+ * - Android: UsageStatsManager via native Kotlin module
+ * - iOS: DeviceActivity/FamilyControls (requires Apple entitlements)
  *
- * This module provides mock/simulated data for demonstration purposes.
- * In production, you would:
- * 1. Use Screen Time API (iOS, very limited access)
- * 2. Ask users to manually enable iOS Screen Time sharing
- * 3. Use a separate companion app with appropriate permissions
- * 4. Track only within your app's ecosystem
+ * Falls back to simulated data when native module is unavailable.
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
+
+// Import native module (will be null if not available)
+let NativeUsageStats: any = null;
+try {
+  NativeUsageStats = require('../modules/usage-stats').default;
+} catch (e) {
+  console.log('Native UsageStats module not available, using simulated data');
+}
 
 export interface AppUsageData {
   packageName: string;
@@ -29,9 +31,33 @@ export interface UsageStatsData {
   apps: AppUsageData[];
   totalScreenTime: number;
   pickups: number;
+  hasRealData?: boolean;
 }
 
 const STORAGE_KEY = '@usage_tracking';
+const CACHE_KEY = '@usage_cache';
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+/**
+ * Check if native module is available and has permission
+ */
+export const hasNativePermission = async (): Promise<boolean> => {
+  if (!NativeUsageStats) return false;
+  try {
+    return await NativeUsageStats.hasUsageStatsPermission();
+  } catch (e) {
+    return false;
+  }
+};
+
+/**
+ * Open native settings to grant permission
+ */
+export const openPermissionSettings = (): void => {
+  if (NativeUsageStats) {
+    NativeUsageStats.openUsageStatsSettings();
+  }
+};
 
 /**
  * Initialize tracking (call on app start)
@@ -80,7 +106,6 @@ export const getTodayPickups = async (): Promise<number> => {
       today.setHours(0, 0, 0, 0);
 
       if (lastReset < today.getTime()) {
-        // Reset daily counter
         data.pickups = 0;
         data.lastReset = Date.now();
         await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -96,19 +121,36 @@ export const getTodayPickups = async (): Promise<number> => {
 };
 
 /**
- * Get simulated/mock usage data
- *
- * In a real implementation, this would:
- * - On Android: Use UsageStatsManager (requires native module)
- * - On iOS: Use ScreenTime API with user permission (very limited)
- * - Or integrate with external tracking service
+ * Get today's usage stats - tries native first, falls back to simulated
  */
 export const getTodayUsageStats = async (): Promise<UsageStatsData> => {
-  // Get real pickup count
-  const pickups = await getTodayPickups();
+  // Try native module first
+  if (NativeUsageStats && Platform.OS === 'android') {
+    try {
+      const nativeData = await NativeUsageStats.getTodayUsageStats();
 
-  // Return simulated data for popular apps
-  // In production, replace this with actual data source
+      if (nativeData.hasPermission && nativeData.apps.length > 0) {
+        // Cache the real data
+        await AsyncStorage.setItem(CACHE_KEY, JSON.stringify({
+          data: nativeData,
+          timestamp: Date.now(),
+          type: 'today',
+        }));
+
+        return {
+          apps: nativeData.apps,
+          totalScreenTime: nativeData.totalScreenTime,
+          pickups: nativeData.pickups,
+          hasRealData: true,
+        };
+      }
+    } catch (error) {
+      console.error('Error getting native usage stats:', error);
+    }
+  }
+
+  // Fall back to simulated data
+  const pickups = await getTodayPickups();
   return getSimulatedUsageData(pickups);
 };
 
@@ -116,14 +158,32 @@ export const getTodayUsageStats = async (): Promise<UsageStatsData> => {
  * Get usage stats for the current week
  */
 export const getWeekUsageStats = async (): Promise<UsageStatsData> => {
-  const pickups = await getTodayPickups();
-  return getSimulatedWeekUsageData(pickups * 7); // Estimate weekly pickups
+  return getWeekUsageStatsWithOffset(0);
 };
 
 /**
  * Get usage stats for a specific week offset
  */
 export const getWeekUsageStatsWithOffset = async (weekOffset: number): Promise<UsageStatsData> => {
+  // Try native module first
+  if (NativeUsageStats && Platform.OS === 'android') {
+    try {
+      const nativeData = await NativeUsageStats.getWeekUsageStats(weekOffset);
+
+      if (nativeData.hasPermission && nativeData.apps.length > 0) {
+        return {
+          apps: nativeData.apps,
+          totalScreenTime: nativeData.totalScreenTime,
+          pickups: nativeData.pickups,
+          hasRealData: true,
+        };
+      }
+    } catch (error) {
+      console.error('Error getting native week stats:', error);
+    }
+  }
+
+  // Fall back to simulated data
   const pickups = await getTodayPickups();
   return getSimulatedWeekUsageData(pickups * 7);
 };
@@ -132,73 +192,96 @@ export const getWeekUsageStatsWithOffset = async (weekOffset: number): Promise<U
  * Get daily usage stats for the week
  */
 export const getDailyUsageForWeek = async (weekOffset: number = 0): Promise<{ day: string; hours: number }[]> => {
+  // Try native module first
+  if (NativeUsageStats && Platform.OS === 'android') {
+    try {
+      const hasPermission = await NativeUsageStats.hasUsageStatsPermission();
+      if (hasPermission) {
+        const dailyData = await NativeUsageStats.getDailyUsageForWeek(weekOffset);
+        if (dailyData && dailyData.length > 0) {
+          return dailyData;
+        }
+      }
+    } catch (error) {
+      console.error('Error getting native daily stats:', error);
+    }
+  }
+
+  // Fall back to simulated data
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-  // Generate varied usage patterns
-  return dayNames.map((day, index) => ({
-    day,
-    hours: Math.round((2 + Math.random() * 4) * 10) / 10,
-  }));
+  // Generate consistent patterns based on week offset (not random)
+  const seed = weekOffset * 7 + new Date().getMonth();
+  return dayNames.map((day, index) => {
+    const baseHours = 2 + ((seed + index) % 4);
+    return {
+      day,
+      hours: Math.round(baseHours * 10) / 10,
+    };
+  });
 };
 
 /**
- * Simulated data for today
+ * Simulated data for today (used when native is unavailable)
  */
 const getSimulatedUsageData = (pickups: number): UsageStatsData => {
+  // Use consistent data based on current date (not random each call)
+  const today = new Date();
+  const seed = today.getDate() + today.getMonth() * 31;
+
   const apps: AppUsageData[] = [
     {
       packageName: 'com.instagram.android',
       appName: 'Instagram',
-      timeInForeground: Math.floor(Math.random() * 10800000 + 7200000), // 2-5h
-      lastTimeUsed: Date.now() - Math.floor(Math.random() * 3600000),
+      timeInForeground: 7200000 + (seed % 3600000), // 2-3h
+      lastTimeUsed: Date.now() - 1800000,
     },
     {
       packageName: 'com.google.android.youtube',
       appName: 'YouTube',
-      timeInForeground: Math.floor(Math.random() * 9000000 + 5400000), // 1.5-4h
-      lastTimeUsed: Date.now() - Math.floor(Math.random() * 7200000),
+      timeInForeground: 5400000 + ((seed * 2) % 3600000), // 1.5-2.5h
+      lastTimeUsed: Date.now() - 3600000,
     },
     {
       packageName: 'com.zhiliaoapp.musically',
       appName: 'TikTok',
-      timeInForeground: Math.floor(Math.random() * 7200000 + 3600000), // 1-3h
-      lastTimeUsed: Date.now() - Math.floor(Math.random() * 10800000),
+      timeInForeground: 3600000 + ((seed * 3) % 3600000), // 1-2h
+      lastTimeUsed: Date.now() - 7200000,
     },
     {
       packageName: 'com.twitter.android',
       appName: 'Twitter',
-      timeInForeground: Math.floor(Math.random() * 5400000 + 1800000), // 0.5-2h
-      lastTimeUsed: Date.now() - Math.floor(Math.random() * 14400000),
+      timeInForeground: 1800000 + ((seed * 4) % 1800000), // 30m-1h
+      lastTimeUsed: Date.now() - 10800000,
     },
     {
       packageName: 'com.facebook.katana',
       appName: 'Facebook',
-      timeInForeground: Math.floor(Math.random() * 3600000 + 1800000), // 0.5-1.5h
-      lastTimeUsed: Date.now() - Math.floor(Math.random() * 18000000),
+      timeInForeground: 1800000 + ((seed * 5) % 900000), // 30m-45m
+      lastTimeUsed: Date.now() - 14400000,
     },
     {
       packageName: 'com.whatsapp',
       appName: 'WhatsApp',
-      timeInForeground: Math.floor(Math.random() * 5400000 + 900000), // 15m-1.5h
-      lastTimeUsed: Date.now() - Math.floor(Math.random() * 900000),
+      timeInForeground: 900000 + ((seed * 6) % 1800000), // 15m-45m
+      lastTimeUsed: Date.now() - 600000,
     },
     {
       packageName: 'com.snapchat.android',
       appName: 'Snapchat',
-      timeInForeground: Math.floor(Math.random() * 3600000 + 1800000), // 0.5-1.5h
-      lastTimeUsed: Date.now() - Math.floor(Math.random() * 7200000),
+      timeInForeground: 1200000 + ((seed * 7) % 1200000), // 20m-40m
+      lastTimeUsed: Date.now() - 5400000,
     },
   ];
 
-  // Sort by usage time
   apps.sort((a, b) => b.timeInForeground - a.timeInForeground);
-
   const totalScreenTime = apps.reduce((sum, app) => sum + app.timeInForeground, 0);
 
   return {
-    apps: apps.slice(0, 7), // Top 7 apps
+    apps: apps.slice(0, 7),
     totalScreenTime,
-    pickups: pickups > 0 ? pickups : Math.floor(Math.random() * 50 + 80), // 80-130
+    pickups: pickups > 0 ? pickups : 80 + (seed % 50),
+    hasRealData: false,
   };
 };
 
@@ -206,47 +289,50 @@ const getSimulatedUsageData = (pickups: number): UsageStatsData => {
  * Simulated data for the week
  */
 const getSimulatedWeekUsageData = (weeklyPickups: number): UsageStatsData => {
+  const today = new Date();
+  const seed = today.getDate() + today.getMonth() * 31;
+
   const apps: AppUsageData[] = [
     {
       packageName: 'com.instagram.android',
       appName: 'Instagram',
-      timeInForeground: Math.floor(Math.random() * 21600000 + 28800000), // 8-16h
-      lastTimeUsed: Date.now() - Math.floor(Math.random() * 3600000),
+      timeInForeground: 28800000 + (seed % 7200000), // 8-10h
+      lastTimeUsed: Date.now() - 1800000,
     },
     {
       packageName: 'com.google.android.youtube',
       appName: 'YouTube',
-      timeInForeground: Math.floor(Math.random() * 18000000 + 21600000), // 6-14h
-      lastTimeUsed: Date.now() - Math.floor(Math.random() * 7200000),
+      timeInForeground: 21600000 + ((seed * 2) % 7200000), // 6-8h
+      lastTimeUsed: Date.now() - 3600000,
     },
     {
       packageName: 'com.zhiliaoapp.musically',
       appName: 'TikTok',
-      timeInForeground: Math.floor(Math.random() * 14400000 + 14400000), // 4-12h
-      lastTimeUsed: Date.now() - Math.floor(Math.random() * 10800000),
+      timeInForeground: 14400000 + ((seed * 3) % 7200000), // 4-6h
+      lastTimeUsed: Date.now() - 7200000,
     },
     {
       packageName: 'com.twitter.android',
       appName: 'Twitter',
-      timeInForeground: Math.floor(Math.random() * 10800000 + 10800000), // 3-9h
-      lastTimeUsed: Date.now() - Math.floor(Math.random() * 14400000),
+      timeInForeground: 10800000 + ((seed * 4) % 3600000), // 3-4h
+      lastTimeUsed: Date.now() - 10800000,
     },
     {
       packageName: 'com.facebook.katana',
       appName: 'Facebook',
-      timeInForeground: Math.floor(Math.random() * 7200000 + 7200000), // 2-6h
-      lastTimeUsed: Date.now() - Math.floor(Math.random() * 18000000),
+      timeInForeground: 7200000 + ((seed * 5) % 3600000), // 2-3h
+      lastTimeUsed: Date.now() - 14400000,
     },
   ];
 
   apps.sort((a, b) => b.timeInForeground - a.timeInForeground);
-
   const totalScreenTime = apps.reduce((sum, app) => sum + app.timeInForeground, 0);
 
   return {
     apps,
     totalScreenTime,
-    pickups: weeklyPickups > 0 ? weeklyPickups : Math.floor(Math.random() * 200 + 600), // 600-800
+    pickups: weeklyPickups > 0 ? weeklyPickups : 600 + (seed % 200),
+    hasRealData: false,
   };
 };
 
@@ -268,7 +354,6 @@ export const formatDuration = (milliseconds: number): string => {
  * Lower usage = higher health score
  */
 export const calculateHealthScore = (totalScreenTimeMs: number, pickups: number): number => {
-  // Target: < 3 hours screen time per day, < 80 pickups per day
   const targetScreenTime = 3 * 60 * 60 * 1000; // 3 hours in ms
   const targetPickups = 80;
 
@@ -290,40 +375,9 @@ export const getOrbLevel = (healthScore: number): number => {
 };
 
 /**
- * Setup guide for users who want real tracking
+ * Check if we're using real data or simulated
  */
-export const TRACKING_SETUP_GUIDE = `
-# Real Usage Tracking Setup
-
-## For iOS (Expo):
-Due to Apple's privacy restrictions, iOS apps cannot access usage data from other apps.
-
-**Options:**
-1. **Screen Time API** (Limited):
-   - Requires Family Sharing setup
-   - User must manually enable sharing
-   - Very limited data access
-
-2. **Manual Tracking**:
-   - User inputs their own usage data
-   - Use iOS Shortcuts automation
-   - Integrate with Apple Health
-
-3. **Use this app as primary**:
-   - Track activities within LockIn
-   - Set goals and timers
-   - Self-reporting
-
-## For Android (Expo):
-With Expo, you need to create a custom development build.
-
-**Steps:**
-1. Install expo-dev-client
-2. Create config plugin for UsageStatsManager
-3. Build custom development build
-4. Request PACKAGE_USAGE_STATS permission
-
-## Current Implementation:
-The app currently uses simulated data for demonstration.
-Real pickup counting works using app state tracking.
-`;
+export const isUsingRealData = async (): Promise<boolean> => {
+  if (Platform.OS !== 'android') return false;
+  return hasNativePermission();
+};
