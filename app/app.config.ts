@@ -1,0 +1,98 @@
+import { ExpoConfig } from "expo/config";
+
+const config: ExpoConfig = {
+  name: "App Blocker",
+  slug: "app-blocker",
+  version: "1.0.0",
+  orientation: "portrait",
+  icon: "./assets/images/icon.png",
+  scheme: "appblocker",
+  userInterfaceStyle: "automatic",
+  newArchEnabled: true,
+
+  ios: {
+    supportsTablet: true,
+    bundleIdentifier: "com.hrynchuk.appblocker",
+    buildNumber: "1",
+    icon: "./assets/images/icon.png",
+    infoPlist: {
+      ITSAppUsesNonExemptEncryption: false,
+    },
+    googleServicesFile: "./GoogleService-Info.plist",
+  },
+
+  android: {
+    package: "com.hrynchuk.appblocker",
+    adaptiveIcon: {
+      foregroundImage: "./assets/images/adaptive-icon.png",
+      backgroundColor: "#ffffff",
+    },
+    edgeToEdgeEnabled: true,
+    permissions: [
+      "android.permission.POST_NOTIFICATIONS",
+      "android.permission.SCHEDULE_EXACT_ALARM",
+    ],
+  },
+
+  notification: {
+    icon: "./assets/images/icon.png",
+    color: "#06b6d4",
+    androidMode: "default",
+    androidCollapsedTitle: "App Blocker",
+  },
+
+  web: {
+    bundler: "metro",
+    output: "static",
+    favicon: "./assets/images/favicon.png",
+  },
+
+  plugins: [
+    "expo-router",
+    [
+      "expo-splash-screen",
+      {
+        image: "./assets/images/splash-icon.png",
+        imageWidth: 200,
+        resizeMode: "contain",
+        backgroundColor: "#111827",
+      },
+    ],
+    "expo-secure-store",
+    [
+      "expo-notifications",
+      {
+        icon: "./assets/images/icon.png",
+        color: "#111827",
+        sounds: [],
+      },
+    ],
+    [
+      "@react-native-google-signin/google-signin",
+      {
+        iosUrlScheme:
+          "com.googleusercontent.apps.329617813146-3o5aq7gfvejqoi3mudiar02tl4urhivu",
+      },
+    ],
+    // "@react-native-svg/plugin",
+  ],
+
+  experiments: {
+    typedRoutes: true,
+  },
+
+  extra: {
+    androidClientId: process.env.ANDROID_GOOGLE_CLIENT_ID,
+    iosClientId: process.env.IOS_GOOGLE_CLIENT_ID,
+    webClientId: process.env.GOOGLE_CLIENT_ID,
+    router: {},
+  },
+
+  splash: {
+    image: "./assets/images/splash-icon.png",
+    resizeMode: "contain",
+    backgroundColor: "#111827",
+  },
+};
+
+export default config;

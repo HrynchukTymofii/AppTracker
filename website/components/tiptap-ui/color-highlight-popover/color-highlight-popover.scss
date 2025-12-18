@@ -1,0 +1,24 @@
+.tiptap-color-highlight-content {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  outline: none;
+}
+
+
+:root {
+  --tt-color-highlight-green: #a5d6a7;
+  --tt-color-highlight-green-contrast: #2e7d32;
+
+  --tt-color-highlight-blue: #90caf9;
+  --tt-color-highlight-blue-contrast: #1565c0;
+
+  --tt-color-highlight-red: #ef9a9a;
+  --tt-color-highlight-red-contrast: #c62828;
+
+  --tt-color-highlight-purple: #ce93d8;
+  --tt-color-highlight-purple-contrast: #6a1b9a;
+
+  --tt-color-highlight-yellow: #f57f17;
+  --tt-color-highlight-yellow-contrast: #f57f17;
+}
