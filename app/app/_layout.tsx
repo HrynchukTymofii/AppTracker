@@ -13,6 +13,7 @@ import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { TourProvider } from "@/context/TourContext";
 import { ThemeProvider as CustomThemeProvider } from "@/context/ThemeContext";
 import { DetoxProvider } from "@/context/DetoxContext";
+import { BlockingProvider } from "@/context/BlockingContext";
 import { Suspense, useEffect, useRef, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { SQLiteProvider } from "expo-sqlite";
@@ -207,6 +208,7 @@ export default function RootLayout() {
 
       <AuthProvider>
         <DetoxProvider>
+          <BlockingProvider>
           <Suspense fallback={<CustomPreloadScreen />}>
             <SQLiteProvider
               databaseName="satprep.db"
@@ -251,6 +253,7 @@ export default function RootLayout() {
              </AppSyncWrapper>
             </SQLiteProvider>
           </Suspense>
+        </BlockingProvider>
         </DetoxProvider>
       </AuthProvider>
 

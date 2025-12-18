@@ -74,7 +74,20 @@ const config: ExpoConfig = {
           "com.googleusercontent.apps.329617813146-3o5aq7gfvejqoi3mudiar02tl4urhivu",
       },
     ],
-    // "@react-native-svg/plugin",
+    [
+      "expo-camera",
+      {
+        cameraPermission: "Allow LockIn to access your camera for task verification photos.",
+      },
+    ],
+    [
+      "expo-image-picker",
+      {
+        photosPermission: "Allow LockIn to access your photos for task verification.",
+        cameraPermission: "Allow LockIn to take photos for task verification.",
+      },
+    ],
+    "./plugins/withUsageStats.js",
   ],
 
   experiments: {
