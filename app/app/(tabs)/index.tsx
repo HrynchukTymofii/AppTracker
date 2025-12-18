@@ -1,20 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   ScrollView,
   Image,
-  FlatList,
   Platform,
+  RefreshControl,
 } from "react-native";
-import { HelpCircle } from "lucide-react-native";
+import { HelpCircle, Lock } from "lucide-react-native";
 import {
   SafeAreaView,
 } from "react-native-safe-area-context";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import Svg, { Circle } from "react-native-svg";
-//import RNInstalledApps from "react-native-installed-apps";
+import {
+  getTodayUsageStats,
+  formatDuration,
+  calculateHealthScore,
+  getOrbLevel,
+  initializeTracking,
+} from "@/lib/usageTracking";
+import { useBlocking } from "@/context/BlockingContext";
 
 // Circular Progress Component
 const CircularProgress = ({
@@ -197,8 +204,15 @@ export default function HomeScreen() {
   const isDark = colorScheme === "dark";
   const [appsUsage, setAppsUsage] = useState<any[]>([]);
   const [isLoadingApps, setIsLoadingApps] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [healthScore, setHealthScore] = useState(75);
+  const [totalScreenTime, setTotalScreenTime] = useState(0);
+  const [pickups, setPickups] = useState(0);
+  const [orbLevel, setOrbLevel] = useState(3);
 
-  // Generate dates (3 backward, current, 3 forward = 7 visible, can scroll to see more)
+  const { focusSession, blockedApps } = useBlocking();
+
+  // Generate dates with scores based on day of week patterns
   const today = new Date();
   const dates = [];
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -206,64 +220,70 @@ export default function HomeScreen() {
   for (let i = -6; i <= 6; i++) {
     const date = new Date(today);
     date.setDate(today.getDate() + i);
+    // Generate consistent scores based on date (not random)
+    const seed = date.getDate() + date.getMonth() * 31;
+    const score = i === 0 ? healthScore : 40 + (seed % 60);
     dates.push({
       dayName: dayNames[date.getDay()],
-      score: Math.floor(Math.random() * 100), // Random score for demo
+      score: Math.round(score),
       isToday: i === 0,
     });
   }
 
-  // Fetch installed apps
+  // Fetch usage data
+  const fetchUsageData = useCallback(async () => {
+    try {
+      setIsLoadingApps(true);
+      await initializeTracking();
+      const stats = await getTodayUsageStats();
+
+      // Calculate health score
+      const score = calculateHealthScore(stats.totalScreenTime, stats.pickups);
+      setHealthScore(score);
+      setTotalScreenTime(stats.totalScreenTime);
+      setPickups(stats.pickups);
+      setOrbLevel(getOrbLevel(score));
+
+      // Format apps for display
+      const formattedApps = stats.apps.map((app, index) => ({
+        id: app.packageName || index.toString(),
+        appName: app.appName,
+        duration: formatDuration(app.timeInForeground),
+        iconUrl: require("@/assets/images/splash-icon.png"),
+        isBlocked: blockedApps.some(
+          (b) => b.packageName === app.packageName && b.isBlocked
+        ),
+      }));
+
+      setAppsUsage(formattedApps);
+    } catch (error) {
+      console.error("Error fetching usage data:", error);
+    } finally {
+      setIsLoadingApps(false);
+    }
+  }, [blockedApps]);
+
   useEffect(() => {
-    const fetchInstalledApps = async () => {
-      try {
-        // if (Platform.OS === "android") {
-        //   setIsLoadingApps(true);
-        //   //const apps = await RNInstalledApps.getApps();
+    fetchUsageData();
+  }, [fetchUsageData]);
 
-        //   // Get random apps for demo (in production, you'd fetch actual usage data)
-        //   const shuffled = apps.sort(() => 0.5 - Math.random());
-        //   const selectedApps = shuffled.slice(0, 7).map((app: any, index: number) => ({
-        //     id: app.packageName,
-        //     appName: app.appName,
-        //     duration: `${Math.floor(Math.random() * 3)}h ${Math.floor(Math.random() * 60)}m`,
-        //     iconUrl: app.icon ? { uri: app.icon } : require("@/assets/images/splash-icon.png"),
-        //   }));
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchUsageData();
+    setRefreshing(false);
+  }, [fetchUsageData]);
 
-        //   setAppsUsage(selectedApps);
-        //   setIsLoadingApps(false);
-        // } else {
-          // iOS fallback - use dummy data
-          const dummyApps = [
-            { id: "1", appName: "Instagram", duration: "2h 34m", iconUrl: require("@/assets/images/splash-icon.png") },
-            { id: "2", appName: "YouTube", duration: "1h 45m", iconUrl: require("@/assets/images/splash-icon.png") },
-            { id: "3", appName: "TikTok", duration: "1h 12m", iconUrl: require("@/assets/images/splash-icon.png") },
-            { id: "4", appName: "Twitter", duration: "45m", iconUrl: require("@/assets/images/splash-icon.png") },
-            { id: "5", appName: "Facebook", duration: "32m", iconUrl: require("@/assets/images/splash-icon.png") },
-            { id: "6", appName: "Snapchat", duration: "28m", iconUrl: require("@/assets/images/splash-icon.png") },
-            { id: "7", appName: "Reddit", duration: "18m", iconUrl: require("@/assets/images/splash-icon.png") },
-          ];
-          setAppsUsage(dummyApps);
-          setIsLoadingApps(false);
-        // }
-      } catch (error) {
-        console.error("Error fetching installed apps:", error);
-        // Fallback to dummy data
-        const dummyApps = [
-          { id: "1", appName: "Instagram", duration: "2h 34m", iconUrl: require("@/assets/images/splash-icon.png") },
-          { id: "2", appName: "YouTube", duration: "1h 45m", iconUrl: require("@/assets/images/splash-icon.png") },
-          { id: "3", appName: "TikTok", duration: "1h 12m", iconUrl: require("@/assets/images/splash-icon.png") },
-        ];
-        setAppsUsage(dummyApps);
-        setIsLoadingApps(false);
-      }
-    };
-
-    fetchInstalledApps();
-  }, []);
-
-  // Current health score (dummy data)
-  const healthScore = 75;
+  // Get orb image based on level
+  const getOrbImage = () => {
+    const orbImages = [
+      require("@/assets/images/orb1.png"),
+      require("@/assets/images/orb2.png"),
+      require("@/assets/images/orb3.jpg"),
+      require("@/assets/images/orb4.jpg"),
+      require("@/assets/images/orb5.jpg"),
+    ];
+    return orbImages[Math.min(orbLevel - 1, 4)];
+  };
 
   return (
     <SafeAreaView
@@ -272,6 +292,9 @@ export default function HomeScreen() {
       <ScrollView
         contentContainerStyle={{ paddingBottom: 80 }}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
         {/* Header */}
         <View
@@ -307,6 +330,31 @@ export default function HomeScreen() {
             <HelpCircle size={22} color={isDark ? "#ffffff" : "#111827"} strokeWidth={2} />
           </TouchableOpacity>
         </View>
+
+        {/* Active Focus Session Banner */}
+        {focusSession && (
+          <View
+            style={{
+              marginHorizontal: 20,
+              marginBottom: 16,
+              backgroundColor: "#ef4444",
+              borderRadius: 12,
+              padding: 16,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Lock size={20} color="#ffffff" />
+            <View style={{ marginLeft: 12, flex: 1 }}>
+              <Text style={{ color: "#ffffff", fontWeight: "600" }}>
+                Focus Mode Active
+              </Text>
+              <Text style={{ color: "rgba(255,255,255,0.8)", fontSize: 12 }}>
+                {focusSession.blockedApps.length} apps blocked
+              </Text>
+            </View>
+          </View>
+        )}
 
         {/* Dates Row with Circular Progress */}
         <View style={{ paddingLeft: 20, marginBottom: 32 }}>
@@ -349,7 +397,7 @@ export default function HomeScreen() {
         >
           {/* Orb Image */}
           <Image
-            source={require("@/assets/images/orb2.png")}
+            source={getOrbImage()}
             style={{ width: 200, height: 200, marginBottom: 24 }}
             resizeMode="contain"
           />

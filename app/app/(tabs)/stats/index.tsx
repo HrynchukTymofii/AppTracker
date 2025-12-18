@@ -1,16 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
   Image,
+  RefreshControl,
 } from "react-native";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import {
   SafeAreaView,
 } from "react-native-safe-area-context";
+import {
+  getWeekUsageStatsWithOffset,
+  getDailyUsageForWeek,
+  formatDuration,
+  calculateHealthScore,
+  getOrbLevel,
+} from "@/lib/usageTracking";
 
 // Day Card Component
 const DayCard = ({
@@ -320,66 +328,103 @@ export default function StatsScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const [weekOffset, setWeekOffset] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Generate week dates
-  const getWeekDates = () => {
-    const today = new Date();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay() + (weekOffset * 7));
+  // State for real data
+  const [stats, setStats] = useState({
+    totalHours: 0,
+    dailyAvg: 0,
+    peekDay: "Mon",
+    peekHours: 0,
+    pickupsTotal: 0,
+    pickupsAvg: 0,
+  });
+  const [chartData, setChartData] = useState<{ day: string; hours: number }[]>([]);
+  const [appsUsage, setAppsUsage] = useState<any[]>([]);
+  const [weekDates, setWeekDates] = useState<any[]>([]);
 
-    const dates = [];
-    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  // Fetch data
+  const fetchData = useCallback(async () => {
+    try {
+      setIsLoading(true);
 
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(startOfWeek);
-      date.setDate(startOfWeek.getDate() + i);
-      dates.push({
-        dayName: dayNames[date.getDay()],
-        dateNumber: date.getDate(),
-        orbLevel: Math.floor(Math.random() * 5) + 1, // Random 1-5
+      // Get week usage stats
+      const weekStats = await getWeekUsageStatsWithOffset(weekOffset);
+      const dailyStats = await getDailyUsageForWeek(weekOffset);
+
+      // Calculate stats
+      const totalHours = weekStats.totalScreenTime / (1000 * 60 * 60);
+      const dailyAvg = totalHours / 7;
+      const peekDayData = dailyStats.reduce((max, curr) =>
+        curr.hours > max.hours ? curr : max
+      , dailyStats[0] || { day: 'Mon', hours: 0 });
+
+      setStats({
+        totalHours: Math.round(totalHours * 10) / 10,
+        dailyAvg: Math.round(dailyAvg * 10) / 10,
+        peekDay: peekDayData?.day || 'Mon',
+        peekHours: peekDayData?.hours || 0,
+        pickupsTotal: weekStats.pickups,
+        pickupsAvg: Math.round(weekStats.pickups / 7),
       });
+
+      // Set chart data
+      setChartData(dailyStats);
+
+      // Format apps usage
+      const maxTime = Math.max(...weekStats.apps.map(a => a.timeInForeground), 1);
+      const formattedApps = weekStats.apps.map((app, index) => ({
+        id: app.packageName || index.toString(),
+        appName: app.appName,
+        duration: formatDuration(app.timeInForeground),
+        minutes: app.timeInForeground / 60000,
+        percentage: (app.timeInForeground / maxTime) * 100,
+        iconUrl: require("@/assets/images/splash-icon.png"),
+      }));
+      setAppsUsage(formattedApps);
+
+      // Generate week dates with orb levels
+      const today = new Date();
+      const startOfWeek = new Date(today);
+      startOfWeek.setDate(today.getDate() - today.getDay() + (weekOffset * 7));
+
+      const dates = [];
+      const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+      for (let i = 0; i < 7; i++) {
+        const date = new Date(startOfWeek);
+        date.setDate(startOfWeek.getDate() + i);
+        const dayData = dailyStats[i];
+        // Calculate orb level based on hours (lower hours = better score)
+        const healthScore = calculateHealthScore(
+          (dayData?.hours || 3) * 60 * 60 * 1000,
+          Math.round((weekStats.pickups / 7) || 100)
+        );
+        dates.push({
+          dayName: dayNames[date.getDay()],
+          dateNumber: date.getDate(),
+          orbLevel: getOrbLevel(healthScore),
+        });
+      }
+      setWeekDates(dates);
+
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+    } finally {
+      setIsLoading(false);
     }
-    return dates;
-  };
+  }, [weekOffset]);
 
-  const weekDates = getWeekDates();
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
-  // Dummy data
-  const stats = {
-    totalHours: 24.5,
-    dailyAvg: 3.5,
-    peekDay: "Wed",
-    peekHours: 5.2,
-    pickupsTotal: 842,
-    pickupsAvg: 120,
-  };
-
-  const chartData = [
-    { day: "Sun", hours: 2.5 },
-    { day: "Mon", hours: 4.2 },
-    { day: "Tue", hours: 3.8 },
-    { day: "Wed", hours: 5.2 },
-    { day: "Thu", hours: 3.1 },
-    { day: "Fri", hours: 4.5 },
-    { day: "Sat", hours: 1.2 },
-  ];
-
-  // Convert duration to minutes for percentage calculation
-  const appsData = [
-    { id: "1", appName: "Instagram", duration: "8h 34m", minutes: 514 },
-    { id: "2", appName: "YouTube", duration: "6h 45m", minutes: 405 },
-    { id: "3", appName: "TikTok", duration: "4h 12m", minutes: 252 },
-    { id: "4", appName: "Twitter", duration: "3h 20m", minutes: 200 },
-    { id: "5", appName: "Facebook", duration: "1h 44m", minutes: 104 },
-  ];
-
-  // Calculate percentages based on the highest usage
-  const maxMinutes = Math.max(...appsData.map(app => app.minutes));
-  const appsUsage = appsData.map(app => ({
-    ...app,
-    percentage: (app.minutes / maxMinutes) * 100,
-    iconUrl: require("@/assets/images/splash-icon.png"),
-  }));
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchData();
+    setRefreshing(false);
+  }, [fetchData]);
 
   const getWeekLabel = () => {
     if (weekOffset === 0) return "This Week";
@@ -395,6 +440,9 @@ export default function StatsScreen() {
       <ScrollView
         contentContainerStyle={{ paddingBottom: 80 }}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
         {/* Header with Week Navigation */}
         <View
