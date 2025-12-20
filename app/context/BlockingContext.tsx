@@ -25,6 +25,11 @@ import {
   setDailyLimit,
   initializeBlocking,
   checkAndApplySchedules,
+  isAccessibilityServiceEnabled,
+  openAccessibilitySettings,
+  hasOverlayPermission,
+  openOverlaySettings,
+  hasAllRequiredPermissions,
   POPULAR_APPS,
 } from '@/lib/appBlocking';
 import {
@@ -71,6 +76,13 @@ interface BlockingContextType {
 
   // Task actions
   verifyTask: (taskId: string, afterPhotoUri: string) => Promise<VerificationResult>;
+
+  // Permission checks
+  isAccessibilityServiceEnabled: () => Promise<boolean>;
+  openAccessibilitySettings: () => void;
+  hasOverlayPermission: () => Promise<boolean>;
+  openOverlaySettings: () => void;
+  hasAllRequiredPermissions: () => Promise<boolean>;
 
   // Utility
   refreshData: () => Promise<void>;
@@ -166,7 +178,8 @@ export const BlockingProvider = ({ children }: { children: ReactNode }) => {
       durationMinutes,
       apps,
       requiresTask,
-      beforePhotoUri
+      beforePhotoUri,
+      taskDescription
     );
 
     // Create verification task if required
@@ -262,6 +275,11 @@ export const BlockingProvider = ({ children }: { children: ReactNode }) => {
         setAppDailyLimit,
         removeAppDailyLimit,
         verifyTask,
+        isAccessibilityServiceEnabled,
+        openAccessibilitySettings,
+        hasOverlayPermission,
+        openOverlaySettings,
+        hasAllRequiredPermissions,
         refreshData,
       }}
     >

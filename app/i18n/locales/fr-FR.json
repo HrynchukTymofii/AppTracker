@@ -1,0 +1,308 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "confirm": "Confirmer",
+    "error": "Erreur",
+    "success": "Succès",
+    "close": "Fermer",
+    "add": "Ajouter",
+    "edit": "Modifier",
+    "remove": "Retirer",
+    "settings": "Paramètres",
+    "back": "Retour",
+    "next": "Suivant",
+    "done": "Terminé"
+  },
+  "tabs": {
+    "home": "Accueil",
+    "blocking": "Blocage",
+    "detox": "Détox",
+    "stats": "Statistiques",
+    "profile": "Profil"
+  },
+  "home": {
+    "title": "LockIn",
+    "health": "SANTÉ",
+    "appUsageToday": "Utilisation des Apps Aujourd'hui",
+    "loadingApps": "Chargement des applications...",
+    "focusModeActive": "Mode Focus Actif",
+    "appsBlocked": "applications bloquées",
+    "quickMenu": {
+      "stats": "Statistiques",
+      "statsDesc": "Voir les statistiques d'utilisation détaillées",
+      "blocking": "Blocage",
+      "blockingDesc": "Gérer les applications bloquées",
+      "detox": "Détox",
+      "detoxDesc": "Démarrer le minuteur de détox téléphonique",
+      "calendar": "Calendrier",
+      "calendarDesc": "Planifiez vos tâches"
+    }
+  },
+  "stats": {
+    "title": "Rapport LockIn",
+    "thisWeek": "Cette Semaine",
+    "lastWeek": "Semaine Dernière",
+    "weeksAhead_one": "{{count}} Semaine Plus Tard",
+    "weeksAhead_other": "{{count}} Semaines Plus Tard",
+    "weeksAgo_one": "Il y a {{count}} Semaine",
+    "weeksAgo_other": "Il y a {{count}} Semaines",
+    "totalHours": "HEURES TOTALES",
+    "dailyAvg": "MOYENNE QUOTIDIENNE",
+    "peekDay": "JOUR RECORD",
+    "pickups": "DÉVERROUILLAGES",
+    "perDay": "/jour",
+    "statsPerDay": "Statistiques Par Jour",
+    "usageCalendar": "Calendrier d'Utilisation",
+    "totalTimePerApp": "Temps Total Par App",
+    "loadingStats": "Chargement des statistiques...",
+    "noData": "Aucune Donnée",
+    "health": {
+      "poor": "Mauvais",
+      "low": "Faible",
+      "avg": "Moyen",
+      "good": "Bien",
+      "great": "Excellent",
+      "label": "Santé :"
+    },
+    "dayNames": {
+      "sun": "Dim",
+      "mon": "Lun",
+      "tue": "Mar",
+      "wed": "Mer",
+      "thu": "Jeu",
+      "fri": "Ven",
+      "sat": "Sam"
+    },
+    "dayNamesFull": {
+      "sunday": "Dimanche",
+      "monday": "Lundi",
+      "tuesday": "Mardi",
+      "wednesday": "Mercredi",
+      "thursday": "Jeudi",
+      "friday": "Vendredi",
+      "saturday": "Samedi"
+    },
+    "noUsageData": "Aucune donnée d'utilisation pour le moment",
+    "healthScore": "Score de Santé",
+    "screenTime": "Temps d'Écran",
+    "topApps": "Top 3 Applications"
+  },
+  "blocking": {
+    "title": "Blocage",
+    "setupRequired": "Configuration Requise",
+    "permissionsDesc": "Le blocage d'applications nécessite des permissions spéciales. Veuillez activer :",
+    "accessibilityService": "1. Service d'Accessibilité",
+    "displayOverOtherApps": "2. Affichage Sur Autres Applications",
+    "quickActions": "Actions Rapides",
+    "startFocus": "Démarrer le Focus",
+    "newSchedule": "Nouveau Calendrier",
+    "schedules": "Calendriers",
+    "noSchedulesYet": "Aucun calendrier pour le moment.",
+    "createScheduleHint": "Créez-en un pour bloquer automatiquement les applications.",
+    "blockedApps": "Applications Bloquées",
+    "noAppsBlocked": "Aucune application bloquée.",
+    "addAppsHint": "Ajoutez des applications pour commencer le blocage.",
+    "focusSessionActive": "Session de Focus Active",
+    "taskRequiredToUnlock": "Tâche requise pour déverrouiller",
+    "timeRemaining": "restant",
+    "completeTaskUnlock": "Terminer la Tâche et Déverrouiller",
+    "endSession": "Terminer la Session",
+    "calendarView": "Vue Calendrier",
+    "everyday": "Tous les jours",
+    "weekdays": "Jours ouvrables",
+    "activeToday": "actifs aujourd'hui",
+    "scheduledForDay": "pour ce jour",
+    "noSchedulesWere": "Aucun horaire n'était actif ce jour-là",
+    "noActiveSchedules": "Aucun horaire actif pour aujourd'hui",
+    "noSchedulesPlanned": "Aucun horaire prévu pour ce jour",
+    "blockTypes": {
+      "manual": "Bloqué manuellement",
+      "scheduled": "Blocage programmé",
+      "focus": "Session de focus",
+      "task": "Tâche requise",
+      "dailyLimit": "Limite quotidienne"
+    },
+    "modals": {
+      "selectApps": "Sélectionner les Applications à Bloquer",
+      "confirmSelection": "Confirmer la Sélection ({{count}})",
+      "newSchedule": "Nouveau Calendrier",
+      "scheduleName": "NOM DU CALENDRIER",
+      "scheduleNamePlaceholder": "ex. Heures de Travail",
+      "appsToBlock": "APPLICATIONS À BLOQUER",
+      "selectAppsPlaceholder": "Sélectionner les applications...",
+      "appsSelected": "{{count}} applications sélectionnées",
+      "startTime": "HEURE DE DÉBUT",
+      "endTime": "HEURE DE FIN",
+      "repeatOn": "RÉPÉTER LE",
+      "saveSchedule": "Enregistrer le Calendrier",
+      "startFocusSession": "Démarrer la Session de Focus",
+      "durationMinutes": "DURÉE (MINUTES)",
+      "requireTaskCompletion": "Exiger l'Achèvement de la Tâche",
+      "unlockAfterTask": "Déverrouiller uniquement après avoir terminé une vraie tâche",
+      "selectTask": "SÉLECTIONNER UNE TÂCHE",
+      "describeTask": "Décrivez votre tâche...",
+      "takeBeforePhoto": "PRENDRE UNE PHOTO \"AVANT\"",
+      "tapToTakePhoto": "Appuyez pour prendre une photo",
+      "startFocusDuration": "Démarrer le Focus ({{duration}} minutes)",
+      "openAIApiKey": "CLÉ API OPENAI (pour la vérification des tâches)",
+      "apiKeySaved": "La clé API est enregistrée",
+      "saveSettings": "Enregistrer les Paramètres",
+      "loadingApps": "Chargement des applications...",
+      "selectAll": "Sélectionner Toutes les Apps",
+      "deselectAll": "Tout Désélectionner",
+      "popularApps": "Apps Populaires",
+      "moreApps": "Plus d'Apps ({{count}})",
+      "showPopularOnly": "← Afficher Populaires Seulement"
+    },
+    "alerts": {
+      "enterScheduleName": "Veuillez entrer un nom de calendrier",
+      "selectAtLeastOneApp": "Veuillez sélectionner au moins une application",
+      "selectAtLeastOneDay": "Veuillez sélectionner au moins un jour",
+      "selectAtLeastOneAppToBlock": "Veuillez sélectionner au moins une application à bloquer",
+      "takeBeforePhoto": "Veuillez prendre une photo \"avant\" pour la vérification de la tâche",
+      "deleteSchedule": "Supprimer le Calendrier",
+      "deleteScheduleConfirm": "Êtes-vous sûr de vouloir supprimer ce calendrier ?",
+      "taskVerified": "Tâche Vérifiée !",
+      "taskVerifiedDesc": "Votre tâche a été vérifiée avec succès.\n\nConfiance : {{confidence}}%\n\n{{explanation}}",
+      "taskNotVerified": "Tâche Non Vérifiée",
+      "taskNotVerifiedDesc": "La tâche ne semble pas être terminée.\n\n{{explanation}}\n\nVeuillez terminer la tâche et réessayer.",
+      "apiKeySavedSuccess": "Clé API enregistrée avec succès"
+    },
+    "presetTasks": {
+      "cleaning": "Ménage",
+      "cooking": "Cuisine",
+      "exercise": "Exercice",
+      "reading": "Lecture",
+      "custom": "Personnalisé"
+    }
+  },
+  "detox": {
+    "title": "Détox"
+  },
+  "profile": {
+    "title": "Profil",
+    "proMember": "Membre PRO",
+    "achievements": "Réalisations",
+    "viewAll": "Voir Tous",
+    "quickActions": "Actions Rapides",
+    "editProfile": "Modifier le Profil",
+    "contactUs": "Nous Contacter",
+    "rateUs": "Évaluez-nous",
+    "logOut": "Déconnexion",
+    "errorLoading": "Erreur lors du chargement du profil",
+    "loading": "Chargement du profil..."
+  },
+  "achievements": {
+    "title": "Réalisations",
+    "unlocked": "Déverrouillé",
+    "locked": "Verrouillé",
+    "unlockedCount": "{{count}} sur {{total}} déverrouillés",
+    "list": {
+      "firstBlock": {
+        "title": "Première Fois",
+        "description": "Bloquez votre première application"
+      },
+      "focusBeginner": {
+        "title": "Débutant Focus",
+        "description": "Terminez la première session de focus"
+      },
+      "taskMaster": {
+        "title": "Maître des Tâches",
+        "description": "Complétez une vérification de tâche"
+      },
+      "earlyBird": {
+        "title": "Lève-tôt",
+        "description": "Démarrez focus avant 8h"
+      },
+      "nightOwl": {
+        "title": "Couche-tard",
+        "description": "Utilisez le blocage après 22h"
+      },
+      "discipline": {
+        "title": "Discipline",
+        "description": "Série de blocage de 7 jours"
+      },
+      "ironWill": {
+        "title": "Volonté de Fer",
+        "description": "Complétez 10 sessions de focus"
+      },
+      "zenMaster": {
+        "title": "Maître Zen",
+        "description": "Complétez 50 sessions de focus"
+      },
+      "schedulePro": {
+        "title": "Pro du Calendrier",
+        "description": "Créez votre premier calendrier"
+      },
+      "timeKeeper": {
+        "title": "Gardien du Temps",
+        "description": "Créez 5 calendriers"
+      },
+      "digitalDetox": {
+        "title": "Détox Numérique",
+        "description": "Bloquez les applications pendant 24h"
+      },
+      "weekendWarrior": {
+        "title": "Guerrier du Week-end",
+        "description": "Utilisez le blocage le week-end"
+      },
+      "minimalist": {
+        "title": "Minimaliste",
+        "description": "Bloquez 10+ applications à la fois"
+      },
+      "focusLegend": {
+        "title": "Légende du Focus",
+        "description": "Session de focus de 2 heures"
+      },
+      "marathon": {
+        "title": "Marathon",
+        "description": "Session de focus de 4 heures"
+      },
+      "consistencyKing": {
+        "title": "Roi de la Constance",
+        "description": "Série de blocage de 30 jours"
+      },
+      "healthChampion": {
+        "title": "Champion de la Santé",
+        "description": "Obtenez un score de santé 90+"
+      },
+      "screenTimeSavior": {
+        "title": "Sauveur du Temps d'Écran",
+        "description": "Réduisez le temps d'écran de 50%"
+      },
+      "morningRoutine": {
+        "title": "Routine Matinale",
+        "description": "Bloquez les applications 3 matins"
+      },
+      "productivityBeast": {
+        "title": "Bête de Productivité",
+        "description": "Complétez 5 vérifications de tâches"
+      },
+      "appBlockerPro": {
+        "title": "Pro du Blocage d'Apps",
+        "description": "Bloquez 20+ applications différentes"
+      },
+      "focusFlow": {
+        "title": "Flux de Focus",
+        "description": "3 sessions de focus en un jour"
+      },
+      "digitalWellbeing": {
+        "title": "Bien-être Numérique",
+        "description": "Score de santé 80+ pendant une semaine"
+      },
+      "selfControl": {
+        "title": "Maîtrise de Soi",
+        "description": "Résistez au déverrouillage 10 fois"
+      }
+    }
+  },
+  "language": {
+    "title": "Langue",
+    "selectLanguage": "Sélectionner la Langue",
+    "systemDefault": "Par Défaut du Système",
+    "currentLanguage": "Langue Actuelle"
+  }
+}

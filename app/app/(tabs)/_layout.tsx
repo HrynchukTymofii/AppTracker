@@ -3,12 +3,13 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { Home, Shield, Sparkles, BarChart3, User, Square } from 'lucide-react-native';
+import { Home, Shield, Sparkles, BarChart3, User, Square, Play } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTour } from '@/context/TourContext';
 import { TourTooltip } from '@/components/Tour/TourTooltip';
 import { TOUR_STEPS, TOTAL_TOUR_STEPS, getTourStepInfo } from '@/constants/tourSteps';
 import { useDetox } from '@/context/DetoxContext';
+import { useTranslation } from 'react-i18next';
 
 // Custom Detox Button Component
 const DetoxButton = ({ children, onPress, isDark }: any) => {
@@ -61,8 +62,12 @@ const DetoxButton = ({ children, onPress, isDark }: any) => {
           borderBottomColor: 'rgba(0, 0, 0, 0.1)',
         }}
       >
-        {isOnDetoxPage && isActive ? (
-          <Square size={32} color="#ffffff" fill="#ffffff" />
+        {isOnDetoxPage ? (
+          isActive ? (
+            <Square size={32} color="#ffffff" fill="#ffffff" />
+          ) : (
+            <Play size={32} color={isDark ? '#111827' : '#ffffff'} fill={isDark ? '#111827' : '#ffffff'} />
+          )
         ) : (
           children
         )}
@@ -75,6 +80,7 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   // Tour
   const { tourActive, currentStep, setCurrentStep, endTour, skipTour } = useTour();
@@ -142,7 +148,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: t('tabs.home'),
           tabBarIcon: ({ color, focused }) => (
             <View style={[
               styles.iconContainer,
@@ -169,7 +175,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="blocking/index"
         options={{
-          title: 'Blocking',
+          title: t('tabs.blocking'),
           tabBarIcon: ({ color, focused }) => (
             <View style={[
               styles.iconContainer,
@@ -196,7 +202,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="detox/index"
         options={{
-          title: 'Detox',
+          title: t('tabs.detox'),
           tabBarButton: (props) => <DetoxButton {...props} isDark={isDark} />,
           tabBarIcon: ({ focused }) => (
             <Sparkles
@@ -211,7 +217,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="stats/index"
         options={{
-          title: 'Stats',
+          title: t('tabs.stats'),
           tabBarIcon: ({ color, focused }) => (
             <View style={[
               styles.iconContainer,
@@ -238,7 +244,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile/index"
         options={{
-          title: 'Profile',
+          title: t('tabs.profile'),
           tabBarIcon: ({ color, focused }) => (
             <View style={[
               styles.iconContainer,

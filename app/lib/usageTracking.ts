@@ -121,6 +121,30 @@ export const getTodayPickups = async (): Promise<number> => {
 };
 
 /**
+ * Filter apps - remove current app and apps with < 1 minute usage
+ */
+const filterApps = (apps: AppUsageData[]): AppUsageData[] => {
+  const ONE_MINUTE = 60 * 1000; // 1 minute in milliseconds
+
+  return apps.filter(app => {
+    // Filter out this app (LockIn/AppBlocker)
+    if (app.packageName.includes('appblocker') ||
+        app.packageName.includes('lockin') ||
+        app.appName.toLowerCase().includes('lockin') ||
+        app.appName.toLowerCase().includes('appblocker')) {
+      return false;
+    }
+
+    // Filter out apps with less than 1 minute usage
+    if (app.timeInForeground < ONE_MINUTE) {
+      return false;
+    }
+
+    return true;
+  });
+};
+
+/**
  * Get today's usage stats - tries native first, falls back to simulated
  */
 export const getTodayUsageStats = async (): Promise<UsageStatsData> => {
@@ -130,16 +154,22 @@ export const getTodayUsageStats = async (): Promise<UsageStatsData> => {
       const nativeData = await NativeUsageStats.getTodayUsageStats();
 
       if (nativeData.hasPermission && nativeData.apps.length > 0) {
+        // Filter apps
+        const filteredApps = filterApps(nativeData.apps);
+
+        // Recalculate total screen time with filtered apps
+        const totalScreenTime = filteredApps.reduce((sum, app) => sum + app.timeInForeground, 0);
+
         // Cache the real data
         await AsyncStorage.setItem(CACHE_KEY, JSON.stringify({
-          data: nativeData,
+          data: { ...nativeData, apps: filteredApps, totalScreenTime },
           timestamp: Date.now(),
           type: 'today',
         }));
 
         return {
-          apps: nativeData.apps,
-          totalScreenTime: nativeData.totalScreenTime,
+          apps: filteredApps,
+          totalScreenTime,
           pickups: nativeData.pickups,
           hasRealData: true,
         };
@@ -171,9 +201,15 @@ export const getWeekUsageStatsWithOffset = async (weekOffset: number): Promise<U
       const nativeData = await NativeUsageStats.getWeekUsageStats(weekOffset);
 
       if (nativeData.hasPermission && nativeData.apps.length > 0) {
+        // Filter apps
+        const filteredApps = filterApps(nativeData.apps);
+
+        // Recalculate total screen time with filtered apps
+        const totalScreenTime = filteredApps.reduce((sum, app) => sum + app.timeInForeground, 0);
+
         return {
-          apps: nativeData.apps,
-          totalScreenTime: nativeData.totalScreenTime,
+          apps: filteredApps,
+          totalScreenTime,
           pickups: nativeData.pickups,
           hasRealData: true,
         };
@@ -274,11 +310,14 @@ const getSimulatedUsageData = (pickups: number): UsageStatsData => {
     },
   ];
 
-  apps.sort((a, b) => b.timeInForeground - a.timeInForeground);
-  const totalScreenTime = apps.reduce((sum, app) => sum + app.timeInForeground, 0);
+  // Filter and sort apps
+  const filteredApps = filterApps(apps);
+  filteredApps.sort((a, b) => b.timeInForeground - a.timeInForeground);
+
+  const totalScreenTime = filteredApps.reduce((sum, app) => sum + app.timeInForeground, 0);
 
   return {
-    apps: apps.slice(0, 7),
+    apps: filteredApps.slice(0, 7),
     totalScreenTime,
     pickups: pickups > 0 ? pickups : 80 + (seed % 50),
     hasRealData: false,
@@ -325,11 +364,14 @@ const getSimulatedWeekUsageData = (weeklyPickups: number): UsageStatsData => {
     },
   ];
 
-  apps.sort((a, b) => b.timeInForeground - a.timeInForeground);
-  const totalScreenTime = apps.reduce((sum, app) => sum + app.timeInForeground, 0);
+  // Filter and sort apps
+  const filteredApps = filterApps(apps);
+  filteredApps.sort((a, b) => b.timeInForeground - a.timeInForeground);
+
+  const totalScreenTime = filteredApps.reduce((sum, app) => sum + app.timeInForeground, 0);
 
   return {
-    apps,
+    apps: filteredApps,
     totalScreenTime,
     pickups: weeklyPickups > 0 ? weeklyPickups : 600 + (seed % 200),
     hasRealData: false,

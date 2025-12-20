@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -9,10 +9,8 @@ import {
   Linking,
 } from "react-native";
 import { useAuth, UserType } from "@/context/AuthContext";
-import { MaterialIcons } from "@expo/vector-icons";
+import { useTranslation } from 'react-i18next';
 import {
-  BookOpen,
-  Brain,
   CheckCircle,
   LucideIcon,
   Mails,
@@ -24,12 +22,30 @@ import {
   Target,
   Crown,
   ThumbsUp,
+  Sun,
+  Moon,
+  Shield,
+  Calendar,
+  Clock,
+  Zap,
+  Award,
+  Layers,
+  Flame,
+  Heart,
+  TrendingDown,
+  Sunrise,
+  Rocket,
+  Lock,
+  Sparkles,
+  Activity,
+  ShieldCheck,
+  ChevronRight,
+  Brain,
 } from "lucide-react-native";
 import { useRouter, useFocusEffect } from "expo-router";
 import { getUserData } from "@/lib/api/user";
 import Toast from "react-native-toast-message";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { LinearGradient } from "expo-linear-gradient";
 import * as SecureStore from "expo-secure-store";
 import * as StoreReview from "expo-store-review";
 import { useCourseDatabase } from "@/lib/db/course";
@@ -39,43 +55,6 @@ import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-
-const AnimatedNumber = ({
-  value,
-  isDark,
-}: {
-  value: number;
-  isDark: boolean;
-}) => {
-  const [displayValue, setDisplayValue] = useState(0);
-
-  useEffect(() => {
-    const steps = 60;
-    const increment = value / steps;
-    let currentStep = 0;
-
-    const timer = setInterval(() => {
-      currentStep++;
-      const currentValue = Math.min(increment * currentStep, value);
-      setDisplayValue(Math.round(currentValue));
-      if (currentStep >= steps) clearInterval(timer);
-    }, 20);
-
-    return () => clearInterval(timer);
-  }, [value]);
-
-  return (
-    <Text
-      style={{
-        fontSize: 28,
-        fontWeight: "bold",
-        color: isDark ? "#ffffff" : "#1f2937",
-      }}
-    >
-      {displayValue}
-    </Text>
-  );
-};
 
 export interface Achievement {
   id: number | string;
@@ -101,38 +80,43 @@ const AchievementBadge = ({
         width: "31%",
         borderRadius: 16,
         backgroundColor: achievement.unlocked
-          ? isDark ? "rgba(255, 255, 255, 0.15)" : "#111827"
+          ? isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff"
           : isDark
-            ? "rgba(255, 255, 255, 0.05)"
-            : "rgba(0, 0, 0, 0.03)",
+            ? "rgba(255, 255, 255, 0.03)"
+            : "rgba(0, 0, 0, 0.02)",
         padding: 14,
         alignItems: "center",
         borderWidth: 1,
         borderColor: achievement.unlocked
-          ? isDark ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.1)"
-          : isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.05)",
+          ? achievement.color + "40"
+          : isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
+        opacity: achievement.unlocked ? 1 : 0.5,
       }}
     >
       <View
         style={{
-          width: 44,
-          height: 44,
-          borderRadius: 22,
+          width: 48,
+          height: 48,
+          borderRadius: 24,
           backgroundColor: achievement.unlocked
-            ? isDark ? "rgba(255, 255, 255, 0.2)" : "rgba(255, 255, 255, 0.9)"
+            ? achievement.color + "20"
             : isDark
-              ? "rgba(255, 255, 255, 0.08)"
-              : "rgba(0, 0, 0, 0.05)",
+              ? "rgba(255, 255, 255, 0.05)"
+              : "rgba(0, 0, 0, 0.03)",
           alignItems: "center",
           justifyContent: "center",
           marginBottom: 10,
+          borderWidth: 2,
+          borderColor: achievement.unlocked
+            ? achievement.color
+            : isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.05)",
         }}
       >
         <Icon
-          size={22}
+          size={24}
           color={
             achievement.unlocked
-              ? isDark ? "#ffffff" : "#111827"
+              ? achievement.color
               : isDark ? "#64748b" : "#94a3b8"
           }
           strokeWidth={2.5}
@@ -140,14 +124,15 @@ const AchievementBadge = ({
       </View>
       <Text
         style={{
-          fontSize: 11,
-          fontWeight: "600",
+          fontSize: 10,
+          fontWeight: "700",
           color: achievement.unlocked
-            ? "#ffffff"
+            ? isDark ? "#ffffff" : "#111827"
             : isDark
               ? "#64748b"
               : "#94a3b8",
           textAlign: "center",
+          lineHeight: 13,
         }}
       >
         {achievement.title}
@@ -157,8 +142,8 @@ const AchievementBadge = ({
         <View
           style={{
             position: "absolute",
-            top: 6,
-            right: 6,
+            top: 8,
+            right: 8,
             width: 18,
             height: 18,
             borderRadius: 9,
@@ -167,63 +152,140 @@ const AchievementBadge = ({
             justifyContent: "center",
           }}
         >
-          <CheckCircle size={14} color="#ffffff" fill="#10B981" />
+          <CheckCircle size={14} color="#ffffff" fill="#10B981" strokeWidth={3} />
         </View>
       )}
     </View>
   );
 };
 
-function getDynamicAchievements({
-  lessonsCount,
-  quizzesCount,
-  averageSatScore,
-  has100Quiz,
-  hasHighScore,
-}: {
-  lessonsCount: number;
-  quizzesCount: number;
-  averageSatScore: number;
-  has100Quiz: boolean;
-  hasHighScore: boolean;
+function getDynamicAchievements(t: any, stats: {
+  blockedAppsCount: number;
+  focusSessionsCount: number;
+  tasksCompleted: number;
+  schedulesCount: number;
+  currentStreak: number;
+  maxFocusDuration: number;
+  healthScore: number;
+  totalAppsBlocked: number;
+  weekendBlockingDays: number;
+  focusSessionsToday: number;
+  morningBlockingStreak: number;
+  screenTimeReduction: number;
 }) {
   return [
     {
-      id: 1,
-      title: "First Steps",
-      description: "Complete first lesson",
-      icon: BookOpen,
-      unlocked: lessonsCount >= 1,
-      color: "cyan",
+      id: 'firstBlock',
+      title: t('achievements.list.firstBlock.title'),
+      description: t('achievements.list.firstBlock.description'),
+      icon: Target,
+      unlocked: stats.blockedAppsCount >= 1,
+      color: "#3b82f6",
     },
     {
-      id: 2,
-      title: "High Scorer",
-      description: "Score 700+ on SAT exam",
+      id: 'focusBeginner',
+      title: t('achievements.list.focusBeginner.title'),
+      description: t('achievements.list.focusBeginner.description'),
+      icon: CheckCircle,
+      unlocked: stats.focusSessionsCount >= 1,
+      color: "#10b981",
+    },
+    {
+      id: 'taskMaster',
+      title: t('achievements.list.taskMaster.title'),
+      description: t('achievements.list.taskMaster.description'),
       icon: Trophy,
-      unlocked: hasHighScore,
-      color: "amber",
+      unlocked: stats.tasksCompleted >= 1,
+      color: "#f59e0b",
     },
     {
-      id: 3,
-      title: "Math Master",
-      description: "Complete 10 quizzes",
-      icon: Brain,
-      unlocked: quizzesCount >= 10,
-      color: "purple",
+      id: 'earlyBird',
+      title: t('achievements.list.earlyBird.title'),
+      description: t('achievements.list.earlyBird.description'),
+      icon: Sun,
+      unlocked: false,
+      color: "#f97316",
     },
     {
-      id: 4,
-      title: "Perfect Practice",
-      description: "Score 100% on quiz",
+      id: 'nightOwl',
+      title: t('achievements.list.nightOwl.title'),
+      description: t('achievements.list.nightOwl.description'),
+      icon: Moon,
+      unlocked: false,
+      color: "#6366f1",
+    },
+    {
+      id: 'discipline',
+      title: t('achievements.list.discipline.title'),
+      description: t('achievements.list.discipline.description'),
       icon: Star,
-      unlocked: has100Quiz,
-      color: "green",
+      unlocked: stats.currentStreak >= 7,
+      color: "#8b5cf6",
     },
   ];
 }
 
+// Settings menu item component
+const SettingsItem = ({
+  icon: Icon,
+  label,
+  onPress,
+  isDark,
+  color = isDark ? "#ffffff" : "#111827",
+  bgColor,
+}: {
+  icon: LucideIcon;
+  label: string;
+  onPress: () => void;
+  isDark: boolean;
+  color?: string;
+  bgColor?: string;
+}) => (
+  <TouchableOpacity
+    onPress={onPress}
+    activeOpacity={0.7}
+    style={{
+      backgroundColor: bgColor || (isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.03)"),
+      borderRadius: 16,
+      padding: 16,
+      marginBottom: 10,
+      flexDirection: "row",
+      alignItems: "center",
+      borderWidth: 1,
+      borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
+    }}
+  >
+    <View
+      style={{
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: color === "#ef4444"
+          ? "rgba(239, 68, 68, 0.15)"
+          : isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.05)",
+        alignItems: "center",
+        justifyContent: "center",
+        marginRight: 14,
+      }}
+    >
+      <Icon size={22} color={color} strokeWidth={2} />
+    </View>
+    <Text
+      style={{
+        flex: 1,
+        fontSize: 16,
+        fontWeight: "600",
+        color: color,
+      }}
+    >
+      {label}
+    </Text>
+    <ChevronRight size={22} color={isDark ? "#6b7280" : "#9ca3af"} />
+  </TouchableOpacity>
+);
+
 export default function ProfileScreen() {
+  const { t } = useTranslation();
   const { token, setToken, user, setUser } = useAuth();
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -231,34 +293,28 @@ export default function ProfileScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const {
-    getCompletedLessonsCount,
-    getCompletedQuizzesCount,
-    getAverageScoreByChapter,
-    hasPerfectScoreInPublishedChapters,
-    hasHighSATScore,
-  } = useCourseDatabase();
 
-  const [lessonsCount, setLessonsCount] = useState(0);
-  const [quizzesCount, setQuizzesCount] = useState(0);
-  const [averageSatScore, setAverageSatScore] = useState(0);
-  const [have100Quiz, setHave100Quiz] = useState(false);
-  const [hasHighScore, setHasHighScore] = useState(false);
+  const [achievementStats, setAchievementStats] = useState({
+    blockedAppsCount: 0,
+    focusSessionsCount: 0,
+    tasksCompleted: 0,
+    schedulesCount: 0,
+    currentStreak: 0,
+    maxFocusDuration: 0,
+    healthScore: 0,
+    totalAppsBlocked: 0,
+    weekendBlockingDays: 0,
+    focusSessionsToday: 0,
+    morningBlockingStreak: 0,
+    screenTimeReduction: 0,
+  });
+
   const [achievements, setAchievements] = useState(
-    getDynamicAchievements({
-      lessonsCount: 0,
-      quizzesCount: 0,
-      averageSatScore: 0,
-      has100Quiz: false,
-      hasHighScore: false,
-    })
+    getDynamicAchievements(t, achievementStats)
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-
-
-  // Load user data when page comes into focus
   useFocusEffect(
     useCallback(() => {
       if (!token) {
@@ -290,40 +346,28 @@ export default function ProfileScreen() {
     }, [token])
   );
 
-  // Load stats when page comes into focus
   useFocusEffect(
     useCallback(() => {
       (async () => {
-        const SAT_EXAMS_CHAPTER_ID = "8d3703a4-41ce-46b0-a27c-e25c0a0702e2";
+        const stats = {
+          blockedAppsCount: 0,
+          focusSessionsCount: 0,
+          tasksCompleted: 0,
+          schedulesCount: 0,
+          currentStreak: 0,
+          maxFocusDuration: 0,
+          healthScore: 0,
+          totalAppsBlocked: 0,
+          weekendBlockingDays: 0,
+          focusSessionsToday: 0,
+          morningBlockingStreak: 0,
+          screenTimeReduction: 0,
+        };
 
-        const lessonsRes = await getCompletedLessonsCount();
-        const quizzesRes = await getCompletedQuizzesCount();
-        const avgSatScoreRes = await getAverageScoreByChapter(SAT_EXAMS_CHAPTER_ID);
-        const have100 = await hasPerfectScoreInPublishedChapters();
-        const highScoreRes = await hasHighSATScore(SAT_EXAMS_CHAPTER_ID);
-
-        const newLessonsCount = lessonsRes.success ? (lessonsRes.count ?? 0) : 0;
-        const newQuizzesCount = quizzesRes.success ? (quizzesRes.count ?? 0) : 0;
-        const newAverageScore = avgSatScoreRes.success ? (avgSatScoreRes.average ?? 0) : 0;
-        const newHasHighScore = highScoreRes.success ? (highScoreRes.hasHighScore ?? false) : false;
-
-        setLessonsCount(newLessonsCount);
-        setQuizzesCount(newQuizzesCount);
-        setAverageSatScore(newAverageScore);
-        setHave100Quiz(have100.hasPerfectScore || false);
-        setHasHighScore(newHasHighScore);
-
-        setAchievements(
-          getDynamicAchievements({
-            lessonsCount: newLessonsCount,
-            quizzesCount: newQuizzesCount,
-            averageSatScore: newAverageScore,
-            has100Quiz: have100.hasPerfectScore || false,
-            hasHighScore: newHasHighScore,
-          })
-        );
+        setAchievementStats(stats);
+        setAchievements(getDynamicAchievements(t, stats));
       })();
-    }, [])
+    }, [t])
   );
 
   useEffect(() => {
@@ -341,7 +385,7 @@ export default function ProfileScreen() {
     router.replace("/login");
     Toast.show({
       type: "success",
-      text1: "You have logged out",
+      text1: t('profile.logOut'),
       position: "top",
       visibilityTime: 700,
     });
@@ -349,25 +393,20 @@ export default function ProfileScreen() {
 
   const handleRateUs = async () => {
     try {
-      // First, check if in-app review is available
       const isAvailable = await StoreReview.isAvailableAsync();
 
       if (isAvailable) {
-        // 🎯 Request in-app review (native popup)
         await StoreReview.requestReview();
         return;
       }
 
-      // Fallback → open store page manually if in-app review not supported
       if (Platform.OS === "ios") {
         const appStoreLink = "itms-apps://itunes.apple.com/app/6751187640";
         const webLink = "https://apps.apple.com/app/id6751187640";
-
         Linking.openURL(appStoreLink).catch(() => Linking.openURL(webLink));
       } else if (Platform.OS === "android") {
         const playStoreLink = "market://details?id=com.hrynchuk.pdrtests";
         const webLink = "https://play.google.com/store/apps/details?id=com.hrynchuk.satprepapp";
-
         Linking.openURL(playStoreLink).catch(() => Linking.openURL(webLink));
       }
     } catch (error) {
@@ -381,7 +420,30 @@ export default function ProfileScreen() {
     }
   };
 
-  if (loading) return <GraduationCap3DLoader />;
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: isDark ? "#000000" : "#ffffff",
+        }}
+      >
+        <GraduationCap3DLoader />
+        <Text
+          style={{
+            marginTop: 20,
+            fontSize: 16,
+            color: isDark ? "#9ca3af" : "#6b7280",
+          }}
+        >
+          {t('profile.loading')}
+        </Text>
+      </View>
+    );
+  }
+
   if (error || !user)
     return (
       <View
@@ -390,11 +452,11 @@ export default function ProfileScreen() {
           justifyContent: "center",
           alignItems: "center",
           padding: 16,
-          backgroundColor: isDark ? "#111827" : "#f9fafb",
+          backgroundColor: isDark ? "#000000" : "#ffffff",
         }}
       >
         <Text style={{ color: "#ef4444", fontSize: 16, marginBottom: 4 }}>
-          Error loading profile
+          {t('profile.errorLoading')}
         </Text>
         {error && (
           <Text style={{ color: isDark ? "#9ca3af" : "#6b7280" }}>{error}</Text>
@@ -415,133 +477,108 @@ export default function ProfileScreen() {
       style={{ flex: 1, backgroundColor: isDark ? "#000000" : "#ffffff" }}
     >
       <ScrollView
-        contentContainerStyle={{ paddingBottom: 60 }}
+        contentContainerStyle={{ paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Profile Card */}
-        <View style={{ padding: 20, paddingTop: 16 }}>
+        {/* Header Section with centered avatar */}
+        <View style={{ alignItems: 'center', paddingTop: 20, paddingBottom: 32 }}>
+          {/* Avatar */}
           <View
             style={{
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff",
-              borderRadius: 24,
-              padding: 24,
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 12 },
-              shadowOpacity: 0.2,
-              shadowRadius: 24,
-              elevation: 10,
-              borderWidth: 1.5,
-              borderColor: isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)",
-              borderTopColor: isDark ? "rgba(255, 255, 255, 0.25)" : "rgba(255, 255, 255, 0.8)",
-              borderBottomColor: isDark ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.05)",
+              width: 100,
+              height: 100,
+              borderRadius: 50,
+              backgroundColor: isDark ? "#3b82f6" : "#3b82f6",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 16,
+              shadowColor: "#3b82f6",
+              shadowOffset: { width: 0, height: 8 },
+              shadowOpacity: 0.3,
+              shadowRadius: 16,
+              elevation: 8,
             }}
           >
-            <View style={{ alignItems: "center", marginBottom: 16 }}>
-              {user.image ? (
-                <Image
-                  source={{ uri: user.image }}
-                  style={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: 40,
-                    borderWidth: 3,
-                    borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)",
-                  }}
-                />
-              ) : answers["avatar"] ? (
-                <View
-                  style={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: 40,
-                    backgroundColor: isDark ? "#ffffff" : "#111827",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderWidth: 3,
-                    borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)",
-                  }}
-                >
-                  <Text style={{ fontSize: 36 }}>{answers["avatar"]}</Text>
-                </View>
-              ) : (
-                <View
-                  style={{
-                    width: 80,
-                    height: 80,
-                    borderRadius: 40,
-                    backgroundColor: isDark ? "#ffffff" : "#111827",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderWidth: 3,
-                    borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)",
-                  }}
-                >
-                  <Text
-                    style={{ color: isDark ? "#111827" : "#ffffff", fontSize: 28, fontWeight: "bold" }}
-                  >
-                    {initials}
-                  </Text>
-                </View>
-              )}
-            </View>
-
-            <Text
-              style={{
-                fontSize: 24,
-                fontWeight: "bold",
-                color: isDark ? "#ffffff" : "#111827",
-                textAlign: "center",
-                marginBottom: 6,
-              }}
-            >
-              {user.name}
-            </Text>
-            <Text
-              style={{
-                fontSize: 15,
-                color: isDark ? "#9ca3af" : "#6b7280",
-                textAlign: "center",
-              }}
-            >
-              {user.email}
-            </Text>
-            {user.isPro && (
-              <View
+            {user.image ? (
+              <Image
+                source={{ uri: user.image }}
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: isDark ? "rgba(251, 191, 36, 0.1)" : "#fef3c7",
-                  paddingHorizontal: 16,
-                  paddingVertical: 8,
-                  borderRadius: 20,
-                  marginTop: 12,
-                  alignSelf: "center",
+                  width: 100,
+                  height: 100,
+                  borderRadius: 50,
                 }}
+              />
+            ) : answers["avatar"] ? (
+              <Text style={{ fontSize: 44 }}>{answers["avatar"]}</Text>
+            ) : (
+              <Text
+                style={{ color: "#ffffff", fontSize: 36, fontWeight: "bold" }}
               >
-                <Crown
-                  size={16}
-                  color={isDark ? "#fbbf24" : "#d97706"}
-                  style={{ marginRight: 6 }}
-                />
-                <Text
-                  style={{
-                    fontSize: 13,
-                    fontWeight: "600",
-                    color: isDark ? "#fbbf24" : "#d97706",
-                  }}
-                >
-                  PRO Member
-                </Text>
-              </View>
+                {initials}
+              </Text>
             )}
           </View>
 
-          {/* Achievements */}
+          {/* Name */}
+          <Text
+            style={{
+              fontSize: 26,
+              fontWeight: "bold",
+              color: isDark ? "#ffffff" : "#111827",
+              textAlign: "center",
+              marginBottom: 6,
+            }}
+          >
+            {user.name}
+          </Text>
+
+          {/* Email */}
+          <Text
+            style={{
+              fontSize: 15,
+              color: isDark ? "#9ca3af" : "#6b7280",
+              textAlign: "center",
+              marginBottom: 12,
+            }}
+          >
+            {user.email}
+          </Text>
+
+          {/* Pro Badge */}
+          {user.isPro && (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                backgroundColor: isDark ? "rgba(251, 191, 36, 0.15)" : "rgba(251, 191, 36, 0.1)",
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+                borderRadius: 20,
+                borderWidth: 1,
+                borderColor: "#fbbf24",
+              }}
+            >
+              <Crown size={16} color="#fbbf24" style={{ marginRight: 6 }} />
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: "700",
+                  color: "#fbbf24",
+                }}
+              >
+                {t('profile.proMember')}
+              </Text>
+            </View>
+          )}
+        </View>
+
+        {/* Content */}
+        <View style={{ paddingHorizontal: 20 }}>
+          {/* Achievements Card */}
           <TouchableOpacity
             onPress={() => router.push("/achievements")}
             activeOpacity={0.9}
-            style={{ marginTop: 24 }}
+            style={{ marginBottom: 24 }}
           >
             <View
               style={{
@@ -551,15 +588,18 @@ export default function ProfileScreen() {
                 marginBottom: 12,
               }}
             >
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: "bold",
-                  color: isDark ? "#ffffff" : "#111827",
-                }}
-              >
-                Achievements
-              </Text>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Trophy size={20} color="#f59e0b" style={{ marginRight: 8 }} />
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "bold",
+                    color: isDark ? "#ffffff" : "#111827",
+                  }}
+                >
+                  {t('profile.achievements')}
+                </Text>
+              </View>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text
                   style={{
@@ -568,29 +608,19 @@ export default function ProfileScreen() {
                     marginRight: 6,
                   }}
                 >
-                  View All
+                  {t('profile.viewAll')}
                 </Text>
-                <MaterialIcons
-                  name="arrow-forward-ios"
-                  size={14}
-                  color={isDark ? "#9ca3af" : "#6b7280"}
-                />
+                <ChevronRight size={16} color={isDark ? "#9ca3af" : "#6b7280"} />
               </View>
             </View>
+
             <View
               style={{
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff",
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.03)",
                 borderRadius: 20,
-                padding: 18,
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 12 },
-                shadowOpacity: 0.2,
-                shadowRadius: 24,
-                elevation: 10,
-                borderWidth: 1.5,
-                borderColor: isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)",
-                borderTopColor: isDark ? "rgba(255, 255, 255, 0.25)" : "rgba(255, 255, 255, 0.8)",
-                borderBottomColor: isDark ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.05)",
+                padding: 16,
+                borderWidth: 1,
+                borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
               }}
             >
               <View
@@ -610,229 +640,51 @@ export default function ProfileScreen() {
             </View>
           </TouchableOpacity>
 
-          {/* Quick Actions */}
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: "bold",
-              color: isDark ? "#ffffff" : "#111827",
-              marginTop: 28,
-              marginBottom: 12,
-            }}
-          >
-            Settings
-          </Text>
-
-          <View
-  style={{
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.2,
-    shadowRadius: 24,
-    elevation: 10,
-    borderRadius: 16, // same as button
-  }}
->
-  <TouchableOpacity
-    onPress={() => router.push("/edit-profile")}
-    activeOpacity={0.7}
-    style={{
-      backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff",
-      borderRadius: 16,
-      padding: 16,
-      marginBottom: 10,
-      flexDirection: "row",
-      alignItems: "center",
-      borderWidth: 1.5,
-      borderColor: isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)",
-      borderTopColor: isDark ? "rgba(255, 255, 255, 0.25)" : "rgba(255, 255, 255, 0.8)",
-      borderBottomColor: isDark ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.05)",
-    }}
-  >
-            <View
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 12,
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.04)",
-                alignItems: "center",
-                justifyContent: "center",
-                marginRight: 14,
-              }}
-            >
-              <User size={22} color={isDark ? "#ffffff" : "#111827"} strokeWidth={2} />
+          {/* Settings Section */}
+          <View style={{ marginBottom: 8 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
+              <Settings size={20} color={isDark ? "#9ca3af" : "#6b7280"} style={{ marginRight: 8 }} />
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  color: isDark ? "#ffffff" : "#111827",
+                }}
+              >
+                {t('common.settings')}
+              </Text>
             </View>
-            <Text
-              style={{
-                flex: 1,
-                fontSize: 15,
-                fontWeight: "600",
-                color: isDark ? "#ffffff" : "#111827",
-              }}
-            >
-              Edit Profile
-            </Text>
-            <MaterialIcons
-              name="chevron-right"
-              size={24}
-              color={isDark ? "#64748b" : "#9ca3af"}
+
+            <SettingsItem
+              icon={User}
+              label={t('profile.editProfile')}
+              onPress={() => router.push("/edit-profile")}
+              isDark={isDark}
             />
-          </TouchableOpacity>
+
+            <SettingsItem
+              icon={Settings}
+              label={t('common.settings')}
+              onPress={() => router.push("/settings")}
+              isDark={isDark}
+            />
+
+            <SettingsItem
+              icon={Mails}
+              label={t('profile.contactUs')}
+              onPress={() => setContactOpen(true)}
+              isDark={isDark}
+            />
+
+            <SettingsItem
+              icon={ThumbsUp}
+              label={t('profile.rateUs')}
+              onPress={handleRateUs}
+              isDark={isDark}
+            />
           </View>
 
-          <TouchableOpacity
-            onPress={() => router.push("/settings")}
-            activeOpacity={0.7}
-            style={{
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff",
-              borderRadius: 16,
-              padding: 16,
-              marginBottom: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 12 },
-              shadowOpacity: 0.2,
-              shadowRadius: 24,
-              elevation: 10,
-              borderWidth: 1.5,
-              borderColor: isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)",
-              borderTopColor: isDark ? "rgba(255, 255, 255, 0.25)" : "rgba(255, 255, 255, 0.8)",
-              borderBottomColor: isDark ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.05)",
-            }}
-          >
-            <View
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 12,
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.04)",
-                alignItems: "center",
-                justifyContent: "center",
-                marginRight: 14,
-              }}
-            >
-              <Settings size={22} color={isDark ? "#ffffff" : "#111827"} strokeWidth={2} />
-            </View>
-            <Text
-              style={{
-                flex: 1,
-                fontSize: 15,
-                fontWeight: "600",
-                color: isDark ? "#ffffff" : "#111827",
-              }}
-            >
-              Settings
-            </Text>
-            <MaterialIcons
-              name="chevron-right"
-              size={24}
-              color={isDark ? "#64748b" : "#9ca3af"}
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => setContactOpen(true)}
-            activeOpacity={0.7}
-            style={{
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff",
-              borderRadius: 16,
-              padding: 16,
-              marginBottom: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 12 },
-              shadowOpacity: 0.2,
-              shadowRadius: 24,
-              elevation: 10,
-              borderWidth: 1.5,
-              borderColor: isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)",
-              borderTopColor: isDark ? "rgba(255, 255, 255, 0.25)" : "rgba(255, 255, 255, 0.8)",
-              borderBottomColor: isDark ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.05)",
-            }}
-          >
-            <View
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 12,
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.04)",
-                alignItems: "center",
-                justifyContent: "center",
-                marginRight: 14,
-              }}
-            >
-              <Mails size={22} color={isDark ? "#ffffff" : "#111827"} strokeWidth={2} />
-            </View>
-            <Text
-              style={{
-                flex: 1,
-                fontSize: 15,
-                fontWeight: "600",
-                color: isDark ? "#ffffff" : "#111827",
-              }}
-            >
-              Contact Us
-            </Text>
-            <MaterialIcons
-              name="chevron-right"
-              size={24}
-              color={isDark ? "#64748b" : "#9ca3af"}
-            />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={handleRateUs}
-            activeOpacity={0.7}
-            style={{
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff",
-              borderRadius: 16,
-              padding: 16,
-              marginBottom: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 12 },
-              shadowOpacity: 0.2,
-              shadowRadius: 24,
-              elevation: 10,
-              borderWidth: 1.5,
-              borderColor: isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)",
-              borderTopColor: isDark ? "rgba(255, 255, 255, 0.25)" : "rgba(255, 255, 255, 0.8)",
-              borderBottomColor: isDark ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.05)",
-            }}
-          >
-            <View
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 12,
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.04)",
-                alignItems: "center",
-                justifyContent: "center",
-                marginRight: 14,
-              }}
-            >
-              <ThumbsUp size={22} color={isDark ? "#ffffff" : "#111827"} strokeWidth={2} />
-            </View>
-            <Text
-              style={{
-                flex: 1,
-                fontSize: 15,
-                fontWeight: "600",
-                color: isDark ? "#ffffff" : "#111827",
-              }}
-            >
-              Rate Us
-            </Text>
-            <MaterialIcons
-              name="chevron-right"
-              size={24}
-              color={isDark ? "#64748b" : "#9ca3af"}
-            />
-          </TouchableOpacity>
-
+          {/* Logout Button */}
           <TouchableOpacity
             onPress={handleLogout}
             activeOpacity={0.7}
@@ -842,45 +694,23 @@ export default function ProfileScreen() {
               padding: 16,
               flexDirection: "row",
               alignItems: "center",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 12 },
-              shadowOpacity: 0.2,
-              shadowRadius: 24,
-              elevation: 10,
+              justifyContent: "center",
               borderWidth: 1.5,
-              borderColor: isDark ? "rgba(239, 68, 68, 0.3)" : "rgba(239, 68, 68, 0.15)",
-              borderTopColor: isDark ? "rgba(239, 68, 68, 0.4)" : "rgba(239, 68, 68, 0.2)",
-              borderBottomColor: isDark ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.05)",
+              borderColor: "#ef4444",
+              marginTop: 8,
             }}
           >
-            <View
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 12,
-                backgroundColor: isDark ? "rgba(239, 68, 68, 0.15)" : "rgba(239, 68, 68, 0.1)",
-                alignItems: "center",
-                justifyContent: "center",
-                marginRight: 14,
-              }}
-            >
-              <LogOut size={22} color="#ef4444" strokeWidth={2} />
-            </View>
+            <LogOut size={22} color="#ef4444" strokeWidth={2} />
             <Text
               style={{
-                flex: 1,
-                fontSize: 15,
-                fontWeight: "600",
+                marginLeft: 10,
+                fontSize: 16,
+                fontWeight: "700",
                 color: "#ef4444",
               }}
             >
-              Log Out
+              {t('profile.logOut')}
             </Text>
-            <MaterialIcons
-              name="chevron-right"
-              size={24}
-              color="#ef4444"
-            />
           </TouchableOpacity>
         </View>
       </ScrollView>

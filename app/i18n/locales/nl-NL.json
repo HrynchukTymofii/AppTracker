@@ -1,0 +1,308 @@
+{
+  "common": {
+    "loading": "Laden...",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "delete": "Verwijderen",
+    "confirm": "Bevestigen",
+    "error": "Fout",
+    "success": "Succes",
+    "close": "Sluiten",
+    "add": "Toevoegen",
+    "edit": "Bewerken",
+    "remove": "Verwijderen",
+    "settings": "Instellingen",
+    "back": "Terug",
+    "next": "Volgende",
+    "done": "Klaar"
+  },
+  "tabs": {
+    "home": "Home",
+    "blocking": "Blokkeren",
+    "detox": "Detox",
+    "stats": "Statistieken",
+    "profile": "Profiel"
+  },
+  "home": {
+    "title": "LockIn",
+    "health": "GEZONDHEID",
+    "appUsageToday": "App-gebruik Vandaag",
+    "loadingApps": "Apps laden...",
+    "focusModeActive": "Focusmodus Actief",
+    "appsBlocked": "apps geblokkeerd",
+    "quickMenu": {
+      "stats": "Statistieken",
+      "statsDesc": "Bekijk gedetailleerde gebruiksstatistieken",
+      "blocking": "Blokkeren",
+      "blockingDesc": "Beheer geblokkeerde apps",
+      "detox": "Detox",
+      "detoxDesc": "Start telefoon detox timer",
+      "calendar": "Kalender",
+      "calendarDesc": "Plan je taken"
+    }
+  },
+  "stats": {
+    "title": "LockIn Rapport",
+    "thisWeek": "Deze Week",
+    "lastWeek": "Vorige Week",
+    "weeksAhead_one": "{{count}} Week Vooruit",
+    "weeksAhead_other": "{{count}} Weken Vooruit",
+    "weeksAgo_one": "{{count}} Week Geleden",
+    "weeksAgo_other": "{{count}} Weken Geleden",
+    "totalHours": "TOTAAL UREN",
+    "dailyAvg": "DAGELIJKS GEM.",
+    "peekDay": "PIEKDAG",
+    "pickups": "ONTGRENDELINGEN",
+    "perDay": "/dag",
+    "statsPerDay": "Statistieken Per Dag",
+    "usageCalendar": "Gebruikskalender",
+    "totalTimePerApp": "Totale Tijd Per App",
+    "loadingStats": "Statistieken laden...",
+    "noData": "Geen Gegevens",
+    "health": {
+      "poor": "Slecht",
+      "low": "Laag",
+      "avg": "Gemiddeld",
+      "good": "Goed",
+      "great": "Uitstekend",
+      "label": "Gezondheid:"
+    },
+    "dayNames": {
+      "sun": "Zo",
+      "mon": "Ma",
+      "tue": "Di",
+      "wed": "Wo",
+      "thu": "Do",
+      "fri": "Vr",
+      "sat": "Za"
+    },
+    "dayNamesFull": {
+      "sunday": "Zondag",
+      "monday": "Maandag",
+      "tuesday": "Dinsdag",
+      "wednesday": "Woensdag",
+      "thursday": "Donderdag",
+      "friday": "Vrijdag",
+      "saturday": "Zaterdag"
+    },
+    "noUsageData": "Nog geen gebruiksgegevens",
+    "healthScore": "Gezondheidsscore",
+    "screenTime": "Schermtijd",
+    "topApps": "Top 3 Apps"
+  },
+  "blocking": {
+    "title": "Blokkeren",
+    "setupRequired": "Instelling Vereist",
+    "permissionsDesc": "App-blokkering vereist speciale toestemmingen. Schakel in:",
+    "accessibilityService": "1. Toegankelijkheidsdienst",
+    "displayOverOtherApps": "2. Weergeven Over Andere Apps",
+    "quickActions": "Snelle Acties",
+    "startFocus": "Start Focus",
+    "newSchedule": "Nieuw Schema",
+    "schedules": "Schema's",
+    "noSchedulesYet": "Nog geen schema's.",
+    "createScheduleHint": "Maak er een om apps automatisch te blokkeren.",
+    "blockedApps": "Geblokkeerde Apps",
+    "noAppsBlocked": "Geen apps geblokkeerd.",
+    "addAppsHint": "Voeg apps toe om te blokkeren.",
+    "focusSessionActive": "Focussessie Actief",
+    "taskRequiredToUnlock": "Taak vereist om te ontgrendelen",
+    "timeRemaining": "resterend",
+    "completeTaskUnlock": "Taak Voltooien & Ontgrendelen",
+    "endSession": "Sessie Beëindigen",
+    "calendarView": "Kalenderweergave",
+    "everyday": "Elke dag",
+    "weekdays": "Werkdagen",
+    "activeToday": "vandaag actief",
+    "scheduledForDay": "voor deze dag",
+    "noSchedulesWere": "Er waren geen actieve schema's op deze dag",
+    "noActiveSchedules": "Geen actieve schema's voor vandaag",
+    "noSchedulesPlanned": "Geen schema's gepland voor deze dag",
+    "blockTypes": {
+      "manual": "Handmatig geblokkeerd",
+      "scheduled": "Gepland blok",
+      "focus": "Focussessie",
+      "task": "Taak vereist",
+      "dailyLimit": "Dagelijkse limiet"
+    },
+    "modals": {
+      "selectApps": "Selecteer Apps om te Blokkeren",
+      "confirmSelection": "Bevestig Selectie ({{count}})",
+      "newSchedule": "Nieuw Schema",
+      "scheduleName": "SCHEMANAAM",
+      "scheduleNamePlaceholder": "bijv. Werktijden",
+      "appsToBlock": "APPS OM TE BLOKKEREN",
+      "selectAppsPlaceholder": "Selecteer apps...",
+      "appsSelected": "{{count}} apps geselecteerd",
+      "startTime": "STARTTIJD",
+      "endTime": "EINDTIJD",
+      "repeatOn": "HERHAAL OP",
+      "saveSchedule": "Schema Opslaan",
+      "startFocusSession": "Focussessie Starten",
+      "durationMinutes": "DUUR (MINUTEN)",
+      "requireTaskCompletion": "Taakvoltooiing Vereisen",
+      "unlockAfterTask": "Alleen ontgrendelen na voltooiing van een echte taak",
+      "selectTask": "SELECTEER TAAK",
+      "describeTask": "Beschrijf je taak...",
+      "takeBeforePhoto": "MAAK \"VOOR\" FOTO",
+      "tapToTakePhoto": "Tik om foto te maken",
+      "startFocusDuration": "Start Focus ({{duration}} minuten)",
+      "openAIApiKey": "OPENAI API-SLEUTEL (voor taakverificatie)",
+      "apiKeySaved": "API-sleutel is opgeslagen",
+      "saveSettings": "Instellingen Opslaan",
+      "loadingApps": "Apps laden...",
+      "selectAll": "Alle Apps Selecteren",
+      "deselectAll": "Alles Deselecteren",
+      "popularApps": "Populaire Apps",
+      "moreApps": "Meer Apps ({{count}})",
+      "showPopularOnly": "← Alleen Populaire Tonen"
+    },
+    "alerts": {
+      "enterScheduleName": "Voer een schemanaam in",
+      "selectAtLeastOneApp": "Selecteer minimaal één app",
+      "selectAtLeastOneDay": "Selecteer minimaal één dag",
+      "selectAtLeastOneAppToBlock": "Selecteer minimaal één app om te blokkeren",
+      "takeBeforePhoto": "Maak een \"voor\" foto voor taakverificatie",
+      "deleteSchedule": "Schema Verwijderen",
+      "deleteScheduleConfirm": "Weet je zeker dat je dit schema wilt verwijderen?",
+      "taskVerified": "Taak Geverifieerd!",
+      "taskVerifiedDesc": "Je taak is succesvol geverifieerd.\n\nBetrouwbaarheid: {{confidence}}%\n\n{{explanation}}",
+      "taskNotVerified": "Taak Niet Geverifieerd",
+      "taskNotVerifiedDesc": "De taak lijkt niet voltooid te zijn.\n\n{{explanation}}\n\nVoltooi de taak en probeer opnieuw.",
+      "apiKeySavedSuccess": "API-sleutel succesvol opgeslagen"
+    },
+    "presetTasks": {
+      "cleaning": "Schoonmaken",
+      "cooking": "Koken",
+      "exercise": "Oefening",
+      "reading": "Lezen",
+      "custom": "Aangepast"
+    }
+  },
+  "detox": {
+    "title": "Detox"
+  },
+  "profile": {
+    "title": "Profiel",
+    "proMember": "PRO Lid",
+    "achievements": "Behaalde Prestaties",
+    "viewAll": "Alles Weergeven",
+    "quickActions": "Snelle Acties",
+    "editProfile": "Profiel Bewerken",
+    "contactUs": "Contact Opnemen",
+    "rateUs": "Beoordeel Ons",
+    "logOut": "Afmelden",
+    "errorLoading": "Fout bij laden van profiel",
+    "loading": "Profiel laden..."
+  },
+  "achievements": {
+    "title": "Behaalde Prestaties",
+    "unlocked": "Ontgrendeld",
+    "locked": "Vergrendeld",
+    "unlockedCount": "{{count}} van {{total}} ontgrendeld",
+    "list": {
+      "firstBlock": {
+        "title": "Eerste Keer",
+        "description": "Blokkeer je eerste app"
+      },
+      "focusBeginner": {
+        "title": "Focus Beginner",
+        "description": "Voltooi eerste focussessie"
+      },
+      "taskMaster": {
+        "title": "Taakmeester",
+        "description": "Voltooi taakverificatie"
+      },
+      "earlyBird": {
+        "title": "Vroege Vogel",
+        "description": "Start focus voor 8 uur"
+      },
+      "nightOwl": {
+        "title": "Nachtdier",
+        "description": "Gebruik blokkering na 22:00"
+      },
+      "discipline": {
+        "title": "Discipline",
+        "description": "7-daagse blokkeringsreeks"
+      },
+      "ironWill": {
+        "title": "Ijzeren Wil",
+        "description": "Voltooi 10 focussessies"
+      },
+      "zenMaster": {
+        "title": "Zen Meester",
+        "description": "Voltooi 50 focussessies"
+      },
+      "schedulePro": {
+        "title": "Schema Pro",
+        "description": "Maak je eerste schema"
+      },
+      "timeKeeper": {
+        "title": "Tijdsbewaarder",
+        "description": "Maak 5 schema's"
+      },
+      "digitalDetox": {
+        "title": "Digitale Detox",
+        "description": "Blokkeer apps 24 uur lang"
+      },
+      "weekendWarrior": {
+        "title": "Weekendkrijger",
+        "description": "Gebruik blokkering in weekends"
+      },
+      "minimalist": {
+        "title": "Minimaliste",
+        "description": "Blokkeer 10+ apps tegelijk"
+      },
+      "focusLegend": {
+        "title": "Focus Legende",
+        "description": "2-uur focussessie"
+      },
+      "marathon": {
+        "title": "Marathon",
+        "description": "4-uur focussessie"
+      },
+      "consistencyKing": {
+        "title": "Consistentiekoning",
+        "description": "30-daagse blokkeringsreeks"
+      },
+      "healthChampion": {
+        "title": "Gezondheidskampioen",
+        "description": "Behaal gezondheidsscore 90+"
+      },
+      "screenTimeSavior": {
+        "title": "Schermtijd Redder",
+        "description": "Verminder schermtijd met 50%"
+      },
+      "morningRoutine": {
+        "title": "Ochtendrutine",
+        "description": "Blokkeer apps 3 ochtenden"
+      },
+      "productivityBeast": {
+        "title": "Productiviteitsbeest",
+        "description": "Voltooi 5 taakverificaties"
+      },
+      "appBlockerPro": {
+        "title": "App Blokkerings Pro",
+        "description": "Blokkeer 20+ verschillende apps"
+      },
+      "focusFlow": {
+        "title": "Focus Stroom",
+        "description": "3 focussessies in een dag"
+      },
+      "digitalWellbeing": {
+        "title": "Digitaal Welzijn",
+        "description": "Gezondheidsscore 80+ voor een week"
+      },
+      "selfControl": {
+        "title": "Zelfbeheersing",
+        "description": "Weersta ontgrendeling 10 keer"
+      }
+    }
+  },
+  "language": {
+    "title": "Taal",
+    "selectLanguage": "Selecteer Taal",
+    "systemDefault": "Systeemstandaard",
+    "currentLanguage": "Huidige Taal"
+  }
+}

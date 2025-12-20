@@ -8,8 +8,9 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Platform, NativeModules, AppState, Linking } from 'react-native';
+import { Platform, AppState, Linking } from 'react-native';
 import * as Notifications from 'expo-notifications';
+import * as AppBlocker from '@/modules/app-blocker';
 
 // Storage keys
 const BLOCKED_APPS_KEY = '@blocked_apps';
@@ -49,6 +50,7 @@ export interface FocusSession {
   requiresTaskCompletion: boolean;
   beforePhotoUri?: string;
   afterPhotoUri?: string;
+  taskDescription?: string;
 }
 
 export interface DailyLimit {
@@ -59,24 +61,106 @@ export interface DailyLimit {
   lastResetDate: string; // YYYY-MM-DD
 }
 
-// Popular apps list with package names
+// Popular apps list with package names (Android) and bundle IDs (iOS)
 export const POPULAR_APPS = [
-  { packageName: 'com.instagram.android', appName: 'Instagram', iosId: 'instagram://' },
-  { packageName: 'com.google.android.youtube', appName: 'YouTube', iosId: 'youtube://' },
-  { packageName: 'com.zhiliaoapp.musically', appName: 'TikTok', iosId: 'tiktok://' },
-  { packageName: 'com.twitter.android', appName: 'Twitter/X', iosId: 'twitter://' },
-  { packageName: 'com.facebook.katana', appName: 'Facebook', iosId: 'fb://' },
-  { packageName: 'com.whatsapp', appName: 'WhatsApp', iosId: 'whatsapp://' },
-  { packageName: 'com.snapchat.android', appName: 'Snapchat', iosId: 'snapchat://' },
-  { packageName: 'com.reddit.frontpage', appName: 'Reddit', iosId: 'reddit://' },
-  { packageName: 'com.pinterest', appName: 'Pinterest', iosId: 'pinterest://' },
-  { packageName: 'com.linkedin.android', appName: 'LinkedIn', iosId: 'linkedin://' },
-  { packageName: 'tv.twitch.android.app', appName: 'Twitch', iosId: 'twitch://' },
-  { packageName: 'com.discord', appName: 'Discord', iosId: 'discord://' },
-  { packageName: 'com.spotify.music', appName: 'Spotify', iosId: 'spotify://' },
-  { packageName: 'com.netflix.mediaclient', appName: 'Netflix', iosId: 'netflix://' },
-  { packageName: 'com.amazon.avod.thirdpartyclient', appName: 'Prime Video', iosId: 'primevideo://' },
+  {
+    packageName: 'com.instagram.android',
+    iosBundleId: 'com.instagram.burbn',
+    appName: 'Instagram',
+    iosId: 'instagram://',
+  },
+  {
+    packageName: 'com.google.android.youtube',
+    iosBundleId: 'com.google.ios.youtube',
+    appName: 'YouTube',
+    iosId: 'youtube://',
+  },
+  {
+    packageName: 'com.zhiliaoapp.musically',
+    iosBundleId: 'com.zhiliaoapp.musically',
+    appName: 'TikTok',
+    iosId: 'tiktok://',
+  },
+  {
+    packageName: 'com.twitter.android',
+    iosBundleId: 'com.atebits.Tweetie2',
+    appName: 'Twitter/X',
+    iosId: 'twitter://',
+  },
+  {
+    packageName: 'com.facebook.katana',
+    iosBundleId: 'com.facebook.Facebook',
+    appName: 'Facebook',
+    iosId: 'fb://',
+  },
+  {
+    packageName: 'com.whatsapp',
+    iosBundleId: 'net.whatsapp.WhatsApp',
+    appName: 'WhatsApp',
+    iosId: 'whatsapp://',
+  },
+  {
+    packageName: 'com.snapchat.android',
+    iosBundleId: 'com.toyopagroup.picaboo',
+    appName: 'Snapchat',
+    iosId: 'snapchat://',
+  },
+  {
+    packageName: 'com.reddit.frontpage',
+    iosBundleId: 'com.reddit.Reddit',
+    appName: 'Reddit',
+    iosId: 'reddit://',
+  },
+  {
+    packageName: 'com.pinterest',
+    iosBundleId: 'com.pinterest',
+    appName: 'Pinterest',
+    iosId: 'pinterest://',
+  },
+  {
+    packageName: 'com.linkedin.android',
+    iosBundleId: 'com.linkedin.LinkedIn',
+    appName: 'LinkedIn',
+    iosId: 'linkedin://',
+  },
+  {
+    packageName: 'tv.twitch.android.app',
+    iosBundleId: 'tv.twitch',
+    appName: 'Twitch',
+    iosId: 'twitch://',
+  },
+  {
+    packageName: 'com.discord',
+    iosBundleId: 'com.discord.Discord',
+    appName: 'Discord',
+    iosId: 'discord://',
+  },
+  {
+    packageName: 'com.spotify.music',
+    iosBundleId: 'com.spotify.client',
+    appName: 'Spotify',
+    iosId: 'spotify://',
+  },
+  {
+    packageName: 'com.netflix.mediaclient',
+    iosBundleId: 'com.netflix.Netflix',
+    appName: 'Netflix',
+    iosId: 'netflix://',
+  },
+  {
+    packageName: 'com.amazon.avod.thirdpartyclient',
+    iosBundleId: 'com.amazon.avod.thirdpartyclient',
+    appName: 'Prime Video',
+    iosId: 'primevideo://',
+  },
 ];
+
+/**
+ * Get the appropriate app identifier for the current platform
+ */
+export const getAppIdentifier = (app: typeof POPULAR_APPS[0]): string => {
+  return Platform.OS === 'ios' ? app.iosBundleId : app.packageName;
+};
 
 /**
  * Initialize app blocking system
@@ -147,9 +231,10 @@ export const blockApp = async (
 
     await AsyncStorage.setItem(BLOCKED_APPS_KEY, JSON.stringify(blockedApps));
 
-    // Start blocking service on Android
+    // Update native module's blocked apps list on Android
     if (Platform.OS === 'android') {
-      startBlockingService();
+      const packageNames = blockedApps.filter(a => a.isBlocked).map(a => a.packageName);
+      AppBlocker.setBlockedApps(packageNames);
     }
   } catch (error) {
     console.error('Error blocking app:', error);
@@ -164,6 +249,12 @@ export const unblockApp = async (packageName: string): Promise<void> => {
     const blockedApps = await getBlockedApps();
     const filtered = blockedApps.filter((a) => a.packageName !== packageName);
     await AsyncStorage.setItem(BLOCKED_APPS_KEY, JSON.stringify(filtered));
+
+    // Update native module's blocked apps list on Android
+    if (Platform.OS === 'android') {
+      const packageNames = filtered.filter(a => a.isBlocked).map(a => a.packageName);
+      AppBlocker.setBlockedApps(packageNames);
+    }
   } catch (error) {
     console.error('Error unblocking app:', error);
   }
@@ -349,7 +440,8 @@ export const startFocusSession = async (
   durationMinutes: number,
   blockedApps: string[],
   requiresTaskCompletion: boolean = false,
-  beforePhotoUri?: string
+  beforePhotoUri?: string,
+  taskDescription?: string
 ): Promise<FocusSession> => {
   try {
     const session: FocusSession = {
@@ -360,6 +452,7 @@ export const startFocusSession = async (
       isActive: true,
       requiresTaskCompletion,
       beforePhotoUri,
+      taskDescription,
     };
 
     await AsyncStorage.setItem(FOCUS_SESSION_KEY, JSON.stringify(session));
@@ -370,11 +463,6 @@ export const startFocusSession = async (
       if (appInfo) {
         await blockApp(packageName, appInfo.appName, requiresTaskCompletion ? 'task' : 'focus');
       }
-    }
-
-    // Start blocking service on Android
-    if (Platform.OS === 'android') {
-      startBlockingService();
     }
 
     // Schedule end notification
@@ -413,11 +501,6 @@ export const endFocusSession = async (afterPhotoUri?: string): Promise<void> => 
 
     // Clear the session
     await AsyncStorage.removeItem(FOCUS_SESSION_KEY);
-
-    // Stop blocking service on Android
-    if (Platform.OS === 'android') {
-      stopBlockingService();
-    }
   } catch (error) {
     console.error('Error ending focus session:', error);
   }
@@ -547,100 +630,86 @@ export const resetDailyLimitsIfNeeded = async (): Promise<void> => {
   }
 };
 
-// ==================== NATIVE MODULE HELPERS ====================
+// ==================== PERMISSIONS AND SETUP ====================
 
 /**
- * Start the blocking service (Android only)
+ * Check if app blocking permission is enabled
+ * Android: Accessibility service
+ * iOS: Family Controls authorization
  */
-const startBlockingService = (): void => {
-  if (Platform.OS !== 'android') return;
-
-  try {
-    const { AppBlockerModule } = NativeModules;
-    if (AppBlockerModule?.startBlockingService) {
-      AppBlockerModule.startBlockingService();
-    }
-  } catch (error) {
-    console.error('Error starting blocking service:', error);
-  }
-};
-
-/**
- * Stop the blocking service (Android only)
- */
-const stopBlockingService = (): void => {
-  if (Platform.OS !== 'android') return;
-
-  try {
-    const { AppBlockerModule } = NativeModules;
-    if (AppBlockerModule?.stopBlockingService) {
-      AppBlockerModule.stopBlockingService();
-    }
-  } catch (error) {
-    console.error('Error stopping blocking service:', error);
-  }
-};
-
-/**
- * Open usage access settings (Android)
- */
-export const openUsageAccessSettings = async (): Promise<void> => {
-  if (Platform.OS === 'android') {
+export const isAccessibilityServiceEnabled = async (): Promise<boolean> => {
+  if (Platform.OS === 'ios') {
+    // On iOS, check if Family Controls is authorized
     try {
-      await Linking.openSettings();
-      // Ideally open: 'android.settings.USAGE_ACCESS_SETTINGS'
+      return await AppBlocker.isAccessibilityServiceEnabled();
     } catch (error) {
-      console.error('Error opening settings:', error);
+      console.error('Error checking iOS authorization:', error);
+      return false;
     }
   }
+  // Android
+  return await AppBlocker.isAccessibilityServiceEnabled();
 };
 
 /**
- * Open overlay permission settings (Android)
+ * Request authorization for app blocking
+ * iOS only: Request Family Controls permission
  */
-export const openOverlaySettings = async (): Promise<void> => {
-  if (Platform.OS === 'android') {
-    try {
-      await Linking.openSettings();
-      // Ideally open: 'android.settings.action.MANAGE_OVERLAY_PERMISSION'
-    } catch (error) {
-      console.error('Error opening overlay settings:', error);
-    }
-  }
-};
-
-/**
- * Check if usage stats permission is granted (Android)
- */
-export const hasUsageStatsPermission = async (): Promise<boolean> => {
-  if (Platform.OS !== 'android') return false;
-
-  try {
-    const { AppBlockerModule } = NativeModules;
-    if (AppBlockerModule?.hasUsageStatsPermission) {
-      return await AppBlockerModule.hasUsageStatsPermission();
-    }
+export const requestBlockingAuthorization = async (): Promise<boolean> => {
+  if (Platform.OS !== 'ios') {
+    // On Android, user needs to manually enable accessibility service
     return false;
+  }
+
+  try {
+    return await AppBlocker.requestAuthorization();
   } catch (error) {
-    console.error('Error checking usage stats permission:', error);
+    console.error('Error requesting iOS authorization:', error);
     return false;
   }
 };
 
 /**
- * Check if overlay permission is granted (Android)
+ * Open settings to enable app blocking
+ * Android: Accessibility settings
+ * iOS: App settings (will show Family Controls permission)
+ */
+export const openAccessibilitySettings = (): void => {
+  AppBlocker.openAccessibilitySettings();
+};
+
+/**
+ * Check if overlay permission is granted (Android only)
+ * iOS: Always returns true as overlay is not needed
  */
 export const hasOverlayPermission = async (): Promise<boolean> => {
-  if (Platform.OS !== 'android') return false;
+  if (Platform.OS === 'ios') return true;
+  return await AppBlocker.hasOverlayPermission();
+};
 
-  try {
-    const { AppBlockerModule } = NativeModules;
-    if (AppBlockerModule?.hasOverlayPermission) {
-      return await AppBlockerModule.hasOverlayPermission();
-    }
-    return false;
-  } catch (error) {
-    console.error('Error checking overlay permission:', error);
-    return false;
+/**
+ * Open overlay permission settings (Android only)
+ */
+export const openOverlaySettings = (): void => {
+  if (Platform.OS === 'android') {
+    AppBlocker.openOverlaySettings();
   }
+};
+
+/**
+ * Check if all required permissions are granted
+ */
+export const hasAllRequiredPermissions = async (): Promise<boolean> => {
+  if (Platform.OS === 'ios') {
+    // iOS only needs Family Controls authorization
+    return await isAccessibilityServiceEnabled();
+  }
+
+  // Android needs both accessibility and overlay
+  const [accessibility, overlay] = await Promise.all([
+    isAccessibilityServiceEnabled(),
+    hasOverlayPermission(),
+  ]);
+
+  return accessibility && overlay;
 };

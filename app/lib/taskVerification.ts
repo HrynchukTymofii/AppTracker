@@ -6,11 +6,10 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as FileSystem from 'expo-file-system';
+import { verifyTaskWithPhotos, TaskVerificationResult as OpenAIVerificationResult } from './openai';
 
 // Storage keys
 const TASKS_KEY = '@verification_tasks';
-const OPENAI_API_KEY_STORAGE = '@openai_api_key';
 
 // Types
 export interface VerificationTask {
@@ -27,49 +26,7 @@ export interface VerificationTask {
   focusSessionId?: string;
 }
 
-export interface VerificationResult {
-  isTaskCompleted: boolean;
-  confidence: number; // 0-100
-  explanation: string;
-  detectedChanges: string[];
-}
-
-export interface OpenAIVisionResponse {
-  choices: {
-    message: {
-      content: string;
-    };
-  }[];
-}
-
-/**
- * Set OpenAI API Key (should be done during app setup)
- */
-export const setOpenAIApiKey = async (apiKey: string): Promise<void> => {
-  await AsyncStorage.setItem(OPENAI_API_KEY_STORAGE, apiKey);
-};
-
-/**
- * Get OpenAI API Key
- */
-export const getOpenAIApiKey = async (): Promise<string | null> => {
-  return await AsyncStorage.getItem(OPENAI_API_KEY_STORAGE);
-};
-
-/**
- * Convert image URI to base64
- */
-const imageToBase64 = async (uri: string): Promise<string> => {
-  try {
-    const base64 = await FileSystem.readAsStringAsync(uri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
-    return base64;
-  } catch (error) {
-    console.error('Error converting image to base64:', error);
-    throw error;
-  }
-};
+export type VerificationResult = OpenAIVerificationResult;
 
 /**
  * Verify task completion using OpenAI Vision API
@@ -79,98 +36,7 @@ export const verifyTaskCompletion = async (
   afterPhotoUri: string,
   taskDescription: string
 ): Promise<VerificationResult> => {
-  const apiKey = await getOpenAIApiKey();
-
-  if (!apiKey) {
-    throw new Error('OpenAI API key not configured. Please set it in settings.');
-  }
-
-  try {
-    // Convert images to base64
-    const beforeBase64 = await imageToBase64(beforePhotoUri);
-    const afterBase64 = await imageToBase64(afterPhotoUri);
-
-    // Prepare the request
-    const requestBody = {
-      model: 'gpt-4o',
-      messages: [
-        {
-          role: 'system',
-          content: `You are a task verification assistant. Your job is to compare two photos (before and after) and determine if a task has been completed.
-
-You must respond with a JSON object in this exact format:
-{
-  "isTaskCompleted": boolean,
-  "confidence": number (0-100),
-  "explanation": "string explaining your reasoning",
-  "detectedChanges": ["list", "of", "observed", "changes"]
-}
-
-Be strict but fair in your assessment. Look for meaningful changes that indicate the task was actually done.`,
-        },
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'text',
-              text: `Task to verify: "${taskDescription}"
-
-Please compare the BEFORE and AFTER photos and determine if this task has been completed. The first image is BEFORE, the second is AFTER.`,
-            },
-            {
-              type: 'image_url',
-              image_url: {
-                url: `data:image/jpeg;base64,${beforeBase64}`,
-                detail: 'high',
-              },
-            },
-            {
-              type: 'image_url',
-              image_url: {
-                url: `data:image/jpeg;base64,${afterBase64}`,
-                detail: 'high',
-              },
-            },
-          ],
-        },
-      ],
-      max_tokens: 1000,
-      temperature: 0.3,
-    };
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`OpenAI API error: ${errorData.error?.message || 'Unknown error'}`);
-    }
-
-    const data: OpenAIVisionResponse = await response.json();
-    const content = data.choices[0]?.message?.content;
-
-    if (!content) {
-      throw new Error('No response from OpenAI');
-    }
-
-    // Parse the JSON response
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error('Invalid response format from OpenAI');
-    }
-
-    const result: VerificationResult = JSON.parse(jsonMatch[0]);
-    return result;
-  } catch (error) {
-    console.error('Error verifying task:', error);
-    throw error;
-  }
+  return await verifyTaskWithPhotos(beforePhotoUri, afterPhotoUri, taskDescription);
 };
 
 /**
@@ -279,13 +145,13 @@ export const PRESET_TASKS = [
     id: 'clean_desk',
     title: 'Clean Desk',
     description: 'Clean and organize your desk/workspace',
-    icon: '=Ñ',
+    icon: '=ï¿½',
   },
   {
     id: 'make_bed',
     title: 'Make Bed',
     description: 'Make your bed neatly',
-    icon: '=Ï',
+    icon: '=ï¿½',
   },
   {
     id: 'do_dishes',
@@ -297,25 +163,25 @@ export const PRESET_TASKS = [
     id: 'exercise',
     title: 'Exercise',
     description: 'Complete a workout or exercise session',
-    icon: '=ª',
+    icon: '=ï¿½',
   },
   {
     id: 'read',
     title: 'Read',
     description: 'Read a book or educational material',
-    icon: '=Ú',
+    icon: '=ï¿½',
   },
   {
     id: 'homework',
     title: 'Homework',
     description: 'Complete homework or study assignment',
-    icon: '=Ý',
+    icon: '=ï¿½',
   },
   {
     id: 'organize',
     title: 'Organize',
     description: 'Organize a closet, drawer, or area',
-    icon: '=æ',
+    icon: '=ï¿½',
   },
   {
     id: 'cook',
@@ -331,59 +197,3 @@ export const PRESET_TASKS = [
   },
 ];
 
-/**
- * Analyze a single image for task context
- */
-export const analyzeImage = async (photoUri: string): Promise<string> => {
-  const apiKey = await getOpenAIApiKey();
-
-  if (!apiKey) {
-    throw new Error('OpenAI API key not configured');
-  }
-
-  try {
-    const base64 = await imageToBase64(photoUri);
-
-    const requestBody = {
-      model: 'gpt-4o',
-      messages: [
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'text',
-              text: 'Briefly describe what you see in this image in 1-2 sentences. Focus on the main subject and its current state.',
-            },
-            {
-              type: 'image_url',
-              image_url: {
-                url: `data:image/jpeg;base64,${base64}`,
-                detail: 'low',
-              },
-            },
-          ],
-        },
-      ],
-      max_tokens: 200,
-    };
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to analyze image');
-    }
-
-    const data: OpenAIVisionResponse = await response.json();
-    return data.choices[0]?.message?.content || 'Unable to analyze image';
-  } catch (error) {
-    console.error('Error analyzing image:', error);
-    throw error;
-  }
-};

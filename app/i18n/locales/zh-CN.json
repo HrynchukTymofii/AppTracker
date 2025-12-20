@@ -1,0 +1,308 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "confirm": "确认",
+    "error": "错误",
+    "success": "成功",
+    "close": "关闭",
+    "add": "添加",
+    "edit": "编辑",
+    "remove": "移除",
+    "settings": "设置",
+    "back": "返回",
+    "next": "下一步",
+    "done": "完成"
+  },
+  "tabs": {
+    "home": "首页",
+    "blocking": "应用锁定",
+    "detox": "数字排毒",
+    "stats": "统计",
+    "profile": "个人"
+  },
+  "home": {
+    "title": "LockIn",
+    "health": "健康",
+    "appUsageToday": "今日应用使用",
+    "loadingApps": "正在加载应用...",
+    "focusModeActive": "专注模式已激活",
+    "appsBlocked": "个应用已锁定",
+    "quickMenu": {
+      "stats": "统计",
+      "statsDesc": "查看详细使用统计",
+      "blocking": "应用锁定",
+      "blockingDesc": "管理已锁定的应用",
+      "detox": "数字排毒",
+      "detoxDesc": "开始手机排毒计时器",
+      "calendar": "日历",
+      "calendarDesc": "安排您的任务"
+    }
+  },
+  "stats": {
+    "title": "LockIn 报告",
+    "thisWeek": "本周",
+    "lastWeek": "上周",
+    "weeksAhead_one": "{{count}}周后",
+    "weeksAhead_other": "{{count}}周后",
+    "weeksAgo_one": "{{count}}周前",
+    "weeksAgo_other": "{{count}}周前",
+    "totalHours": "总时长",
+    "dailyAvg": "日均",
+    "peekDay": "高峰日",
+    "pickups": "解锁次数",
+    "perDay": "/天",
+    "statsPerDay": "每日统计",
+    "usageCalendar": "使用日历",
+    "totalTimePerApp": "每个应用总时长",
+    "loadingStats": "正在加载统计...",
+    "noData": "暂无数据",
+    "health": {
+      "poor": "较差",
+      "low": "偏低",
+      "avg": "一般",
+      "good": "良好",
+      "great": "优秀",
+      "label": "健康度："
+    },
+    "dayNames": {
+      "sun": "周日",
+      "mon": "周一",
+      "tue": "周二",
+      "wed": "周三",
+      "thu": "周四",
+      "fri": "周五",
+      "sat": "周六"
+    },
+    "dayNamesFull": {
+      "sunday": "星期日",
+      "monday": "星期一",
+      "tuesday": "星期二",
+      "wednesday": "星期三",
+      "thursday": "星期四",
+      "friday": "星期五",
+      "saturday": "星期六"
+    },
+    "noUsageData": "暂无使用数据",
+    "healthScore": "健康评分",
+    "screenTime": "屏幕时间",
+    "topApps": "前3个应用"
+  },
+  "blocking": {
+    "title": "应用锁定",
+    "setupRequired": "需要设置",
+    "permissionsDesc": "应用锁定需要特殊权限才能工作。请启用：",
+    "accessibilityService": "1. 无障碍服务",
+    "displayOverOtherApps": "2. 显示在其他应用上层",
+    "quickActions": "快捷操作",
+    "startFocus": "开始专注",
+    "newSchedule": "新建计划",
+    "schedules": "计划",
+    "noSchedulesYet": "暂无计划。",
+    "createScheduleHint": "创建一个计划以自动锁定应用。",
+    "blockedApps": "已锁定的应用",
+    "noAppsBlocked": "暂无锁定的应用。",
+    "addAppsHint": "添加应用以开始锁定。",
+    "focusSessionActive": "专注时段进行中",
+    "taskRequiredToUnlock": "需要完成任务才能解锁",
+    "timeRemaining": "剩余",
+    "completeTaskUnlock": "完成任务并解锁",
+    "endSession": "结束时段",
+    "calendarView": "日历视图",
+    "everyday": "每天",
+    "weekdays": "工作日",
+    "activeToday": "今日活跃",
+    "scheduledForDay": "当日",
+    "noSchedulesWere": "该日没有活跃的计划",
+    "noActiveSchedules": "今日没有活跃的计划",
+    "noSchedulesPlanned": "该日没有计划安排",
+    "blockTypes": {
+      "manual": "手动锁定",
+      "scheduled": "计划锁定",
+      "focus": "专注时段",
+      "task": "需要完成任务",
+      "dailyLimit": "每日限制"
+    },
+    "modals": {
+      "selectApps": "选择要锁定的应用",
+      "confirmSelection": "确认选择 ({{count}})",
+      "newSchedule": "新建计划",
+      "scheduleName": "计划名称",
+      "scheduleNamePlaceholder": "例如：工作时间",
+      "appsToBlock": "要锁定的应用",
+      "selectAppsPlaceholder": "选择应用...",
+      "appsSelected": "已选择{{count}}个应用",
+      "startTime": "开始时间",
+      "endTime": "结束时间",
+      "repeatOn": "重复日期",
+      "saveSchedule": "保存计划",
+      "startFocusSession": "开始专注时段",
+      "durationMinutes": "时长（分钟）",
+      "requireTaskCompletion": "要求完成任务",
+      "unlockAfterTask": "仅在完成真实任务后解锁",
+      "selectTask": "选择任务",
+      "describeTask": "描述您的任务...",
+      "takeBeforePhoto": "拍摄任务前照片",
+      "tapToTakePhoto": "点击拍照",
+      "startFocusDuration": "开始专注（{{duration}}分钟）",
+      "openAIApiKey": "OPENAI API 密钥（用于任务验证）",
+      "apiKeySaved": "API密钥已保存",
+      "saveSettings": "保存设置",
+      "loadingApps": "正在加载应用...",
+      "selectAll": "选择全部应用",
+      "deselectAll": "取消全选",
+      "popularApps": "热门应用",
+      "moreApps": "更多应用 ({{count}})",
+      "showPopularOnly": "← 仅显示热门应用"
+    },
+    "alerts": {
+      "enterScheduleName": "请输入计划名称",
+      "selectAtLeastOneApp": "请至少选择一个应用",
+      "selectAtLeastOneDay": "请至少选择一天",
+      "selectAtLeastOneAppToBlock": "请至少选择一个要锁定的应用",
+      "takeBeforePhoto": "请拍摄任务前照片以进行任务验证",
+      "deleteSchedule": "删除计划",
+      "deleteScheduleConfirm": "您确定要删除此计划吗？",
+      "taskVerified": "任务已验证！",
+      "taskVerifiedDesc": "您的任务已成功验证。\n\n可信度：{{confidence}}%\n\n{{explanation}}",
+      "taskNotVerified": "任务未验证",
+      "taskNotVerifiedDesc": "任务似乎未完成。\n\n{{explanation}}\n\n请完成任务后重试。",
+      "apiKeySavedSuccess": "API密钥保存成功"
+    },
+    "presetTasks": {
+      "cleaning": "清洁",
+      "cooking": "做饭",
+      "exercise": "运动",
+      "reading": "阅读",
+      "custom": "自定义"
+    }
+  },
+  "detox": {
+    "title": "数字排毒"
+  },
+  "profile": {
+    "title": "个人",
+    "proMember": "PRO会员",
+    "achievements": "成就",
+    "viewAll": "查看全部",
+    "quickActions": "快捷操作",
+    "editProfile": "编辑个人资料",
+    "contactUs": "联系我们",
+    "rateUs": "评分",
+    "logOut": "登出",
+    "errorLoading": "加载个人资料时出错",
+    "loading": "正在加载个人资料..."
+  },
+  "achievements": {
+    "title": "成就",
+    "unlocked": "已解锁",
+    "locked": "已锁定",
+    "unlockedCount": "{{count}} 个中解锁了 {{total}} 个",
+    "list": {
+      "firstBlock": {
+        "title": "第一次",
+        "description": "锁定你的第一个应用"
+      },
+      "focusBeginner": {
+        "title": "专注新手",
+        "description": "完成第一个专注会话"
+      },
+      "taskMaster": {
+        "title": "任务大师",
+        "description": "完成一次任务验证"
+      },
+      "earlyBird": {
+        "title": "早起鸟",
+        "description": "在上午8点前开始专注"
+      },
+      "nightOwl": {
+        "title": "夜猫子",
+        "description": "在晚上10点后使用锁定"
+      },
+      "discipline": {
+        "title": "纪律",
+        "description": "7天锁定连胜"
+      },
+      "ironWill": {
+        "title": "铁的意志",
+        "description": "完成10个专注会话"
+      },
+      "zenMaster": {
+        "title": "禅宗高手",
+        "description": "完成50个专注会话"
+      },
+      "schedulePro": {
+        "title": "日程大师",
+        "description": "创建你的第一个日程"
+      },
+      "timeKeeper": {
+        "title": "时间守护者",
+        "description": "创建5个日程"
+      },
+      "digitalDetox": {
+        "title": "数字排毒",
+        "description": "锁定应用24小时"
+      },
+      "weekendWarrior": {
+        "title": "周末战士",
+        "description": "在周末使用锁定"
+      },
+      "minimalist": {
+        "title": "极简主义者",
+        "description": "一次性锁定10+个应用"
+      },
+      "focusLegend": {
+        "title": "专注传奇",
+        "description": "2小时专注会话"
+      },
+      "marathon": {
+        "title": "马拉松",
+        "description": "4小时专注会话"
+      },
+      "consistencyKing": {
+        "title": "一致性之王",
+        "description": "30天锁定连胜"
+      },
+      "healthChampion": {
+        "title": "健康冠军",
+        "description": "达到90+健康评分"
+      },
+      "screenTimeSavior": {
+        "title": "屏幕时间拯救者",
+        "description": "减少50%的屏幕时间"
+      },
+      "morningRoutine": {
+        "title": "晨间例程",
+        "description": "连续3个上午锁定应用"
+      },
+      "productivityBeast": {
+        "title": "生产力野兽",
+        "description": "完成5次任务验证"
+      },
+      "appBlockerPro": {
+        "title": "应用锁定专家",
+        "description": "锁定20+个不同的应用"
+      },
+      "focusFlow": {
+        "title": "专注流",
+        "description": "一天内3个专注会话"
+      },
+      "digitalWellbeing": {
+        "title": "数字健康",
+        "description": "一周内健康评分80+"
+      },
+      "selfControl": {
+        "title": "自我控制",
+        "description": "抵抗10次解锁诱惑"
+      }
+    }
+  },
+  "language": {
+    "title": "语言",
+    "selectLanguage": "选择语言",
+    "systemDefault": "系统默认",
+    "currentLanguage": "当前语言"
+  }
+}

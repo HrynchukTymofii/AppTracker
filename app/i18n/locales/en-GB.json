@@ -1,0 +1,308 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "error": "Error",
+    "success": "Success",
+    "close": "Close",
+    "add": "Add",
+    "edit": "Edit",
+    "remove": "Remove",
+    "settings": "Settings",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done"
+  },
+  "tabs": {
+    "home": "Home",
+    "blocking": "Blocking",
+    "detox": "Detox",
+    "stats": "Stats",
+    "profile": "Profile"
+  },
+  "home": {
+    "title": "LockIn",
+    "health": "HEALTH",
+    "appUsageToday": "App Usage Today",
+    "loadingApps": "Loading apps...",
+    "focusModeActive": "Focus Mode Active",
+    "appsBlocked": "apps blocked",
+    "quickMenu": {
+      "stats": "Stats",
+      "statsDesc": "View detailed usage stats",
+      "blocking": "Blocking",
+      "blockingDesc": "Manage blocked apps",
+      "detox": "Detox",
+      "detoxDesc": "Start phone detox timer",
+      "calendar": "Calendar",
+      "calendarDesc": "Schedule your tasks"
+    }
+  },
+  "stats": {
+    "title": "LockIn Report",
+    "thisWeek": "This Week",
+    "lastWeek": "Last Week",
+    "weeksAhead_one": "{{count}} Week Ahead",
+    "weeksAhead_other": "{{count}} Weeks Ahead",
+    "weeksAgo_one": "{{count}} Week Ago",
+    "weeksAgo_other": "{{count}} Weeks Ago",
+    "totalHours": "TOTAL HOURS",
+    "dailyAvg": "DAILY AVG",
+    "peekDay": "PEEK DAY",
+    "pickups": "PICKUPS",
+    "perDay": "/day",
+    "statsPerDay": "Stats Per Day",
+    "usageCalendar": "Usage Calendar",
+    "totalTimePerApp": "Total Time Per App",
+    "loadingStats": "Loading stats...",
+    "noData": "No Data",
+    "health": {
+      "poor": "Poor",
+      "low": "Low",
+      "avg": "Avg",
+      "good": "Good",
+      "great": "Great",
+      "label": "Health:"
+    },
+    "dayNames": {
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat"
+    },
+    "dayNamesFull": {
+      "sunday": "Sunday",
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday"
+    },
+    "noUsageData": "No usage data yet",
+    "healthScore": "Health Score",
+    "screenTime": "Screen Time",
+    "topApps": "Top 3 Apps"
+  },
+  "blocking": {
+    "title": "Blocking",
+    "setupRequired": "Setup Required",
+    "permissionsDesc": "App blocking requires special permissions to work. Please enable:",
+    "accessibilityService": "1. Accessibility Service",
+    "displayOverOtherApps": "2. Display Over Other Apps",
+    "quickActions": "Quick Actions",
+    "startFocus": "Start Focus",
+    "newSchedule": "New Schedule",
+    "schedules": "Schedules",
+    "noSchedulesYet": "No schedules yet.",
+    "createScheduleHint": "Create one to automatically block apps.",
+    "blockedApps": "Blocked Apps",
+    "noAppsBlocked": "No apps blocked.",
+    "addAppsHint": "Add apps to start blocking.",
+    "focusSessionActive": "Focus Session Active",
+    "taskRequiredToUnlock": "Task required to unlock",
+    "timeRemaining": "remaining",
+    "completeTaskUnlock": "Complete Task & Unlock",
+    "endSession": "End Session",
+    "calendarView": "Calendar View",
+    "everyday": "Everyday",
+    "weekdays": "Weekdays",
+    "activeToday": "active today",
+    "scheduledForDay": "for this day",
+    "noSchedulesWere": "No schedules were active on this day",
+    "noActiveSchedules": "No active schedules for today",
+    "noSchedulesPlanned": "No schedules planned for this day",
+    "blockTypes": {
+      "manual": "Manually blocked",
+      "scheduled": "Scheduled block",
+      "focus": "Focus session",
+      "task": "Task required",
+      "dailyLimit": "Daily limit"
+    },
+    "modals": {
+      "selectApps": "Select Apps to Block",
+      "confirmSelection": "Confirm Selection ({{count}})",
+      "newSchedule": "New Schedule",
+      "scheduleName": "SCHEDULE NAME",
+      "scheduleNamePlaceholder": "e.g., Work Hours",
+      "appsToBlock": "APPS TO BLOCK",
+      "selectAppsPlaceholder": "Select apps...",
+      "appsSelected": "{{count}} apps selected",
+      "startTime": "START TIME",
+      "endTime": "END TIME",
+      "repeatOn": "REPEAT ON",
+      "saveSchedule": "Save Schedule",
+      "startFocusSession": "Start Focus Session",
+      "durationMinutes": "DURATION (MINUTES)",
+      "requireTaskCompletion": "Require Task Completion",
+      "unlockAfterTask": "Unlock only after completing a real task",
+      "selectTask": "SELECT TASK",
+      "describeTask": "Describe your task...",
+      "takeBeforePhoto": "TAKE \"BEFORE\" PHOTO",
+      "tapToTakePhoto": "Tap to take photo",
+      "startFocusDuration": "Start Focus ({{duration}} minutes)",
+      "openAIApiKey": "OPENAI API KEY (for task verification)",
+      "apiKeySaved": "API key is saved",
+      "saveSettings": "Save Settings",
+      "loadingApps": "Loading apps...",
+      "selectAll": "Select All Apps",
+      "deselectAll": "Deselect All",
+      "popularApps": "Popular Apps",
+      "moreApps": "More Apps ({{count}})",
+      "showPopularOnly": "← Show Popular Only"
+    },
+    "alerts": {
+      "enterScheduleName": "Please enter a schedule name",
+      "selectAtLeastOneApp": "Please select at least one app",
+      "selectAtLeastOneDay": "Please select at least one day",
+      "selectAtLeastOneAppToBlock": "Please select at least one app to block",
+      "takeBeforePhoto": "Please take a \"before\" photo for task verification",
+      "deleteSchedule": "Delete Schedule",
+      "deleteScheduleConfirm": "Are you sure you want to delete this schedule?",
+      "taskVerified": "Task Verified!",
+      "taskVerifiedDesc": "Your task was verified successfully.\n\nConfidence: {{confidence}}%\n\n{{explanation}}",
+      "taskNotVerified": "Task Not Verified",
+      "taskNotVerifiedDesc": "The task doesn't appear to be completed.\n\n{{explanation}}\n\nPlease complete the task and try again.",
+      "apiKeySavedSuccess": "API key saved successfully"
+    },
+    "presetTasks": {
+      "cleaning": "Cleaning",
+      "cooking": "Cooking",
+      "exercise": "Exercise",
+      "reading": "Reading",
+      "custom": "Custom"
+    }
+  },
+  "detox": {
+    "title": "Detox"
+  },
+  "profile": {
+    "title": "Profile",
+    "proMember": "PRO Member",
+    "achievements": "Achievements",
+    "viewAll": "View All",
+    "quickActions": "Quick Actions",
+    "editProfile": "Edit Profile",
+    "contactUs": "Contact Us",
+    "rateUs": "Rate Us",
+    "logOut": "Log Out",
+    "errorLoading": "Error loading profile",
+    "loading": "Loading profile..."
+  },
+  "achievements": {
+    "title": "Achievements",
+    "unlocked": "Unlocked",
+    "locked": "Locked",
+    "unlockedCount": "{{count}} of {{total}} unlocked",
+    "list": {
+      "firstBlock": {
+        "title": "First Time",
+        "description": "Block your first app"
+      },
+      "focusBeginner": {
+        "title": "Focus Beginner",
+        "description": "Complete first focus session"
+      },
+      "taskMaster": {
+        "title": "Task Master",
+        "description": "Complete a task verification"
+      },
+      "earlyBird": {
+        "title": "Early Bird",
+        "description": "Start focus before 8 AM"
+      },
+      "nightOwl": {
+        "title": "Night Owl",
+        "description": "Use blocking after 10 PM"
+      },
+      "discipline": {
+        "title": "Discipline",
+        "description": "7-day blocking streak"
+      },
+      "ironWill": {
+        "title": "Iron Will",
+        "description": "Complete 10 focus sessions"
+      },
+      "zenMaster": {
+        "title": "Zen Master",
+        "description": "Complete 50 focus sessions"
+      },
+      "schedulePro": {
+        "title": "Schedule Pro",
+        "description": "Create first schedule"
+      },
+      "timeKeeper": {
+        "title": "Time Keeper",
+        "description": "Create 5 schedules"
+      },
+      "digitalDetox": {
+        "title": "Digital Detox",
+        "description": "Block apps for 24 hours"
+      },
+      "weekendWarrior": {
+        "title": "Weekend Warrior",
+        "description": "Use blocking on weekends"
+      },
+      "minimalist": {
+        "title": "Minimalist",
+        "description": "Block 10+ apps at once"
+      },
+      "focusLegend": {
+        "title": "Focus Legend",
+        "description": "2-hour focus session"
+      },
+      "marathon": {
+        "title": "Marathon",
+        "description": "4-hour focus session"
+      },
+      "consistencyKing": {
+        "title": "Consistency King",
+        "description": "30-day blocking streak"
+      },
+      "healthChampion": {
+        "title": "Health Champion",
+        "description": "Achieve 90+ health score"
+      },
+      "screenTimeSavior": {
+        "title": "Screen Saver",
+        "description": "Reduce screen time by 50%"
+      },
+      "morningRoutine": {
+        "title": "Morning Routine",
+        "description": "Block apps 3 mornings"
+      },
+      "productivityBeast": {
+        "title": "Productivity Beast",
+        "description": "Complete 5 task verifications"
+      },
+      "appBlockerPro": {
+        "title": "App Blocker Pro",
+        "description": "Block 20+ different apps"
+      },
+      "focusFlow": {
+        "title": "Focus Flow",
+        "description": "3 focus sessions in one day"
+      },
+      "digitalWellbeing": {
+        "title": "Digital Wellbeing",
+        "description": "80+ health score for a week"
+      },
+      "selfControl": {
+        "title": "Self Control",
+        "description": "Resist unblocking 10 times"
+      }
+    }
+  },
+  "language": {
+    "title": "Language",
+    "selectLanguage": "Select Language",
+    "systemDefault": "System Default",
+    "currentLanguage": "Current Language"
+  }
+}

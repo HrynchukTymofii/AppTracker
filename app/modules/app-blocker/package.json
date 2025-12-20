@@ -1,0 +1,10 @@
+{
+  "name": "app-blocker",
+  "version": "1.0.0",
+  "description": "Native module for blocking apps",
+  "main": "index.ts",
+  "scripts": {},
+  "keywords": ["expo", "app-blocker"],
+  "author": "",
+  "license": "MIT"
+}

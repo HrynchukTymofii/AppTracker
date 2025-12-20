@@ -1,0 +1,308 @@
+{
+  "common": {
+    "loading": "लोड हो रहा है...",
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "delete": "हटाएं",
+    "confirm": "पुष्टि करें",
+    "error": "त्रुटि",
+    "success": "सफलता",
+    "close": "बंद करें",
+    "add": "जोड़ें",
+    "edit": "संपादित करें",
+    "remove": "हटाएं",
+    "settings": "सेटिंग्स",
+    "back": "वापस",
+    "next": "अगला",
+    "done": "हो गया"
+  },
+  "tabs": {
+    "home": "होम",
+    "blocking": "ब्लॉकिंग",
+    "detox": "डिटॉक्स",
+    "stats": "आंकड़े",
+    "profile": "प्रोफ़ाइल"
+  },
+  "home": {
+    "title": "LockIn",
+    "health": "स्वास्थ्य",
+    "appUsageToday": "आज ऐप का उपयोग",
+    "loadingApps": "ऐप लोड हो रहे हैं...",
+    "focusModeActive": "फोकस मोड सक्रिय",
+    "appsBlocked": "ऐप ब्लॉक किए गए",
+    "quickMenu": {
+      "stats": "आंकड़े",
+      "statsDesc": "विस्तृत उपयोग आंकड़े देखें",
+      "blocking": "ब्लॉकिंग",
+      "blockingDesc": "ब्लॉक किए गए ऐप्स प्रबंधित करें",
+      "detox": "डिटॉक्स",
+      "detoxDesc": "फोन डिटॉक्स टाइमर शुरू करें",
+      "calendar": "कैलेंडर",
+      "calendarDesc": "अपने कार्यों को शेड्यूल करें"
+    }
+  },
+  "stats": {
+    "title": "LockIn रिपोर्ट",
+    "thisWeek": "इस सप्ताह",
+    "lastWeek": "पिछला सप्ताह",
+    "weeksAhead_one": "{{count}} सप्ताह आगे",
+    "weeksAhead_other": "{{count}} सप्ताह आगे",
+    "weeksAgo_one": "{{count}} सप्ताह पहले",
+    "weeksAgo_other": "{{count}} सप्ताह पहले",
+    "totalHours": "कुल घंटे",
+    "dailyAvg": "दैनिक औसत",
+    "peekDay": "शिखर दिन",
+    "pickups": "अनलॉक",
+    "perDay": "/दिन",
+    "statsPerDay": "प्रति दिन आंकड़े",
+    "usageCalendar": "उपयोग कैलेंडर",
+    "totalTimePerApp": "प्रति ऐप कुल समय",
+    "loadingStats": "आंकड़े लोड हो रहे हैं...",
+    "noData": "कोई डेटा नहीं",
+    "health": {
+      "poor": "खराब",
+      "low": "कम",
+      "avg": "औसत",
+      "good": "अच्छा",
+      "great": "बहुत अच्छा",
+      "label": "स्वास्थ्य:"
+    },
+    "dayNames": {
+      "sun": "रवि",
+      "mon": "सोम",
+      "tue": "मंगल",
+      "wed": "बुध",
+      "thu": "गुरु",
+      "fri": "शुक्र",
+      "sat": "शनि"
+    },
+    "dayNamesFull": {
+      "sunday": "रविवार",
+      "monday": "सोमवार",
+      "tuesday": "मंगलवार",
+      "wednesday": "बुधवार",
+      "thursday": "गुरुवार",
+      "friday": "शुक्रवार",
+      "saturday": "शनिवार"
+    },
+    "noUsageData": "अभी तक कोई उपयोग डेटा नहीं",
+    "healthScore": "स्वास्थ्य स्कोर",
+    "screenTime": "स्क्रीन टाइम",
+    "topApps": "शीर्ष 3 ऐप्स"
+  },
+  "blocking": {
+    "title": "ब्लॉकिंग",
+    "setupRequired": "सेटअप आवश्यक",
+    "permissionsDesc": "ऐप ब्लॉकिंग के लिए विशेष अनुमतियों की आवश्यकता है। कृपया सक्षम करें:",
+    "accessibilityService": "1. एक्सेसिबिलिटी सेवा",
+    "displayOverOtherApps": "2. अन्य ऐप्स के ऊपर प्रदर्शित करें",
+    "quickActions": "त्वरित क्रियाएं",
+    "startFocus": "फोकस शुरू करें",
+    "newSchedule": "नया शेड्यूल",
+    "schedules": "शेड्यूल",
+    "noSchedulesYet": "अभी तक कोई शेड्यूल नहीं।",
+    "createScheduleHint": "ऐप्स को स्वचालित रूप से ब्लॉक करने के लिए एक बनाएं।",
+    "blockedApps": "ब्लॉक किए गए ऐप्स",
+    "noAppsBlocked": "कोई ऐप ब्लॉक नहीं किया गया।",
+    "addAppsHint": "ब्लॉक करना शुरू करने के लिए ऐप्स जोड़ें।",
+    "focusSessionActive": "फोकस सत्र सक्रिय",
+    "taskRequiredToUnlock": "अनलॉक करने के लिए कार्य आवश्यक",
+    "timeRemaining": "शेष",
+    "completeTaskUnlock": "कार्य पूर्ण करें और अनलॉक करें",
+    "endSession": "सत्र समाप्त करें",
+    "calendarView": "कैलेंडर दृश्य",
+    "everyday": "हर दिन",
+    "weekdays": "कार्यदिवस",
+    "activeToday": "आज सक्रिय",
+    "scheduledForDay": "इस दिन के लिए",
+    "noSchedulesWere": "इस दिन कोई शेड्यूल सक्रिय नहीं था",
+    "noActiveSchedules": "आज के लिए कोई सक्रिय शेड्यूल नहीं",
+    "noSchedulesPlanned": "इस दिन के लिए कोई शेड्यूल नियोजित नहीं",
+    "blockTypes": {
+      "manual": "मैन्युअल रूप से ब्लॉक किया गया",
+      "scheduled": "शेड्यूल किया गया ब्लॉक",
+      "focus": "फोकस सत्र",
+      "task": "कार्य आवश्यक",
+      "dailyLimit": "दैनिक सीमा"
+    },
+    "modals": {
+      "selectApps": "ब्लॉक करने के लिए ऐप्स चुनें",
+      "confirmSelection": "चयन की पुष्टि करें ({{count}})",
+      "newSchedule": "नया शेड्यूल",
+      "scheduleName": "शेड्यूल का नाम",
+      "scheduleNamePlaceholder": "उदा. कार्य घंटे",
+      "appsToBlock": "ब्लॉक करने के लिए ऐप्स",
+      "selectAppsPlaceholder": "ऐप्स चुनें...",
+      "appsSelected": "{{count}} ऐप्स चुने गए",
+      "startTime": "शुरुआत का समय",
+      "endTime": "समाप्ति का समय",
+      "repeatOn": "इस पर दोहराएं",
+      "saveSchedule": "शेड्यूल सहेजें",
+      "startFocusSession": "फोकस सत्र शुरू करें",
+      "durationMinutes": "अवधि (मिनट)",
+      "requireTaskCompletion": "कार्य पूर्णता आवश्यक",
+      "unlockAfterTask": "केवल वास्तविक कार्य पूर्ण करने के बाद अनलॉक करें",
+      "selectTask": "कार्य चुनें",
+      "describeTask": "अपने कार्य का वर्णन करें...",
+      "takeBeforePhoto": "\"पहले\" की फोटो लें",
+      "tapToTakePhoto": "फोटो लेने के लिए टैप करें",
+      "startFocusDuration": "फोकस शुरू करें ({{duration}} मिनट)",
+      "openAIApiKey": "OPENAI API कुंजी (कार्य सत्यापन के लिए)",
+      "apiKeySaved": "API कुंजी सहेजी गई है",
+      "saveSettings": "सेटिंग्स सहेजें",
+      "loadingApps": "ऐप्स लोड हो रहे हैं...",
+      "selectAll": "सभी ऐप्स चुनें",
+      "deselectAll": "सभी अचयनित करें",
+      "popularApps": "लोकप्रिय ऐप्स",
+      "moreApps": "और ऐप्स ({{count}})",
+      "showPopularOnly": "← केवल लोकप्रिय दिखाएं"
+    },
+    "alerts": {
+      "enterScheduleName": "कृपया एक शेड्यूल नाम दर्ज करें",
+      "selectAtLeastOneApp": "कृपया कम से कम एक ऐप चुनें",
+      "selectAtLeastOneDay": "कृपया कम से कम एक दिन चुनें",
+      "selectAtLeastOneAppToBlock": "कृपया ब्लॉक करने के लिए कम से कम एक ऐप चुनें",
+      "takeBeforePhoto": "कृपया कार्य सत्यापन के लिए \"पहले\" की फोटो लें",
+      "deleteSchedule": "शेड्यूल हटाएं",
+      "deleteScheduleConfirm": "क्या आप वाकई इस शेड्यूल को हटाना चाहते हैं?",
+      "taskVerified": "कार्य सत्यापित!",
+      "taskVerifiedDesc": "आपका कार्य सफलतापूर्वक सत्यापित किया गया।\n\nविश्वास: {{confidence}}%\n\n{{explanation}}",
+      "taskNotVerified": "कार्य सत्यापित नहीं",
+      "taskNotVerifiedDesc": "कार्य पूर्ण नहीं हुआ प्रतीत होता है।\n\n{{explanation}}\n\nकृपया कार्य पूर्ण करें और पुनः प्रयास करें।",
+      "apiKeySavedSuccess": "API कुंजी सफलतापूर्वक सहेजी गई"
+    },
+    "presetTasks": {
+      "cleaning": "सफाई",
+      "cooking": "खाना पकाना",
+      "exercise": "व्यायाम",
+      "reading": "पढ़ना",
+      "custom": "कस्टम"
+    }
+  },
+  "detox": {
+    "title": "डिटॉक्स"
+  },
+  "profile": {
+    "title": "प्रोफ़ाइल",
+    "proMember": "PRO सदस्य",
+    "achievements": "उपलब्धियां",
+    "viewAll": "सभी देखें",
+    "quickActions": "त्वरित क्रियाएं",
+    "editProfile": "प्रोफ़ाइल संपादित करें",
+    "contactUs": "हमसे संपर्क करें",
+    "rateUs": "हमें रेट करें",
+    "logOut": "लॉग आउट करें",
+    "errorLoading": "प्रोफ़ाइल लोड करने में त्रुटि",
+    "loading": "प्रोफ़ाइल लोड हो रही है..."
+  },
+  "achievements": {
+    "title": "उपलब्धियां",
+    "unlocked": "अनलॉक किया गया",
+    "locked": "लॉक किया गया",
+    "unlockedCount": "{{count}} में से {{total}} अनलॉक किए गए",
+    "list": {
+      "firstBlock": {
+        "title": "पहली बार",
+        "description": "अपना पहला ऐप ब्लॉक करें"
+      },
+      "focusBeginner": {
+        "title": "फोकस शुरुआत",
+        "description": "पहला फोकस सत्र पूरा करें"
+      },
+      "taskMaster": {
+        "title": "कार्य स्वामी",
+        "description": "कार्य सत्यापन पूरा करें"
+      },
+      "earlyBird": {
+        "title": "सुबह का उठने वाला",
+        "description": "सुबह 8 बजे से पहले फोकस शुरू करें"
+      },
+      "nightOwl": {
+        "title": "रात की उल्लू",
+        "description": "रात 10 बजे के बाद ब्लॉकिंग का उपयोग करें"
+      },
+      "discipline": {
+        "title": "अनुशासन",
+        "description": "7 दिन की ब्लॉकिंग श्रंखला"
+      },
+      "ironWill": {
+        "title": "लोहे का इरादा",
+        "description": "10 फोकस सत्र पूरा करें"
+      },
+      "zenMaster": {
+        "title": "ध्यान गुरु",
+        "description": "50 फोकस सत्र पूरा करें"
+      },
+      "schedulePro": {
+        "title": "शेड्यूल प्रो",
+        "description": "अपना पहला शेड्यूल बनाएं"
+      },
+      "timeKeeper": {
+        "title": "समय रक्षक",
+        "description": "5 शेड्यूल बनाएं"
+      },
+      "digitalDetox": {
+        "title": "डिजिटल विषहरण",
+        "description": "24 घंटे के लिए ऐप्स ब्लॉक करें"
+      },
+      "weekendWarrior": {
+        "title": "सप्ताहांत योद्धा",
+        "description": "सप्ताहांत में ब्लॉकिंग का उपयोग करें"
+      },
+      "minimalist": {
+        "title": "अतिसरलतावादी",
+        "description": "एक बार में 10+ ऐप्स ब्लॉक करें"
+      },
+      "focusLegend": {
+        "title": "फोकस किंवदंती",
+        "description": "2 घंटे का फोकस सत्र"
+      },
+      "marathon": {
+        "title": "मैराथन",
+        "description": "4 घंटे का फोकस सत्र"
+      },
+      "consistencyKing": {
+        "title": "संगति का राजा",
+        "description": "30 दिन की ब्लॉकिंग श्रंखला"
+      },
+      "healthChampion": {
+        "title": "स्वास्थ्य चैंपियन",
+        "description": "90+ स्वास्थ्य स्कोर प्राप्त करें"
+      },
+      "screenTimeSavior": {
+        "title": "स्क्रीन समय मुक्तिदाता",
+        "description": "स्क्रीन समय 50% कम करें"
+      },
+      "morningRoutine": {
+        "title": "सुबह की दिनचर्या",
+        "description": "3 सुबह में ऐप्स ब्लॉक करें"
+      },
+      "productivityBeast": {
+        "title": "उत्पादकता जानवर",
+        "description": "5 कार्य सत्यापन पूरा करें"
+      },
+      "appBlockerPro": {
+        "title": "ऐप ब्लॉकर पेशेवर",
+        "description": "20+ विभिन्न ऐप्स ब्लॉक करें"
+      },
+      "focusFlow": {
+        "title": "फोकस प्रवाह",
+        "description": "एक दिन में 3 फोकस सत्र"
+      },
+      "digitalWellbeing": {
+        "title": "डिजिटल कल्याण",
+        "description": "एक सप्ताह के लिए 80+ स्वास्थ्य स्कोर"
+      },
+      "selfControl": {
+        "title": "आत्म नियंत्रण",
+        "description": "10 बार अनलॉक करने का विरोध करें"
+      }
+    }
+  },
+  "language": {
+    "title": "भाषा",
+    "selectLanguage": "भाषा चुनें",
+    "systemDefault": "सिस्टम डिफ़ॉल्ट",
+    "currentLanguage": "वर्तमान भाषा"
+  }
+}

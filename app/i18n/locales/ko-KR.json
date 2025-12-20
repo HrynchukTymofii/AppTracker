@@ -1,0 +1,308 @@
+{
+  "common": {
+    "loading": "로딩 중...",
+    "save": "저장",
+    "cancel": "취소",
+    "delete": "삭제",
+    "confirm": "확인",
+    "error": "오류",
+    "success": "성공",
+    "close": "닫기",
+    "add": "추가",
+    "edit": "편집",
+    "remove": "제거",
+    "settings": "설정",
+    "back": "뒤로",
+    "next": "다음",
+    "done": "완료"
+  },
+  "tabs": {
+    "home": "홈",
+    "blocking": "차단",
+    "detox": "디톡스",
+    "stats": "통계",
+    "profile": "프로필"
+  },
+  "home": {
+    "title": "LockIn",
+    "health": "건강도",
+    "appUsageToday": "오늘의 앱 사용",
+    "loadingApps": "앱 로딩 중...",
+    "focusModeActive": "집중 모드 활성화",
+    "appsBlocked": "개 앱 차단됨",
+    "quickMenu": {
+      "stats": "통계",
+      "statsDesc": "상세한 사용 통계 보기",
+      "blocking": "차단",
+      "blockingDesc": "차단된 앱 관리",
+      "detox": "디톡스",
+      "detoxDesc": "휴대폰 디톡스 타이머 시작",
+      "calendar": "캘린더",
+      "calendarDesc": "작업 일정 관리"
+    }
+  },
+  "stats": {
+    "title": "LockIn 리포트",
+    "thisWeek": "이번 주",
+    "lastWeek": "지난 주",
+    "weeksAhead_one": "{{count}}주 후",
+    "weeksAhead_other": "{{count}}주 후",
+    "weeksAgo_one": "{{count}}주 전",
+    "weeksAgo_other": "{{count}}주 전",
+    "totalHours": "총 시간",
+    "dailyAvg": "일일 평균",
+    "peekDay": "피크 요일",
+    "pickups": "잠금 해제",
+    "perDay": "/일",
+    "statsPerDay": "일별 통계",
+    "usageCalendar": "사용 캘린더",
+    "totalTimePerApp": "앱별 총 시간",
+    "loadingStats": "통계 로딩 중...",
+    "noData": "데이터 없음",
+    "health": {
+      "poor": "매우 나쁨",
+      "low": "나쁨",
+      "avg": "보통",
+      "good": "좋음",
+      "great": "매우 좋음",
+      "label": "건강도:"
+    },
+    "dayNames": {
+      "sun": "일",
+      "mon": "월",
+      "tue": "화",
+      "wed": "수",
+      "thu": "목",
+      "fri": "금",
+      "sat": "토"
+    },
+    "dayNamesFull": {
+      "sunday": "일요일",
+      "monday": "월요일",
+      "tuesday": "화요일",
+      "wednesday": "수요일",
+      "thursday": "목요일",
+      "friday": "금요일",
+      "saturday": "토요일"
+    },
+    "noUsageData": "아직 사용 데이터가 없습니다",
+    "healthScore": "건강 점수",
+    "screenTime": "화면 시간",
+    "topApps": "상위 3개 앱"
+  },
+  "blocking": {
+    "title": "차단",
+    "setupRequired": "설정 필요",
+    "permissionsDesc": "앱 차단에는 특별한 권한이 필요합니다. 다음을 활성화하세요:",
+    "accessibilityService": "1. 접근성 서비스",
+    "displayOverOtherApps": "2. 다른 앱 위에 표시",
+    "quickActions": "빠른 작업",
+    "startFocus": "집중 시작",
+    "newSchedule": "새 일정",
+    "schedules": "일정",
+    "noSchedulesYet": "아직 일정이 없습니다.",
+    "createScheduleHint": "일정을 만들어 앱을 자동으로 차단하세요.",
+    "blockedApps": "차단된 앱",
+    "noAppsBlocked": "차단된 앱이 없습니다.",
+    "addAppsHint": "앱을 추가하여 차단을 시작하세요.",
+    "focusSessionActive": "집중 세션 진행 중",
+    "taskRequiredToUnlock": "잠금 해제하려면 작업 필요",
+    "timeRemaining": "남음",
+    "completeTaskUnlock": "작업 완료 및 잠금 해제",
+    "endSession": "세션 종료",
+    "calendarView": "캘린더 보기",
+    "everyday": "매일",
+    "weekdays": "평일",
+    "activeToday": "오늘 활성",
+    "scheduledForDay": "이 날",
+    "noSchedulesWere": "이 날에는 활성 일정이 없었습니다",
+    "noActiveSchedules": "오늘 활성 일정이 없습니다",
+    "noSchedulesPlanned": "이 날에 예정된 일정이 없습니다",
+    "blockTypes": {
+      "manual": "수동 차단",
+      "scheduled": "예약 차단",
+      "focus": "집중 세션",
+      "task": "작업 필요",
+      "dailyLimit": "일일 제한"
+    },
+    "modals": {
+      "selectApps": "차단할 앱 선택",
+      "confirmSelection": "선택 확인 ({{count}})",
+      "newSchedule": "새 일정",
+      "scheduleName": "일정 이름",
+      "scheduleNamePlaceholder": "예: 근무 시간",
+      "appsToBlock": "차단할 앱",
+      "selectAppsPlaceholder": "앱 선택...",
+      "appsSelected": "{{count}}개 앱 선택됨",
+      "startTime": "시작 시간",
+      "endTime": "종료 시간",
+      "repeatOn": "반복 요일",
+      "saveSchedule": "일정 저장",
+      "startFocusSession": "집중 세션 시작",
+      "durationMinutes": "시간 (분)",
+      "requireTaskCompletion": "작업 완료 요구",
+      "unlockAfterTask": "실제 작업을 완료한 후에만 잠금 해제",
+      "selectTask": "작업 선택",
+      "describeTask": "작업을 설명하세요...",
+      "takeBeforePhoto": "\"작업 전\" 사진 촬영",
+      "tapToTakePhoto": "탭하여 사진 촬영",
+      "startFocusDuration": "집중 시작 ({{duration}}분)",
+      "openAIApiKey": "OPENAI API 키 (작업 검증용)",
+      "apiKeySaved": "API 키가 저장되었습니다",
+      "saveSettings": "설정 저장",
+      "loadingApps": "앱 로딩 중...",
+      "selectAll": "모든 앱 선택",
+      "deselectAll": "선택 해제",
+      "popularApps": "인기 앱",
+      "moreApps": "더 많은 앱 ({{count}})",
+      "showPopularOnly": "← 인기 앱만 표시"
+    },
+    "alerts": {
+      "enterScheduleName": "일정 이름을 입력하세요",
+      "selectAtLeastOneApp": "최소 1개의 앱을 선택하세요",
+      "selectAtLeastOneDay": "최소 1일을 선택하세요",
+      "selectAtLeastOneAppToBlock": "차단할 앱을 최소 1개 선택하세요",
+      "takeBeforePhoto": "작업 검증을 위해 \"작업 전\" 사진을 촬영하세요",
+      "deleteSchedule": "일정 삭제",
+      "deleteScheduleConfirm": "이 일정을 삭제하시겠습니까?",
+      "taskVerified": "작업 검증됨!",
+      "taskVerifiedDesc": "작업이 성공적으로 검증되었습니다.\n\n신뢰도: {{confidence}}%\n\n{{explanation}}",
+      "taskNotVerified": "작업 검증 실패",
+      "taskNotVerifiedDesc": "작업이 완료되지 않은 것 같습니다.\n\n{{explanation}}\n\n작업을 완료하고 다시 시도하세요.",
+      "apiKeySavedSuccess": "API 키가 성공적으로 저장되었습니다"
+    },
+    "presetTasks": {
+      "cleaning": "청소",
+      "cooking": "요리",
+      "exercise": "운동",
+      "reading": "독서",
+      "custom": "사용자 정의"
+    }
+  },
+  "detox": {
+    "title": "디톡스"
+  },
+  "profile": {
+    "title": "프로필",
+    "proMember": "PRO 멤버",
+    "achievements": "업적",
+    "viewAll": "모두 보기",
+    "quickActions": "빠른 작업",
+    "editProfile": "프로필 편집",
+    "contactUs": "문의하기",
+    "rateUs": "평가하기",
+    "logOut": "로그아웃",
+    "errorLoading": "프로필 로드 오류",
+    "loading": "프로필 로딩 중..."
+  },
+  "achievements": {
+    "title": "업적",
+    "unlocked": "잠금 해제",
+    "locked": "잠금",
+    "unlockedCount": "{{total}} 개 중 {{count}} 개 잠금 해제",
+    "list": {
+      "firstBlock": {
+        "title": "처음으로",
+        "description": "첫 번째 앱 차단"
+      },
+      "focusBeginner": {
+        "title": "집중 초보자",
+        "description": "첫 번째 집중 세션 완료"
+      },
+      "taskMaster": {
+        "title": "작업 달인",
+        "description": "작업 검증 완료"
+      },
+      "earlyBird": {
+        "title": "아침형",
+        "description": "오전 8시 전에 집중 시작"
+      },
+      "nightOwl": {
+        "title": "저녁형",
+        "description": "밤 10시 이후 차단 사용"
+      },
+      "discipline": {
+        "title": "규율",
+        "description": "7일 연속 차단"
+      },
+      "ironWill": {
+        "title": "강철 같은 의지",
+        "description": "10개의 집중 세션 완료"
+      },
+      "zenMaster": {
+        "title": "선 대사",
+        "description": "50개의 집중 세션 완료"
+      },
+      "schedulePro": {
+        "title": "일정 전문가",
+        "description": "첫 번째 일정 만들기"
+      },
+      "timeKeeper": {
+        "title": "시간 관리자",
+        "description": "5개 일정 만들기"
+      },
+      "digitalDetox": {
+        "title": "디지털 해독",
+        "description": "24시간 동안 앱 차단"
+      },
+      "weekendWarrior": {
+        "title": "주말 전사",
+        "description": "주말에 차단 사용"
+      },
+      "minimalist": {
+        "title": "미니멀리스트",
+        "description": "동시에 10개 이상의 앱 차단"
+      },
+      "focusLegend": {
+        "title": "집중 전설",
+        "description": "2시간 집중 세션"
+      },
+      "marathon": {
+        "title": "마라톤",
+        "description": "4시간 집중 세션"
+      },
+      "consistencyKing": {
+        "title": "일관성의 왕",
+        "description": "30일 연속 차단"
+      },
+      "healthChampion": {
+        "title": "건강 챔피언",
+        "description": "건강 점수 90 이상 달성"
+      },
+      "screenTimeSavior": {
+        "title": "스크린 타임 구원자",
+        "description": "화면 시간 50% 감소"
+      },
+      "morningRoutine": {
+        "title": "아침 루틴",
+        "description": "3개의 아침에 앱 차단"
+      },
+      "productivityBeast": {
+        "title": "생산성 괴물",
+        "description": "5회 작업 검증 완료"
+      },
+      "appBlockerPro": {
+        "title": "앱 차단 전문가",
+        "description": "20개 이상의 다양한 앱 차단"
+      },
+      "focusFlow": {
+        "title": "집중 흐름",
+        "description": "하루에 3개의 집중 세션"
+      },
+      "digitalWellbeing": {
+        "title": "디지털 웰빙",
+        "description": "1주일 동안 건강 점수 80 이상"
+      },
+      "selfControl": {
+        "title": "자제력",
+        "description": "10번 차단 해제 저항"
+      }
+    }
+  },
+  "language": {
+    "title": "언어",
+    "selectLanguage": "언어 선택",
+    "systemDefault": "시스템 기본값",
+    "currentLanguage": "현재 언어"
+  }
+}

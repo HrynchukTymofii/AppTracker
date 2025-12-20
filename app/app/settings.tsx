@@ -15,6 +15,7 @@ import {
   Key,
   Sun,
   Moon,
+  Globe,
 } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
@@ -22,11 +23,15 @@ import { updateUser, deleteUserAccount } from "@/lib/api/user";
 import Toast from "react-native-toast-message";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useTheme } from "@/context/ThemeContext";
+import { LanguageSelector } from "@/components/modals/LanguageSelector";
+import { useTranslation } from "react-i18next";
+import { availableLanguages, getCurrentLanguage } from "@/i18n/config";
 
 export default function SettingsScreen() {
   const router = useRouter();
   const { token, setToken, user, setUser } = useAuth();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [confirmText, setConfirmText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [password, setPassword] = useState("");
@@ -34,6 +39,11 @@ export default function SettingsScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const { themeMode, setThemeMode } = useTheme();
+  const { t } = useTranslation();
+  const currentLanguage = getCurrentLanguage();
+  const currentLanguageData = availableLanguages.find((l) => l.code === currentLanguage);
+  const currentLanguageName = currentLanguageData?.nativeName || 'English (US)';
+  const currentLanguageFlag = currentLanguageData?.flag || '🇺🇸';
 
   const themeOptions: {
     label: string;
@@ -73,15 +83,13 @@ export default function SettingsScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: isDark ? "#111827" : "#f9fafb" }}>
+    <View style={{ flex: 1, backgroundColor: isDark ? "#000000" : "#ffffff" }}>
       {/* Header */}
       <View style={{
-        paddingTop: insets.top + 12,
-        paddingBottom: 16,
-        paddingHorizontal: 16,
-        backgroundColor: isDark ? "#111827" : "#ffffff",
-        borderBottomWidth: 1,
-        borderBottomColor: isDark ? "#1f2937" : "#e5e7eb",
+        paddingTop: insets.top + 16,
+        paddingBottom: 20,
+        paddingHorizontal: 20,
+        backgroundColor: isDark ? "#000000" : "#ffffff",
       }}>
         {/* Back Button */}
         <TouchableOpacity
@@ -89,63 +97,52 @@ export default function SettingsScreen() {
           style={{
             flexDirection: "row",
             alignItems: "center",
-            marginBottom: 16,
+            marginBottom: 20,
             alignSelf: "flex-start",
-            paddingHorizontal: 12,
-            paddingVertical: 8,
-            backgroundColor: isDark ? "#1f2937" : "#f3f4f6",
-            borderRadius: 12,
           }}
           activeOpacity={0.7}
         >
-          <ArrowLeft size={18} color={isDark ? "#06B6D4" : "#0891B2"} />
-          <Text style={{ color: isDark ? "#06B6D4" : "#0891B2", fontWeight: "600", marginLeft: 6, fontSize: 14 }}>
-            Back
+          <ArrowLeft size={20} color={isDark ? "#ffffff" : "#111827"} />
+          <Text style={{ color: isDark ? "#ffffff" : "#111827", fontWeight: "600", marginLeft: 8, fontSize: 16 }}>
+            {t('common.back')}
           </Text>
         </TouchableOpacity>
 
         {/* Title */}
-        <Text style={{ fontSize: 24, fontWeight: "bold", color: isDark ? "#ffffff" : "#1f2937", marginBottom: 4 }}>
-          Settings
-        </Text>
-        <Text style={{ fontSize: 14, color: isDark ? "#9ca3af" : "#6b7280" }}>
-          Manage your account preferences
+        <Text style={{ fontSize: 28, fontWeight: "bold", color: isDark ? "#ffffff" : "#111827" }}>
+          {t('common.settings')}
         </Text>
       </View>
 
       {/* Content */}
       <ScrollView
-        contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
       >
         {/* Password Section */}
         <View style={{ marginBottom: 24 }}>
-          <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}>
-            <Key size={20} color={isDark ? "#06B6D4" : "#0891B2"} />
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "600",
-                marginLeft: 8,
-                color: isDark ? "#ffffff" : "#1f2937",
-              }}
-            >
-              Change Password
-            </Text>
-          </View>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: "600",
+              color: isDark ? "#9ca3af" : "#6b7280",
+              marginBottom: 12,
+              letterSpacing: 0.5,
+            }}
+          >
+            CHANGE PASSWORD
+          </Text>
           <TextInput
             value={password}
             onChangeText={setPassword}
             placeholder="New password"
             secureTextEntry
             style={{
-              backgroundColor: isDark ? "#1e293b" : "#ffffff",
-              color: isDark ? "#ffffff" : "#1f2937",
-              borderColor: isDark ? "#334155" : "#e5e7eb",
-              borderWidth: 1,
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#f3f4f6",
+              color: isDark ? "#ffffff" : "#111827",
               borderRadius: 12,
               paddingHorizontal: 16,
-              paddingVertical: 12,
+              paddingVertical: 14,
               fontSize: 16,
             }}
             placeholderTextColor={isDark ? "#6b7280" : "#9ca3af"}
@@ -154,26 +151,22 @@ export default function SettingsScreen() {
 
         {/* Theme Section */}
         <View style={{ marginBottom: 24 }}>
-          <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}>
-            <Sun size={20} color={isDark ? "#06B6D4" : "#0891B2"} />
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "600",
-                marginLeft: 8,
-                color: isDark ? "#ffffff" : "#1f2937",
-              }}
-            >
-              App Theme
-            </Text>
-          </View>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: "600",
+              color: isDark ? "#9ca3af" : "#6b7280",
+              marginBottom: 12,
+              letterSpacing: 0.5,
+            }}
+          >
+            APP THEME
+          </Text>
           <View
             style={{
-              backgroundColor: isDark ? "#1e293b" : "#ffffff",
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f9fafb",
               borderRadius: 12,
-              padding: 16,
-              borderWidth: 1,
-              borderColor: isDark ? "#334155" : "#e5e7eb",
+              padding: 4,
             }}
           >
             {themeOptions.map((option) => (
@@ -183,7 +176,13 @@ export default function SettingsScreen() {
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  paddingVertical: 12,
+                  paddingVertical: 14,
+                  paddingHorizontal: 16,
+                  backgroundColor: themeMode === option.value
+                    ? (isDark ? "rgba(59, 130, 246, 0.2)" : "rgba(59, 130, 246, 0.1)")
+                    : "transparent",
+                  borderRadius: 8,
+                  marginBottom: 4,
                 }}
               >
                 <View
@@ -192,7 +191,7 @@ export default function SettingsScreen() {
                     height: 20,
                     borderRadius: 10,
                     borderWidth: 2,
-                    borderColor: themeMode === option.value ? "#06B6D4" : (isDark ? "#6b7280" : "#9ca3af"),
+                    borderColor: themeMode === option.value ? "#3b82f6" : (isDark ? "#6b7280" : "#9ca3af"),
                     alignItems: "center",
                     justifyContent: "center",
                   }}
@@ -203,15 +202,16 @@ export default function SettingsScreen() {
                         width: 10,
                         height: 10,
                         borderRadius: 5,
-                        backgroundColor: "#06B6D4",
+                        backgroundColor: "#3b82f6",
                       }}
                     />
                   )}
                 </View>
                 <Text style={{
                   marginLeft: 12,
-                  fontSize: 16,
-                  color: isDark ? "#ffffff" : "#1f2937",
+                  fontSize: 15,
+                  fontWeight: themeMode === option.value ? "600" : "400",
+                  color: isDark ? "#ffffff" : "#111827",
                 }}>
                   {option.label}
                 </Text>
@@ -220,60 +220,109 @@ export default function SettingsScreen() {
           </View>
         </View>
 
+        {/* Language Section */}
+        <View style={{ marginBottom: 24 }}>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: "600",
+              color: isDark ? "#9ca3af" : "#6b7280",
+              marginBottom: 12,
+              letterSpacing: 0.5,
+            }}
+          >
+            {t('language.title').toUpperCase()}
+          </Text>
+          <TouchableOpacity
+            onPress={() => setShowLanguageModal(true)}
+            style={{
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#f3f4f6",
+              borderRadius: 12,
+              padding: 16,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+            activeOpacity={0.7}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+              <Text style={{ fontSize: 32, marginRight: 12 }}>{currentLanguageFlag}</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={{
+                  fontSize: 14,
+                  color: isDark ? "#9ca3af" : "#6b7280",
+                  marginBottom: 4,
+                }}>
+                  {t('language.currentLanguage')}
+                </Text>
+                <Text style={{
+                  fontSize: 16,
+                  fontWeight: "600",
+                  color: isDark ? "#ffffff" : "#1f2937",
+                }}>
+                  {currentLanguageName}
+                </Text>
+              </View>
+            </View>
+            <Globe size={20} color={isDark ? "#6b7280" : "#9ca3af"} />
+          </TouchableOpacity>
+        </View>
+
         {/* Save Changes Button */}
         <TouchableOpacity
           onPress={handleSave}
           style={{
-            backgroundColor: "#06B6D4",
+            backgroundColor: "#3b82f6",
             borderRadius: 12,
             paddingVertical: 16,
             alignItems: "center",
             marginBottom: 24,
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 4,
-            elevation: 3,
           }}
           activeOpacity={0.8}
         >
           <Text style={{ color: "#ffffff", fontWeight: "600", fontSize: 16 }}>
-            Save Changes
+            {t('common.save')}
           </Text>
         </TouchableOpacity>
 
         {/* Danger Zone */}
         <View style={{
-          borderTopWidth: 1,
-          borderTopColor: isDark ? "#334155" : "#e5e7eb",
           paddingTop: 24,
         }}>
           <Text style={{
-            fontSize: 18,
+            fontSize: 14,
             fontWeight: "600",
             color: "#EF4444",
             marginBottom: 12,
+            letterSpacing: 0.5,
           }}>
-            Danger Zone
+            DANGER ZONE
           </Text>
           <TouchableOpacity
             onPress={() => setShowDeleteModal(true)}
             style={{
-              borderWidth: 2,
+              borderWidth: 1.5,
               borderColor: "#EF4444",
               borderRadius: 12,
-              paddingVertical: 12,
+              paddingVertical: 14,
               alignItems: "center",
-              backgroundColor: isDark ? "#1e293b" : "#ffffff",
+              backgroundColor: isDark ? "rgba(239, 68, 68, 0.1)" : "rgba(239, 68, 68, 0.05)",
             }}
             activeOpacity={0.7}
           >
-            <Text style={{ color: "#EF4444", fontWeight: "600", fontSize: 16 }}>
-              Delete Account
+            <Text style={{ color: "#EF4444", fontWeight: "600", fontSize: 15 }}>
+              {t('common.delete')} Account
             </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Language Selector Modal */}
+      <LanguageSelector
+        visible={showLanguageModal}
+        onClose={() => setShowLanguageModal(false)}
+        isDark={isDark}
+      />
 
       {/* Delete Modal */}
       <Modal visible={showDeleteModal} animationType="slide" transparent>

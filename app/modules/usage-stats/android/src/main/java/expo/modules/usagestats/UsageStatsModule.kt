@@ -14,6 +14,12 @@ import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import expo.modules.kotlin.Promise
 import java.util.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.util.Base64
+import java.io.ByteArrayOutputStream
 
 class UsageStatsModule : Module() {
     private val context: Context
@@ -111,41 +117,97 @@ class UsageStatsModule : Module() {
         }
 
         val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-        val usageStatsList = usageStatsManager.queryUsageStats(
-            UsageStatsManager.INTERVAL_DAILY,
-            startTime,
-            endTime
-        )
-
         val packageManager = context.packageManager
-        val appUsageMap = mutableMapOf<String, Long>()
 
-        // Aggregate usage by package
-        usageStatsList?.forEach { stats ->
-            val packageName = stats.packageName
-            val totalTime = stats.totalTimeInForeground
-            
-            if (totalTime > 0 && isUserApp(packageName, packageManager)) {
-                appUsageMap[packageName] = (appUsageMap[packageName] ?: 0L) + totalTime
+        // Use UsageEvents for accurate real-time tracking (like Digital Wellbeing)
+        val appUsageMap = mutableMapOf<String, Long>()
+        val appLastUsedMap = mutableMapOf<String, Long>()
+        val appForegroundStart = mutableMapOf<String, Long>()
+
+        try {
+            val events = usageStatsManager.queryEvents(startTime, endTime)
+            val event = android.app.usage.UsageEvents.Event()
+
+            while (events.hasNextEvent()) {
+                events.getNextEvent(event)
+                val packageName = event.packageName
+
+                when (event.eventType) {
+                    // MOVE_TO_FOREGROUND = 1
+                    1 -> {
+                        appForegroundStart[packageName] = event.timeStamp
+                        appLastUsedMap[packageName] = event.timeStamp
+                    }
+                    // MOVE_TO_BACKGROUND = 2
+                    2 -> {
+                        val foregroundStart = appForegroundStart[packageName]
+                        if (foregroundStart != null && foregroundStart > 0) {
+                            val duration = event.timeStamp - foregroundStart
+                            if (duration > 0 && duration < 24 * 60 * 60 * 1000) { // Sanity check: less than 24 hours
+                                appUsageMap[packageName] = (appUsageMap[packageName] ?: 0L) + duration
+                            }
+                            appForegroundStart[packageName] = 0L
+                        }
+                        appLastUsedMap[packageName] = event.timeStamp
+                    }
+                }
+            }
+
+            // Handle apps that are still in foreground (no MOVE_TO_BACKGROUND event yet)
+            val currentTime = System.currentTimeMillis()
+            appForegroundStart.forEach { (packageName, startTime) ->
+                if (startTime > 0) {
+                    val duration = currentTime - startTime
+                    if (duration > 0 && duration < 24 * 60 * 60 * 1000) {
+                        appUsageMap[packageName] = (appUsageMap[packageName] ?: 0L) + duration
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            // Fallback to UsageStats if events fail
+            val usageStatsList = usageStatsManager.queryUsageStats(
+                UsageStatsManager.INTERVAL_DAILY,
+                startTime,
+                endTime
+            )
+            usageStatsList?.forEach { stats ->
+                val packageName = stats.packageName
+                val totalTime = stats.totalTimeInForeground
+                if (totalTime > 0) {
+                    appUsageMap[packageName] = (appUsageMap[packageName] ?: 0L) + totalTime
+                    appLastUsedMap[packageName] = stats.lastTimeUsed
+                }
             }
         }
 
-        // Convert to list and sort by usage time
-        val apps = appUsageMap.map { (packageName, totalTime) ->
-            val appName = try {
-                val appInfo = packageManager.getApplicationInfo(packageName, 0)
-                packageManager.getApplicationLabel(appInfo).toString()
-            } catch (e: Exception) {
-                packageName
+        // Filter to user apps only and convert to list
+        val apps = appUsageMap
+            .filter { (packageName, totalTime) ->
+                totalTime > 0 && isUserApp(packageName, packageManager)
             }
+            .map { (packageName, totalTime) ->
+                var appName = packageName
+                var iconUrl = ""
 
-            mapOf(
-                "packageName" to packageName,
-                "appName" to appName,
-                "timeInForeground" to totalTime,
-                "lastTimeUsed" to (usageStatsList?.find { it.packageName == packageName }?.lastTimeUsed ?: 0L)
-            )
-        }.sortedByDescending { it["timeInForeground"] as Long }
+                try {
+                    val appInfo = packageManager.getApplicationInfo(packageName, 0)
+                    appName = packageManager.getApplicationLabel(appInfo).toString()
+
+                    // Get app icon
+                    val icon = packageManager.getApplicationIcon(appInfo)
+                    iconUrl = drawableToBase64(icon)
+                } catch (e: Exception) {
+                    // Keep default values
+                }
+
+                mapOf(
+                    "packageName" to packageName,
+                    "appName" to appName,
+                    "timeInForeground" to totalTime,
+                    "lastTimeUsed" to (appLastUsedMap[packageName] ?: 0L),
+                    "iconUrl" to iconUrl
+                )
+            }.sortedByDescending { it["timeInForeground"] as Long }
 
         val totalScreenTime = apps.sumOf { it["timeInForeground"] as Long }
 
@@ -187,16 +249,65 @@ class UsageStatsModule : Module() {
                 add(Calendar.DAY_OF_YEAR, 1)
             }
 
-            val usageStats = usageStatsManager.queryUsageStats(
-                UsageStatsManager.INTERVAL_DAILY,
-                dayStart.timeInMillis,
-                minOf(dayEnd.timeInMillis, System.currentTimeMillis())
-            )
+            val actualEndTime = minOf(dayEnd.timeInMillis, System.currentTimeMillis())
+
+            // Skip future days
+            if (dayStart.timeInMillis > System.currentTimeMillis()) {
+                return@map mapOf(
+                    "day" to dayNames[dayIndex],
+                    "hours" to 0.0
+                )
+            }
 
             var totalTime = 0L
-            usageStats?.forEach { stats ->
-                if (stats.totalTimeInForeground > 0 && isUserApp(stats.packageName, packageManager)) {
-                    totalTime += stats.totalTimeInForeground
+
+            try {
+                // Use UsageEvents for accurate tracking
+                val events = usageStatsManager.queryEvents(dayStart.timeInMillis, actualEndTime)
+                val event = android.app.usage.UsageEvents.Event()
+                val appForegroundStart = mutableMapOf<String, Long>()
+
+                while (events.hasNextEvent()) {
+                    events.getNextEvent(event)
+                    val packageName = event.packageName
+
+                    when (event.eventType) {
+                        1 -> { // MOVE_TO_FOREGROUND
+                            appForegroundStart[packageName] = event.timeStamp
+                        }
+                        2 -> { // MOVE_TO_BACKGROUND
+                            val foregroundStart = appForegroundStart[packageName]
+                            if (foregroundStart != null && foregroundStart > 0 && isUserApp(packageName, packageManager)) {
+                                val duration = event.timeStamp - foregroundStart
+                                if (duration > 0 && duration < 24 * 60 * 60 * 1000) {
+                                    totalTime += duration
+                                }
+                            }
+                            appForegroundStart[packageName] = 0L
+                        }
+                    }
+                }
+
+                // Handle apps still in foreground at end of day/current time
+                appForegroundStart.forEach { (packageName, startTime) ->
+                    if (startTime > 0 && isUserApp(packageName, packageManager)) {
+                        val duration = actualEndTime - startTime
+                        if (duration > 0 && duration < 24 * 60 * 60 * 1000) {
+                            totalTime += duration
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                // Fallback to UsageStats
+                val usageStats = usageStatsManager.queryUsageStats(
+                    UsageStatsManager.INTERVAL_DAILY,
+                    dayStart.timeInMillis,
+                    actualEndTime
+                )
+                usageStats?.forEach { stats ->
+                    if (stats.totalTimeInForeground > 0 && isUserApp(stats.packageName, packageManager)) {
+                        totalTime += stats.totalTimeInForeground
+                    }
                 }
             }
 
@@ -216,10 +327,12 @@ class UsageStatsModule : Module() {
             val commonApps = listOf(
                 "instagram", "youtube", "tiktok", "twitter", "facebook",
                 "whatsapp", "snapchat", "reddit", "discord", "spotify",
-                "netflix", "twitch", "telegram", "messenger", "pinterest"
+                "netflix", "twitch", "telegram", "messenger", "pinterest",
+                "chrome", "firefox", "opera", "brave", "edge", "samsung",
+                "gmail", "outlook", "maps", "photos", "camera", "gallery"
             )
             val isCommonApp = commonApps.any { packageName.lowercase().contains(it) }
-            
+
             !isSystemApp || isCommonApp
         } catch (e: Exception) {
             false
@@ -258,14 +371,56 @@ class UsageStatsModule : Module() {
         val pm = context.packageManager
         val intent = Intent(Intent.ACTION_MAIN, null)
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
-        
+
         val apps = pm.queryIntentActivities(intent, 0)
-        
-        return apps.map { resolveInfo ->
-            mapOf(
-                "packageName" to resolveInfo.activityInfo.packageName,
-                "appName" to resolveInfo.loadLabel(pm).toString()
-            )
+
+        return apps.mapNotNull { resolveInfo ->
+            try {
+                val packageName = resolveInfo.activityInfo.packageName
+                val appName = resolveInfo.loadLabel(pm).toString()
+                val icon = resolveInfo.loadIcon(pm)
+                val iconBase64 = drawableToBase64(icon)
+
+                // Filter out system apps (optional)
+                val appInfo = pm.getApplicationInfo(packageName, 0)
+                val isSystemApp = (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
+
+                // Include user apps and popular system apps
+                val shouldInclude = !isSystemApp || isUserApp(packageName, pm)
+
+                if (shouldInclude) {
+                    mapOf(
+                        "packageName" to packageName,
+                        "appName" to appName,
+                        "iconUrl" to iconBase64
+                    )
+                } else {
+                    null
+                }
+            } catch (e: Exception) {
+                null
+            }
         }.sortedBy { it["appName"] }
+    }
+
+    private fun drawableToBase64(drawable: Drawable): String {
+        val bitmap = when (drawable) {
+            is BitmapDrawable -> drawable.bitmap
+            else -> {
+                val bitmap = Bitmap.createBitmap(
+                    drawable.intrinsicWidth,
+                    drawable.intrinsicHeight,
+                    Bitmap.Config.ARGB_8888
+                )
+                val canvas = Canvas(bitmap)
+                drawable.setBounds(0, 0, canvas.width, canvas.height)
+                drawable.draw(canvas)
+                bitmap
+            }
+        }
+
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        return "data:image/png;base64," + Base64.encodeToString(outputStream.toByteArray(), Base64.NO_WRAP)
     }
 }

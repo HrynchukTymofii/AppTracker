@@ -22,6 +22,7 @@ export interface AppUsage {
   appName: string;
   timeInForeground: number;
   lastTimeUsed: number;
+  iconUrl?: string;
 }
 
 export interface DailyUsage {
@@ -32,6 +33,7 @@ export interface DailyUsage {
 export interface InstalledApp {
   packageName: string;
   appName: string;
+  iconUrl?: string;
 }
 
 // This will throw an error if the module is not available

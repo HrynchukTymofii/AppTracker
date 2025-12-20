@@ -1,0 +1,308 @@
+{
+  "common": {
+    "loading": "Завантаження...",
+    "save": "Зберегти",
+    "cancel": "Скасувати",
+    "delete": "Видалити",
+    "confirm": "Підтвердити",
+    "error": "Помилка",
+    "success": "Успіх",
+    "close": "Закрити",
+    "add": "Додати",
+    "edit": "Редагувати",
+    "remove": "Видалити",
+    "settings": "Налаштування",
+    "back": "Назад",
+    "next": "Далі",
+    "done": "Готово"
+  },
+  "tabs": {
+    "home": "Головна",
+    "blocking": "Блокування",
+    "detox": "Детокс",
+    "stats": "Статистика",
+    "profile": "Профіль"
+  },
+  "home": {
+    "title": "LockIn",
+    "health": "ЗДОРОВ'Я",
+    "appUsageToday": "Використання Додатків Сьогодні",
+    "loadingApps": "Завантаження додатків...",
+    "focusModeActive": "Режим Фокусу Активний",
+    "appsBlocked": "додатків заблоковано",
+    "quickMenu": {
+      "stats": "Статистика",
+      "statsDesc": "Переглянути детальну статистику використання",
+      "blocking": "Блокування",
+      "blockingDesc": "Керувати заблокованими додатками",
+      "detox": "Детокс",
+      "detoxDesc": "Запустити таймер детоксу телефону",
+      "calendar": "Календар",
+      "calendarDesc": "Плануйте свої завдання"
+    }
+  },
+  "stats": {
+    "title": "Звіт LockIn",
+    "thisWeek": "Цього Тижня",
+    "lastWeek": "Минулого Тижня",
+    "weeksAhead_one": "Через {{count}} Тиждень",
+    "weeksAhead_other": "Через {{count}} Тижні(в)",
+    "weeksAgo_one": "{{count}} Тиждень Тому",
+    "weeksAgo_other": "{{count}} Тижні(в) Тому",
+    "totalHours": "ВСЬОГО ГОДИН",
+    "dailyAvg": "СЕРЕДНЄ ЗА ДЕНЬ",
+    "peekDay": "ПІКОВЕ ДЕНЬ",
+    "pickups": "РОЗБЛОКУВАНЬ",
+    "perDay": "/день",
+    "statsPerDay": "Статистика За День",
+    "usageCalendar": "Календар Використання",
+    "totalTimePerApp": "Загальний Час На Додаток",
+    "loadingStats": "Завантаження статистики...",
+    "noData": "Немає Даних",
+    "health": {
+      "poor": "Погано",
+      "low": "Низько",
+      "avg": "Середнє",
+      "good": "Добре",
+      "great": "Відмінно",
+      "label": "Здоров'я:"
+    },
+    "dayNames": {
+      "sun": "Нд",
+      "mon": "Пн",
+      "tue": "Вт",
+      "wed": "Ср",
+      "thu": "Чт",
+      "fri": "Пт",
+      "sat": "Сб"
+    },
+    "dayNamesFull": {
+      "sunday": "Неділя",
+      "monday": "Понеділок",
+      "tuesday": "Вівторок",
+      "wednesday": "Середа",
+      "thursday": "Четвер",
+      "friday": "П'ятниця",
+      "saturday": "Субота"
+    },
+    "noUsageData": "Поки немає даних про використання",
+    "healthScore": "Показник Здоров'я",
+    "screenTime": "Час Екрану",
+    "topApps": "Топ 3 Додатки"
+  },
+  "blocking": {
+    "title": "Блокування",
+    "setupRequired": "Потрібне Налаштування",
+    "permissionsDesc": "Для блокування додатків потрібні спеціальні дозволи. Будь ласка, увімкніть:",
+    "accessibilityService": "1. Служба Спеціальних Можливостей",
+    "displayOverOtherApps": "2. Відображення Поверх Інших Додатків",
+    "quickActions": "Швидкі Дії",
+    "startFocus": "Почати Фокус",
+    "newSchedule": "Новий Розклад",
+    "schedules": "Розклади",
+    "noSchedulesYet": "Розкладів поки немає.",
+    "createScheduleHint": "Створіть розклад для автоматичного блокування додатків.",
+    "blockedApps": "Заблоковані Додатки",
+    "noAppsBlocked": "Жодного додатку не заблоковано.",
+    "addAppsHint": "Додайте додатки, щоб почати блокування.",
+    "focusSessionActive": "Сеанс Фокусу Активний",
+    "taskRequiredToUnlock": "Для розблокування потрібне завдання",
+    "timeRemaining": "залишилось",
+    "completeTaskUnlock": "Виконати Завдання і Розблокувати",
+    "endSession": "Завершити Сеанс",
+    "calendarView": "Перегляд Календаря",
+    "everyday": "Щодня",
+    "weekdays": "Будні",
+    "activeToday": "активні сьогодні",
+    "scheduledForDay": "для цього дня",
+    "noSchedulesWere": "Цього дня не було активних розкладів",
+    "noActiveSchedules": "Немає активних розкладів на сьогодні",
+    "noSchedulesPlanned": "Немає запланованих розкладів на цей день",
+    "blockTypes": {
+      "manual": "Заблоковано вручну",
+      "scheduled": "Заплановане блокування",
+      "focus": "Сеанс фокусу",
+      "task": "Потрібне завдання",
+      "dailyLimit": "Денний ліміт"
+    },
+    "modals": {
+      "selectApps": "Виберіть Додатки для Блокування",
+      "confirmSelection": "Підтвердити Вибір ({{count}})",
+      "newSchedule": "Новий Розклад",
+      "scheduleName": "НАЗВА РОЗКЛАДУ",
+      "scheduleNamePlaceholder": "напр., Робочі Години",
+      "appsToBlock": "ДОДАТКИ ДЛЯ БЛОКУВАННЯ",
+      "selectAppsPlaceholder": "Виберіть додатки...",
+      "appsSelected": "Вибрано додатків: {{count}}",
+      "startTime": "ЧАС ПОЧАТКУ",
+      "endTime": "ЧАС ЗАВЕРШЕННЯ",
+      "repeatOn": "ПОВТОРЮВАТИ У",
+      "saveSchedule": "Зберегти Розклад",
+      "startFocusSession": "Почати Сеанс Фокусу",
+      "durationMinutes": "ТРИВАЛІСТЬ (ХВИЛИНИ)",
+      "requireTaskCompletion": "Вимагати Виконання Завдання",
+      "unlockAfterTask": "Розблокувати тільки після виконання реального завдання",
+      "selectTask": "ВИБРАТИ ЗАВДАННЯ",
+      "describeTask": "Опишіть своє завдання...",
+      "takeBeforePhoto": "ЗРОБИТИ ФОТО \"ДО\"",
+      "tapToTakePhoto": "Натисніть, щоб зробити фото",
+      "startFocusDuration": "Почати Фокус ({{duration}} хвилин)",
+      "openAIApiKey": "OPENAI API КЛЮЧ (для перевірки завдань)",
+      "apiKeySaved": "API ключ збережено",
+      "saveSettings": "Зберегти Налаштування",
+      "loadingApps": "Завантаження додатків...",
+      "selectAll": "Вибрати Всі Додатки",
+      "deselectAll": "Скасувати Вибір",
+      "popularApps": "Популярні Додатки",
+      "moreApps": "Більше Додатків ({{count}})",
+      "showPopularOnly": "← Показати Лише Популярні"
+    },
+    "alerts": {
+      "enterScheduleName": "Будь ласка, введіть назву розкладу",
+      "selectAtLeastOneApp": "Будь ласка, виберіть принаймні один додаток",
+      "selectAtLeastOneDay": "Будь ласка, виберіть принаймні один день",
+      "selectAtLeastOneAppToBlock": "Будь ласка, виберіть принаймні один додаток для блокування",
+      "takeBeforePhoto": "Будь ласка, зробіть фото \"до\" для перевірки завдання",
+      "deleteSchedule": "Видалити Розклад",
+      "deleteScheduleConfirm": "Ви впевнені, що хочете видалити цей розклад?",
+      "taskVerified": "Завдання Перевірено!",
+      "taskVerifiedDesc": "Ваше завдання успішно перевірено.\n\nВпевненість: {{confidence}}%\n\n{{explanation}}",
+      "taskNotVerified": "Завдання Не Перевірено",
+      "taskNotVerifiedDesc": "Схоже, завдання не виконано.\n\n{{explanation}}\n\nБудь ласка, виконайте завдання і спробуйте знову.",
+      "apiKeySavedSuccess": "API ключ успішно збережено"
+    },
+    "presetTasks": {
+      "cleaning": "Прибирання",
+      "cooking": "Готування",
+      "exercise": "Фізичні Вправи",
+      "reading": "Читання",
+      "custom": "Власне"
+    }
+  },
+  "detox": {
+    "title": "Детокс"
+  },
+  "profile": {
+    "title": "Профіль",
+    "proMember": "PRO-учасник",
+    "achievements": "Досягнення",
+    "viewAll": "Переглянути Все",
+    "quickActions": "Швидкі Дії",
+    "editProfile": "Редагувати Профіль",
+    "contactUs": "Зв'яжіться з Нами",
+    "rateUs": "Оцініть Нас",
+    "logOut": "Вихід",
+    "errorLoading": "Помилка при завантаженні профілю",
+    "loading": "Завантаження профілю..."
+  },
+  "achievements": {
+    "title": "Досягнення",
+    "unlocked": "Розблоковано",
+    "locked": "Заблоковано",
+    "unlockedCount": "{{count}} з {{total}} розблоковано",
+    "list": {
+      "firstBlock": {
+        "title": "Перший Раз",
+        "description": "Заблокуйте свій перший додаток"
+      },
+      "focusBeginner": {
+        "title": "Новачок Фокусу",
+        "description": "Завершіть перший сеанс фокусу"
+      },
+      "taskMaster": {
+        "title": "Майстер Завдань",
+        "description": "Завершіть перевірку завдання"
+      },
+      "earlyBird": {
+        "title": "Птах-вранець",
+        "description": "Почніть фокус до 8 ранку"
+      },
+      "nightOwl": {
+        "title": "Сова",
+        "description": "Використовуйте блокування після 22:00"
+      },
+      "discipline": {
+        "title": "Дисципліна",
+        "description": "7-денна серія блокування"
+      },
+      "ironWill": {
+        "title": "Залізна Воля",
+        "description": "Завершіть 10 сеансів фокусу"
+      },
+      "zenMaster": {
+        "title": "Майстер Дзен",
+        "description": "Завершіть 50 сеансів фокусу"
+      },
+      "schedulePro": {
+        "title": "Професіонал Розклади",
+        "description": "Створіть перший розклад"
+      },
+      "timeKeeper": {
+        "title": "Хранитель Часу",
+        "description": "Створіть 5 розкладів"
+      },
+      "digitalDetox": {
+        "title": "Цифровий Детокс",
+        "description": "Блокуйте додатки на 24 години"
+      },
+      "weekendWarrior": {
+        "title": "Воїн Вихідного",
+        "description": "Використовуйте блокування на вихідні"
+      },
+      "minimalist": {
+        "title": "Мініміаліст",
+        "description": "Одночасно заблокуйте 10+ додатків"
+      },
+      "focusLegend": {
+        "title": "Легенда Фокусу",
+        "description": "2-годинний сеанс фокусу"
+      },
+      "marathon": {
+        "title": "Марафон",
+        "description": "4-годинний сеанс фокусу"
+      },
+      "consistencyKing": {
+        "title": "Король Послідовності",
+        "description": "30-денна серія блокування"
+      },
+      "healthChampion": {
+        "title": "Чемпіон Здоров'я",
+        "description": "Досягніть показник здоров'я 90+"
+      },
+      "screenTimeSavior": {
+        "title": "Рятівник Часу Екрану",
+        "description": "Зменшіть час екрану на 50%"
+      },
+      "morningRoutine": {
+        "title": "Ранкова Рутина",
+        "description": "Блокуйте додатки 3 вранці"
+      },
+      "productivityBeast": {
+        "title": "Чудо Продуктивності",
+        "description": "Завершіть 5 перевірок завдань"
+      },
+      "appBlockerPro": {
+        "title": "Професіонал Блокування",
+        "description": "Заблокуйте 20+ різних додатків"
+      },
+      "focusFlow": {
+        "title": "Потік Фокусу",
+        "description": "3 сеанси фокусу в один день"
+      },
+      "digitalWellbeing": {
+        "title": "Цифрове Благополуччя",
+        "description": "Показник здоров'я 80+ на тиждень"
+      },
+      "selfControl": {
+        "title": "Самоконтроль",
+        "description": "Покладіться на розблокування 10 разів"
+      }
+    }
+  },
+  "language": {
+    "title": "Мова",
+    "selectLanguage": "Вибрати Мову",
+    "systemDefault": "Системна За Замовчуванням",
+    "currentLanguage": "Поточна Мова"
+  }
+}

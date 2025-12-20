@@ -1,0 +1,308 @@
+{
+  "common": {
+    "loading": "جاري التحميل...",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "confirm": "تأكيد",
+    "error": "خطأ",
+    "success": "نجح",
+    "close": "إغلاق",
+    "add": "إضافة",
+    "edit": "تعديل",
+    "remove": "إزالة",
+    "settings": "الإعدادات",
+    "back": "رجوع",
+    "next": "التالي",
+    "done": "تم"
+  },
+  "tabs": {
+    "home": "الرئيسية",
+    "blocking": "الحظر",
+    "detox": "التخلص من السموم",
+    "stats": "الإحصائيات",
+    "profile": "الملف الشخصي"
+  },
+  "home": {
+    "title": "LockIn",
+    "health": "الصحة",
+    "appUsageToday": "استخدام التطبيقات اليوم",
+    "loadingApps": "جاري تحميل التطبيقات...",
+    "focusModeActive": "وضع التركيز نشط",
+    "appsBlocked": "تطبيقات محظورة",
+    "quickMenu": {
+      "stats": "الإحصائيات",
+      "statsDesc": "عرض إحصائيات الاستخدام التفصيلية",
+      "blocking": "الحظر",
+      "blockingDesc": "إدارة التطبيقات المحظورة",
+      "detox": "التخلص من السموم",
+      "detoxDesc": "بدء مؤقت التخلص من سموم الهاتف",
+      "calendar": "التقويم",
+      "calendarDesc": "جدولة مهامك"
+    }
+  },
+  "stats": {
+    "title": "تقرير LockIn",
+    "thisWeek": "هذا الأسبوع",
+    "lastWeek": "الأسبوع الماضي",
+    "weeksAhead_one": "بعد {{count}} أسبوع",
+    "weeksAhead_other": "بعد {{count}} أسابيع",
+    "weeksAgo_one": "منذ {{count}} أسبوع",
+    "weeksAgo_other": "منذ {{count}} أسابيع",
+    "totalHours": "إجمالي الساعات",
+    "dailyAvg": "المعدل اليومي",
+    "peekDay": "اليوم الأكثر استخداماً",
+    "pickups": "عمليات الفتح",
+    "perDay": "/يوم",
+    "statsPerDay": "الإحصائيات اليومية",
+    "usageCalendar": "تقويم الاستخدام",
+    "totalTimePerApp": "إجمالي الوقت لكل تطبيق",
+    "loadingStats": "جاري تحميل الإحصائيات...",
+    "noData": "لا توجد بيانات",
+    "health": {
+      "poor": "ضعيف",
+      "low": "منخفض",
+      "avg": "متوسط",
+      "good": "جيد",
+      "great": "ممتاز",
+      "label": "الصحة:"
+    },
+    "dayNames": {
+      "sun": "الأحد",
+      "mon": "الإثنين",
+      "tue": "الثلاثاء",
+      "wed": "الأربعاء",
+      "thu": "الخميس",
+      "fri": "الجمعة",
+      "sat": "السبت"
+    },
+    "dayNamesFull": {
+      "sunday": "الأحد",
+      "monday": "الإثنين",
+      "tuesday": "الثلاثاء",
+      "wednesday": "الأربعاء",
+      "thursday": "الخميس",
+      "friday": "الجمعة",
+      "saturday": "السبت"
+    },
+    "noUsageData": "لا توجد بيانات استخدام بعد",
+    "healthScore": "درجة الصحة",
+    "screenTime": "وقت الشاشة",
+    "topApps": "أفضل 3 تطبيقات"
+  },
+  "blocking": {
+    "title": "الحظر",
+    "setupRequired": "الإعداد مطلوب",
+    "permissionsDesc": "يتطلب حظر التطبيقات أذونات خاصة. يرجى تمكين:",
+    "accessibilityService": "1. خدمة إمكانية الوصول",
+    "displayOverOtherApps": "2. العرض فوق التطبيقات الأخرى",
+    "quickActions": "الإجراءات السريعة",
+    "startFocus": "بدء التركيز",
+    "newSchedule": "جدول جديد",
+    "schedules": "الجداول",
+    "noSchedulesYet": "لا توجد جداول بعد.",
+    "createScheduleHint": "أنشئ واحداً لحظر التطبيقات تلقائياً.",
+    "blockedApps": "التطبيقات المحظورة",
+    "noAppsBlocked": "لا توجد تطبيقات محظورة.",
+    "addAppsHint": "أضف تطبيقات لبدء الحظر.",
+    "focusSessionActive": "جلسة التركيز نشطة",
+    "taskRequiredToUnlock": "المهمة مطلوبة لفتح القفل",
+    "timeRemaining": "المتبقي",
+    "completeTaskUnlock": "إكمال المهمة وفتح القفل",
+    "endSession": "إنهاء الجلسة",
+    "calendarView": "عرض التقويم",
+    "everyday": "كل يوم",
+    "weekdays": "أيام الأسبوع",
+    "activeToday": "نشط اليوم",
+    "scheduledForDay": "لهذا اليوم",
+    "noSchedulesWere": "لم تكن هناك جداول نشطة في هذا اليوم",
+    "noActiveSchedules": "لا توجد جداول نشطة لليوم",
+    "noSchedulesPlanned": "لا توجد جداول مخططة لهذا اليوم",
+    "blockTypes": {
+      "manual": "محظور يدوياً",
+      "scheduled": "حظر مجدول",
+      "focus": "جلسة تركيز",
+      "task": "المهمة مطلوبة",
+      "dailyLimit": "الحد اليومي"
+    },
+    "modals": {
+      "selectApps": "اختر التطبيقات للحظر",
+      "confirmSelection": "تأكيد الاختيار ({{count}})",
+      "newSchedule": "جدول جديد",
+      "scheduleName": "اسم الجدول",
+      "scheduleNamePlaceholder": "مثال: ساعات العمل",
+      "appsToBlock": "التطبيقات المراد حظرها",
+      "selectAppsPlaceholder": "اختر التطبيقات...",
+      "appsSelected": "تم اختيار {{count}} تطبيقات",
+      "startTime": "وقت البدء",
+      "endTime": "وقت الانتهاء",
+      "repeatOn": "التكرار في",
+      "saveSchedule": "حفظ الجدول",
+      "startFocusSession": "بدء جلسة التركيز",
+      "durationMinutes": "المدة (بالدقائق)",
+      "requireTaskCompletion": "يتطلب إكمال المهمة",
+      "unlockAfterTask": "فتح القفل فقط بعد إكمال مهمة حقيقية",
+      "selectTask": "اختر المهمة",
+      "describeTask": "صف مهمتك...",
+      "takeBeforePhoto": "التقط صورة \"قبل\"",
+      "tapToTakePhoto": "اضغط لالتقاط الصورة",
+      "startFocusDuration": "بدء التركيز ({{duration}} دقيقة)",
+      "openAIApiKey": "مفتاح OPENAI API (للتحقق من المهام)",
+      "apiKeySaved": "تم حفظ مفتاح API",
+      "saveSettings": "حفظ الإعدادات",
+      "loadingApps": "جاري تحميل التطبيقات...",
+      "selectAll": "تحديد جميع التطبيقات",
+      "deselectAll": "إلغاء تحديد الكل",
+      "popularApps": "التطبيقات الشائعة",
+      "moreApps": "المزيد من التطبيقات ({{count}})",
+      "showPopularOnly": "→ عرض الشائعة فقط"
+    },
+    "alerts": {
+      "enterScheduleName": "يرجى إدخال اسم للجدول",
+      "selectAtLeastOneApp": "يرجى اختيار تطبيق واحد على الأقل",
+      "selectAtLeastOneDay": "يرجى اختيار يوم واحد على الأقل",
+      "selectAtLeastOneAppToBlock": "يرجى اختيار تطبيق واحد على الأقل للحظر",
+      "takeBeforePhoto": "يرجى التقاط صورة \"قبل\" للتحقق من المهمة",
+      "deleteSchedule": "حذف الجدول",
+      "deleteScheduleConfirm": "هل أنت متأكد أنك تريد حذف هذا الجدول؟",
+      "taskVerified": "تم التحقق من المهمة!",
+      "taskVerifiedDesc": "تم التحقق من مهمتك بنجاح.\n\nالثقة: {{confidence}}%\n\n{{explanation}}",
+      "taskNotVerified": "لم يتم التحقق من المهمة",
+      "taskNotVerifiedDesc": "يبدو أن المهمة لم تكتمل.\n\n{{explanation}}\n\nيرجى إكمال المهمة والمحاولة مرة أخرى.",
+      "apiKeySavedSuccess": "تم حفظ مفتاح API بنجاح"
+    },
+    "presetTasks": {
+      "cleaning": "التنظيف",
+      "cooking": "الطبخ",
+      "exercise": "التمرين",
+      "reading": "القراءة",
+      "custom": "مخصص"
+    }
+  },
+  "detox": {
+    "title": "التخلص من السموم"
+  },
+  "profile": {
+    "title": "الملف الشخصي",
+    "proMember": "عضو PRO",
+    "achievements": "الإنجازات",
+    "viewAll": "عرض الكل",
+    "quickActions": "الإجراءات السريعة",
+    "editProfile": "تحرير الملف الشخصي",
+    "contactUs": "اتصل بنا",
+    "rateUs": "قيمنا",
+    "logOut": "تسجيل الخروج",
+    "errorLoading": "خطأ في تحميل الملف الشخصي",
+    "loading": "جاري تحميل الملف الشخصي..."
+  },
+  "achievements": {
+    "title": "الإنجازات",
+    "unlocked": "تم فتح القفل",
+    "locked": "مقفول",
+    "unlockedCount": "{{count}} من {{total}} تم فتح القفل عنها",
+    "list": {
+      "firstBlock": {
+        "title": "المرة الأولى",
+        "description": "حظر تطبيقك الأول"
+      },
+      "focusBeginner": {
+        "title": "مبتدئ التركيز",
+        "description": "أكمل جلسة التركيز الأولى"
+      },
+      "taskMaster": {
+        "title": "مسيطر المهام",
+        "description": "أكمل التحقق من المهمة"
+      },
+      "earlyBird": {
+        "title": "مبكر الاستيقاظ",
+        "description": "ابدأ التركيز قبل الساعة 8 صباحا"
+      },
+      "nightOwl": {
+        "title": "مثابر الليل",
+        "description": "استخدم الحظر بعد الساعة 10 مساء"
+      },
+      "discipline": {
+        "title": "الانضباط",
+        "description": "سلسلة حظر لمدة 7 أيام"
+      },
+      "ironWill": {
+        "title": "الإرادة القوية",
+        "description": "أكمل 10 جلسات تركيز"
+      },
+      "zenMaster": {
+        "title": "سيد الهدوء",
+        "description": "أكمل 50 جلسة تركيز"
+      },
+      "schedulePro": {
+        "title": "محترف الجدولة",
+        "description": "أنشئ أول جدول لك"
+      },
+      "timeKeeper": {
+        "title": "حافظ الوقت",
+        "description": "أنشئ 5 جداول"
+      },
+      "digitalDetox": {
+        "title": "التخلص من السموم الرقمية",
+        "description": "حظر التطبيقات لمدة 24 ساعة"
+      },
+      "weekendWarrior": {
+        "title": "محارب نهاية الأسبوع",
+        "description": "استخدم الحظر في نهايات الأسبوع"
+      },
+      "minimalist": {
+        "title": "الميّال للبساطة",
+        "description": "حظر 10+ تطبيقات في نفس الوقت"
+      },
+      "focusLegend": {
+        "title": "أسطورة التركيز",
+        "description": "جلسة تركيز لمدة ساعتين"
+      },
+      "marathon": {
+        "title": "ماراثون",
+        "description": "جلسة تركيز لمدة 4 ساعات"
+      },
+      "consistencyKing": {
+        "title": "ملك الاستمرارية",
+        "description": "سلسلة حظر لمدة 30 يوم"
+      },
+      "healthChampion": {
+        "title": "بطل الصحة",
+        "description": "حقق درجة صحة 90+"
+      },
+      "screenTimeSavior": {
+        "title": "منقذ وقت الشاشة",
+        "description": "قلل وقت الشاشة بنسبة 50%"
+      },
+      "morningRoutine": {
+        "title": "روتين الصباح",
+        "description": "حظر التطبيقات 3 صباحات"
+      },
+      "productivityBeast": {
+        "title": "وحش الإنتاجية",
+        "description": "أكمل 5 تحققات من المهام"
+      },
+      "appBlockerPro": {
+        "title": "احترافي حظر التطبيقات",
+        "description": "حظر 20+ تطبيقات مختلفة"
+      },
+      "focusFlow": {
+        "title": "تدفق التركيز",
+        "description": "3 جلسات تركيز في يوم واحد"
+      },
+      "digitalWellbeing": {
+        "title": "الرفاهية الرقمية",
+        "description": "درجة صحة 80+ لمدة أسبوع"
+      },
+      "selfControl": {
+        "title": "ضبط النفس",
+        "description": "قاوم فتح القفل 10 مرات"
+      }
+    }
+  },
+  "language": {
+    "title": "اللغة",
+    "selectLanguage": "اختر اللغة",
+    "systemDefault": "الافتراضي للنظام",
+    "currentLanguage": "اللغة الحالية"
+  }
+}

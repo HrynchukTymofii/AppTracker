@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { ExpoConfig } from "expo/config";
 
 const config: ExpoConfig = {
@@ -88,6 +89,22 @@ const config: ExpoConfig = {
       },
     ],
     "./plugins/withUsageStats.js",
+    [
+      "expo-build-properties",
+      {
+        ios: {
+          deploymentTarget: "15.1",
+        },
+        android: {
+          compileSdkVersion: 35,
+          targetSdkVersion: 35,
+          minSdkVersion: 26,
+        },
+      },
+    ],
+    "expo-sqlite",
+    "expo-video",
+    "expo-web-browser"
   ],
 
   experiments: {
@@ -98,7 +115,11 @@ const config: ExpoConfig = {
     androidClientId: process.env.ANDROID_GOOGLE_CLIENT_ID,
     iosClientId: process.env.IOS_GOOGLE_CLIENT_ID,
     webClientId: process.env.GOOGLE_CLIENT_ID,
+    openAiApiKey: process.env.OPEN_AI_API_KEY,
     router: {},
+    eas: {
+      projectId: "0184c7dc-cb6e-4a07-ac66-5f86bfad673e"
+    }
   },
 
   splash: {

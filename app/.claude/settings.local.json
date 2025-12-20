@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo:*)",
+      "Bash(npx expo run:android)",
+      "mcp__ide__getDiagnostics",
+      "Bash(npm install:*)",
+      "Bash(grep:*)",
+      "Bash(done)",
+      "Bash(ls:*)",
+      "Bash(for file in ar-SA.json de-DE.json en-GB.json en-US.json es-ES.json fr-FR.json hi-IN.json it-IT.json ja-JP.json ko-KR.json nl-NL.json pl-PL.json pt-BR.json uk-UA.json zh-CN.json)",
+      "Bash(do echo \"Validating $file...\")",
+      "Bash(node -e:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx prettier --write \"app/\\(tabs\\)/blocking/index.tsx\")",
+      "Bash(wc:*)"
+    ]
+  }
+}

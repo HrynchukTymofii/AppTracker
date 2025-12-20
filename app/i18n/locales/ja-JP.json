@@ -1,0 +1,308 @@
+{
+  "common": {
+    "loading": "読み込み中...",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "confirm": "確認",
+    "error": "エラー",
+    "success": "成功",
+    "close": "閉じる",
+    "add": "追加",
+    "edit": "編集",
+    "remove": "削除",
+    "settings": "設定",
+    "back": "戻る",
+    "next": "次へ",
+    "done": "完了"
+  },
+  "tabs": {
+    "home": "ホーム",
+    "blocking": "ブロック",
+    "detox": "デトックス",
+    "stats": "統計",
+    "profile": "プロフィール"
+  },
+  "home": {
+    "title": "LockIn",
+    "health": "健康度",
+    "appUsageToday": "今日のアプリ使用",
+    "loadingApps": "アプリを読み込み中...",
+    "focusModeActive": "集中モード有効",
+    "appsBlocked": "個のアプリがブロック中",
+    "quickMenu": {
+      "stats": "統計",
+      "statsDesc": "詳細な使用統計を表示",
+      "blocking": "ブロック",
+      "blockingDesc": "ブロックしたアプリを管理",
+      "detox": "デトックス",
+      "detoxDesc": "スマホデトックスタイマーを開始",
+      "calendar": "カレンダー",
+      "calendarDesc": "タスクをスケジュール"
+    }
+  },
+  "stats": {
+    "title": "LockIn レポート",
+    "thisWeek": "今週",
+    "lastWeek": "先週",
+    "weeksAhead_one": "{{count}}週間後",
+    "weeksAhead_other": "{{count}}週間後",
+    "weeksAgo_one": "{{count}}週間前",
+    "weeksAgo_other": "{{count}}週間前",
+    "totalHours": "合計時間",
+    "dailyAvg": "1日平均",
+    "peekDay": "ピーク日",
+    "pickups": "起動回数",
+    "perDay": "/日",
+    "statsPerDay": "1日あたりの統計",
+    "usageCalendar": "使用カレンダー",
+    "totalTimePerApp": "アプリごとの合計時間",
+    "loadingStats": "統計を読み込み中...",
+    "noData": "データなし",
+    "health": {
+      "poor": "不良",
+      "low": "低い",
+      "avg": "平均",
+      "good": "良い",
+      "great": "優秀",
+      "label": "健康度："
+    },
+    "dayNames": {
+      "sun": "日",
+      "mon": "月",
+      "tue": "火",
+      "wed": "水",
+      "thu": "木",
+      "fri": "金",
+      "sat": "土"
+    },
+    "dayNamesFull": {
+      "sunday": "日曜日",
+      "monday": "月曜日",
+      "tuesday": "火曜日",
+      "wednesday": "水曜日",
+      "thursday": "木曜日",
+      "friday": "金曜日",
+      "saturday": "土曜日"
+    },
+    "noUsageData": "使用データがありません",
+    "healthScore": "健康スコア",
+    "screenTime": "スクリーン時間",
+    "topApps": "トップ3アプリ"
+  },
+  "blocking": {
+    "title": "ブロック",
+    "setupRequired": "セットアップが必要",
+    "permissionsDesc": "アプリのブロックには特別な権限が必要です。次を有効にしてください：",
+    "accessibilityService": "1. ユーザー補助サービス",
+    "displayOverOtherApps": "2. 他のアプリの上に表示",
+    "quickActions": "クイックアクション",
+    "startFocus": "集中開始",
+    "newSchedule": "新しいスケジュール",
+    "schedules": "スケジュール",
+    "noSchedulesYet": "スケジュールがありません。",
+    "createScheduleHint": "作成してアプリを自動的にブロックします。",
+    "blockedApps": "ブロック中のアプリ",
+    "noAppsBlocked": "ブロック中のアプリがありません。",
+    "addAppsHint": "アプリを追加してブロックを開始します。",
+    "focusSessionActive": "集中セッション実行中",
+    "taskRequiredToUnlock": "ロック解除にはタスクが必要",
+    "timeRemaining": "残り",
+    "completeTaskUnlock": "タスクを完了してロック解除",
+    "endSession": "セッションを終了",
+    "calendarView": "カレンダー表示",
+    "everyday": "毎日",
+    "weekdays": "平日",
+    "activeToday": "本日有効",
+    "scheduledForDay": "この日",
+    "noSchedulesWere": "この日に有効なスケジュールはありませんでした",
+    "noActiveSchedules": "本日の有効なスケジュールはありません",
+    "noSchedulesPlanned": "この日のスケジュールはありません",
+    "blockTypes": {
+      "manual": "手動ブロック",
+      "scheduled": "スケジュールブロック",
+      "focus": "集中セッション",
+      "task": "タスクが必要",
+      "dailyLimit": "1日の制限"
+    },
+    "modals": {
+      "selectApps": "ブロックするアプリを選択",
+      "confirmSelection": "選択を確認 ({{count}})",
+      "newSchedule": "新しいスケジュール",
+      "scheduleName": "スケジュール名",
+      "scheduleNamePlaceholder": "例：勤務時間",
+      "appsToBlock": "ブロックするアプリ",
+      "selectAppsPlaceholder": "アプリを選択...",
+      "appsSelected": "{{count}}個のアプリを選択",
+      "startTime": "開始時刻",
+      "endTime": "終了時刻",
+      "repeatOn": "繰り返し",
+      "saveSchedule": "スケジュールを保存",
+      "startFocusSession": "集中セッションを開始",
+      "durationMinutes": "時間（分）",
+      "requireTaskCompletion": "タスクの完了を要求",
+      "unlockAfterTask": "実際のタスクを完了した後にのみロック解除",
+      "selectTask": "タスクを選択",
+      "describeTask": "タスクを説明してください...",
+      "takeBeforePhoto": "「実行前」の写真を撮る",
+      "tapToTakePhoto": "タップして写真を撮影",
+      "startFocusDuration": "集中開始（{{duration}}分）",
+      "openAIApiKey": "OPENAI APIキー（タスク検証用）",
+      "apiKeySaved": "APIキーが保存されました",
+      "saveSettings": "設定を保存",
+      "loadingApps": "アプリを読み込み中...",
+      "selectAll": "すべてのアプリを選択",
+      "deselectAll": "選択解除",
+      "popularApps": "人気アプリ",
+      "moreApps": "その他のアプリ ({{count}})",
+      "showPopularOnly": "← 人気のみ表示"
+    },
+    "alerts": {
+      "enterScheduleName": "スケジュール名を入力してください",
+      "selectAtLeastOneApp": "少なくとも1つのアプリを選択してください",
+      "selectAtLeastOneDay": "少なくとも1日を選択してください",
+      "selectAtLeastOneAppToBlock": "少なくとも1つのブロックするアプリを選択してください",
+      "takeBeforePhoto": "タスク検証のために「実行前」の写真を撮影してください",
+      "deleteSchedule": "スケジュールを削除",
+      "deleteScheduleConfirm": "このスケジュールを削除してもよろしいですか？",
+      "taskVerified": "タスク検証完了！",
+      "taskVerifiedDesc": "タスクが正常に検証されました。\n\n信頼度：{{confidence}}%\n\n{{explanation}}",
+      "taskNotVerified": "タスクが検証されませんでした",
+      "taskNotVerifiedDesc": "タスクが完了していないようです。\n\n{{explanation}}\n\nタスクを完了してもう一度お試しください。",
+      "apiKeySavedSuccess": "APIキーが正常に保存されました"
+    },
+    "presetTasks": {
+      "cleaning": "掃除",
+      "cooking": "料理",
+      "exercise": "運動",
+      "reading": "読書",
+      "custom": "カスタム"
+    }
+  },
+  "detox": {
+    "title": "デトックス"
+  },
+  "profile": {
+    "title": "プロフィール",
+    "proMember": "PROメンバー",
+    "achievements": "実績",
+    "viewAll": "すべて表示",
+    "quickActions": "クイックアクション",
+    "editProfile": "プロフィール編集",
+    "contactUs": "お問い合わせ",
+    "rateUs": "評価する",
+    "logOut": "ログアウト",
+    "errorLoading": "プロフィール読み込みエラー",
+    "loading": "プロフィール読み込み中..."
+  },
+  "achievements": {
+    "title": "実績",
+    "unlocked": "アンロック済み",
+    "locked": "ロック中",
+    "unlockedCount": "{{count}} / {{total}} アンロック",
+    "list": {
+      "firstBlock": {
+        "title": "初体験",
+        "description": "最初のアプリをブロック"
+      },
+      "focusBeginner": {
+        "title": "集中初心者",
+        "description": "最初の集中セッション完了"
+      },
+      "taskMaster": {
+        "title": "タスクマスター",
+        "description": "タスク検証を完了"
+      },
+      "earlyBird": {
+        "title": "朝型",
+        "description": "午前8時前に集中開始"
+      },
+      "nightOwl": {
+        "title": "夜型",
+        "description": "午後10時以降にブロック使用"
+      },
+      "discipline": {
+        "title": "規律",
+        "description": "7日間ブロック連続"
+      },
+      "ironWill": {
+        "title": "強い意志",
+        "description": "10回の集中セッション完了"
+      },
+      "zenMaster": {
+        "title": "禅マスター",
+        "description": "50回の集中セッション完了"
+      },
+      "schedulePro": {
+        "title": "スケジュール達人",
+        "description": "最初のスケジュール作成"
+      },
+      "timeKeeper": {
+        "title": "時間管理者",
+        "description": "5つのスケジュール作成"
+      },
+      "digitalDetox": {
+        "title": "デジタルデトックス",
+        "description": "アプリを24時間ブロック"
+      },
+      "weekendWarrior": {
+        "title": "週末の戦士",
+        "description": "週末にブロック使用"
+      },
+      "minimalist": {
+        "title": "ミニマリスト",
+        "description": "10以上のアプリを同時ブロック"
+      },
+      "focusLegend": {
+        "title": "集中の伝説",
+        "description": "2時間の集中セッション"
+      },
+      "marathon": {
+        "title": "マラソン",
+        "description": "4時間の集中セッション"
+      },
+      "consistencyKing": {
+        "title": "継続の王",
+        "description": "30日間ブロック連続"
+      },
+      "healthChampion": {
+        "title": "健康チャンピオン",
+        "description": "健康スコア90以上達成"
+      },
+      "screenTimeSavior": {
+        "title": "スクリーン時間削減者",
+        "description": "スクリーン時間を50%削減"
+      },
+      "morningRoutine": {
+        "title": "朝のルーティン",
+        "description": "3つの朝にアプリをブロック"
+      },
+      "productivityBeast": {
+        "title": "生産性の怪物",
+        "description": "5回のタスク検証完了"
+      },
+      "appBlockerPro": {
+        "title": "ブロッカープロ",
+        "description": "20以上のアプリをブロック"
+      },
+      "focusFlow": {
+        "title": "集中フロー",
+        "description": "1日に3つの集中セッション"
+      },
+      "digitalWellbeing": {
+        "title": "デジタルウェルビーイング",
+        "description": "1週間の健康スコア80以上"
+      },
+      "selfControl": {
+        "title": "自制心",
+        "description": "10回のロック解除を拒否"
+      }
+    }
+  },
+  "language": {
+    "title": "言語",
+    "selectLanguage": "言語を選択",
+    "systemDefault": "システムデフォルト",
+    "currentLanguage": "現在の言語"
+  }
+}

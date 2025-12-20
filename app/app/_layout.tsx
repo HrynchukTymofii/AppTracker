@@ -8,6 +8,7 @@ import { Redirect, Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import "../global.css";
+import "@/i18n/config"; // Initialize i18n
 import Toast from "react-native-toast-message";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { TourProvider } from "@/context/TourContext";
@@ -19,6 +20,7 @@ import * as SecureStore from "expo-secure-store";
 import { SQLiteProvider } from "expo-sqlite";
 import CustomPreloadScreen from "@/components/ui/CustomPreloadScreen";
 import * as Network from "expo-network";
+import { PermissionWrapper } from "@/components/PermissionWrapper";
 
 import {
   configureReanimatedLogger,
@@ -220,34 +222,31 @@ export default function RootLayout() {
               <AppSyncWrapper>
                  <TourProvider>
                 <CustomThemeProvider>
-                  <Stack screenOptions={{ headerShown: false }}>
-                    {/* Main tabs */}
-                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  <PermissionWrapper>
+                    <Stack screenOptions={{ headerShown: false }}>
+                      {/* Main tabs */}
+                      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
-                    {/* Auth screens */}
-                    <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-                    <Stack.Screen name="login" options={{ headerShown: false }} />
-                    <Stack.Screen name="register" options={{ headerShown: false }} />
-                    <Stack.Screen name="auth" options={{ headerShown: false }} />
-                    <Stack.Screen
-                      name="selling-onboarding"
-                      options={{ headerShown: false }}
-                    />
+                      {/* Auth screens */}
+                      <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+                      <Stack.Screen name="login" options={{ headerShown: false }} />
+                      <Stack.Screen name="auth" options={{ headerShown: false }} />
 
-                    {/* Profile & Settings */}
-                    <Stack.Screen name="edit-profile" options={{ headerShown: false }} />
-                    <Stack.Screen name="settings" options={{ headerShown: false }} />
-                    <Stack.Screen name="payment" options={{ headerShown: false }} />
+                      {/* Profile & Settings */}
+                      <Stack.Screen name="edit-profile" options={{ headerShown: false }} />
+                      <Stack.Screen name="settings" options={{ headerShown: false }} />
+                      <Stack.Screen name="payment" options={{ headerShown: false }} />
 
-                    {/* Calendar */}
-                    <Stack.Screen name="calendar" options={{ headerShown: false }} />
+                      {/* Calendar */}
+                      <Stack.Screen name="calendar" options={{ headerShown: false }} />
 
 
-                    {/* Not found */}
-                    <Stack.Screen name="+not-found" />
-                  </Stack>
-                  <Toast />
-                  <StatusBar style="auto" />
+                      {/* Not found */}
+                      <Stack.Screen name="+not-found" />
+                    </Stack>
+                    <Toast />
+                    <StatusBar style="auto" />
+                  </PermissionWrapper>
                 </CustomThemeProvider>
                 </TourProvider>
              </AppSyncWrapper>
