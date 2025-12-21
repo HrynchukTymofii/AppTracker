@@ -22,16 +22,15 @@ import {
 } from "@react-native-google-signin/google-signin";
 import { Mail } from "lucide-react-native";
 import { handleAppleLogin } from "@/hooks/useAppleLogin";
-import { useLoadUserInBackground } from "@/lib/user";
 
 // Configure Google Sign-In
 GoogleSignin.configure({
   webClientId:
-    "329617813146-lmmck18chg6mfgci5i4iddtialht09ij.apps.googleusercontent.com",
+    "325648358600-5bes4eglrneokj1mts29uk66psivn014.apps.googleusercontent.com",
   offlineAccess: true,
   forceCodeForRefreshToken: false,
   iosClientId:
-    "329617813146-3o5aq7gfvejqoi3mudiar02tl4urhivu.apps.googleusercontent.com",
+    "325648358600-kcva5u5mrtng9lqb8va9ba6h7s38lcsi.apps.googleusercontent.com",
 });
 
 export default function AuthLandingScreen() {
@@ -39,7 +38,6 @@ export default function AuthLandingScreen() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [appleLoading, setAppleLoading] = useState(false);
   const { setToken, setUser } = useAuth();
-  const { loadUserInBackground } = useLoadUserInBackground();
 
   const returnUrl = params.get("returnUrl");
   const safeReturnUrl =
@@ -81,11 +79,6 @@ export default function AuthLandingScreen() {
               visibilityTime: 700,
             });
             router.replace(safeReturnUrl as any);
-            loadUserInBackground({
-              token: data.token,
-              setUser,
-              forceSync: true,
-            });
           } else {
             Toast.show({
               type: "error",
@@ -130,7 +123,6 @@ export default function AuthLandingScreen() {
         setUser,
         router,
         safeReturnUrl,
-        loadUserInBackground,
       });
     } catch (err) {
       console.error("Apple login error:", err);

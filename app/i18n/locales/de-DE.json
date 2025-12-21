@@ -21,6 +21,7 @@
     "blocking": "Blockierung",
     "detox": "Detox",
     "stats": "Statistiken",
+    "community": "Gemeinschaft",
     "profile": "Profil"
   },
   "home": {
@@ -304,5 +305,29 @@
     "selectLanguage": "Sprache Auswählen",
     "systemDefault": "Systemstandard",
     "currentLanguage": "Aktuelle Sprache"
+  },
+  "community": {
+    "title": "Bestenliste",
+    "addFriends": "+ Freunde hinzufügen",
+    "membersCount_one": "{{count}} Freund",
+    "membersCount_other": "{{count}} Freunde",
+    "groupDescription": "Sieh die Bildschirmzeit deiner Freunde. Wird täglich um Mitternacht zurückgesetzt.",
+    "defaultGroupName": "Die Fokussierten",
+    "noGroupTitle": "Gruppe beitreten",
+    "noGroupDesc": "Verbinde dich mit Freunden und wetteifere gemeinsam um weniger Bildschirmzeit.",
+    "createGroup": "Gruppe erstellen",
+    "createGroupDesc": "Erstelle eine neue Gruppe und lade deine Freunde ein.",
+    "createGroupBtn": "Gruppe erstellen",
+    "joinGroupBtn": "Mit Code beitreten",
+    "joinGroup": "Gruppe beitreten",
+    "enterInviteCode": "Gib den 6-stelligen Einladungscode ein",
+    "join": "Beitreten",
+    "invalidCode": "Ungültiger Einladungscode. Bitte versuche es erneut.",
+    "shareMessage": "Tritt meiner Gruppe \"{{groupName}}\" auf LockIn bei! Code: {{code}}",
+    "tabs": {
+      "screenTime": "Bildschirmzeit",
+      "streak": "Serie",
+      "focusHours": "Fokuszeit"
+    }
   }
 }

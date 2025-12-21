@@ -1,37 +1,29 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Redirect, Stack, useRouter } from "expo-router";
+import {  Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import "../global.css";
-import "@/i18n/config"; // Initialize i18n
+import "@/i18n/config"; 
 import Toast from "react-native-toast-message";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { TourProvider } from "@/context/TourContext";
 import { ThemeProvider as CustomThemeProvider } from "@/context/ThemeContext";
 import { DetoxProvider } from "@/context/DetoxContext";
 import { BlockingProvider } from "@/context/BlockingContext";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { GroupProvider } from "@/context/GroupContext";
+import { Suspense, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { SQLiteProvider } from "expo-sqlite";
 import CustomPreloadScreen from "@/components/ui/CustomPreloadScreen";
 import * as Network from "expo-network";
 import { PermissionWrapper } from "@/components/PermissionWrapper";
-
 import {
   configureReanimatedLogger,
   ReanimatedLogLevel,
 } from "react-native-reanimated";
 import Purchases, { LOG_LEVEL } from "react-native-purchases";
-import { AppState, Platform, useColorScheme } from "react-native";
-import { useLoadUserInBackground } from "@/lib/user";
-import { processOfflineQueue } from "@/lib/offlineQueue";
+import { AppState, Platform} from "react-native";
 import { upgradeToPro, removePro } from "@/lib/api/user";
-import { scheduleDailyStudyReminder } from "@/lib/notifications";
 
 configureReanimatedLogger({
   level: ReanimatedLogLevel.warn,
@@ -41,7 +33,6 @@ configureReanimatedLogger({
 function AppSyncWrapper({ children }: { children: React.ReactNode }) {
   const { token, user, setUser } = useAuth();
   const [isOffline, setIsOffline] = useState(false);
-  const { loadUserInBackground } = useLoadUserInBackground();
 
   const syncIfOnline = async () => {
     if (!token) return;
@@ -54,8 +45,6 @@ function AppSyncWrapper({ children }: { children: React.ReactNode }) {
       }
 
       setIsOffline(false);
-      await loadUserInBackground({ token, setUser });
-      await processOfflineQueue(token);
 
       if (user) {
         try {
@@ -162,20 +151,6 @@ function AppSyncWrapper({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // Setup daily study reminder notification
-  useEffect(() => {
-    const setupNotifications = async () => {
-      try {
-        await scheduleDailyStudyReminder();
-        //console.log("Daily study reminder scheduled successfully");
-      } catch (error) {
-        console.error("Failed to schedule daily reminder:", error);
-      }
-    };
-
-    setupNotifications();
-  }, []);
-
   return <>{children}</>;
 }
 
@@ -220,6 +195,7 @@ export default function RootLayout() {
               useSuspense
             >
               <AppSyncWrapper>
+                <GroupProvider>
                  <TourProvider>
                 <CustomThemeProvider>
                   <PermissionWrapper>
@@ -231,6 +207,7 @@ export default function RootLayout() {
                       <Stack.Screen name="onboarding" options={{ headerShown: false }} />
                       <Stack.Screen name="login" options={{ headerShown: false }} />
                       <Stack.Screen name="auth" options={{ headerShown: false }} />
+                      <Stack.Screen name="selling-onboarding" options={{ headerShown: false, gestureEnabled: false }} />
 
                       {/* Profile & Settings */}
                       <Stack.Screen name="edit-profile" options={{ headerShown: false }} />
@@ -249,6 +226,7 @@ export default function RootLayout() {
                   </PermissionWrapper>
                 </CustomThemeProvider>
                 </TourProvider>
+                </GroupProvider>
              </AppSyncWrapper>
             </SQLiteProvider>
           </Suspense>

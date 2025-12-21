@@ -48,7 +48,6 @@ import Toast from "react-native-toast-message";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import * as SecureStore from "expo-secure-store";
 import * as StoreReview from "expo-store-review";
-import { useCourseDatabase } from "@/lib/db/course";
 import GraduationCap3DLoader from "@/components/ui/GraduationCapLoader";
 import { ContactDialog } from "@/components/modals/ContactDialog";
 import {

@@ -3,10 +3,9 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { Home, Shield, Sparkles, BarChart3, User, Square, Play } from 'lucide-react-native';
+import { Home, Shield, Sparkles, BarChart3, User, Square, Play, Users } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTour } from '@/context/TourContext';
-import { TourTooltip } from '@/components/Tour/TourTooltip';
 import { TOUR_STEPS, TOTAL_TOUR_STEPS, getTourStepInfo } from '@/constants/tourSteps';
 import { useDetox } from '@/context/DetoxContext';
 import { useTranslation } from 'react-i18next';
@@ -233,6 +232,33 @@ export default function TabLayout() {
               }
             ]}>
               <BarChart3
+                size={24}
+                color={color}
+                strokeWidth={focused ? 2.5 : 2}
+              />
+            </View>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="community/index"
+        options={{
+          title: t('tabs.community'),
+          tabBarIcon: ({ color, focused }) => (
+            <View style={[
+              styles.iconContainer,
+              focused && {
+                backgroundColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.04)',
+                borderWidth: 1,
+                borderColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.08)',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 8,
+                elevation: 2,
+              }
+            ]}>
+              <Users
                 size={24}
                 color={color}
                 strokeWidth={focused ? 2.5 : 2}

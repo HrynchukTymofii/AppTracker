@@ -15,7 +15,7 @@ export const DetoxProvider = ({ children }: { children: ReactNode }) => {
   const TOTAL_TIME = 30 * 60; // 30 minutes in seconds
   const [timeRemaining, setTimeRemaining] = useState(TOTAL_TIME);
   const [isActive, setIsActive] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Timer logic
   useEffect(() => {

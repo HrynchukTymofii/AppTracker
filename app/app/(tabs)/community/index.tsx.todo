@@ -1,0 +1,684 @@
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  RefreshControl,
+  Share,
+  Alert,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { useTranslation } from "react-i18next";
+import { useAuth } from "@/context/AuthContext";
+import { Users, UserPlus, Crown, Flame, Clock, Trophy } from "lucide-react-native";
+import { useGroup, GroupMember } from "@/context/GroupContext";
+import { formatDuration } from "@/lib/usageTracking";
+
+type MetricTab = "screenTime" | "streak" | "focusHours";
+
+// Leaderboard Member Item
+const LeaderboardItem = ({
+  member,
+  rank,
+  isDark,
+  metricTab,
+  isCurrentUser,
+}: {
+  member: GroupMember;
+  rank: number;
+  isDark: boolean;
+  metricTab: MetricTab;
+  isCurrentUser: boolean;
+}) => {
+  const getRankDisplay = () => {
+    switch (rank) {
+      case 1:
+        return { emoji: "🥇", color: "#FFD700" };
+      case 2:
+        return { emoji: "🥈", color: "#C0C0C0" };
+      case 3:
+        return { emoji: "🥉", color: "#CD7F32" };
+      default:
+        return { emoji: `${rank}.`, color: isDark ? "#6b7280" : "#9ca3af" };
+    }
+  };
+
+  const getMetricValue = () => {
+    switch (metricTab) {
+      case "screenTime":
+        return formatDuration(member.screenTime);
+      case "streak":
+        return `${member.streak}d`;
+      case "focusHours":
+        return formatDuration(member.focusHours * 60 * 60 * 1000);
+    }
+  };
+
+  const rankDisplay = getRankDisplay();
+
+  return (
+    <View
+      style={{
+        backgroundColor: isCurrentUser
+          ? isDark
+            ? "rgba(59, 130, 246, 0.15)"
+            : "rgba(59, 130, 246, 0.1)"
+          : isDark
+          ? "rgba(255, 255, 255, 0.05)"
+          : "rgba(0, 0, 0, 0.02)",
+        borderRadius: 16,
+        padding: 16,
+        marginBottom: 12,
+        flexDirection: "row",
+        alignItems: "center",
+        borderWidth: isCurrentUser ? 1 : 0,
+        borderColor: isCurrentUser
+          ? isDark
+            ? "rgba(59, 130, 246, 0.3)"
+            : "rgba(59, 130, 246, 0.2)"
+          : "transparent",
+      }}
+    >
+      {/* Rank */}
+      <Text
+        style={{
+          fontSize: rank <= 3 ? 24 : 16,
+          fontWeight: "700",
+          color: rankDisplay.color,
+          width: 40,
+          textAlign: "center",
+        }}
+      >
+        {rankDisplay.emoji}
+      </Text>
+
+      {/* Avatar */}
+      <View
+        style={{
+          width: 48,
+          height: 48,
+          borderRadius: 24,
+          backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)",
+          marginLeft: 8,
+          marginRight: 12,
+          overflow: "hidden",
+          borderWidth: 2,
+          borderColor: rank === 1 ? "#FFD700" : rank === 2 ? "#C0C0C0" : rank === 3 ? "#CD7F32" : "transparent",
+        }}
+      >
+        {member.avatar ? (
+          <Image
+            source={{ uri: member.avatar }}
+            style={{ width: "100%", height: "100%" }}
+          />
+        ) : (
+          <View
+            style={{
+              width: "100%",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: isDark ? "#374151" : "#e5e7eb",
+            }}
+          >
+            <Text style={{ fontSize: 20, fontWeight: "700", color: isDark ? "#9ca3af" : "#6b7280" }}>
+              {member.name.charAt(0).toUpperCase()}
+            </Text>
+          </View>
+        )}
+      </View>
+
+      {/* Name and PRO badge */}
+      <View style={{ flex: 1 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "600",
+              color: isDark ? "#ffffff" : "#111827",
+            }}
+          >
+            {isCurrentUser ? "Me" : member.name}
+          </Text>
+          {member.isPro && (
+            <View
+              style={{
+                backgroundColor: "#8b5cf6",
+                paddingHorizontal: 8,
+                paddingVertical: 2,
+                borderRadius: 8,
+              }}
+            >
+              <Text style={{ fontSize: 10, fontWeight: "700", color: "#ffffff" }}>
+                PRO
+              </Text>
+            </View>
+          )}
+        </View>
+      </View>
+
+      {/* Metric Value */}
+      <Text
+        style={{
+          fontSize: 16,
+          fontWeight: "700",
+          color: isDark ? "#9ca3af" : "#6b7280",
+        }}
+      >
+        {getMetricValue()}
+      </Text>
+    </View>
+  );
+};
+
+// Floating Avatar Component
+const FloatingAvatar = ({
+  uri,
+  size,
+  top,
+  left,
+  right,
+  isDark,
+}: {
+  uri?: string;
+  size: number;
+  top?: number;
+  left?: number;
+  right?: number;
+  isDark: boolean;
+}) => (
+  <View
+    style={{
+      position: "absolute",
+      top,
+      left,
+      right,
+      width: size,
+      height: size,
+      borderRadius: size / 2,
+      backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)",
+      overflow: "hidden",
+      borderWidth: 2,
+      borderColor: isDark ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.1)",
+    }}
+  >
+    {uri ? (
+      <Image source={{ uri }} style={{ width: "100%", height: "100%" }} />
+    ) : (
+      <View
+        style={{
+          width: "100%",
+          height: "100%",
+          backgroundColor: isDark ? "#374151" : "#e5e7eb",
+        }}
+      />
+    )}
+  </View>
+);
+
+export default function CommunityScreen() {
+  const { t } = useTranslation();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const { user } = useAuth();
+  const {
+    currentGroup,
+    members,
+    loading,
+    refreshGroup,
+    createGroup,
+    joinGroup,
+    leaveGroup,
+  } = useGroup();
+  const [refreshing, setRefreshing] = useState(false);
+  const [activeTab, setActiveTab] = useState<MetricTab>("screenTime");
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await refreshGroup();
+    setRefreshing(false);
+  }, [refreshGroup]);
+
+  const handleShare = async () => {
+    if (!currentGroup) return;
+
+    try {
+      await Share.share({
+        message: t("community.shareMessage", {
+          groupName: currentGroup.name,
+          code: currentGroup.inviteCode,
+        }),
+      });
+    } catch (error) {
+      console.error("Error sharing:", error);
+    }
+  };
+
+  const handleAddFriends = () => {
+    if (!currentGroup) {
+      // No group yet, prompt to create one
+      Alert.alert(
+        t("community.createGroup"),
+        t("community.createGroupDesc"),
+        [
+          { text: t("common.cancel"), style: "cancel" },
+          {
+            text: t("common.confirm"),
+            onPress: async () => {
+              await createGroup(t("community.defaultGroupName"));
+            },
+          },
+        ]
+      );
+    } else {
+      // Share invite link
+      handleShare();
+    }
+  };
+
+  const handleJoinGroup = () => {
+    Alert.prompt(
+      t("community.joinGroup"),
+      t("community.enterInviteCode"),
+      [
+        { text: t("common.cancel"), style: "cancel" },
+        {
+          text: t("community.join"),
+          onPress: async (code: string | undefined) => {
+            if (code) {
+              const success = await joinGroup(code);
+              if (!success) {
+                Alert.alert(t("common.error"), t("community.invalidCode"));
+              }
+            }
+          },
+        },
+      ],
+      "plain-text"
+    );
+  };
+
+  // Sort members based on active tab
+  const sortedMembers = [...members].sort((a, b) => {
+    switch (activeTab) {
+      case "screenTime":
+        return a.screenTime - b.screenTime; // Lower is better
+      case "streak":
+        return b.streak - a.streak; // Higher is better
+      case "focusHours":
+        return b.focusHours - a.focusHours; // Higher is better
+      default:
+        return 0;
+    }
+  });
+
+  const tabs: { key: MetricTab; label: string; icon: any }[] = [
+    { key: "screenTime", label: t("community.tabs.screenTime"), icon: Clock },
+    { key: "streak", label: t("community.tabs.streak"), icon: Flame },
+    { key: "focusHours", label: t("community.tabs.focusHours"), icon: Trophy },
+  ];
+
+  // No group state
+  if (!currentGroup && !loading) {
+    return (
+      <SafeAreaView
+        style={{ flex: 1, backgroundColor: isDark ? "#000000" : "#ffffff" }}
+      >
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingHorizontal: 40 }}>
+          <View
+            style={{
+              width: 100,
+              height: 100,
+              borderRadius: 50,
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 24,
+            }}
+          >
+            <Users size={48} color={isDark ? "#6b7280" : "#9ca3af"} strokeWidth={1.5} />
+          </View>
+
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: "700",
+              color: isDark ? "#ffffff" : "#111827",
+              textAlign: "center",
+              marginBottom: 12,
+            }}
+          >
+            {t("community.noGroupTitle")}
+          </Text>
+
+          <Text
+            style={{
+              fontSize: 16,
+              color: isDark ? "#9ca3af" : "#6b7280",
+              textAlign: "center",
+              marginBottom: 32,
+              lineHeight: 24,
+            }}
+          >
+            {t("community.noGroupDesc")}
+          </Text>
+
+          <TouchableOpacity
+            onPress={async () => await createGroup(t("community.defaultGroupName"))}
+            style={{
+              backgroundColor: isDark ? "#ffffff" : "#111827",
+              paddingHorizontal: 32,
+              paddingVertical: 16,
+              borderRadius: 16,
+              marginBottom: 16,
+              width: "100%",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "700",
+                color: isDark ? "#111827" : "#ffffff",
+              }}
+            >
+              {t("community.createGroupBtn")}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={handleJoinGroup}
+            style={{
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)",
+              paddingHorizontal: 32,
+              paddingVertical: 16,
+              borderRadius: 16,
+              width: "100%",
+              alignItems: "center",
+              borderWidth: 1,
+              borderColor: isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "600",
+                color: isDark ? "#ffffff" : "#111827",
+              }}
+            >
+              {t("community.joinGroupBtn")}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: isDark ? "#000000" : "#ffffff" }}
+    >
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: 100 }}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        {/* Header */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 20,
+            paddingTop: 16,
+            paddingBottom: 8,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 28,
+              fontWeight: "bold",
+              color: isDark ? "#ffffff" : "#111827",
+            }}
+          >
+            {t("community.title")}
+          </Text>
+
+          <TouchableOpacity
+            onPress={handleAddFriends}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)",
+              paddingHorizontal: 16,
+              paddingVertical: 10,
+              borderRadius: 20,
+              gap: 6,
+              borderWidth: 1,
+              borderColor: isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)",
+            }}
+          >
+            <UserPlus size={18} color={isDark ? "#ffffff" : "#111827"} strokeWidth={2.5} />
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: "600",
+                color: isDark ? "#ffffff" : "#111827",
+              }}
+            >
+              {t("community.addFriends")}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Group Hero Section */}
+        <View
+          style={{
+            alignItems: "center",
+            paddingVertical: 32,
+            paddingHorizontal: 20,
+          }}
+        >
+          {/* Floating Avatars */}
+          <View style={{ width: 200, height: 160, position: "relative" }}>
+            {members.length > 1 && (
+              <FloatingAvatar
+                uri={members[1]?.avatar}
+                size={44}
+                top={0}
+                left={20}
+                isDark={isDark}
+              />
+            )}
+            {members.length > 2 && (
+              <FloatingAvatar
+                uri={members[2]?.avatar}
+                size={36}
+                top={20}
+                right={10}
+                isDark={isDark}
+              />
+            )}
+            {members.length > 3 && (
+              <FloatingAvatar
+                uri={members[3]?.avatar}
+                size={40}
+                top={80}
+                left={0}
+                isDark={isDark}
+              />
+            )}
+            {members.length > 4 && (
+              <FloatingAvatar
+                uri={members[4]?.avatar}
+                size={32}
+                top={100}
+                right={0}
+                isDark={isDark}
+              />
+            )}
+
+            {/* Main Avatar */}
+            <View
+              style={{
+                position: "absolute",
+                top: 30,
+                left: "50%",
+                marginLeft: -50,
+                width: 100,
+                height: 100,
+                borderRadius: 24,
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)",
+                overflow: "hidden",
+                borderWidth: 3,
+                borderColor: isDark ? "rgba(255, 255, 255, 0.3)" : "rgba(0, 0, 0, 0.15)",
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 8 },
+                shadowOpacity: 0.3,
+                shadowRadius: 16,
+                elevation: 8,
+              }}
+            >
+              {user?.image ? (
+                <Image
+                  source={{ uri: user.image }}
+                  style={{ width: "100%", height: "100%" }}
+                />
+              ) : (
+                <View
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: isDark ? "#374151" : "#e5e7eb",
+                  }}
+                >
+                  <Crown size={40} color={isDark ? "#9ca3af" : "#6b7280"} />
+                </View>
+              )}
+            </View>
+          </View>
+
+          {/* Member Count */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 6,
+              marginBottom: 12,
+            }}
+          >
+            <Users size={16} color={isDark ? "#9ca3af" : "#6b7280"} strokeWidth={2} />
+            <Text
+              style={{
+                fontSize: 14,
+                color: isDark ? "#9ca3af" : "#6b7280",
+                fontWeight: "500",
+              }}
+            >
+              {t("community.membersCount", { count: members.length })}
+            </Text>
+          </View>
+
+          {/* Group Name */}
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: "700",
+              color: isDark ? "#ffffff" : "#111827",
+              textAlign: "center",
+              marginBottom: 8,
+            }}
+          >
+            {currentGroup?.name || t("community.defaultGroupName")}
+          </Text>
+
+          {/* Description */}
+          <Text
+            style={{
+              fontSize: 14,
+              color: isDark ? "#9ca3af" : "#6b7280",
+              textAlign: "center",
+              lineHeight: 20,
+            }}
+          >
+            {t("community.groupDescription")}
+          </Text>
+        </View>
+
+        {/* Metric Tabs */}
+        <View
+          style={{
+            flexDirection: "row",
+            marginHorizontal: 20,
+            marginBottom: 20,
+            backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
+            borderRadius: 16,
+            padding: 4,
+          }}
+        >
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.key;
+            const Icon = tab.icon;
+            return (
+              <TouchableOpacity
+                key={tab.key}
+                onPress={() => setActiveTab(tab.key)}
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  paddingVertical: 12,
+                  borderRadius: 12,
+                  gap: 6,
+                  backgroundColor: isActive
+                    ? isDark
+                      ? "#ffffff"
+                      : "#111827"
+                    : "transparent",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: "600",
+                    color: isActive
+                      ? isDark
+                        ? "#111827"
+                        : "#ffffff"
+                      : isDark
+                      ? "#9ca3af"
+                      : "#6b7280",
+                  }}
+                >
+                  {tab.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        {/* Leaderboard */}
+        <View style={{ paddingHorizontal: 20 }}>
+          {sortedMembers.map((member, index) => (
+            <LeaderboardItem
+              key={member.id}
+              member={member}
+              rank={index + 1}
+              isDark={isDark}
+              metricTab={activeTab}
+              isCurrentUser={member.id === user?.email}
+            />
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}

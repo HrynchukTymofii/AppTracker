@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   RefreshControl,
   Dimensions,
   Modal,
+  Animated,
 } from "react-native";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, HelpCircle } from "lucide-react-native";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -58,6 +59,231 @@ const getLocalIcon = (packageName: string, appName: string): any | null => {
     }
   }
   return null;
+};
+
+// Shimmer Animation Component
+const ShimmerEffect = ({ isDark, style }: { isDark: boolean; style?: any }) => {
+  const shimmerAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const animation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(shimmerAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shimmerAnim, {
+          toValue: 0,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    animation.start();
+    return () => animation.stop();
+  }, []);
+
+  const opacity = shimmerAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.3, 0.7],
+  });
+
+  return (
+    <Animated.View
+      style={[
+        {
+          backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)",
+          borderRadius: 8,
+          opacity,
+        },
+        style,
+      ]}
+    />
+  );
+};
+
+// Skeleton Day Card
+const SkeletonDayCard = ({ isDark }: { isDark: boolean }) => {
+  return (
+    <View
+      style={{
+        alignItems: "center",
+        marginHorizontal: 3,
+        backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.02)",
+        borderRadius: 12,
+        padding: 8,
+        paddingVertical: 10,
+        width: 48,
+        borderWidth: 1.5,
+        borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
+      }}
+    >
+      <ShimmerEffect isDark={isDark} style={{ width: 24, height: 10, marginBottom: 8 }} />
+      <ShimmerEffect isDark={isDark} style={{ width: 32, height: 32, borderRadius: 16, marginBottom: 6 }} />
+      <ShimmerEffect isDark={isDark} style={{ width: 20, height: 14 }} />
+    </View>
+  );
+};
+
+// Skeleton Stat Card
+const SkeletonStatCard = ({ isDark }: { isDark: boolean }) => {
+  return (
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff",
+        borderRadius: 16,
+        padding: 16,
+        borderWidth: 1.5,
+        borderColor: isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.15,
+        shadowRadius: 16,
+        elevation: 6,
+      }}
+    >
+      <ShimmerEffect isDark={isDark} style={{ width: 60, height: 12, marginBottom: 8 }} />
+      <ShimmerEffect isDark={isDark} style={{ width: 50, height: 28, marginBottom: 4 }} />
+      <ShimmerEffect isDark={isDark} style={{ width: 40, height: 12 }} />
+    </View>
+  );
+};
+
+// Skeleton Chart
+const SkeletonChart = ({ isDark }: { isDark: boolean }) => {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "flex-end",
+        justifyContent: "space-between",
+        height: 150,
+      }}
+    >
+      {[0.4, 0.7, 0.5, 0.9, 0.6, 0.8, 0.3].map((height, index) => (
+        <View key={index} style={{ flex: 1, alignItems: "center", marginHorizontal: 4 }}>
+          <ShimmerEffect
+            isDark={isDark}
+            style={{
+              width: "100%",
+              height: height * 120,
+              borderRadius: 6,
+              marginBottom: 8,
+            }}
+          />
+          <ShimmerEffect isDark={isDark} style={{ width: 20, height: 10, marginBottom: 4 }} />
+          <ShimmerEffect isDark={isDark} style={{ width: 16, height: 8 }} />
+        </View>
+      ))}
+    </View>
+  );
+};
+
+// Skeleton App Usage Item
+const SkeletonAppItem = ({ isDark }: { isDark: boolean }) => {
+  return (
+    <View
+      style={{
+        backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.02)",
+        borderRadius: 12,
+        padding: 12,
+        marginBottom: 8,
+        borderWidth: 1,
+        borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
+      }}
+    >
+      <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
+        <ShimmerEffect isDark={isDark} style={{ width: 36, height: 36, borderRadius: 8, marginRight: 12 }} />
+        <ShimmerEffect isDark={isDark} style={{ flex: 1, height: 16, marginRight: 12 }} />
+        <ShimmerEffect isDark={isDark} style={{ width: 40, height: 16 }} />
+      </View>
+      <ShimmerEffect isDark={isDark} style={{ height: 6, borderRadius: 3 }} />
+    </View>
+  );
+};
+
+// Animated Number Component
+const AnimatedNumber = ({
+  value,
+  suffix = "",
+  duration = 800,
+  style,
+}: {
+  value: number | string;
+  suffix?: string;
+  duration?: number;
+  style?: any;
+}) => {
+  const [displayValue, setDisplayValue] = useState<string>("--");
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (typeof value === "string" || value === 0) {
+      setDisplayValue(value === 0 ? `0${suffix}` : String(value));
+      return;
+    }
+
+    animatedValue.setValue(0);
+    Animated.timing(animatedValue, {
+      toValue: value,
+      duration,
+      useNativeDriver: false,
+    }).start();
+
+    const listener = animatedValue.addListener(({ value: v }) => {
+      setDisplayValue(`${Math.round(v * 10) / 10}${suffix}`);
+    });
+
+    return () => animatedValue.removeListener(listener);
+  }, [value, suffix]);
+
+  return <Text style={style}>{displayValue}</Text>;
+};
+
+// Animated Bar Component
+const AnimatedBar = ({
+  height,
+  maxHeight,
+  isDark,
+  delay = 0,
+}: {
+  height: number;
+  maxHeight: number;
+  isDark: boolean;
+  delay?: number;
+}) => {
+  const animatedHeight = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    animatedHeight.setValue(0);
+    Animated.timing(animatedHeight, {
+      toValue: height,
+      duration: 600,
+      delay,
+      useNativeDriver: false,
+    }).start();
+  }, [height]);
+
+  const barHeight = animatedHeight.interpolate({
+    inputRange: [0, maxHeight || 1],
+    outputRange: [0, 120],
+    extrapolate: "clamp",
+  });
+
+  return (
+    <Animated.View
+      style={{
+        width: "100%",
+        height: barHeight,
+        backgroundColor: isDark ? "#ffffff" : "#111827",
+        borderRadius: 6,
+        marginBottom: 8,
+      }}
+    />
+  );
 };
 
 // Day Card Component
@@ -172,11 +398,17 @@ const StatCard = ({
   value,
   subtitle,
   isDark,
+  animated = false,
+  numericValue,
+  suffix = "",
 }: {
   title: string;
   value: string;
   subtitle?: string;
   isDark: boolean;
+  animated?: boolean;
+  numericValue?: number;
+  suffix?: string;
 }) => {
   return (
     <View
@@ -208,16 +440,29 @@ const StatCard = ({
       >
         {title}
       </Text>
-      <Text
-        style={{
-          fontSize: 28,
-          fontWeight: "bold",
-          color: isDark ? "#ffffff" : "#111827",
-          marginBottom: 4,
-        }}
-      >
-        {value}
-      </Text>
+      {animated && numericValue !== undefined ? (
+        <AnimatedNumber
+          value={numericValue}
+          suffix={suffix}
+          style={{
+            fontSize: 28,
+            fontWeight: "bold",
+            color: isDark ? "#ffffff" : "#111827",
+            marginBottom: 4,
+          }}
+        />
+      ) : (
+        <Text
+          style={{
+            fontSize: 28,
+            fontWeight: "bold",
+            color: isDark ? "#ffffff" : "#111827",
+            marginBottom: 4,
+          }}
+        >
+          {value}
+        </Text>
+      )}
       {subtitle && (
         <Text
           style={{
@@ -232,6 +477,55 @@ const StatCard = ({
   );
 };
 
+// Animated Progress Bar Component
+const AnimatedProgressBar = ({
+  percentage,
+  isDark,
+  delay = 0,
+}: {
+  percentage: number;
+  isDark: boolean;
+  delay?: number;
+}) => {
+  const animatedWidth = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    animatedWidth.setValue(0);
+    Animated.timing(animatedWidth, {
+      toValue: percentage,
+      duration: 800,
+      delay,
+      useNativeDriver: false,
+    }).start();
+  }, [percentage]);
+
+  const width = animatedWidth.interpolate({
+    inputRange: [0, 100],
+    outputRange: ["0%", "100%"],
+    extrapolate: "clamp",
+  });
+
+  return (
+    <View
+      style={{
+        height: 6,
+        backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)",
+        borderRadius: 3,
+        overflow: "hidden",
+      }}
+    >
+      <Animated.View
+        style={{
+          height: "100%",
+          width,
+          backgroundColor: isDark ? "#ffffff" : "#111827",
+          borderRadius: 3,
+        }}
+      />
+    </View>
+  );
+};
+
 // App Usage Item Component
 const AppUsageItem = ({
   appName,
@@ -239,20 +533,42 @@ const AppUsageItem = ({
   percentage,
   iconUrl,
   isDark,
+  index = 0,
 }: {
   appName: string;
   duration: string;
   percentage: number;
   iconUrl: any;
   isDark: boolean;
+  index?: number;
 }) => {
   // Handle both base64 URIs and local require() images
   const imageSource = typeof iconUrl === 'string'
     ? { uri: iconUrl }
     : iconUrl;
 
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(20)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 400,
+        delay: index * 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 400,
+        delay: index * 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
   return (
-    <View
+    <Animated.View
       style={{
         backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.02)",
         borderRadius: 12,
@@ -260,6 +576,8 @@ const AppUsageItem = ({
         marginBottom: 8,
         borderWidth: 1,
         borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
+        opacity: fadeAnim,
+        transform: [{ translateY: slideAnim }],
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
@@ -293,25 +611,9 @@ const AppUsageItem = ({
           {duration}
         </Text>
       </View>
-      {/* Progress Bar */}
-      <View
-        style={{
-          height: 6,
-          backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)",
-          borderRadius: 3,
-          overflow: "hidden",
-        }}
-      >
-        <View
-          style={{
-            height: "100%",
-            width: `${percentage}%`,
-            backgroundColor: isDark ? "#ffffff" : "#111827",
-            borderRadius: 3,
-          }}
-        />
-      </View>
-    </View>
+      {/* Animated Progress Bar */}
+      <AnimatedProgressBar percentage={percentage} isDark={isDark} delay={index * 100 + 200} />
+    </Animated.View>
   );
 };
 
@@ -1017,11 +1319,101 @@ export default function StatsScreen() {
         }
       >
         {isLoading && !refreshing ? (
-          <View style={{ alignItems: "center", justifyContent: "center", paddingTop: 100 }}>
-            <Text style={{ fontSize: 16, color: isDark ? "#9ca3af" : "#6b7280" }}>
-              {t('stats.loadingStats')}
-            </Text>
-          </View>
+          <>
+            {/* Skeleton Header */}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingHorizontal: 20,
+                paddingTop: 16,
+                paddingBottom: 12,
+              }}
+            >
+              <View
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 12,
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
+                }}
+              />
+              <View style={{ alignItems: "center" }}>
+                <Text
+                  style={{
+                    fontSize: 24,
+                    fontWeight: "bold",
+                    color: isDark ? "#ffffff" : "#111827",
+                  }}
+                >
+                  {t('stats.title')}
+                </Text>
+                <ShimmerEffect isDark={isDark} style={{ width: 80, height: 14, marginTop: 4, borderRadius: 4 }} />
+              </View>
+              <View
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 12,
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
+                }}
+              />
+            </View>
+
+            {/* Skeleton Day Cards */}
+            <View style={{ marginTop: 20, marginBottom: 24, alignItems: "center" }}>
+              <View style={{ flexDirection: "row", justifyContent: "center", paddingHorizontal: 16 }}>
+                {[0, 1, 2, 3, 4, 5, 6].map((index) => (
+                  <SkeletonDayCard key={index} isDark={isDark} />
+                ))}
+              </View>
+            </View>
+
+            {/* Skeleton Stats Cards */}
+            <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
+              <View style={{ flexDirection: "row", gap: 10, marginBottom: 10 }}>
+                <SkeletonStatCard isDark={isDark} />
+                <SkeletonStatCard isDark={isDark} />
+              </View>
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                <SkeletonStatCard isDark={isDark} />
+                <SkeletonStatCard isDark={isDark} />
+              </View>
+            </View>
+
+            {/* Skeleton Chart */}
+            <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
+              <View
+                style={{
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff",
+                  borderRadius: 20,
+                  padding: 20,
+                  borderWidth: 1.5,
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)",
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 12 },
+                  shadowOpacity: 0.2,
+                  shadowRadius: 24,
+                  elevation: 10,
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+                  <ShimmerEffect isDark={isDark} style={{ width: 100, height: 16, borderRadius: 4 }} />
+                  <ShimmerEffect isDark={isDark} style={{ width: 36, height: 36, borderRadius: 10 }} />
+                </View>
+                <SkeletonChart isDark={isDark} />
+              </View>
+            </View>
+
+            {/* Skeleton App Usage */}
+            <View style={{ paddingHorizontal: 20 }}>
+              <ShimmerEffect isDark={isDark} style={{ width: 140, height: 18, marginBottom: 16, borderRadius: 4 }} />
+              <SkeletonAppItem isDark={isDark} />
+              <SkeletonAppItem isDark={isDark} />
+              <SkeletonAppItem isDark={isDark} />
+            </View>
+          </>
         ) : (
           <>
         {/* Header with Week Navigation */}
@@ -1120,11 +1512,17 @@ export default function StatsScreen() {
               title={t('stats.totalHours')}
               value={stats.totalHours === "--" ? "--" : `${stats.totalHours}h`}
               isDark={isDark}
+              animated={typeof stats.totalHours === "number"}
+              numericValue={typeof stats.totalHours === "number" ? stats.totalHours : undefined}
+              suffix="h"
             />
             <StatCard
               title={t('stats.dailyAvg')}
               value={stats.dailyAvg === "--" ? "--" : `${stats.dailyAvg}h`}
               isDark={isDark}
+              animated={typeof stats.dailyAvg === "number"}
+              numericValue={typeof stats.dailyAvg === "number" ? stats.dailyAvg : undefined}
+              suffix="h"
             />
           </View>
           <View style={{ flexDirection: "row", gap: 10 }}>
@@ -1139,6 +1537,9 @@ export default function StatsScreen() {
               value={stats.pickupsTotal === "--" ? "--" : `${stats.pickupsTotal}`}
               subtitle={stats.pickupsAvg === "--" ? "--" : `${stats.pickupsAvg}${t('stats.perDay')}`}
               isDark={isDark}
+              animated={typeof stats.pickupsTotal === "number"}
+              numericValue={typeof stats.pickupsTotal === "number" ? stats.pickupsTotal : undefined}
+              suffix=""
             />
           </View>
         </View>
@@ -1216,7 +1617,7 @@ export default function StatsScreen() {
                   }}
                 >
                   {chartData.map((item, index) => {
-                    const maxHours = Math.max(...chartData.map((d) => d.hours));
+                    const maxHours = Math.max(...chartData.map((d) => d.hours), 1);
                     return (
                       <View
                         key={index}
@@ -1226,14 +1627,11 @@ export default function StatsScreen() {
                           marginHorizontal: 4,
                         }}
                       >
-                        <View
-                          style={{
-                            width: "100%",
-                            height: (item.hours / maxHours) * 120,
-                            backgroundColor: isDark ? "#ffffff" : "#111827",
-                            borderRadius: 6,
-                            marginBottom: 8,
-                          }}
+                        <AnimatedBar
+                          height={item.hours}
+                          maxHeight={maxHours}
+                          isDark={isDark}
+                          delay={index * 80}
                         />
                         <Text
                           style={{
@@ -1274,7 +1672,7 @@ export default function StatsScreen() {
               {t('stats.totalTimePerApp')}
             </Text>
 
-            {appsUsage.map((app) => (
+            {appsUsage.map((app, index) => (
               <AppUsageItem
                 key={app.id}
                 appName={app.appName}
@@ -1282,6 +1680,7 @@ export default function StatsScreen() {
                 percentage={app.percentage}
                 iconUrl={app.iconUrl}
                 isDark={isDark}
+                index={index}
               />
             ))}
           </View>

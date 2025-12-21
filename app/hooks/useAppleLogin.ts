@@ -8,13 +8,11 @@ export async function handleAppleLogin({
   setUser,
   router,
   safeReturnUrl,
-  loadUserInBackground,
 }: {
   setToken: (token: string) => void;
   setUser: (user: UserType) => void;
   router: any;
   safeReturnUrl: string;
-  loadUserInBackground: (opts: { token: string; setUser: (user: UserType) => void; forceSync?: boolean }) => Promise<void>;
 }) {
   try {
     const credential = await AppleAuthentication.signInAsync({
@@ -40,7 +38,6 @@ export async function handleAppleLogin({
 
       if (data.token) {
         setToken(data.token);
-        loadUserInBackground({token:data.token, setUser, forceSync: true});
 
         // Check if this is first login and user should see selling onboarding
         const sellingOnboardingCompleted = await SecureStore.getItemAsync(

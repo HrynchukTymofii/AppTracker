@@ -21,7 +21,8 @@
     "blocking": "ब्लॉकिंग",
     "detox": "डिटॉक्स",
     "stats": "आंकड़े",
-    "profile": "प्रोफ़ाइल"
+    "profile": "प्रोफ़ाइल",
+    "community": "समुदाय"
   },
   "home": {
     "title": "LockIn",
@@ -304,5 +305,29 @@
     "selectLanguage": "भाषा चुनें",
     "systemDefault": "सिस्टम डिफ़ॉल्ट",
     "currentLanguage": "वर्तमान भाषा"
+  },
+  "community": {
+    "title": "Leaderboard",
+    "addFriends": "+ Add Friends",
+    "membersCount_one": "{{count}} Friend",
+    "membersCount_other": "{{count}} Friends",
+    "groupDescription": "See your friends Screen Time. Resets daily at midnight.",
+    "defaultGroupName": "The Focused Few",
+    "noGroupTitle": "Join a Group",
+    "noGroupDesc": "Connect with friends and compete to reduce screen time together.",
+    "createGroup": "Create Group",
+    "createGroupDesc": "Create a new group and invite your friends to join.",
+    "createGroupBtn": "Create a Group",
+    "joinGroupBtn": "Join with Code",
+    "joinGroup": "Join Group",
+    "enterInviteCode": "Enter the 6-character invite code",
+    "join": "Join",
+    "invalidCode": "Invalid invite code. Please try again.",
+    "shareMessage": "Join my group on LockIn! Use code: {{code}}",
+    "tabs": {
+      "screenTime": "Screen Time",
+      "streak": "Streak",
+      "focusHours": "Focus Hours"
+    }
   }
 }

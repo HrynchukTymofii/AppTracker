@@ -6,6 +6,8 @@ interface AppBlockerModule extends NativeModule {
   openAccessibilitySettings(): void;
   hasOverlayPermission(): Promise<boolean>;
   openOverlaySettings(): void;
+  hasNotificationAccess(): Promise<boolean>;
+  openNotificationSettings(): void;
   setBlockedApps(apps: string[]): void;
   getBlockedApps(): string[];
   showBlockInterstitial(packageName: string, appName: string): void;
@@ -45,6 +47,17 @@ export async function hasOverlayPermission(): Promise<boolean> {
 export function openOverlaySettings(): void {
   if (AppBlocker) {
     AppBlocker.openOverlaySettings();
+  }
+}
+
+export async function hasNotificationAccess(): Promise<boolean> {
+  if (!AppBlocker) return false;
+  return AppBlocker.hasNotificationAccess();
+}
+
+export function openNotificationSettings(): void {
+  if (AppBlocker) {
+    AppBlocker.openNotificationSettings();
   }
 }
 
@@ -114,6 +127,8 @@ export default {
   openAccessibilitySettings,
   hasOverlayPermission,
   openOverlaySettings,
+  hasNotificationAccess,
+  openNotificationSettings,
   setBlockedApps,
   getBlockedApps,
   showBlockInterstitial,

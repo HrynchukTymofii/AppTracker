@@ -25,17 +25,16 @@ import {
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react-native";
 import { AppleLoginButton } from "@/components/AppleLoginButton";
 import { handleAppleLogin } from "@/hooks/useAppleLogin";
-import { useLoadUserInBackground } from "@/lib/user";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
 // Configure Google Sign-In
 GoogleSignin.configure({
   webClientId:
-    "329617813146-lmmck18chg6mfgci5i4iddtialht09ij.apps.googleusercontent.com",
+    "325648358600-5bes4eglrneokj1mts29uk66psivn014.apps.googleusercontent.com",
   offlineAccess: true,
   forceCodeForRefreshToken: false,
   iosClientId:
-    "329617813146-3o5aq7gfvejqoi3mudiar02tl4urhivu.apps.googleusercontent.com",
+    "325648358600-kcva5u5mrtng9lqb8va9ba6h7s38lcsi.apps.googleusercontent.com",
 });
 
 export default function AuthScreen() {
@@ -49,7 +48,6 @@ export default function AuthScreen() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const { setToken, setUser } = useAuth();
-  const { loadUserInBackground } = useLoadUserInBackground();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
@@ -133,19 +131,12 @@ export default function AuthScreen() {
               visibilityTime: 700,
             });
 
-            // Load user data in background
-            loadUserInBackground({
-              token: data.token,
-              setUser,
-              forceSync: true,
-            });
-
             // Navigate to selling onboarding if first time, else go to safe return URL
-            // if (isFirstLogin) {
-            //   router.replace("/selling-onboarding" as any);
-            // } else {
+            if (isFirstLogin) {
+              router.replace("/selling-onboarding" as any);
+            } else {
               router.replace(safeReturnUrl as any);
-            // }
+            }
           } else {
             Toast.show({
               type: "error",
@@ -297,15 +288,13 @@ export default function AuthScreen() {
           visibilityTime: 700,
         });
 
-        // Load user data in background
-        loadUserInBackground({ token: data.token, setUser, forceSync: true });
 
         // Navigate to selling onboarding if first time, else go to safe return URL
-        // if (isFirstLogin) {
-        //   router.replace("/selling-onboarding" as any);
-        // } else {
+        if (isFirstLogin) {
+          router.replace("/selling-onboarding" as any);
+        } else {
           router.replace(safeReturnUrl as any);
-        // }
+        }
       } else {
         Toast.show({
           type: "error",
@@ -585,7 +574,6 @@ export default function AuthScreen() {
                     setUser,
                     router,
                     safeReturnUrl,
-                    loadUserInBackground,
                   })
                 }
                 activeOpacity={0.7}

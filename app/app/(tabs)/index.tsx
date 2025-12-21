@@ -5,19 +5,17 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
-  Platform,
   RefreshControl,
   Animated,
 } from "react-native";
 import { BlurView } from "expo-blur";
-import { HelpCircle, Lock, Plus, BarChart3, Shield, Calendar, X } from "lucide-react-native";
+import { HelpCircle, Lock, Plus, BarChart3, Shield, Calendar } from "lucide-react-native";
 import {
   SafeAreaView,
 } from "react-native-safe-area-context";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useRouter } from "expo-router";
 import { useTranslation } from 'react-i18next';
-import Svg, { Circle } from "react-native-svg";
 import {
   getTodayUsageStats,
   formatDuration,

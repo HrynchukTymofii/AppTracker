@@ -13,7 +13,9 @@
       "Bash(node -e:*)",
       "Bash(npx tsc:*)",
       "Bash(npx prettier --write \"app/\\(tabs\\)/blocking/index.tsx\")",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(mkdir:*)",
+      "Bash(node update-locales.js:*)"
     ]
   }
 }

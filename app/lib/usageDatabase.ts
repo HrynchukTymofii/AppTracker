@@ -7,6 +7,18 @@ import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabaseSync('usage_history.db');
 
+// Type for database row
+interface DailyUsageRow {
+  id: number;
+  date: string;
+  total_screen_time: number;
+  pickups: number;
+  health_score: number;
+  orb_level: number;
+  apps_data: string;
+  created_at: string;
+}
+
 // Initialize database
 export const initUsageDatabase = async () => {
   try {
@@ -60,7 +72,7 @@ export const saveDailyUsage = async (
 // Get daily usage for a specific date
 export const getDailyUsage = async (date: string) => {
   try {
-    const result = await db.getFirstAsync(
+    const result = await db.getFirstAsync<DailyUsageRow>(
       'SELECT * FROM daily_usage WHERE date = ?',
       [date]
     );
@@ -68,7 +80,7 @@ export const getDailyUsage = async (date: string) => {
     if (result) {
       return {
         ...result,
-        apps_data: JSON.parse(result.apps_data as string),
+        apps_data: JSON.parse(result.apps_data),
       };
     }
 
@@ -82,7 +94,7 @@ export const getDailyUsage = async (date: string) => {
 // Get usage data for a week
 export const getWeekUsage = async (startDate: string, endDate: string) => {
   try {
-    const results = await db.getAllAsync(
+    const results = await db.getAllAsync<DailyUsageRow>(
       `SELECT * FROM daily_usage
        WHERE date >= ? AND date <= ?
        ORDER BY date ASC`,
@@ -91,7 +103,7 @@ export const getWeekUsage = async (startDate: string, endDate: string) => {
 
     return results.map(row => ({
       ...row,
-      apps_data: JSON.parse(row.apps_data as string),
+      apps_data: JSON.parse(row.apps_data),
     }));
   } catch (error) {
     console.error('Error getting week usage:', error);
