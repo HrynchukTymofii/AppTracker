@@ -22,7 +22,8 @@
     "detox": "Detox",
     "stats": "Stats",
     "profile": "Profile",
-    "community": "Community"
+    "community": "Community",
+    "schedule": "Schedule"
   },
   "home": {
     "title": "LockIn",
@@ -114,6 +115,18 @@
     "calendarView": "Calendar View",
     "everyday": "Everyday",
     "weekdays": "Weekdays",
+    "weekends": "Weekends",
+    "suggestedSchedules": {
+      "title": "Quick Start",
+      "morningFocus": "Morning Focus",
+      "deepWork": "Deep Work",
+      "lunchBreak": "Lunch Break",
+      "gymTime": "Gym Time",
+      "eveningWinddown": "Evening Wind Down",
+      "studySession": "Study Session",
+      "familyTime": "Family Time",
+      "sleepMode": "Sleep Mode"
+    },
     "activeToday": "active today",
     "scheduledForDay": "for this day",
     "noSchedulesWere": "No schedules were active on this day",
@@ -130,6 +143,8 @@
       "selectApps": "Select Apps to Block",
       "confirmSelection": "Confirm Selection ({{count}})",
       "newSchedule": "New Schedule",
+      "editSchedule": "Edit Schedule",
+      "templates": "TEMPLATES",
       "scheduleName": "SCHEDULE NAME",
       "scheduleNamePlaceholder": "e.g., Work Hours",
       "appsToBlock": "APPS TO BLOCK",
@@ -170,7 +185,9 @@
       "taskVerifiedDesc": "Your task was verified successfully.\n\nConfidence: {{confidence}}%\n\n{{explanation}}",
       "taskNotVerified": "Task Not Verified",
       "taskNotVerifiedDesc": "The task doesn't appear to be completed.\n\n{{explanation}}\n\nPlease complete the task and try again.",
-      "apiKeySavedSuccess": "API key saved successfully"
+      "apiKeySavedSuccess": "API key saved successfully",
+      "removeLimit": "Remove Limit",
+      "removeLimitConfirm": "Are you sure you want to remove the daily limit for this app?"
     },
     "presetTasks": {
       "cleaning": "Cleaning",
@@ -178,6 +195,16 @@
       "exercise": "Exercise",
       "reading": "Reading",
       "custom": "Custom"
+    },
+    "appLimits": "App Limits",
+    "noLimitsSet": "No app limits set",
+    "addLimitsHint": "Add apps to set daily usage limits",
+    "limitExceeded": "Limit exceeded",
+    "timeLimitModal": {
+      "title": "Set Time Limit",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "dailyLimit": "Daily Limit"
     }
   },
   "detox": {
@@ -194,7 +221,10 @@
     "rateUs": "Rate Us",
     "logOut": "Log Out",
     "errorLoading": "Error loading profile",
-    "loading": "Loading profile..."
+    "loading": "Loading profile...",
+    "defaultAppLimit": "Default App Limit",
+    "defaultAppLimitDesc": "New apps will use this time limit by default",
+    "limitUpdated": "Default limit updated"
   },
   "achievements": {
     "title": "Achievements",

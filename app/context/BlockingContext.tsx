@@ -23,6 +23,10 @@ import {
   startFocusSession,
   endFocusSession,
   setDailyLimit,
+  removeDailyLimit,
+  getDefaultAppLimitMinutes,
+  setDefaultAppLimitMinutes,
+  initializeAppLimitsFromOnboarding,
   initializeBlocking,
   checkAndApplySchedules,
   isAccessibilityServiceEnabled,
@@ -31,6 +35,7 @@ import {
   openOverlaySettings,
   hasAllRequiredPermissions,
   POPULAR_APPS,
+  syncBlockedWebsitesToNative,
 } from '@/lib/appBlocking';
 import {
   VerificationTask,
@@ -73,6 +78,8 @@ interface BlockingContextType {
   // Daily limit actions
   setAppDailyLimit: (packageName: string, appName: string, minutes: number) => Promise<void>;
   removeAppDailyLimit: (packageName: string) => Promise<void>;
+  getDefaultLimit: () => Promise<number>;
+  setDefaultLimit: (minutes: number) => Promise<void>;
 
   // Task actions
   verifyTask: (taskId: string, afterPhotoUri: string) => Promise<VerificationResult>;
@@ -124,6 +131,8 @@ export const BlockingProvider = ({ children }: { children: ReactNode }) => {
     const init = async () => {
       setIsLoading(true);
       await initializeBlocking();
+      await syncBlockedWebsitesToNative(); // Sync websites to native module
+      await initializeAppLimitsFromOnboarding(); // Initialize app limits from onboarding
       await refreshData();
       setIsLoading(false);
     };
@@ -239,9 +248,17 @@ export const BlockingProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const removeAppDailyLimit = async (packageName: string) => {
-    const limits = dailyLimits.filter((l) => l.packageName !== packageName);
-    // This would need a dedicated function in appBlocking.ts
+    await removeDailyLimit(packageName);
     await refreshData();
+  };
+
+  // Default limit getters/setters
+  const getDefaultLimit = async (): Promise<number> => {
+    return await getDefaultAppLimitMinutes();
+  };
+
+  const setDefaultLimit = async (minutes: number): Promise<void> => {
+    await setDefaultAppLimitMinutes(minutes);
   };
 
   // Task verification
@@ -274,6 +291,8 @@ export const BlockingProvider = ({ children }: { children: ReactNode }) => {
         cancelFocus,
         setAppDailyLimit,
         removeAppDailyLimit,
+        getDefaultLimit,
+        setDefaultLimit,
         verifyTask,
         isAccessibilityServiceEnabled,
         openAccessibilitySettings,

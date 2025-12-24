@@ -22,7 +22,8 @@
     "detox": "التخلص من السموم",
     "stats": "الإحصائيات",
     "profile": "الملف الشخصي",
-    "community": "المجتمع"
+    "community": "المجتمع",
+    "schedule": "الجدول"
   },
   "home": {
     "title": "LockIn",
@@ -114,6 +115,18 @@
     "calendarView": "عرض التقويم",
     "everyday": "كل يوم",
     "weekdays": "أيام الأسبوع",
+    "weekends": "عطلة نهاية الأسبوع",
+    "suggestedSchedules": {
+      "title": "البدء السريع",
+      "morningFocus": "تركيز الصباح",
+      "deepWork": "العمل العميق",
+      "lunchBreak": "استراحة الغداء",
+      "gymTime": "وقت الجيم",
+      "eveningWinddown": "استرخاء المساء",
+      "studySession": "جلسة دراسة",
+      "familyTime": "وقت العائلة",
+      "sleepMode": "وضع النوم"
+    },
     "activeToday": "نشط اليوم",
     "scheduledForDay": "لهذا اليوم",
     "noSchedulesWere": "لم تكن هناك جداول نشطة في هذا اليوم",
@@ -130,6 +143,8 @@
       "selectApps": "اختر التطبيقات للحظر",
       "confirmSelection": "تأكيد الاختيار ({{count}})",
       "newSchedule": "جدول جديد",
+      "editSchedule": "تعديل الجدول",
+      "templates": "القوالب",
       "scheduleName": "اسم الجدول",
       "scheduleNamePlaceholder": "مثال: ساعات العمل",
       "appsToBlock": "التطبيقات المراد حظرها",
@@ -170,7 +185,9 @@
       "taskVerifiedDesc": "تم التحقق من مهمتك بنجاح.\n\nالثقة: {{confidence}}%\n\n{{explanation}}",
       "taskNotVerified": "لم يتم التحقق من المهمة",
       "taskNotVerifiedDesc": "يبدو أن المهمة لم تكتمل.\n\n{{explanation}}\n\nيرجى إكمال المهمة والمحاولة مرة أخرى.",
-      "apiKeySavedSuccess": "تم حفظ مفتاح API بنجاح"
+      "apiKeySavedSuccess": "تم حفظ مفتاح API بنجاح",
+      "removeLimit": "إزالة الحد",
+      "removeLimitConfirm": "هل أنت متأكد أنك تريد إزالة الحد اليومي لهذا التطبيق؟"
     },
     "presetTasks": {
       "cleaning": "التنظيف",
@@ -178,6 +195,16 @@
       "exercise": "التمرين",
       "reading": "القراءة",
       "custom": "مخصص"
+    },
+    "appLimits": "حدود التطبيقات",
+    "noLimitsSet": "لم يتم تعيين حدود للتطبيقات",
+    "addLimitsHint": "أضف تطبيقات لتعيين حدود الاستخدام اليومية",
+    "limitExceeded": "تم تجاوز الحد",
+    "timeLimitModal": {
+      "title": "تعيين حد الوقت",
+      "hours": "ساعات",
+      "minutes": "دقائق",
+      "dailyLimit": "الحد اليومي"
     }
   },
   "detox": {
@@ -194,7 +221,10 @@
     "rateUs": "قيمنا",
     "logOut": "تسجيل الخروج",
     "errorLoading": "خطأ في تحميل الملف الشخصي",
-    "loading": "جاري تحميل الملف الشخصي..."
+    "loading": "جاري تحميل الملف الشخصي...",
+    "defaultAppLimit": "حد التطبيق الافتراضي",
+    "defaultAppLimitDesc": "ستستخدم التطبيقات الجديدة هذا الحد الزمني بشكل افتراضي",
+    "limitUpdated": "تم تحديث الحد الافتراضي"
   },
   "achievements": {
     "title": "الإنجازات",

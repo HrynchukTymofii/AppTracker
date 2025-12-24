@@ -22,7 +22,8 @@
     "detox": "Detox",
     "stats": "Stats",
     "community": "Community",
-    "profile": "Profile"
+    "profile": "Profile",
+    "schedule": "Schedule"
   },
   "home": {
     "title": "LockIn",
@@ -31,6 +32,11 @@
     "loadingApps": "Loading apps...",
     "focusModeActive": "Focus Mode Active",
     "appsBlocked": "apps blocked",
+    "streak": "Streak",
+    "today": "Today",
+    "vsAverage": "vs avg",
+    "upcomingSchedules": "Upcoming",
+    "createSchedule": "Create a Schedule",
     "quickMenu": {
       "stats": "Stats",
       "statsDesc": "View detailed usage stats",
@@ -91,7 +97,13 @@
     "noUsageData": "No usage data yet",
     "healthScore": "Health Score",
     "screenTime": "Screen Time",
-    "topApps": "Top 3 Apps"
+    "topApps": "Top 3 Apps",
+    "vsLastWeek": "vs Last Week",
+    "lessScreenTime": "less screen time",
+    "moreScreenTime": "more screen time",
+    "difference": "difference",
+    "shareProgress": "Share Progress",
+    "weeklyReport": "Weekly Report"
   },
   "blocking": {
     "title": "Blocking",
@@ -116,6 +128,18 @@
     "calendarView": "Calendar View",
     "everyday": "Everyday",
     "weekdays": "Weekdays",
+    "weekends": "Weekends",
+    "suggestedSchedules": {
+      "title": "Quick Start",
+      "morningFocus": "Morning Focus",
+      "deepWork": "Deep Work",
+      "lunchBreak": "Lunch Break",
+      "gymTime": "Gym Time",
+      "eveningWinddown": "Evening Wind Down",
+      "studySession": "Study Session",
+      "familyTime": "Family Time",
+      "sleepMode": "Sleep Mode"
+    },
     "activeToday": "active today",
     "scheduledForDay": "for this day",
     "noSchedulesWere": "No schedules were active on this day",
@@ -128,15 +152,25 @@
       "task": "Task required",
       "dailyLimit": "Daily limit"
     },
+    "apps": "apps",
+    "sites": "sites",
+    "appsBlocked": "Apps Blocked",
+    "activeDays": "Active Days",
     "modals": {
       "selectApps": "Select Apps to Block",
       "confirmSelection": "Confirm Selection ({{count}})",
       "newSchedule": "New Schedule",
+      "editSchedule": "Edit Schedule",
+      "templates": "TEMPLATES",
       "scheduleName": "SCHEDULE NAME",
       "scheduleNamePlaceholder": "e.g., Work Hours",
       "appsToBlock": "APPS TO BLOCK",
+      "websitesToBlock": "WEBSITES TO BLOCK",
       "selectAppsPlaceholder": "Select apps...",
       "appsSelected": "{{count}} apps selected",
+      "apps": "Apps",
+      "websites": "Websites",
+      "selectWebsites": "Select Websites to Block",
       "startTime": "START TIME",
       "endTime": "END TIME",
       "repeatOn": "REPEAT ON",
@@ -172,7 +206,9 @@
       "taskVerifiedDesc": "Your task was verified successfully.\n\nConfidence: {{confidence}}%\n\n{{explanation}}",
       "taskNotVerified": "Task Not Verified",
       "taskNotVerifiedDesc": "The task doesn't appear to be completed.\n\n{{explanation}}\n\nPlease complete the task and try again.",
-      "apiKeySavedSuccess": "API key saved successfully"
+      "apiKeySavedSuccess": "API key saved successfully",
+      "removeLimit": "Remove Limit",
+      "removeLimitConfirm": "Are you sure you want to remove the daily limit for this app?"
     },
     "presetTasks": {
       "cleaning": "Cleaning",
@@ -180,6 +216,16 @@
       "exercise": "Exercise",
       "reading": "Reading",
       "custom": "Custom"
+    },
+    "appLimits": "App Limits",
+    "noLimitsSet": "No app limits set",
+    "addLimitsHint": "Add apps to set daily usage limits",
+    "limitExceeded": "Limit exceeded",
+    "timeLimitModal": {
+      "title": "Set Time Limit",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "dailyLimit": "Daily Limit"
     }
   },
   "detox": {
@@ -196,7 +242,19 @@
     "rateUs": "Rate Us",
     "logOut": "Log Out",
     "errorLoading": "Error loading profile",
-    "loading": "Loading profile..."
+    "loading": "Loading profile...",
+    "blockedItems": "Blocked Apps & Websites",
+    "defaultBlockedItems": "Default Blocked Items",
+    "apps": "apps",
+    "websites": "websites",
+    "blockedItemsDesc": "These are pre-selected when creating new schedules",
+    "editBlockedItems": "Edit Blocked Items",
+    "defaultAppLimit": "Default App Limit",
+    "defaultAppLimitDesc": "New apps will use this time limit by default",
+    "limitUpdated": "Default limit updated",
+    "streak": "Streak",
+    "sessions": "Sessions",
+    "tasks": "Tasks"
   },
   "achievements": {
     "title": "Achievements",

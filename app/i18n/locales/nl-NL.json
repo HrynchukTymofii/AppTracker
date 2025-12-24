@@ -22,7 +22,8 @@
     "detox": "Detox",
     "stats": "Statistieken",
     "profile": "Profiel",
-    "community": "Community"
+    "community": "Community",
+    "schedule": "Schema"
   },
   "home": {
     "title": "LockIn",
@@ -114,6 +115,18 @@
     "calendarView": "Kalenderweergave",
     "everyday": "Elke dag",
     "weekdays": "Werkdagen",
+    "weekends": "Weekenden",
+    "suggestedSchedules": {
+      "title": "Snelstart",
+      "morningFocus": "Ochtendfocus",
+      "deepWork": "Diep Werk",
+      "lunchBreak": "Lunchpauze",
+      "gymTime": "Sportschool Tijd",
+      "eveningWinddown": "Avondontspanning",
+      "studySession": "Studiesessie",
+      "familyTime": "Familietijd",
+      "sleepMode": "Slaapmodus"
+    },
     "activeToday": "vandaag actief",
     "scheduledForDay": "voor deze dag",
     "noSchedulesWere": "Er waren geen actieve schema's op deze dag",
@@ -130,6 +143,8 @@
       "selectApps": "Selecteer Apps om te Blokkeren",
       "confirmSelection": "Bevestig Selectie ({{count}})",
       "newSchedule": "Nieuw Schema",
+      "editSchedule": "Schema Bewerken",
+      "templates": "SJABLONEN",
       "scheduleName": "SCHEMANAAM",
       "scheduleNamePlaceholder": "bijv. Werktijden",
       "appsToBlock": "APPS OM TE BLOKKEREN",
@@ -170,7 +185,9 @@
       "taskVerifiedDesc": "Je taak is succesvol geverifieerd.\n\nBetrouwbaarheid: {{confidence}}%\n\n{{explanation}}",
       "taskNotVerified": "Taak Niet Geverifieerd",
       "taskNotVerifiedDesc": "De taak lijkt niet voltooid te zijn.\n\n{{explanation}}\n\nVoltooi de taak en probeer opnieuw.",
-      "apiKeySavedSuccess": "API-sleutel succesvol opgeslagen"
+      "apiKeySavedSuccess": "API-sleutel succesvol opgeslagen",
+      "removeLimit": "Limiet Verwijderen",
+      "removeLimitConfirm": "Weet je zeker dat je de dagelijkse limiet voor deze app wilt verwijderen?"
     },
     "presetTasks": {
       "cleaning": "Schoonmaken",
@@ -178,6 +195,16 @@
       "exercise": "Oefening",
       "reading": "Lezen",
       "custom": "Aangepast"
+    },
+    "appLimits": "App-limieten",
+    "noLimitsSet": "Geen app-limieten ingesteld",
+    "addLimitsHint": "Voeg apps toe om dagelijkse gebruikslimieten in te stellen",
+    "limitExceeded": "Limiet overschreden",
+    "timeLimitModal": {
+      "title": "Tijdslimiet Instellen",
+      "hours": "Uren",
+      "minutes": "Minuten",
+      "dailyLimit": "Dagelijkse Limiet"
     }
   },
   "detox": {
@@ -194,7 +221,10 @@
     "rateUs": "Beoordeel Ons",
     "logOut": "Afmelden",
     "errorLoading": "Fout bij laden van profiel",
-    "loading": "Profiel laden..."
+    "loading": "Profiel laden...",
+    "defaultAppLimit": "Standaard App-limiet",
+    "defaultAppLimitDesc": "Nieuwe apps gebruiken standaard deze tijdslimiet",
+    "limitUpdated": "Standaardlimiet bijgewerkt"
   },
   "achievements": {
     "title": "Behaalde Prestaties",

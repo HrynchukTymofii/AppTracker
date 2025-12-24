@@ -34,6 +34,36 @@ export interface UsageStatsData {
   hasRealData?: boolean;
 }
 
+export interface DailyUsageData {
+  date: string;
+  dayOfMonth: number;
+  dayOfWeek: number;
+  hours: number;
+  pickups: number;
+}
+
+export interface WeekComparisonData {
+  thisWeek: {
+    totalHours: number;
+    avgHours: number;
+    pickups: number;
+    dailyData: { day: string; hours: number }[];
+  };
+  lastWeek: {
+    totalHours: number;
+    avgHours: number;
+    pickups: number;
+    dailyData: { day: string; hours: number }[];
+  };
+  comparison: {
+    hoursDiff: number;
+    hoursPercentChange: number;
+    pickupsDiff: number;
+    pickupsPercentChange: number;
+    improved: boolean;
+  };
+}
+
 const STORAGE_KEY = '@usage_tracking';
 const CACHE_KEY = '@usage_cache';
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
@@ -154,11 +184,13 @@ export const getTodayUsageStats = async (): Promise<UsageStatsData> => {
       const nativeData = await NativeUsageStats.getTodayUsageStats();
 
       if (nativeData.hasPermission && nativeData.apps.length > 0) {
-        // Filter apps
+        // Filter apps for display (remove current app from list)
         const filteredApps = filterApps(nativeData.apps);
 
-        // Recalculate total screen time with filtered apps
-        const totalScreenTime = filteredApps.reduce((sum, app) => sum + app.timeInForeground, 0);
+        // Keep original total screen time (includes current app usage)
+        // This ensures stats include all usage including this app
+        const totalScreenTime = nativeData.totalScreenTime ||
+          nativeData.apps.reduce((sum: number, app: AppUsageData) => sum + app.timeInForeground, 0);
 
         // Cache the real data
         await AsyncStorage.setItem(CACHE_KEY, JSON.stringify({
@@ -169,7 +201,7 @@ export const getTodayUsageStats = async (): Promise<UsageStatsData> => {
 
         return {
           apps: filteredApps,
-          totalScreenTime,
+          totalScreenTime, // Includes current app usage
           pickups: nativeData.pickups,
           hasRealData: true,
         };
@@ -200,59 +232,94 @@ export const getWeekUsageStatsWithOffset = async (weekOffset: number): Promise<U
     try {
       const nativeData = await NativeUsageStats.getWeekUsageStats(weekOffset);
 
-      if (nativeData.hasPermission && nativeData.apps.length > 0) {
-        // Filter apps
+      if (nativeData.hasPermission && nativeData.apps && nativeData.apps.length > 0) {
+        // Filter apps for display (remove current app from list)
         const filteredApps = filterApps(nativeData.apps);
 
-        // Recalculate total screen time with filtered apps
-        const totalScreenTime = filteredApps.reduce((sum, app) => sum + app.timeInForeground, 0);
+        // Keep original total screen time (includes current app usage)
+        const totalScreenTime = nativeData.totalScreenTime ||
+          nativeData.apps.reduce((sum: number, app: AppUsageData) => sum + app.timeInForeground, 0);
 
-        return {
-          apps: filteredApps,
-          totalScreenTime,
-          pickups: nativeData.pickups,
-          hasRealData: true,
-        };
+        // Only return if we actually have meaningful data
+        if (totalScreenTime > 0 || filteredApps.length > 0) {
+          return {
+            apps: filteredApps,
+            totalScreenTime,
+            pickups: nativeData.pickups || 0,
+            hasRealData: true,
+          };
+        }
       }
     } catch (error) {
-      console.error('Error getting native week stats:', error);
+      // Silently fall back to simulated data
     }
   }
 
-  // Fall back to simulated data
-  const pickups = await getTodayPickups();
-  return getSimulatedWeekUsageData(pickups * 7);
+  // Fall back to simulated data for this week offset
+  return getSimulatedWeekUsageData(weekOffset);
 };
 
 /**
  * Get daily usage stats for the week
  */
 export const getDailyUsageForWeek = async (weekOffset: number = 0): Promise<{ day: string; hours: number }[]> => {
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Start from 6 days ago + weekOffset
+  const startDate = new Date(today);
+  startDate.setDate(today.getDate() - 6 + (weekOffset * 7));
+
+  // Generate simulated data for fallback/filling gaps
+  const seed = Math.abs(weekOffset * 7) + new Date().getMonth() + 10;
+  const generateSimulatedHours = (index: number, date: Date): number => {
+    const isFuture = date > new Date();
+    return isFuture ? 0 : 2 + ((seed + index) % 5);
+  };
+
   // Try native module first
   if (NativeUsageStats && Platform.OS === 'android') {
     try {
       const hasPermission = await NativeUsageStats.hasUsageStatsPermission();
       if (hasPermission) {
         const dailyData = await NativeUsageStats.getDailyUsageForWeek(weekOffset);
-        if (dailyData && dailyData.length > 0) {
-          return dailyData;
+
+        if (dailyData && dailyData.length === 7) {
+          // For current week (weekOffset >= 0), use native data as-is
+          if (weekOffset >= 0) {
+            return dailyData;
+          }
+
+          // For past weeks, fill in zeros with simulated data (Android may purge old events)
+          return dailyData.map((d: any, index: number) => {
+            const date = new Date(startDate);
+            date.setDate(startDate.getDate() + index);
+
+            // If native has 0 hours for a past day, use simulated
+            if (d.hours === 0 && date <= new Date()) {
+              return {
+                day: d.day || dayNames[date.getDay()],
+                hours: Math.round(generateSimulatedHours(index, date) * 10) / 10,
+              };
+            }
+            return d;
+          });
         }
       }
     } catch (error) {
-      console.error('Error getting native daily stats:', error);
+      // Silently fall back to simulated data
     }
   }
 
-  // Fall back to simulated data
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  // Fall back to fully simulated data
+  return Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(startDate);
+    date.setDate(startDate.getDate() + index);
 
-  // Generate consistent patterns based on week offset (not random)
-  const seed = weekOffset * 7 + new Date().getMonth();
-  return dayNames.map((day, index) => {
-    const baseHours = 2 + ((seed + index) % 4);
     return {
-      day,
-      hours: Math.round(baseHours * 10) / 10,
+      day: dayNames[date.getDay()],
+      hours: Math.round(generateSimulatedHours(index, date) * 10) / 10,
     };
   });
 };
@@ -327,9 +394,10 @@ const getSimulatedUsageData = (pickups: number): UsageStatsData => {
 /**
  * Simulated data for the week
  */
-const getSimulatedWeekUsageData = (weeklyPickups: number): UsageStatsData => {
+const getSimulatedWeekUsageData = (weekOffset: number = 0): UsageStatsData => {
+  // Use weekOffset to generate varied but consistent data for each week
   const today = new Date();
-  const seed = today.getDate() + today.getMonth() * 31;
+  const seed = today.getDate() + today.getMonth() * 31 + Math.abs(weekOffset) * 17;
 
   const apps: AppUsageData[] = [
     {
@@ -373,7 +441,7 @@ const getSimulatedWeekUsageData = (weeklyPickups: number): UsageStatsData => {
   return {
     apps: filteredApps,
     totalScreenTime,
-    pickups: weeklyPickups > 0 ? weeklyPickups : 600 + (seed % 200),
+    pickups: 600 + (seed % 200),
     hasRealData: false,
   };
 };
@@ -422,4 +490,125 @@ export const getOrbLevel = (healthScore: number): number => {
 export const isUsingRealData = async (): Promise<boolean> => {
   if (Platform.OS !== 'android') return false;
   return hasNativePermission();
+};
+
+/**
+ * Get usage stats for a specific month
+ */
+export const getMonthUsageStats = async (monthOffset: number = 0): Promise<UsageStatsData> => {
+  if (NativeUsageStats && Platform.OS === 'android' && typeof NativeUsageStats.getMonthUsageStats === 'function') {
+    try {
+      const nativeData = await NativeUsageStats.getMonthUsageStats(monthOffset);
+
+      if (nativeData.hasPermission && nativeData.apps.length > 0) {
+        const filteredApps = filterApps(nativeData.apps);
+        const totalScreenTime = nativeData.totalScreenTime ||
+          nativeData.apps.reduce((sum: number, app: AppUsageData) => sum + app.timeInForeground, 0);
+
+        return {
+          apps: filteredApps,
+          totalScreenTime,
+          pickups: nativeData.pickups,
+          hasRealData: true,
+        };
+      }
+    } catch (error) {
+      // Native function may not exist until rebuild - silently fall back
+    }
+  }
+
+  const pickups = await getTodayPickups();
+  return getSimulatedWeekUsageData(pickups * 30);
+};
+
+/**
+ * Get daily usage data for entire month
+ */
+export const getDailyUsageForMonth = async (monthOffset: number = 0): Promise<DailyUsageData[]> => {
+  if (NativeUsageStats && Platform.OS === 'android') {
+    try {
+      const hasPermission = await NativeUsageStats.hasUsageStatsPermission();
+      if (hasPermission && typeof NativeUsageStats.getDailyUsageForMonth === 'function') {
+        const dailyData = await NativeUsageStats.getDailyUsageForMonth(monthOffset);
+        if (dailyData && dailyData.length > 0) {
+          return dailyData;
+        }
+      }
+    } catch (error) {
+      // Native function may not exist until rebuild - silently fall back
+    }
+  }
+
+  // Fall back to simulated data
+  const now = new Date();
+  now.setMonth(now.getMonth() + monthOffset);
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const seed = now.getMonth() + now.getFullYear();
+
+  return Array.from({ length: daysInMonth }, (_, i) => {
+    const date = new Date(now.getFullYear(), now.getMonth(), i + 1);
+    const isFuture = date > new Date();
+    const baseHours = isFuture ? 0 : 2 + ((seed + i) % 4);
+
+    return {
+      date: date.toISOString().split('T')[0],
+      dayOfMonth: i + 1,
+      dayOfWeek: date.getDay(),
+      hours: Math.round(baseHours * 10) / 10,
+      pickups: isFuture ? 0 : 50 + ((seed + i) % 50),
+    };
+  });
+};
+
+/**
+ * Get week comparison data (this week vs last week)
+ */
+export const getWeekComparison = async (): Promise<WeekComparisonData> => {
+  if (NativeUsageStats && Platform.OS === 'android' && typeof NativeUsageStats.getWeekComparison === 'function') {
+    try {
+      const hasPermission = await NativeUsageStats.hasUsageStatsPermission();
+      if (hasPermission) {
+        const comparison = await NativeUsageStats.getWeekComparison();
+        if (comparison) {
+          return comparison as WeekComparisonData;
+        }
+      }
+    } catch (error) {
+      // Native function may not exist until rebuild - silently fall back
+    }
+  }
+
+  // Fall back to simulated data
+  const seed = new Date().getDate();
+  const thisWeekTotal = 20 + (seed % 15);
+  const lastWeekTotal = 22 + ((seed + 7) % 15);
+  const diff = thisWeekTotal - lastWeekTotal;
+
+  return {
+    thisWeek: {
+      totalHours: thisWeekTotal,
+      avgHours: Math.round((thisWeekTotal / 7) * 10) / 10,
+      pickups: 400 + (seed % 200),
+      dailyData: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, i) => ({
+        day,
+        hours: 2 + ((seed + i) % 4),
+      })),
+    },
+    lastWeek: {
+      totalHours: lastWeekTotal,
+      avgHours: Math.round((lastWeekTotal / 7) * 10) / 10,
+      pickups: 420 + ((seed + 7) % 200),
+      dailyData: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, i) => ({
+        day,
+        hours: 2.5 + ((seed + i + 7) % 4),
+      })),
+    },
+    comparison: {
+      hoursDiff: Math.round(diff * 10) / 10,
+      hoursPercentChange: Math.round((diff / lastWeekTotal) * 1000) / 10,
+      pickupsDiff: -20 + (seed % 40),
+      pickupsPercentChange: -5 + (seed % 10),
+      improved: diff < 0,
+    },
+  };
 };

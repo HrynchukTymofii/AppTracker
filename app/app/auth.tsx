@@ -10,8 +10,10 @@ import {
   Linking,
 } from "react-native";
 import { router } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import { useAuth } from "../context/AuthContext";
 import { useSearchParams } from "expo-router/build/hooks";
+import { useColorScheme } from "@/hooks/useColorScheme";
 import Toast from "react-native-toast-message";
 import * as SecureStore from "expo-secure-store";
 import {
@@ -20,8 +22,11 @@ import {
   isSuccessResponse,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
-import { Mail } from "lucide-react-native";
+import { Mail, ChevronRight } from "lucide-react-native";
 import { handleAppleLogin } from "@/hooks/useAppleLogin";
+import { SafeAreaView } from "react-native-safe-area-context";
+import AnimatedOrb from "@/components/AnimatedOrb";
+import { SimpleGradientBackground } from "@/components/ui/ThemedBackground";
 
 // Configure Google Sign-In
 GoogleSignin.configure({
@@ -38,6 +43,8 @@ export default function AuthLandingScreen() {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [appleLoading, setAppleLoading] = useState(false);
   const { setToken, setUser } = useAuth();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
 
   const returnUrl = params.get("returnUrl");
   const safeReturnUrl =
@@ -55,7 +62,7 @@ export default function AuthLandingScreen() {
         const { idToken } = response.data;
         if (idToken) {
           const res = await fetch(
-            "https://www.satlearner.com/api/auth/google",
+            "https://www.fibipals.com/api/apps/appBlocker/auth/google",
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -136,80 +143,93 @@ export default function AuthLandingScreen() {
   };
 
   return (
-    <View className="flex-1 bg-white dark:bg-black">
-      <ScrollView
+    <SimpleGradientBackground style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView
         contentContainerStyle={{
           flexGrow: 1,
           justifyContent: "center",
           paddingHorizontal: 24,
         }}
         bounces={false}
+        showsVerticalScrollIndicator={false}
       >
-        {/* Logo */}
-        <View className="items-center mb-12">
-          <View
-            className="w-28 h-28 bg-white dark:bg-white/10 rounded-3xl items-center justify-center mb-8"
-            style={{
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 20 },
-              shadowOpacity: 0.25,
-              shadowRadius: 30,
-              elevation: 15,
-              borderWidth: 1,
-              borderColor: "rgba(255, 255, 255, 0.2)",
-            }}
-          >
-            {/* Replace with your actual logo */}
-            <Image
-              source={require("@/assets/images/splash-icon-light.png")}
-              style={{ width: 90, height: 90 }}
-              resizeMode="contain"
-            />
+        {/* Logo Section */}
+        <View style={{ alignItems: "center", marginBottom: 48 }}>
+          <View style={{ marginBottom: 32 }}>
+            <AnimatedOrb size={120} level={3} />
           </View>
 
-          <Text className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Let's Get Started!
+          <Text
+            style={{
+              fontSize: 32,
+              fontWeight: "800",
+              color: isDark ? "#ffffff" : "#0f172a",
+              marginBottom: 10,
+              letterSpacing: -0.5,
+            }}
+          >
+            Welcome to LockIn
           </Text>
-          <Text className="text-gray-600 dark:text-gray-400 text-center">
-            Let's dive in into your account
+          <Text
+            style={{
+              fontSize: 15,
+              color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+              textAlign: "center",
+              lineHeight: 22,
+            }}
+          >
+            Take control of your screen time
           </Text>
         </View>
 
         {/* Auth Options */}
-        <View className="mb-8">
+        <View style={{ marginBottom: 32 }}>
           {/* Google */}
           <TouchableOpacity
             onPress={handleGoogleAuth}
             disabled={googleLoading}
             activeOpacity={0.7}
-            className="flex-row items-center bg-white dark:bg-white/10 rounded-2xl px-6 py-5 mb-4"
             style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+              borderRadius: 18,
+              paddingHorizontal: 20,
+              paddingVertical: 18,
+              marginBottom: 12,
+              borderWidth: 0.5,
+              borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
               shadowColor: "#000",
-              shadowOffset: { width: 0, height: 12 },
-              shadowOpacity: 0.2,
-              shadowRadius: 24,
-              elevation: 10,
-              borderWidth: 1.5,
-              borderColor: "rgba(255, 255, 255, 0.3)",
-              borderTopColor: "rgba(255, 255, 255, 0.5)",
-              borderBottomColor: "rgba(0, 0, 0, 0.1)",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: isDark ? 0 : 0.04,
+              shadowRadius: 12,
+              elevation: 3,
             }}
           >
             {googleLoading ? (
               <ActivityIndicator
                 size="small"
-                color="#9CA3AF"
-                className="mr-4"
+                color={isDark ? "#ffffff" : "#0f172a"}
+                style={{ marginRight: 16 }}
               />
             ) : (
               <Image
                 source={require("@/assets/images/google-logo.webp")}
-                style={{ width: 26, height: 26, marginRight: 16 }}
+                style={{ width: 24, height: 24, marginRight: 16 }}
               />
             )}
-            <Text className="text-gray-900 dark:text-white font-semibold text-base flex-1">
+            <Text
+              style={{
+                color: isDark ? "#ffffff" : "#0f172a",
+                fontWeight: "600",
+                fontSize: 16,
+                flex: 1,
+              }}
+            >
               Continue with Google
             </Text>
+            <ChevronRight size={20} color={isDark ? "rgba(255,255,255,0.3)" : "#cbd5e1"} strokeWidth={1.5} />
           </TouchableOpacity>
 
           {/* Apple - iOS only */}
@@ -218,34 +238,46 @@ export default function AuthLandingScreen() {
               onPress={handleAppleAuth}
               disabled={appleLoading}
               activeOpacity={0.7}
-              className="flex-row items-center bg-white dark:bg-white/10 rounded-2xl px-6 py-5 mb-4"
               style={{
+                flexDirection: "row",
+                alignItems: "center",
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+                borderRadius: 18,
+                paddingHorizontal: 20,
+                paddingVertical: 18,
+                marginBottom: 12,
+                borderWidth: 0.5,
+                borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
                 shadowColor: "#000",
-                shadowOffset: { width: 0, height: 12 },
-                shadowOpacity: 0.2,
-                shadowRadius: 24,
-                elevation: 10,
-                borderWidth: 1.5,
-                borderColor: "rgba(255, 255, 255, 0.3)",
-                borderTopColor: "rgba(255, 255, 255, 0.5)",
-                borderBottomColor: "rgba(0, 0, 0, 0.1)",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: isDark ? 0 : 0.04,
+                shadowRadius: 12,
+                elevation: 3,
               }}
             >
               {appleLoading ? (
                 <ActivityIndicator
                   size="small"
-                  color="#9CA3AF"
-                  className="mr-4"
+                  color={isDark ? "#ffffff" : "#0f172a"}
+                  style={{ marginRight: 16 }}
                 />
               ) : (
                 <Image
                   source={require("@/assets/images/apple-logo.png")}
-                  style={{ width: 26, height: 26, marginRight: 16 }}
+                  style={{ width: 24, height: 24, marginRight: 16 }}
                 />
               )}
-              <Text className="text-gray-900 dark:text-white font-semibold text-base flex-1">
+              <Text
+                style={{
+                  color: isDark ? "#ffffff" : "#0f172a",
+                  fontWeight: "600",
+                  fontSize: 16,
+                  flex: 1,
+                }}
+              >
                 Continue with Apple
               </Text>
+              <ChevronRight size={20} color={isDark ? "rgba(255,255,255,0.3)" : "#cbd5e1"} strokeWidth={1.5} />
             </TouchableOpacity>
           )}
 
@@ -253,23 +285,34 @@ export default function AuthLandingScreen() {
           <TouchableOpacity
             onPress={handleEmailAuth}
             activeOpacity={0.7}
-            className="flex-row items-center bg-white dark:bg-white/10 rounded-2xl px-6 py-5"
             style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+              borderRadius: 18,
+              paddingHorizontal: 20,
+              paddingVertical: 18,
+              borderWidth: 0.5,
+              borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
               shadowColor: "#000",
-              shadowOffset: { width: 0, height: 12 },
-              shadowOpacity: 0.2,
-              shadowRadius: 24,
-              elevation: 10,
-              borderWidth: 1.5,
-              borderColor: "rgba(255, 255, 255, 0.3)",
-              borderTopColor: "rgba(255, 255, 255, 0.5)",
-              borderBottomColor: "rgba(0, 0, 0, 0.1)",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: isDark ? 0 : 0.04,
+              shadowRadius: 12,
+              elevation: 3,
             }}
           >
-            <Mail size={26} color="#9CA3AF" style={{ marginRight: 16 }} />
-            <Text className="text-gray-900 dark:text-white font-semibold text-base flex-1">
+            <Mail size={24} color={isDark ? "#ffffff" : "#64748b"} strokeWidth={1.5} style={{ marginRight: 16 }} />
+            <Text
+              style={{
+                color: isDark ? "#ffffff" : "#0f172a",
+                fontWeight: "600",
+                fontSize: 16,
+                flex: 1,
+              }}
+            >
               Continue with Email
             </Text>
+            <ChevronRight size={20} color={isDark ? "rgba(255,255,255,0.3)" : "#cbd5e1"} strokeWidth={1.5} />
           </TouchableOpacity>
         </View>
 
@@ -282,17 +325,41 @@ export default function AuthLandingScreen() {
             } as any)
           }
           activeOpacity={0.8}
-          className="bg-gray-900 dark:bg-white rounded-full py-5 items-center justify-center mb-4"
           style={{
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 16 },
+            borderRadius: 18,
+            paddingVertical: 18,
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 12,
+            overflow: "hidden",
+            shadowColor: "#3b82f6",
+            shadowOffset: { width: 0, height: 8 },
             shadowOpacity: 0.3,
-            shadowRadius: 32,
-            elevation: 12,
+            shadowRadius: 20,
+            elevation: 8,
           }}
         >
-          <Text className="text-white dark:text-black font-bold text-base tracking-wide">
-            Sign up
+          <LinearGradient
+            colors={["#3b82f6", "#1d4ed8"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+          />
+          <Text
+            style={{
+              color: "#ffffff",
+              fontWeight: "700",
+              fontSize: 17,
+              letterSpacing: 0.3,
+            }}
+          >
+            Get Started
           </Text>
         </TouchableOpacity>
 
@@ -302,51 +369,79 @@ export default function AuthLandingScreen() {
             router.push({ pathname: "/login", params: { tab: "login" } } as any)
           }
           activeOpacity={0.8}
-          className="bg-white dark:bg-white/10 rounded-full py-5 items-center justify-center mb-8"
           style={{
+            backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#ffffff",
+            borderRadius: 18,
+            paddingVertical: 18,
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 40,
+            borderWidth: 0.5,
+            borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)",
             shadowColor: "#000",
-            shadowOffset: { width: 0, height: 10 },
-            shadowOpacity: 0.15,
-            shadowRadius: 20,
-            elevation: 8,
-            borderWidth: 1.5,
-            borderColor: "rgba(255, 255, 255, 0.3)",
-            borderTopColor: "rgba(255, 255, 255, 0.5)",
-            borderBottomColor: "rgba(0, 0, 0, 0.1)",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: isDark ? 0 : 0.04,
+            shadowRadius: 12,
+            elevation: 3,
           }}
         >
-          <Text className="text-gray-900 dark:text-white font-bold text-base tracking-wide">
-            Sign in
+          <Text
+            style={{
+              color: isDark ? "#ffffff" : "#0f172a",
+              fontWeight: "700",
+              fontSize: 17,
+              letterSpacing: 0.3,
+            }}
+          >
+            I already have an account
           </Text>
         </TouchableOpacity>
 
         {/* Footer Links */}
-        <View className="flex-row justify-center items-center">
+        <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() =>
-              Linking.openURL("https://www.satlearner.com/privacy-policy")
+              Linking.openURL("https://www.fibipals.com/creator/apps/lockIn/privacy-policy")
             }
           >
-            <Text className="text-gray-500 dark:text-gray-500 text-sm">
+            <Text
+              style={{
+                color: isDark ? "rgba(255,255,255,0.4)" : "#94a3b8",
+                fontSize: 13,
+              }}
+            >
               Privacy Policy
             </Text>
           </TouchableOpacity>
 
-          <Text className="text-gray-400 dark:text-gray-600 mx-2">·</Text>
+          <Text
+            style={{
+              color: isDark ? "rgba(255,255,255,0.2)" : "#cbd5e1",
+              marginHorizontal: 12,
+            }}
+          >
+            •
+          </Text>
 
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() =>
-              Linking.openURL("https://www.satlearner.com/terms-of-service")
+              Linking.openURL("https://www.fibipals.com/creator/apps/lockIn/terms-of-service")
             }
           >
-            <Text className="text-gray-500 dark:text-gray-500 text-sm">
+            <Text
+              style={{
+                color: isDark ? "rgba(255,255,255,0.4)" : "#94a3b8",
+                fontSize: 13,
+              }}
+            >
               Terms of Service
             </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </View>
+      </SafeAreaView>
+    </SimpleGradientBackground>
   );
 }

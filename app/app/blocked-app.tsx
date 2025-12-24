@@ -62,6 +62,7 @@ export default function BlockedAppScreen() {
       <IntentionModal
         visible={visible}
         appName={appName}
+        packageName={packageName}
         healthScore={50} // TODO: Get actual health score from context
         onClose={handleClose}
         onAllow={handleAllow}

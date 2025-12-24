@@ -12,7 +12,7 @@ import { ArrowLeft } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
 import { updateUser } from "@/lib/api/user";
-import Toast from "react-native-toast-message";
+import { showErrorToast, showSuccessToast } from "@/components/ui/CustomToast";
 import * as SecureStore from "expo-secure-store";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -75,23 +75,21 @@ export default function EditProfileScreen() {
   };
 
   const handleSave = async () => {
-    if (!token) return alert("User not authorized");
+    if (!token) {
+      showErrorToast("Error", "User not authorized");
+      return;
+    }
     const result = await updateUser(token, { name: answers.name });
     if (result.success) {
       if (user) setUser({ ...user, name: answers.name });
-      Toast.show({
-        type: "success",
-        text1: "Profile updated",
-        position: "top",
-        visibilityTime: 700,
-      });
+      showSuccessToast("Profile updated");
       router.back();
       await SecureStore.setItemAsync(
         "onboardingAnswers",
         JSON.stringify(answers)
       );
     } else {
-      alert(result.error);
+      showErrorToast("Error", result.error);
     }
   };
 

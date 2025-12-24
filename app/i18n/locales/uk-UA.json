@@ -22,7 +22,8 @@
     "detox": "Детокс",
     "stats": "Статистика",
     "profile": "Профіль",
-    "community": "Спільнота"
+    "community": "Спільнота",
+    "schedule": "Розклад"
   },
   "home": {
     "title": "LockIn",
@@ -114,6 +115,18 @@
     "calendarView": "Перегляд Календаря",
     "everyday": "Щодня",
     "weekdays": "Будні",
+    "weekends": "Вихідні",
+    "suggestedSchedules": {
+      "title": "Швидкий Старт",
+      "morningFocus": "Ранковий Фокус",
+      "deepWork": "Глибока Робота",
+      "lunchBreak": "Обідня Перерва",
+      "gymTime": "Час у Залі",
+      "eveningWinddown": "Вечірній Відпочинок",
+      "studySession": "Навчальна Сесія",
+      "familyTime": "Сімейний Час",
+      "sleepMode": "Режим Сну"
+    },
     "activeToday": "активні сьогодні",
     "scheduledForDay": "для цього дня",
     "noSchedulesWere": "Цього дня не було активних розкладів",
@@ -130,6 +143,8 @@
       "selectApps": "Виберіть Додатки для Блокування",
       "confirmSelection": "Підтвердити Вибір ({{count}})",
       "newSchedule": "Новий Розклад",
+      "editSchedule": "Редагувати Розклад",
+      "templates": "ШАБЛОНИ",
       "scheduleName": "НАЗВА РОЗКЛАДУ",
       "scheduleNamePlaceholder": "напр., Робочі Години",
       "appsToBlock": "ДОДАТКИ ДЛЯ БЛОКУВАННЯ",
@@ -170,7 +185,9 @@
       "taskVerifiedDesc": "Ваше завдання успішно перевірено.\n\nВпевненість: {{confidence}}%\n\n{{explanation}}",
       "taskNotVerified": "Завдання Не Перевірено",
       "taskNotVerifiedDesc": "Схоже, завдання не виконано.\n\n{{explanation}}\n\nБудь ласка, виконайте завдання і спробуйте знову.",
-      "apiKeySavedSuccess": "API ключ успішно збережено"
+      "apiKeySavedSuccess": "API ключ успішно збережено",
+      "removeLimit": "Видалити Ліміт",
+      "removeLimitConfirm": "Ви впевнені, що хочете видалити денний ліміт для цього додатку?"
     },
     "presetTasks": {
       "cleaning": "Прибирання",
@@ -178,6 +195,16 @@
       "exercise": "Фізичні Вправи",
       "reading": "Читання",
       "custom": "Власне"
+    },
+    "appLimits": "Ліміти Додатків",
+    "noLimitsSet": "Ліміти додатків не встановлено",
+    "addLimitsHint": "Додайте додатки для встановлення денних лімітів використання",
+    "limitExceeded": "Ліміт перевищено",
+    "timeLimitModal": {
+      "title": "Встановити Ліміт Часу",
+      "hours": "Години",
+      "minutes": "Хвилини",
+      "dailyLimit": "Денний Ліміт"
     }
   },
   "detox": {
@@ -194,7 +221,10 @@
     "rateUs": "Оцініть Нас",
     "logOut": "Вихід",
     "errorLoading": "Помилка при завантаженні профілю",
-    "loading": "Завантаження профілю..."
+    "loading": "Завантаження профілю...",
+    "defaultAppLimit": "Ліміт Додатків за Замовчуванням",
+    "defaultAppLimitDesc": "Нові додатки використовуватимуть цей ліміт часу за замовчуванням",
+    "limitUpdated": "Ліміт за замовчуванням оновлено"
   },
   "achievements": {
     "title": "Досягнення",

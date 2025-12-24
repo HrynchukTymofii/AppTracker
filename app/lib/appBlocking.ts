@@ -17,6 +17,10 @@ const BLOCKED_APPS_KEY = '@blocked_apps';
 const BLOCK_SCHEDULES_KEY = '@block_schedules';
 const FOCUS_SESSION_KEY = '@focus_session';
 const DAILY_LIMITS_KEY = '@daily_limits';
+const DEFAULT_BLOCKED_APPS_KEY = '@default_blocked_apps';
+const DEFAULT_BLOCKED_WEBSITES_KEY = '@default_blocked_websites';
+const DEFAULT_APP_LIMIT_MINUTES_KEY = '@default_app_limit_minutes';
+const APP_LIMITS_INITIALIZED_KEY = '@app_limits_initialized';
 
 // Types
 export interface BlockedApp {
@@ -33,6 +37,7 @@ export interface BlockSchedule {
   id: string;
   name: string;
   apps: string[]; // Package names
+  websites: string[]; // Domain names
   startTime: string; // HH:MM format
   endTime: string; // HH:MM format
   daysOfWeek: number[]; // 0-6, Sunday = 0
@@ -282,7 +287,14 @@ export const isAppBlocked = async (packageName: string): Promise<boolean> => {
 export const getBlockSchedules = async (): Promise<BlockSchedule[]> => {
   try {
     const stored = await AsyncStorage.getItem(BLOCK_SCHEDULES_KEY);
-    return stored ? JSON.parse(stored) : [];
+    if (!stored) return [];
+
+    const schedules: BlockSchedule[] = JSON.parse(stored);
+    // Handle backward compatibility: add empty websites array if missing
+    return schedules.map(schedule => ({
+      ...schedule,
+      websites: schedule.websites || [],
+    }));
   } catch (error) {
     console.error('Error getting block schedules:', error);
     return [];
@@ -630,6 +642,91 @@ export const resetDailyLimitsIfNeeded = async (): Promise<void> => {
   }
 };
 
+/**
+ * Remove daily limit for an app
+ */
+export const removeDailyLimit = async (packageName: string): Promise<void> => {
+  try {
+    const limits = await getDailyLimits();
+    const filtered = limits.filter((l) => l.packageName !== packageName);
+    await AsyncStorage.setItem(DAILY_LIMITS_KEY, JSON.stringify(filtered));
+
+    // Also unblock the app if it was blocked due to limit
+    const blockedApps = await getBlockedApps();
+    const app = blockedApps.find((a) => a.packageName === packageName && a.blockType === 'limit');
+    if (app) {
+      await unblockApp(packageName);
+    }
+  } catch (error) {
+    console.error('Error removing daily limit:', error);
+  }
+};
+
+/**
+ * Get default app limit minutes (default: 30 minutes)
+ */
+export const getDefaultAppLimitMinutes = async (): Promise<number> => {
+  try {
+    const stored = await AsyncStorage.getItem(DEFAULT_APP_LIMIT_MINUTES_KEY);
+    return stored ? parseInt(stored, 10) : 30; // Default 30 minutes
+  } catch (error) {
+    console.error('Error getting default app limit:', error);
+    return 30;
+  }
+};
+
+/**
+ * Set default app limit minutes
+ */
+export const setDefaultAppLimitMinutes = async (minutes: number): Promise<void> => {
+  try {
+    await AsyncStorage.setItem(DEFAULT_APP_LIMIT_MINUTES_KEY, minutes.toString());
+  } catch (error) {
+    console.error('Error setting default app limit:', error);
+  }
+};
+
+/**
+ * Initialize app limits from onboarding selections
+ * Called once after first app launch with completed onboarding
+ */
+export const initializeAppLimitsFromOnboarding = async (): Promise<void> => {
+  try {
+    // Check if already initialized
+    const initialized = await AsyncStorage.getItem(APP_LIMITS_INITIALIZED_KEY);
+    if (initialized === 'true') return;
+
+    // Get default apps from onboarding
+    const defaultApps = await getDefaultBlockedApps();
+    if (defaultApps.length === 0) return;
+
+    // Get default limit (30 minutes)
+    const defaultLimit = await getDefaultAppLimitMinutes();
+
+    // Get app names from POPULAR_APPS
+    const today = new Date().toISOString().split('T')[0];
+    const limits: DailyLimit[] = [];
+
+    for (const packageName of defaultApps) {
+      const appInfo = POPULAR_APPS.find((a) => a.packageName === packageName);
+      const appName = appInfo?.appName || packageName.split('.').pop() || packageName;
+
+      limits.push({
+        packageName,
+        appName,
+        limitMinutes: defaultLimit,
+        usedMinutes: 0,
+        lastResetDate: today,
+      });
+    }
+
+    await AsyncStorage.setItem(DAILY_LIMITS_KEY, JSON.stringify(limits));
+    await AsyncStorage.setItem(APP_LIMITS_INITIALIZED_KEY, 'true');
+  } catch (error) {
+    console.error('Error initializing app limits:', error);
+  }
+};
+
 // ==================== PERMISSIONS AND SETUP ====================
 
 /**
@@ -712,4 +809,109 @@ export const hasAllRequiredPermissions = async (): Promise<boolean> => {
   ]);
 
   return accessibility && overlay;
+};
+
+// ==================== DEFAULT BLOCKED ITEMS ====================
+
+import * as SecureStore from 'expo-secure-store';
+
+/**
+ * Get default blocked apps (from onboarding or user-edited)
+ * First tries AsyncStorage (user-edited), then falls back to SecureStore (onboarding)
+ */
+export const getDefaultBlockedApps = async (): Promise<string[]> => {
+  try {
+    // First try AsyncStorage (user-edited defaults)
+    const asyncStored = await AsyncStorage.getItem(DEFAULT_BLOCKED_APPS_KEY);
+    if (asyncStored) {
+      return JSON.parse(asyncStored);
+    }
+
+    // Fall back to SecureStore (onboarding data)
+    const secureStored = await SecureStore.getItemAsync('blockedApps');
+    if (secureStored) {
+      const apps = JSON.parse(secureStored);
+      // Migrate to AsyncStorage for future use
+      await AsyncStorage.setItem(DEFAULT_BLOCKED_APPS_KEY, JSON.stringify(apps));
+      return apps;
+    }
+
+    return [];
+  } catch (error) {
+    console.error('Error getting default blocked apps:', error);
+    return [];
+  }
+};
+
+/**
+ * Get default blocked websites (from onboarding or user-edited)
+ * First tries AsyncStorage (user-edited), then falls back to SecureStore (onboarding)
+ */
+export const getDefaultBlockedWebsites = async (): Promise<string[]> => {
+  try {
+    // First try AsyncStorage (user-edited defaults)
+    const asyncStored = await AsyncStorage.getItem(DEFAULT_BLOCKED_WEBSITES_KEY);
+    if (asyncStored) {
+      return JSON.parse(asyncStored);
+    }
+
+    // Fall back to SecureStore (onboarding data)
+    const secureStored = await SecureStore.getItemAsync('blockedWebsites');
+    if (secureStored) {
+      const websites = JSON.parse(secureStored);
+      // Migrate to AsyncStorage for future use
+      await AsyncStorage.setItem(DEFAULT_BLOCKED_WEBSITES_KEY, JSON.stringify(websites));
+      return websites;
+    }
+
+    return [];
+  } catch (error) {
+    console.error('Error getting default blocked websites:', error);
+    return [];
+  }
+};
+
+/**
+ * Set default blocked apps (user-edited)
+ */
+export const setDefaultBlockedApps = async (apps: string[]): Promise<void> => {
+  try {
+    await AsyncStorage.setItem(DEFAULT_BLOCKED_APPS_KEY, JSON.stringify(apps));
+    // Also update SecureStore for consistency
+    await SecureStore.setItemAsync('blockedApps', JSON.stringify(apps));
+  } catch (error) {
+    console.error('Error setting default blocked apps:', error);
+  }
+};
+
+/**
+ * Set default blocked websites (user-edited)
+ */
+export const setDefaultBlockedWebsites = async (websites: string[]): Promise<void> => {
+  try {
+    await AsyncStorage.setItem(DEFAULT_BLOCKED_WEBSITES_KEY, JSON.stringify(websites));
+    // Also update SecureStore for consistency
+    await SecureStore.setItemAsync('blockedWebsites', JSON.stringify(websites));
+    // Update native module
+    if (Platform.OS === 'android') {
+      AppBlocker.setBlockedWebsites(websites);
+    }
+  } catch (error) {
+    console.error('Error setting default blocked websites:', error);
+  }
+};
+
+/**
+ * Sync blocked websites to native module
+ * Should be called on app startup and when websites change
+ */
+export const syncBlockedWebsitesToNative = async (): Promise<void> => {
+  try {
+    if (Platform.OS !== 'android') return;
+
+    const websites = await getDefaultBlockedWebsites();
+    AppBlocker.setBlockedWebsites(websites);
+  } catch (error) {
+    console.error('Error syncing blocked websites to native:', error);
+  }
 };

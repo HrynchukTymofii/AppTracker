@@ -15,7 +15,12 @@
       "Bash(npx prettier --write \"app/\\(tabs\\)/blocking/index.tsx\")",
       "Bash(wc:*)",
       "Bash(mkdir:*)",
-      "Bash(node update-locales.js:*)"
+      "Bash(node update-locales.js:*)",
+      "Skill(frontend-design:frontend-design)",
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)"
     ]
   }
 }

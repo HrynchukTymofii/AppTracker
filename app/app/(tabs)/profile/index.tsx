@@ -11,37 +11,23 @@ import {
 import { useAuth, UserType } from "@/context/AuthContext";
 import { useTranslation } from 'react-i18next';
 import {
-  CheckCircle,
-  LucideIcon,
   Mails,
   Settings,
-  Star,
   Trophy,
   LogOut,
-  User,
-  Target,
   Crown,
   ThumbsUp,
-  Sun,
-  Moon,
-  Shield,
-  Calendar,
-  Clock,
   Zap,
-  Award,
-  Layers,
-  Flame,
-  Heart,
-  TrendingDown,
-  Sunrise,
-  Rocket,
-  Lock,
-  Sparkles,
-  Activity,
+  Shield,
+  Globe,
+  Timer,
   ShieldCheck,
   ChevronRight,
-  Brain,
+  User,
+  Sparkles,
+  Flame,
 } from "lucide-react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter, useFocusEffect } from "expo-router";
 import { getUserData } from "@/lib/api/user";
 import Toast from "react-native-toast-message";
@@ -50,238 +36,23 @@ import * as SecureStore from "expo-secure-store";
 import * as StoreReview from "expo-store-review";
 import GraduationCap3DLoader from "@/components/ui/GraduationCapLoader";
 import { ContactDialog } from "@/components/modals/ContactDialog";
+import { DefaultBlockedItemsModal } from "@/components/modals/DefaultBlockedItemsModal";
+import { getDefaultBlockedApps, getDefaultBlockedWebsites, getDefaultAppLimitMinutes, setDefaultAppLimitMinutes } from "@/lib/appBlocking";
+import { getAchievementStats } from "@/lib/achievementTracking";
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import { ThemedBackground } from "@/components/ui/ThemedBackground";
 
-export interface Achievement {
-  id: number | string;
-  title: string;
-  description: string;
-  icon: LucideIcon;
-  unlocked: boolean;
-  color: string;
-}
+// Import extracted components
+import {
+  AchievementBadge,
+  SettingsItem,
+  getDynamicAchievements,
+} from "@/components/profile";
 
-const AchievementBadge = ({
-  achievement,
-  isDark,
-}: {
-  achievement: Achievement;
-  isDark: boolean;
-}) => {
-  const Icon = achievement.icon;
-
-  return (
-    <View
-      style={{
-        width: "31%",
-        borderRadius: 16,
-        backgroundColor: achievement.unlocked
-          ? isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff"
-          : isDark
-            ? "rgba(255, 255, 255, 0.03)"
-            : "rgba(0, 0, 0, 0.02)",
-        padding: 14,
-        alignItems: "center",
-        borderWidth: 1,
-        borderColor: achievement.unlocked
-          ? achievement.color + "40"
-          : isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
-        opacity: achievement.unlocked ? 1 : 0.5,
-      }}
-    >
-      <View
-        style={{
-          width: 48,
-          height: 48,
-          borderRadius: 24,
-          backgroundColor: achievement.unlocked
-            ? achievement.color + "20"
-            : isDark
-              ? "rgba(255, 255, 255, 0.05)"
-              : "rgba(0, 0, 0, 0.03)",
-          alignItems: "center",
-          justifyContent: "center",
-          marginBottom: 10,
-          borderWidth: 2,
-          borderColor: achievement.unlocked
-            ? achievement.color
-            : isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.05)",
-        }}
-      >
-        <Icon
-          size={24}
-          color={
-            achievement.unlocked
-              ? achievement.color
-              : isDark ? "#64748b" : "#94a3b8"
-          }
-          strokeWidth={2.5}
-        />
-      </View>
-      <Text
-        style={{
-          fontSize: 10,
-          fontWeight: "700",
-          color: achievement.unlocked
-            ? isDark ? "#ffffff" : "#111827"
-            : isDark
-              ? "#64748b"
-              : "#94a3b8",
-          textAlign: "center",
-          lineHeight: 13,
-        }}
-      >
-        {achievement.title}
-      </Text>
-
-      {achievement.unlocked && (
-        <View
-          style={{
-            position: "absolute",
-            top: 8,
-            right: 8,
-            width: 18,
-            height: 18,
-            borderRadius: 9,
-            backgroundColor: "#10B981",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <CheckCircle size={14} color="#ffffff" fill="#10B981" strokeWidth={3} />
-        </View>
-      )}
-    </View>
-  );
-};
-
-function getDynamicAchievements(t: any, stats: {
-  blockedAppsCount: number;
-  focusSessionsCount: number;
-  tasksCompleted: number;
-  schedulesCount: number;
-  currentStreak: number;
-  maxFocusDuration: number;
-  healthScore: number;
-  totalAppsBlocked: number;
-  weekendBlockingDays: number;
-  focusSessionsToday: number;
-  morningBlockingStreak: number;
-  screenTimeReduction: number;
-}) {
-  return [
-    {
-      id: 'firstBlock',
-      title: t('achievements.list.firstBlock.title'),
-      description: t('achievements.list.firstBlock.description'),
-      icon: Target,
-      unlocked: stats.blockedAppsCount >= 1,
-      color: "#3b82f6",
-    },
-    {
-      id: 'focusBeginner',
-      title: t('achievements.list.focusBeginner.title'),
-      description: t('achievements.list.focusBeginner.description'),
-      icon: CheckCircle,
-      unlocked: stats.focusSessionsCount >= 1,
-      color: "#10b981",
-    },
-    {
-      id: 'taskMaster',
-      title: t('achievements.list.taskMaster.title'),
-      description: t('achievements.list.taskMaster.description'),
-      icon: Trophy,
-      unlocked: stats.tasksCompleted >= 1,
-      color: "#f59e0b",
-    },
-    {
-      id: 'earlyBird',
-      title: t('achievements.list.earlyBird.title'),
-      description: t('achievements.list.earlyBird.description'),
-      icon: Sun,
-      unlocked: false,
-      color: "#f97316",
-    },
-    {
-      id: 'nightOwl',
-      title: t('achievements.list.nightOwl.title'),
-      description: t('achievements.list.nightOwl.description'),
-      icon: Moon,
-      unlocked: false,
-      color: "#6366f1",
-    },
-    {
-      id: 'discipline',
-      title: t('achievements.list.discipline.title'),
-      description: t('achievements.list.discipline.description'),
-      icon: Star,
-      unlocked: stats.currentStreak >= 7,
-      color: "#8b5cf6",
-    },
-  ];
-}
-
-// Settings menu item component
-const SettingsItem = ({
-  icon: Icon,
-  label,
-  onPress,
-  isDark,
-  color = isDark ? "#ffffff" : "#111827",
-  bgColor,
-}: {
-  icon: LucideIcon;
-  label: string;
-  onPress: () => void;
-  isDark: boolean;
-  color?: string;
-  bgColor?: string;
-}) => (
-  <TouchableOpacity
-    onPress={onPress}
-    activeOpacity={0.7}
-    style={{
-      backgroundColor: bgColor || (isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.03)"),
-      borderRadius: 16,
-      padding: 16,
-      marginBottom: 10,
-      flexDirection: "row",
-      alignItems: "center",
-      borderWidth: 1,
-      borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
-    }}
-  >
-    <View
-      style={{
-        width: 44,
-        height: 44,
-        borderRadius: 22,
-        backgroundColor: color === "#ef4444"
-          ? "rgba(239, 68, 68, 0.15)"
-          : isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.05)",
-        alignItems: "center",
-        justifyContent: "center",
-        marginRight: 14,
-      }}
-    >
-      <Icon size={22} color={color} strokeWidth={2} />
-    </View>
-    <Text
-      style={{
-        flex: 1,
-        fontSize: 16,
-        fontWeight: "600",
-        color: color,
-      }}
-    >
-      {label}
-    </Text>
-    <ChevronRight size={22} color={isDark ? "#6b7280" : "#9ca3af"} />
-  </TouchableOpacity>
-);
+export { Achievement } from "@/components/profile";
 
 export default function ProfileScreen() {
   const { t } = useTranslation();
@@ -313,6 +84,14 @@ export default function ProfileScreen() {
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Blocked items state
+  const [showBlockedItemsModal, setShowBlockedItemsModal] = useState(false);
+  const [defaultAppsCount, setDefaultAppsCount] = useState(0);
+  const [defaultWebsitesCount, setDefaultWebsitesCount] = useState(0);
+
+  // Default app limit state
+  const [defaultAppLimit, setDefaultAppLimit] = useState(30);
 
   useFocusEffect(
     useCallback(() => {
@@ -348,32 +127,58 @@ export default function ProfileScreen() {
   useFocusEffect(
     useCallback(() => {
       (async () => {
-        const stats = {
-          blockedAppsCount: 0,
-          focusSessionsCount: 0,
-          tasksCompleted: 0,
-          schedulesCount: 0,
-          currentStreak: 0,
-          maxFocusDuration: 0,
-          healthScore: 0,
-          totalAppsBlocked: 0,
-          weekendBlockingDays: 0,
-          focusSessionsToday: 0,
-          morningBlockingStreak: 0,
-          screenTimeReduction: 0,
-        };
+        try {
+          const storedStats = await getAchievementStats();
+          const stats = {
+            blockedAppsCount: storedStats.blockedAppsCount || 0,
+            focusSessionsCount: storedStats.focusSessionsCount || 0,
+            tasksCompleted: storedStats.tasksCompleted || 0,
+            schedulesCount: storedStats.schedulesCount || 0,
+            currentStreak: storedStats.currentStreak || 0,
+            maxFocusDuration: storedStats.maxFocusDuration || 0,
+            healthScore: storedStats.healthScore || 0,
+            totalAppsBlocked: storedStats.totalAppsBlocked || 0,
+            weekendBlockingDays: storedStats.weekendBlockingDays || 0,
+            focusSessionsToday: storedStats.focusSessionsToday || 0,
+            morningBlockingStreak: storedStats.morningBlockingStreak || 0,
+            screenTimeReduction: storedStats.screenTimeReduction || 0,
+          };
 
-        setAchievementStats(stats);
-        setAchievements(getDynamicAchievements(t, stats));
+          setAchievementStats(stats);
+          setAchievements(getDynamicAchievements(t, stats));
+        } catch (error) {
+          console.error('Error loading achievement stats:', error);
+        }
       })();
     }, [t])
+  );
+
+  // Load blocked items counts and default app limit
+  useFocusEffect(
+    useCallback(() => {
+      const loadBlockedItems = async () => {
+        try {
+          const [apps, websites, limit] = await Promise.all([
+            getDefaultBlockedApps(),
+            getDefaultBlockedWebsites(),
+            getDefaultAppLimitMinutes(),
+          ]);
+          setDefaultAppsCount(apps.length);
+          setDefaultWebsitesCount(websites.length);
+          setDefaultAppLimit(limit);
+        } catch (error) {
+          console.error('Error loading blocked items:', error);
+        }
+      };
+      loadBlockedItems();
+    }, [])
   );
 
   useEffect(() => {
     const loadAnswers = async () => {
       const stored = await SecureStore.getItemAsync("onboardingAnswers");
       if (stored) setAnswers(JSON.parse(stored));
-      else setAnswers({ name: user?.name || "Student" });
+      else setAnswers({ name: user?.name || "Achiever" });
     };
     loadAnswers();
   }, [user]);
@@ -426,15 +231,16 @@ export default function ProfileScreen() {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: isDark ? "#000000" : "#ffffff",
+          backgroundColor: isDark ? "#000000" : "#f8fafc",
         }}
       >
         <GraduationCap3DLoader />
         <Text
           style={{
             marginTop: 20,
-            fontSize: 16,
-            color: isDark ? "#9ca3af" : "#6b7280",
+            fontSize: 15,
+            color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+            fontWeight: "500",
           }}
         >
           {t('profile.loading')}
@@ -451,14 +257,14 @@ export default function ProfileScreen() {
           justifyContent: "center",
           alignItems: "center",
           padding: 16,
-          backgroundColor: isDark ? "#000000" : "#ffffff",
+          backgroundColor: isDark ? "#000000" : "#f8fafc",
         }}
       >
-        <Text style={{ color: "#ef4444", fontSize: 16, marginBottom: 4 }}>
+        <Text style={{ color: "#ef4444", fontSize: 16, marginBottom: 4, fontWeight: "600" }}>
           {t('profile.errorLoading')}
         </Text>
         {error && (
-          <Text style={{ color: isDark ? "#9ca3af" : "#6b7280" }}>{error}</Text>
+          <Text style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#64748b" }}>{error}</Text>
         )}
       </View>
     );
@@ -472,46 +278,135 @@ export default function ProfileScreen() {
     : "U";
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: isDark ? "#000000" : "#ffffff" }}
-    >
-      <ScrollView
+    <ThemedBackground>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView
         contentContainerStyle={{ paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header Section with centered avatar */}
-        <View style={{ alignItems: 'center', paddingTop: 20, paddingBottom: 32 }}>
+        {/* Header */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 20,
+            paddingTop: 16,
+            paddingBottom: 8,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 32,
+              fontWeight: "800",
+              color: isDark ? "#ffffff" : "#0f172a",
+              letterSpacing: -0.5,
+            }}
+          >
+            {t('tabs.profile')}
+          </Text>
+          <TouchableOpacity
+            onPress={() => router.push("/settings")}
+            activeOpacity={0.7}
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: 16,
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#ffffff",
+              alignItems: "center",
+              justifyContent: "center",
+              borderWidth: 0.5,
+              borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.06)",
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: isDark ? 0 : 0.04,
+              shadowRadius: 8,
+              elevation: 2,
+            }}
+          >
+            <Settings size={22} color={isDark ? "#ffffff" : "#0f172a"} strokeWidth={1.5} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Profile Card */}
+        <View
+          style={{
+            marginHorizontal: 20,
+            marginTop: 16,
+            marginBottom: 28,
+            borderRadius: 24,
+            padding: 28,
+            alignItems: "center",
+            overflow: "hidden",
+            backgroundColor: isDark ? "#0a0a0a" : "#ffffff",
+            borderWidth: 0.5,
+            borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: isDark ? 0.2 : 0.06,
+            shadowRadius: 24,
+            elevation: 3,
+          }}
+        >
+          <LinearGradient
+            colors={isDark
+              ? ["rgba(59, 130, 246, 0.15)", "rgba(59, 130, 246, 0.05)", "transparent"]
+              : ["rgba(59, 130, 246, 0.10)", "rgba(59, 130, 246, 0.03)", "transparent"]
+            }
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+          />
+
           {/* Avatar */}
           <View
             style={{
-              width: 100,
-              height: 100,
-              borderRadius: 50,
-              backgroundColor: isDark ? "#3b82f6" : "#3b82f6",
+              width: 96,
+              height: 96,
+              borderRadius: 32,
               alignItems: "center",
               justifyContent: "center",
-              marginBottom: 16,
+              marginBottom: 20,
+              overflow: "hidden",
               shadowColor: "#3b82f6",
-              shadowOffset: { width: 0, height: 8 },
-              shadowOpacity: 0.3,
-              shadowRadius: 16,
+              shadowOffset: { width: 0, height: 12 },
+              shadowOpacity: 0.25,
+              shadowRadius: 24,
               elevation: 8,
             }}
           >
+            <LinearGradient
+              colors={["#3b82f6", "#1d4ed8"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            />
             {user.image ? (
               <Image
                 source={{ uri: user.image }}
                 style={{
-                  width: 100,
-                  height: 100,
-                  borderRadius: 50,
+                  width: 96,
+                  height: 96,
+                  borderRadius: 32,
                 }}
               />
             ) : answers["avatar"] ? (
               <Text style={{ fontSize: 44 }}>{answers["avatar"]}</Text>
             ) : (
               <Text
-                style={{ color: "#ffffff", fontSize: 36, fontWeight: "bold" }}
+                style={{ color: "#ffffff", fontSize: 36, fontWeight: "700" }}
               >
                 {initials}
               </Text>
@@ -522,10 +417,11 @@ export default function ProfileScreen() {
           <Text
             style={{
               fontSize: 26,
-              fontWeight: "bold",
-              color: isDark ? "#ffffff" : "#111827",
+              fontWeight: "800",
+              color: isDark ? "#ffffff" : "#0f172a",
               textAlign: "center",
               marginBottom: 6,
+              letterSpacing: -0.5,
             }}
           >
             {user.name}
@@ -534,14 +430,140 @@ export default function ProfileScreen() {
           {/* Email */}
           <Text
             style={{
-              fontSize: 15,
-              color: isDark ? "#9ca3af" : "#6b7280",
+              fontSize: 14,
+              color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
               textAlign: "center",
-              marginBottom: 12,
+              marginBottom: 20,
             }}
           >
             {user.email}
           </Text>
+
+          {/* Stats Row - Streak, Sessions, Tasks */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 20,
+              marginBottom: 20,
+              paddingHorizontal: 16,
+            }}
+          >
+            {/* Streak */}
+            <View
+              style={{
+                alignItems: "center",
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+                borderRadius: 16,
+                backgroundColor: isDark ? "rgba(251, 146, 60, 0.1)" : "rgba(251, 146, 60, 0.08)",
+                borderWidth: 0.5,
+                borderColor: isDark ? "rgba(251, 146, 60, 0.2)" : "rgba(251, 146, 60, 0.15)",
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
+                <Flame size={18} color="#f97316" fill="#f97316" />
+                <Text
+                  style={{
+                    fontSize: 22,
+                    fontWeight: "800",
+                    color: "#f97316",
+                    marginLeft: 6,
+                  }}
+                >
+                  {achievementStats.currentStreak}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  fontSize: 11,
+                  fontWeight: "600",
+                  color: isDark ? "rgba(255,255,255,0.4)" : "#94a3b8",
+                  textTransform: "uppercase",
+                  letterSpacing: 0.5,
+                }}
+              >
+                {t('profile.streak') || 'Streak'}
+              </Text>
+            </View>
+
+            {/* Focus Sessions */}
+            <View
+              style={{
+                alignItems: "center",
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+                borderRadius: 16,
+                backgroundColor: isDark ? "rgba(59, 130, 246, 0.1)" : "rgba(59, 130, 246, 0.08)",
+                borderWidth: 0.5,
+                borderColor: isDark ? "rgba(59, 130, 246, 0.2)" : "rgba(59, 130, 246, 0.15)",
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
+                <Zap size={18} color="#3b82f6" />
+                <Text
+                  style={{
+                    fontSize: 22,
+                    fontWeight: "800",
+                    color: "#3b82f6",
+                    marginLeft: 6,
+                  }}
+                >
+                  {achievementStats.focusSessionsCount}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  fontSize: 11,
+                  fontWeight: "600",
+                  color: isDark ? "rgba(255,255,255,0.4)" : "#94a3b8",
+                  textTransform: "uppercase",
+                  letterSpacing: 0.5,
+                }}
+              >
+                {t('profile.sessions') || 'Sessions'}
+              </Text>
+            </View>
+
+            {/* Tasks */}
+            <View
+              style={{
+                alignItems: "center",
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+                borderRadius: 16,
+                backgroundColor: isDark ? "rgba(16, 185, 129, 0.1)" : "rgba(16, 185, 129, 0.08)",
+                borderWidth: 0.5,
+                borderColor: isDark ? "rgba(16, 185, 129, 0.2)" : "rgba(16, 185, 129, 0.15)",
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
+                <Trophy size={18} color="#10b981" />
+                <Text
+                  style={{
+                    fontSize: 22,
+                    fontWeight: "800",
+                    color: "#10b981",
+                    marginLeft: 6,
+                  }}
+                >
+                  {achievementStats.tasksCompleted}
+                </Text>
+              </View>
+              <Text
+                style={{
+                  fontSize: 11,
+                  fontWeight: "600",
+                  color: isDark ? "rgba(255,255,255,0.4)" : "#94a3b8",
+                  textTransform: "uppercase",
+                  letterSpacing: 0.5,
+                }}
+              >
+                {t('profile.tasks') || 'Tasks'}
+              </Text>
+            </View>
+          </View>
 
           {/* Pro Badge */}
           {user.isPro && (
@@ -549,20 +571,31 @@ export default function ProfileScreen() {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                backgroundColor: isDark ? "rgba(251, 191, 36, 0.15)" : "rgba(251, 191, 36, 0.1)",
-                paddingHorizontal: 16,
-                paddingVertical: 8,
-                borderRadius: 20,
-                borderWidth: 1,
-                borderColor: "#fbbf24",
+                paddingHorizontal: 18,
+                paddingVertical: 10,
+                borderRadius: 16,
+                overflow: "hidden",
+                borderWidth: 0.5,
+                borderColor: "rgba(251, 191, 36, 0.3)",
               }}
             >
-              <Crown size={16} color="#fbbf24" style={{ marginRight: 6 }} />
+              <LinearGradient
+                colors={["rgba(251, 191, 36, 0.15)", "rgba(251, 191, 36, 0.05)"]}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                }}
+              />
+              <Sparkles size={16} color="#fbbf24" style={{ marginRight: 6 }} />
               <Text
                 style={{
                   fontSize: 13,
                   fontWeight: "700",
                   color: "#fbbf24",
+                  letterSpacing: 0.3,
                 }}
               >
                 {t('profile.proMember')}
@@ -577,23 +610,46 @@ export default function ProfileScreen() {
           <TouchableOpacity
             onPress={() => router.push("/achievements")}
             activeOpacity={0.9}
-            style={{ marginBottom: 24 }}
+            style={{ marginBottom: 28 }}
           >
             <View
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginBottom: 12,
+                marginBottom: 14,
               }}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Trophy size={20} color="#f59e0b" style={{ marginRight: 8 }} />
+                <View
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 10,
+                    overflow: "hidden",
+                  }}
+                >
+                  <LinearGradient
+                    colors={["#f59e0b", "#d97706"]}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                    }}
+                  />
+                  <Trophy size={16} color="#ffffff" strokeWidth={2} />
+                </View>
                 <Text
                   style={{
                     fontSize: 18,
-                    fontWeight: "bold",
-                    color: isDark ? "#ffffff" : "#111827",
+                    fontWeight: "700",
+                    color: isDark ? "#ffffff" : "#0f172a",
+                    letterSpacing: -0.3,
                   }}
                 >
                   {t('profile.achievements')}
@@ -603,23 +659,29 @@ export default function ProfileScreen() {
                 <Text
                   style={{
                     fontSize: 13,
-                    color: isDark ? "#9ca3af" : "#6b7280",
+                    color: isDark ? "rgba(255,255,255,0.4)" : "#94a3b8",
                     marginRight: 6,
+                    fontWeight: "500",
                   }}
                 >
                   {t('profile.viewAll')}
                 </Text>
-                <ChevronRight size={16} color={isDark ? "#9ca3af" : "#6b7280"} />
+                <ChevronRight size={16} color={isDark ? "rgba(255,255,255,0.4)" : "#94a3b8"} strokeWidth={1.5} />
               </View>
             </View>
 
             <View
               style={{
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.03)",
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
                 borderRadius: 20,
-                padding: 16,
-                borderWidth: 1,
-                borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
+                padding: 18,
+                borderWidth: 0.5,
+                borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: isDark ? 0 : 0.03,
+                shadowRadius: 12,
+                elevation: 2,
               }}
             >
               <View
@@ -639,34 +701,302 @@ export default function ProfileScreen() {
             </View>
           </TouchableOpacity>
 
-          {/* Settings Section */}
-          <View style={{ marginBottom: 8 }}>
-            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
-              <Settings size={20} color={isDark ? "#9ca3af" : "#6b7280"} style={{ marginRight: 8 }} />
+          {/* Blocked Apps & Websites Section */}
+          <View style={{ marginBottom: 28 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 14,
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 10,
+                    overflow: "hidden",
+                  }}
+                >
+                  <LinearGradient
+                    colors={["#3b82f6", "#1d4ed8"]}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                    }}
+                  />
+                  <Shield size={16} color="#ffffff" strokeWidth={2} />
+                </View>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "700",
+                    color: isDark ? "#ffffff" : "#0f172a",
+                    letterSpacing: -0.3,
+                  }}
+                >
+                  {t('profile.blockedItems') || "Blocked Items"}
+                </Text>
+              </View>
+            </View>
+
+            <TouchableOpacity
+              onPress={() => setShowBlockedItemsModal(true)}
+              activeOpacity={0.7}
+              style={{
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+                borderRadius: 18,
+                padding: 18,
+                flexDirection: "row",
+                alignItems: "center",
+                borderWidth: 0.5,
+                borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: isDark ? 0 : 0.03,
+                shadowRadius: 12,
+                elevation: 2,
+              }}
+            >
+              <View
+                style={{
+                  width: 52,
+                  height: 52,
+                  borderRadius: 16,
+                  backgroundColor: isDark ? "rgba(59, 130, 246, 0.12)" : "rgba(59, 130, 246, 0.08)",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginRight: 16,
+                }}
+              >
+                <ShieldCheck size={24} color="#3b82f6" strokeWidth={1.5} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "600",
+                    color: isDark ? "#ffffff" : "#0f172a",
+                    marginBottom: 6,
+                  }}
+                >
+                  {t('profile.defaultBlockedItems') || "Default Blocked Items"}
+                </Text>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Shield size={14} color={isDark ? "rgba(255,255,255,0.4)" : "#94a3b8"} style={{ marginRight: 5 }} strokeWidth={1.5} />
+                    <Text style={{ fontSize: 14, color: isDark ? "rgba(255,255,255,0.5)" : "#64748b", fontWeight: "500" }}>
+                      {defaultAppsCount} {t('profile.apps') || "apps"}
+                    </Text>
+                  </View>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Globe size={14} color={isDark ? "rgba(255,255,255,0.4)" : "#94a3b8"} style={{ marginRight: 5 }} strokeWidth={1.5} />
+                    <Text style={{ fontSize: 14, color: isDark ? "rgba(255,255,255,0.5)" : "#64748b", fontWeight: "500" }}>
+                      {defaultWebsitesCount} {t('profile.websites') || "websites"}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <ChevronRight size={20} color={isDark ? "rgba(255,255,255,0.3)" : "#cbd5e1"} strokeWidth={1.5} />
+            </TouchableOpacity>
+
+            <Text
+              style={{
+                fontSize: 12,
+                color: isDark ? "rgba(255,255,255,0.3)" : "#94a3b8",
+                marginTop: 10,
+                paddingHorizontal: 4,
+              }}
+            >
+              {t('profile.blockedItemsDesc') || "These are pre-selected when creating new schedules"}
+            </Text>
+          </View>
+
+          {/* Default App Limit Section */}
+          <View style={{ marginBottom: 28 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 14,
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 10,
+                    overflow: "hidden",
+                  }}
+                >
+                  <LinearGradient
+                    colors={["#f59e0b", "#d97706"]}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                    }}
+                  />
+                  <Timer size={16} color="#ffffff" strokeWidth={2} />
+                </View>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "700",
+                    color: isDark ? "#ffffff" : "#0f172a",
+                    letterSpacing: -0.3,
+                  }}
+                >
+                  {t('profile.defaultAppLimit') || "Default App Limit"}
+                </Text>
+              </View>
+            </View>
+
+            <View
+              style={{
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+                borderRadius: 18,
+                padding: 18,
+                borderWidth: 0.5,
+                borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: isDark ? 0 : 0.03,
+                shadowRadius: 12,
+                elevation: 2,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+                  marginBottom: 18,
+                }}
+              >
+                {t('profile.defaultAppLimitDesc') || "New apps will use this time limit by default"}
+              </Text>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  gap: 10,
+                }}
+              >
+                {[15, 30, 45, 60, 90, 120].map((mins) => (
+                  <TouchableOpacity
+                    key={mins}
+                    onPress={async () => {
+                      setDefaultAppLimit(mins);
+                      await setDefaultAppLimitMinutes(mins);
+                      Toast.show({
+                        type: "success",
+                        text1: t('profile.limitUpdated') || "Default limit updated",
+                        position: "top",
+                        visibilityTime: 1500,
+                      });
+                    }}
+                    style={{
+                      paddingVertical: 12,
+                      paddingHorizontal: 22,
+                      borderRadius: 14,
+                      overflow: "hidden",
+                      borderWidth: defaultAppLimit === mins ? 0 : 0.5,
+                      borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
+                    }}
+                  >
+                    {defaultAppLimit === mins ? (
+                      <LinearGradient
+                        colors={["#f59e0b", "#d97706"]}
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                        }}
+                      />
+                    ) : (
+                      <View
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f8fafc",
+                        }}
+                      />
+                    )}
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: "700",
+                        color: defaultAppLimit === mins
+                          ? "#ffffff"
+                          : isDark ? "#ffffff" : "#0f172a",
+                      }}
+                    >
+                      {mins >= 60 ? `${mins / 60}h` : `${mins}m`}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          </View>
+
+          {/* Quick Actions Section */}
+          <View style={{ marginBottom: 12 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 14 }}>
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 10,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginRight: 10,
+                  overflow: "hidden",
+                }}
+              >
+                <LinearGradient
+                  colors={["#8b5cf6", "#6d28d9"]}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                  }}
+                />
+                <Zap size={16} color="#ffffff" strokeWidth={2} />
+              </View>
               <Text
                 style={{
                   fontSize: 18,
-                  fontWeight: "bold",
-                  color: isDark ? "#ffffff" : "#111827",
+                  fontWeight: "700",
+                  color: isDark ? "#ffffff" : "#0f172a",
+                  letterSpacing: -0.3,
                 }}
               >
-                {t('common.settings')}
+                {t('profile.quickActions')}
               </Text>
             </View>
-
-            <SettingsItem
-              icon={User}
-              label={t('profile.editProfile')}
-              onPress={() => router.push("/edit-profile")}
-              isDark={isDark}
-            />
-
-            <SettingsItem
-              icon={Settings}
-              label={t('common.settings')}
-              onPress={() => router.push("/settings")}
-              isDark={isDark}
-            />
 
             <SettingsItem
               icon={Mails}
@@ -688,18 +1018,31 @@ export default function ProfileScreen() {
             onPress={handleLogout}
             activeOpacity={0.7}
             style={{
-              backgroundColor: isDark ? "rgba(239, 68, 68, 0.1)" : "rgba(239, 68, 68, 0.05)",
-              borderRadius: 16,
-              padding: 16,
+              borderRadius: 18,
+              padding: 18,
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              borderWidth: 1.5,
-              borderColor: "#ef4444",
-              marginTop: 8,
+              borderWidth: 0.5,
+              borderColor: "rgba(239, 68, 68, 0.3)",
+              marginTop: 12,
+              overflow: "hidden",
             }}
           >
-            <LogOut size={22} color="#ef4444" strokeWidth={2} />
+            <LinearGradient
+              colors={isDark
+                ? ["rgba(239, 68, 68, 0.12)", "rgba(239, 68, 68, 0.06)"]
+                : ["rgba(239, 68, 68, 0.08)", "rgba(239, 68, 68, 0.04)"]
+              }
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            />
+            <LogOut size={20} color="#ef4444" strokeWidth={2} />
             <Text
               style={{
                 marginLeft: 10,
@@ -719,6 +1062,22 @@ export default function ProfileScreen() {
         onClose={() => setContactOpen(false)}
         isDark={isDark}
       />
-    </SafeAreaView>
+
+      <DefaultBlockedItemsModal
+        visible={showBlockedItemsModal}
+        onClose={() => setShowBlockedItemsModal(false)}
+        onSave={async () => {
+          // Reload counts after saving
+          const [apps, websites] = await Promise.all([
+            getDefaultBlockedApps(),
+            getDefaultBlockedWebsites(),
+          ]);
+          setDefaultAppsCount(apps.length);
+          setDefaultWebsitesCount(websites.length);
+        }}
+        isDark={isDark}
+      />
+      </SafeAreaView>
+    </ThemedBackground>
   );
 }

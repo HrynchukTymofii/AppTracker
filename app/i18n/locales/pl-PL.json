@@ -22,7 +22,8 @@
     "detox": "Detoks",
     "stats": "Statystyki",
     "profile": "Profil",
-    "community": "Społeczność"
+    "community": "Społeczność",
+    "schedule": "Harmonogram"
   },
   "home": {
     "title": "LockIn",
@@ -114,6 +115,18 @@
     "calendarView": "Widok Kalendarza",
     "everyday": "Codziennie",
     "weekdays": "Dni robocze",
+    "weekends": "Weekendy",
+    "suggestedSchedules": {
+      "title": "Szybki Start",
+      "morningFocus": "Poranny Fokus",
+      "deepWork": "Głęboka Praca",
+      "lunchBreak": "Przerwa Obiadowa",
+      "gymTime": "Czas na Siłownię",
+      "eveningWinddown": "Wieczorny Relaks",
+      "studySession": "Sesja Nauki",
+      "familyTime": "Czas Rodzinny",
+      "sleepMode": "Tryb Snu"
+    },
     "activeToday": "aktywne dziś",
     "scheduledForDay": "na ten dzień",
     "noSchedulesWere": "W tym dniu nie było aktywnych harmonogramów",
@@ -130,6 +143,8 @@
       "selectApps": "Wybierz Aplikacje do Zablokowania",
       "confirmSelection": "Potwierdź Wybór ({{count}})",
       "newSchedule": "Nowy Harmonogram",
+      "editSchedule": "Edytuj Harmonogram",
+      "templates": "SZABLONY",
       "scheduleName": "NAZWA HARMONOGRAMU",
       "scheduleNamePlaceholder": "np. Godziny Pracy",
       "appsToBlock": "APLIKACJE DO ZABLOKOWANIA",
@@ -170,7 +185,9 @@
       "taskVerifiedDesc": "Twoje zadanie zostało pomyślnie zweryfikowane.\n\nPewność: {{confidence}}%\n\n{{explanation}}",
       "taskNotVerified": "Zadanie Nie Zweryfikowane",
       "taskNotVerifiedDesc": "Zadanie nie wydaje się być ukończone.\n\n{{explanation}}\n\nUkończ zadanie i spróbuj ponownie.",
-      "apiKeySavedSuccess": "Klucz API zapisany pomyślnie"
+      "apiKeySavedSuccess": "Klucz API zapisany pomyślnie",
+      "removeLimit": "Usuń Limit",
+      "removeLimitConfirm": "Czy na pewno chcesz usunąć dzienny limit dla tej aplikacji?"
     },
     "presetTasks": {
       "cleaning": "Sprzątanie",
@@ -178,6 +195,16 @@
       "exercise": "Ćwiczenia",
       "reading": "Czytanie",
       "custom": "Niestandardowe"
+    },
+    "appLimits": "Limity Aplikacji",
+    "noLimitsSet": "Brak ustawionych limitów aplikacji",
+    "addLimitsHint": "Dodaj aplikacje, aby ustawić dzienne limity użytkowania",
+    "limitExceeded": "Limit przekroczony",
+    "timeLimitModal": {
+      "title": "Ustaw Limit Czasu",
+      "hours": "Godziny",
+      "minutes": "Minuty",
+      "dailyLimit": "Dzienny Limit"
     }
   },
   "detox": {
@@ -194,7 +221,10 @@
     "rateUs": "Oceń Nas",
     "logOut": "Wyloguj",
     "errorLoading": "Błąd ładowania profilu",
-    "loading": "Ładowanie profilu..."
+    "loading": "Ładowanie profilu...",
+    "defaultAppLimit": "Domyślny Limit Aplikacji",
+    "defaultAppLimitDesc": "Nowe aplikacje będą domyślnie używać tego limitu czasu",
+    "limitUpdated": "Domyślny limit zaktualizowany"
   },
   "achievements": {
     "title": "Osiągnięcia",

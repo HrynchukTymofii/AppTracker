@@ -1,21 +1,17 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
-  Image,
   RefreshControl,
-  Dimensions,
-  Modal,
-  Animated,
 } from "react-native";
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, HelpCircle } from "lucide-react-native";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Share2, TrendingDown, TrendingUp, BarChart3 } from "lucide-react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import {
-  SafeAreaView,
-} from "react-native-safe-area-context";
-import { useTranslation } from 'react-i18next';
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
+import { ThemedBackground } from "@/components/ui/ThemedBackground";
 import {
   getWeekUsageStatsWithOffset,
   getDailyUsageForWeek,
@@ -23,6 +19,9 @@ import {
   calculateHealthScore,
   getOrbLevel,
   getTodayUsageStats,
+  getWeekComparison,
+  getDailyUsageForMonth,
+  WeekComparisonData,
 } from "@/lib/usageTracking";
 import {
   initUsageDatabase,
@@ -34,1004 +33,22 @@ import {
   getAllDatesWithData,
 } from "@/lib/usageDatabase";
 
-// Local app icons mapping
-const APP_ICONS: { [key: string]: any } = {
-  instagram: require("@/assets/icons/instagram.png"),
-  youtube: require("@/assets/icons/youtube.png"),
-  tiktok: require("@/assets/icons/tiktok.png"),
-  musically: require("@/assets/icons/tiktok.png"),
-  facebook: require("@/assets/icons/facebook.png"),
-  telegram: require("@/assets/icons/telegram.png"),
-  pinterest: require("@/assets/icons/pinterest.png"),
-  linkedin: require("@/assets/icons/linkedin.png"),
-  twitter: require("@/assets/icons/x.png"),
-  x: require("@/assets/icons/x.png"),
-};
-
-// Get local icon for app based on package name or app name
-const getLocalIcon = (packageName: string, appName: string): any | null => {
-  const packageLower = packageName.toLowerCase();
-  const nameLower = appName.toLowerCase();
-
-  for (const [key, icon] of Object.entries(APP_ICONS)) {
-    if (packageLower.includes(key) || nameLower.includes(key)) {
-      return icon;
-    }
-  }
-  return null;
-};
-
-// Shimmer Animation Component
-const ShimmerEffect = ({ isDark, style }: { isDark: boolean; style?: any }) => {
-  const shimmerAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    const animation = Animated.loop(
-      Animated.sequence([
-        Animated.timing(shimmerAnim, {
-          toValue: 1,
-          duration: 1000,
-          useNativeDriver: true,
-        }),
-        Animated.timing(shimmerAnim, {
-          toValue: 0,
-          duration: 1000,
-          useNativeDriver: true,
-        }),
-      ])
-    );
-    animation.start();
-    return () => animation.stop();
-  }, []);
-
-  const opacity = shimmerAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0.3, 0.7],
-  });
-
-  return (
-    <Animated.View
-      style={[
-        {
-          backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)",
-          borderRadius: 8,
-          opacity,
-        },
-        style,
-      ]}
-    />
-  );
-};
-
-// Skeleton Day Card
-const SkeletonDayCard = ({ isDark }: { isDark: boolean }) => {
-  return (
-    <View
-      style={{
-        alignItems: "center",
-        marginHorizontal: 3,
-        backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.02)",
-        borderRadius: 12,
-        padding: 8,
-        paddingVertical: 10,
-        width: 48,
-        borderWidth: 1.5,
-        borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
-      }}
-    >
-      <ShimmerEffect isDark={isDark} style={{ width: 24, height: 10, marginBottom: 8 }} />
-      <ShimmerEffect isDark={isDark} style={{ width: 32, height: 32, borderRadius: 16, marginBottom: 6 }} />
-      <ShimmerEffect isDark={isDark} style={{ width: 20, height: 14 }} />
-    </View>
-  );
-};
-
-// Skeleton Stat Card
-const SkeletonStatCard = ({ isDark }: { isDark: boolean }) => {
-  return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff",
-        borderRadius: 16,
-        padding: 16,
-        borderWidth: 1.5,
-        borderColor: isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.15,
-        shadowRadius: 16,
-        elevation: 6,
-      }}
-    >
-      <ShimmerEffect isDark={isDark} style={{ width: 60, height: 12, marginBottom: 8 }} />
-      <ShimmerEffect isDark={isDark} style={{ width: 50, height: 28, marginBottom: 4 }} />
-      <ShimmerEffect isDark={isDark} style={{ width: 40, height: 12 }} />
-    </View>
-  );
-};
-
-// Skeleton Chart
-const SkeletonChart = ({ isDark }: { isDark: boolean }) => {
-  return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "flex-end",
-        justifyContent: "space-between",
-        height: 150,
-      }}
-    >
-      {[0.4, 0.7, 0.5, 0.9, 0.6, 0.8, 0.3].map((height, index) => (
-        <View key={index} style={{ flex: 1, alignItems: "center", marginHorizontal: 4 }}>
-          <ShimmerEffect
-            isDark={isDark}
-            style={{
-              width: "100%",
-              height: height * 120,
-              borderRadius: 6,
-              marginBottom: 8,
-            }}
-          />
-          <ShimmerEffect isDark={isDark} style={{ width: 20, height: 10, marginBottom: 4 }} />
-          <ShimmerEffect isDark={isDark} style={{ width: 16, height: 8 }} />
-        </View>
-      ))}
-    </View>
-  );
-};
-
-// Skeleton App Usage Item
-const SkeletonAppItem = ({ isDark }: { isDark: boolean }) => {
-  return (
-    <View
-      style={{
-        backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.02)",
-        borderRadius: 12,
-        padding: 12,
-        marginBottom: 8,
-        borderWidth: 1,
-        borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
-      }}
-    >
-      <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
-        <ShimmerEffect isDark={isDark} style={{ width: 36, height: 36, borderRadius: 8, marginRight: 12 }} />
-        <ShimmerEffect isDark={isDark} style={{ flex: 1, height: 16, marginRight: 12 }} />
-        <ShimmerEffect isDark={isDark} style={{ width: 40, height: 16 }} />
-      </View>
-      <ShimmerEffect isDark={isDark} style={{ height: 6, borderRadius: 3 }} />
-    </View>
-  );
-};
-
-// Animated Number Component
-const AnimatedNumber = ({
-  value,
-  suffix = "",
-  duration = 800,
-  style,
-}: {
-  value: number | string;
-  suffix?: string;
-  duration?: number;
-  style?: any;
-}) => {
-  const [displayValue, setDisplayValue] = useState<string>("--");
-  const animatedValue = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    if (typeof value === "string" || value === 0) {
-      setDisplayValue(value === 0 ? `0${suffix}` : String(value));
-      return;
-    }
-
-    animatedValue.setValue(0);
-    Animated.timing(animatedValue, {
-      toValue: value,
-      duration,
-      useNativeDriver: false,
-    }).start();
-
-    const listener = animatedValue.addListener(({ value: v }) => {
-      setDisplayValue(`${Math.round(v * 10) / 10}${suffix}`);
-    });
-
-    return () => animatedValue.removeListener(listener);
-  }, [value, suffix]);
-
-  return <Text style={style}>{displayValue}</Text>;
-};
-
-// Animated Bar Component
-const AnimatedBar = ({
-  height,
-  maxHeight,
-  isDark,
-  delay = 0,
-}: {
-  height: number;
-  maxHeight: number;
-  isDark: boolean;
-  delay?: number;
-}) => {
-  const animatedHeight = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    animatedHeight.setValue(0);
-    Animated.timing(animatedHeight, {
-      toValue: height,
-      duration: 600,
-      delay,
-      useNativeDriver: false,
-    }).start();
-  }, [height]);
-
-  const barHeight = animatedHeight.interpolate({
-    inputRange: [0, maxHeight || 1],
-    outputRange: [0, 120],
-    extrapolate: "clamp",
-  });
-
-  return (
-    <Animated.View
-      style={{
-        width: "100%",
-        height: barHeight,
-        backgroundColor: isDark ? "#ffffff" : "#111827",
-        borderRadius: 6,
-        marginBottom: 8,
-      }}
-    />
-  );
-};
-
-// Day Card Component
-const DayCard = ({
-  dayName,
-  dateNumber,
-  orbLevel,
-  isDark,
-  hasData = true,
-}: {
-  dayName: string;
-  dateNumber: number;
-  orbLevel: number;
-  isDark: boolean;
-  hasData?: boolean;
-}) => {
-  const { t } = useTranslation();
-
-  // Select orb image based on level (1-5)
-  const orbImages = [
-    require("@/assets/images/orb1.png"),
-    require("@/assets/images/orb2.png"),
-    require("@/assets/images/orb3.jpg"),
-    require("@/assets/images/orb4.jpg"),
-    require("@/assets/images/orb5.jpg"),
-  ];
-
-  const orbImage = orbImages[Math.min(orbLevel - 1, 4)];
-
-  return (
-    <View
-      style={{
-        alignItems: "center",
-        marginHorizontal: 3,
-        backgroundColor: hasData
-          ? (isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff")
-          : (isDark ? "rgba(255, 255, 255, 0.03)" : "rgba(0, 0, 0, 0.02)"),
-        borderRadius: 12,
-        padding: 8,
-        paddingVertical: 10,
-        width: 48,
-        borderWidth: 1.5,
-        borderColor: hasData
-          ? (isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)")
-          : (isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)"),
-        borderTopColor: hasData
-          ? (isDark ? "rgba(255, 255, 255, 0.25)" : "rgba(255, 255, 255, 0.8)")
-          : "transparent",
-        borderBottomColor: hasData
-          ? (isDark ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.05)")
-          : "transparent",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: hasData ? 0.1 : 0.02,
-        shadowRadius: 8,
-        elevation: hasData ? 4 : 1,
-        opacity: hasData ? 1 : 0.4,
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 9,
-          fontWeight: "600",
-          color: isDark ? "#9ca3af" : "#6b7280",
-          marginBottom: 8,
-          letterSpacing: 0.5,
-        }}
-      >
-        {dayName.toUpperCase()}
-      </Text>
-      {hasData ? (
-        <>
-          <Image
-            source={orbImage}
-            style={{ width: 32, height: 32, marginBottom: 6 }}
-            resizeMode="contain"
-          />
-          <Text
-            style={{
-              fontSize: 13,
-              fontWeight: "bold",
-              color: isDark ? "#ffffff" : "#111827",
-            }}
-          >
-            {dateNumber}
-          </Text>
-        </>
-      ) : (
-        <>
-          <HelpCircle
-            size={32}
-            color={isDark ? "#4b5563" : "#9ca3af"}
-            style={{ marginBottom: 6 }}
-          />
-          <Text
-            style={{
-              fontSize: 10,
-              color: isDark ? "#6b7280" : "#9ca3af",
-            }}
-          >
-            {t('stats.noData')}
-          </Text>
-        </>
-      )}
-    </View>
-  );
-};
-
-// Stat Card Component
-const StatCard = ({
-  title,
-  value,
-  subtitle,
-  isDark,
-  animated = false,
-  numericValue,
-  suffix = "",
-}: {
-  title: string;
-  value: string;
-  subtitle?: string;
-  isDark: boolean;
-  animated?: boolean;
-  numericValue?: number;
-  suffix?: string;
-}) => {
-  return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff",
-        borderRadius: 16,
-        padding: 16,
-        borderWidth: 1.5,
-        borderColor: isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)",
-        borderTopColor: isDark ? "rgba(255, 255, 255, 0.25)" : "rgba(255, 255, 255, 0.8)",
-        borderBottomColor: isDark ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.05)",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.15,
-        shadowRadius: 16,
-        elevation: 6,
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 11,
-          fontWeight: "600",
-          color: isDark ? "#9ca3af" : "#6b7280",
-          marginBottom: 8,
-          letterSpacing: 0.5,
-        }}
-      >
-        {title}
-      </Text>
-      {animated && numericValue !== undefined ? (
-        <AnimatedNumber
-          value={numericValue}
-          suffix={suffix}
-          style={{
-            fontSize: 28,
-            fontWeight: "bold",
-            color: isDark ? "#ffffff" : "#111827",
-            marginBottom: 4,
-          }}
-        />
-      ) : (
-        <Text
-          style={{
-            fontSize: 28,
-            fontWeight: "bold",
-            color: isDark ? "#ffffff" : "#111827",
-            marginBottom: 4,
-          }}
-        >
-          {value}
-        </Text>
-      )}
-      {subtitle && (
-        <Text
-          style={{
-            fontSize: 12,
-            color: isDark ? "#9ca3af" : "#6b7280",
-          }}
-        >
-          {subtitle}
-        </Text>
-      )}
-    </View>
-  );
-};
-
-// Animated Progress Bar Component
-const AnimatedProgressBar = ({
-  percentage,
-  isDark,
-  delay = 0,
-}: {
-  percentage: number;
-  isDark: boolean;
-  delay?: number;
-}) => {
-  const animatedWidth = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    animatedWidth.setValue(0);
-    Animated.timing(animatedWidth, {
-      toValue: percentage,
-      duration: 800,
-      delay,
-      useNativeDriver: false,
-    }).start();
-  }, [percentage]);
-
-  const width = animatedWidth.interpolate({
-    inputRange: [0, 100],
-    outputRange: ["0%", "100%"],
-    extrapolate: "clamp",
-  });
-
-  return (
-    <View
-      style={{
-        height: 6,
-        backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)",
-        borderRadius: 3,
-        overflow: "hidden",
-      }}
-    >
-      <Animated.View
-        style={{
-          height: "100%",
-          width,
-          backgroundColor: isDark ? "#ffffff" : "#111827",
-          borderRadius: 3,
-        }}
-      />
-    </View>
-  );
-};
-
-// App Usage Item Component
-const AppUsageItem = ({
-  appName,
-  duration,
-  percentage,
-  iconUrl,
-  isDark,
-  index = 0,
-}: {
-  appName: string;
-  duration: string;
-  percentage: number;
-  iconUrl: any;
-  isDark: boolean;
-  index?: number;
-}) => {
-  // Handle both base64 URIs and local require() images
-  const imageSource = typeof iconUrl === 'string'
-    ? { uri: iconUrl }
-    : iconUrl;
-
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(20)).current;
-
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 400,
-        delay: index * 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 400,
-        delay: index * 100,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, []);
-
-  return (
-    <Animated.View
-      style={{
-        backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.02)",
-        borderRadius: 12,
-        padding: 12,
-        marginBottom: 8,
-        borderWidth: 1,
-        borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
-        opacity: fadeAnim,
-        transform: [{ translateY: slideAnim }],
-      }}
-    >
-      <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
-        <Image
-          source={imageSource}
-          style={{
-            width: 36,
-            height: 36,
-            borderRadius: 8,
-            marginRight: 12,
-          }}
-          resizeMode="cover"
-        />
-        <Text
-          style={{
-            flex: 1,
-            fontSize: 15,
-            fontWeight: "600",
-            color: isDark ? "#ffffff" : "#111827",
-          }}
-        >
-          {appName}
-        </Text>
-        <Text
-          style={{
-            fontSize: 15,
-            fontWeight: "bold",
-            color: isDark ? "#ffffff" : "#111827",
-          }}
-        >
-          {duration}
-        </Text>
-      </View>
-      {/* Animated Progress Bar */}
-      <AnimatedProgressBar percentage={percentage} isDark={isDark} delay={index * 100 + 200} />
-    </Animated.View>
-  );
-};
-
-// Get heatmap color based on health score
-const getHeatmapColor = (healthScore: number, isDark: boolean) => {
-  if (healthScore >= 80) {
-    return isDark ? "#22c55e" : "#16a34a"; // Green - Excellent
-  } else if (healthScore >= 60) {
-    return isDark ? "#84cc16" : "#65a30d"; // Light green - Good
-  } else if (healthScore >= 40) {
-    return isDark ? "#facc15" : "#ca8a04"; // Yellow - Average
-  } else if (healthScore >= 20) {
-    return isDark ? "#f97316" : "#ea580c"; // Orange - Poor
-  } else {
-    return isDark ? "#ef4444" : "#dc2626"; // Red - Very poor
-  }
-};
-
-// Calendar Heatmap Component
-const CalendarHeatmap = ({
-  data,
-  isDark,
-  onDayPress,
-}: {
-  data: any[];
-  isDark: boolean;
-  onDayPress: (day: any) => void;
-}) => {
-  const { t } = useTranslation();
-  const { width } = Dimensions.get("window");
-  const cellSize = (width - 80) / 7;
-
-  // Organize data by month
-  const organizeDataByMonth = () => {
-    const months: { [key: string]: any[] } = {};
-    data.forEach((day) => {
-      const date = new Date(day.date);
-      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-      if (!months[monthKey]) months[monthKey] = [];
-      months[monthKey].push(day);
-    });
-    return months;
-  };
-
-  const monthsData = organizeDataByMonth();
-  const sortedMonthKeys = Object.keys(monthsData).sort().reverse().slice(0, 3); // Show last 3 months
-
-  const getMonthLabel = (monthKey: string) => {
-    const [year, month] = monthKey.split("-");
-    const date = new Date(parseInt(year), parseInt(month) - 1, 1);
-    return date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
-  };
-
-  const generateMonthGrid = (monthKey: string, daysInMonth: any[]) => {
-    const [year, month] = monthKey.split("-");
-    const firstDay = new Date(parseInt(year), parseInt(month) - 1, 1);
-    const lastDay = new Date(parseInt(year), parseInt(month), 0);
-    const daysInMonthCount = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay();
-    const dataMap = new Map(daysInMonth.map((d) => [d.date, d]));
-
-    const grid = [];
-    let currentWeek = [];
-
-    for (let i = 0; i < startingDayOfWeek; i++) {
-      currentWeek.push(
-        <View
-          key={`empty-start-${i}`}
-          style={{
-            width: cellSize - 4,
-            height: cellSize - 4,
-            margin: 2,
-          }}
-        />
-      );
-    }
-
-    for (let day = 1; day <= daysInMonthCount; day++) {
-      const dateStr = `${year}-${month}-${String(day).padStart(2, "0")}`;
-      const dayData = dataMap.get(dateStr);
-
-      if (dayData) {
-        const bgColor = getHeatmapColor(dayData.health_score, isDark);
-        currentWeek.push(
-          <TouchableOpacity
-            key={dateStr}
-            onPress={() => onDayPress(dayData)}
-            activeOpacity={0.7}
-            style={{
-              width: cellSize - 4,
-              height: cellSize - 4,
-              margin: 2,
-              backgroundColor: bgColor,
-              borderRadius: 6,
-              alignItems: "center",
-              justifyContent: "center",
-              borderWidth: 1,
-              borderColor: isDark ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <Text style={{ fontSize: 11, fontWeight: "bold", color: "#ffffff" }}>{day}</Text>
-          </TouchableOpacity>
-        );
-      } else {
-        currentWeek.push(
-          <View
-            key={`empty-${dateStr}`}
-            style={{
-              width: cellSize - 4,
-              height: cellSize - 4,
-              margin: 2,
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "rgba(0, 0, 0, 0.02)",
-              borderRadius: 6,
-              borderWidth: 1,
-              borderColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.05)",
-            }}
-          />
-        );
-      }
-
-      if (currentWeek.length === 7) {
-        grid.push(
-          <View key={`week-${grid.length}`} style={{ flexDirection: "row", justifyContent: "center" }}>
-            {currentWeek}
-          </View>
-        );
-        currentWeek = [];
-      }
-    }
-
-    while (currentWeek.length > 0 && currentWeek.length < 7) {
-      currentWeek.push(
-        <View
-          key={`empty-end-${currentWeek.length}`}
-          style={{
-            width: cellSize - 4,
-            height: cellSize - 4,
-            margin: 2,
-          }}
-        />
-      );
-    }
-
-    if (currentWeek.length > 0) {
-      grid.push(
-        <View key={`week-${grid.length}`} style={{ flexDirection: "row", justifyContent: "center" }}>
-          {currentWeek}
-        </View>
-      );
-    }
-
-    return grid;
-  };
-
-  return (
-    <View>
-      {/* Legend */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          marginBottom: 16,
-          flexWrap: "wrap",
-          gap: 8,
-        }}
-      >
-        <Text style={{ fontSize: 11, color: isDark ? "#9ca3af" : "#6b7280" }}>{t('stats.health.label')}</Text>
-        {[
-          { label: t('stats.health.poor'), color: isDark ? "#ef4444" : "#dc2626" },
-          { label: t('stats.health.low'), color: isDark ? "#f97316" : "#ea580c" },
-          { label: t('stats.health.avg'), color: isDark ? "#facc15" : "#ca8a04" },
-          { label: t('stats.health.good'), color: isDark ? "#84cc16" : "#65a30d" },
-          { label: t('stats.health.great'), color: isDark ? "#22c55e" : "#16a34a" },
-        ].map((item) => (
-          <View key={item.label} style={{ flexDirection: "row", alignItems: "center" }}>
-            <View
-              style={{
-                width: 14,
-                height: 14,
-                borderRadius: 3,
-                backgroundColor: item.color,
-                marginRight: 4,
-              }}
-            />
-            <Text style={{ fontSize: 10, color: isDark ? "#9ca3af" : "#6b7280" }}>{item.label}</Text>
-          </View>
-        ))}
-      </View>
-
-      {/* Day Names */}
-      <View style={{ flexDirection: "row", justifyContent: "center", marginBottom: 8 }}>
-        {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
-          <View key={index} style={{ width: cellSize - 4, margin: 2, alignItems: "center" }}>
-            <Text style={{ fontSize: 11, fontWeight: "600", color: isDark ? "#9ca3af" : "#6b7280" }}>
-              {day}
-            </Text>
-          </View>
-        ))}
-      </View>
-
-      {/* Calendar Grid */}
-      {data.length === 0 ? (
-        <View style={{ alignItems: "center", paddingVertical: 40 }}>
-          <Text style={{ fontSize: 14, color: isDark ? "#9ca3af" : "#6b7280" }}>{t('stats.noUsageData')}</Text>
-        </View>
-      ) : (
-        sortedMonthKeys.map((monthKey) => (
-          <View key={monthKey} style={{ marginBottom: 24 }}>
-            <Text
-              style={{
-                fontSize: 14,
-                fontWeight: "bold",
-                color: isDark ? "#ffffff" : "#111827",
-                marginBottom: 8,
-                textAlign: "center",
-              }}
-            >
-              {getMonthLabel(monthKey)}
-            </Text>
-            {generateMonthGrid(monthKey, monthsData[monthKey])}
-          </View>
-        ))
-      )}
-    </View>
-  );
-};
-
-// Day Tooltip Component
-const DayTooltip = ({
-  visible,
-  day,
-  isDark,
-  onClose,
-}: {
-  visible: boolean;
-  day: any;
-  isDark: boolean;
-  onClose: () => void;
-}) => {
-  const { t } = useTranslation();
-
-  if (!visible || !day) return null;
-
-  const dateObj = new Date(day.date);
-  const formattedDate = dateObj.toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-
-  const orbImages = [
-    require("@/assets/images/orb1.png"),
-    require("@/assets/images/orb2.png"),
-    require("@/assets/images/orb3.jpg"),
-    require("@/assets/images/orb4.jpg"),
-    require("@/assets/images/orb5.jpg"),
-  ];
-  const orbImage = orbImages[Math.min(day.orb_level - 1, 4)];
-
-  // Parse apps data and get top 3
-  const appsData = JSON.parse(day.apps_data || "[]");
-  const top3Apps = appsData.slice(0, 3);
-
-  return (
-    <Modal transparent visible={visible} animationType="fade" onRequestClose={onClose}>
-      <TouchableOpacity
-        style={{
-          flex: 1,
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        activeOpacity={1}
-        onPress={onClose}
-      >
-        <View
-          style={{
-            backgroundColor: isDark ? "#1f2937" : "#ffffff",
-            borderRadius: 20,
-            padding: 24,
-            marginHorizontal: 20,
-            maxWidth: 400,
-            width: "90%",
-            borderWidth: 1.5,
-            borderColor: isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)",
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 12 },
-            shadowOpacity: 0.3,
-            shadowRadius: 24,
-            elevation: 15,
-          }}
-        >
-          <TouchableOpacity
-            onPress={onClose}
-            style={{
-              position: "absolute",
-              top: 16,
-              right: 16,
-              width: 32,
-              height: 32,
-              borderRadius: 16,
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)",
-              alignItems: "center",
-              justifyContent: "center",
-              zIndex: 10,
-            }}
-          >
-            <Text style={{ fontSize: 18, color: isDark ? "#ffffff" : "#111827", fontWeight: "bold" }}>×</Text>
-          </TouchableOpacity>
-
-          <View style={{ alignItems: "center", marginBottom: 20 }}>
-            <Image source={orbImage} style={{ width: 60, height: 60, marginBottom: 12 }} resizeMode="contain" />
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: "bold",
-                color: isDark ? "#ffffff" : "#111827",
-                textAlign: "center",
-              }}
-            >
-              {formattedDate}
-            </Text>
-          </View>
-
-          <View style={{ gap: 12, marginBottom: 16 }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-              <Text style={{ fontSize: 14, color: isDark ? "#9ca3af" : "#6b7280" }}>{t('stats.healthScore')}</Text>
-              <Text style={{ fontSize: 14, fontWeight: "bold", color: isDark ? "#ffffff" : "#111827" }}>
-                {day.health_score}/100
-              </Text>
-            </View>
-
-            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-              <Text style={{ fontSize: 14, color: isDark ? "#9ca3af" : "#6b7280" }}>{t('stats.screenTime')}</Text>
-              <Text style={{ fontSize: 14, fontWeight: "bold", color: isDark ? "#ffffff" : "#111827" }}>
-                {formatDuration(day.total_screen_time)}
-              </Text>
-            </View>
-
-            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-              <Text style={{ fontSize: 14, color: isDark ? "#9ca3af" : "#6b7280" }}>{t('stats.pickups')}</Text>
-              <Text style={{ fontSize: 14, fontWeight: "bold", color: isDark ? "#ffffff" : "#111827" }}>
-                {day.pickups}
-              </Text>
-            </View>
-          </View>
-
-          {top3Apps.length > 0 && (
-            <>
-              <View
-                style={{
-                  height: 1,
-                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)",
-                  marginVertical: 12,
-                }}
-              />
-              <Text
-                style={{
-                  fontSize: 13,
-                  fontWeight: "600",
-                  color: isDark ? "#9ca3af" : "#6b7280",
-                  marginBottom: 8,
-                }}
-              >
-                {t('stats.topApps')}
-              </Text>
-              {top3Apps.map((app: any, index: number) => {
-                const localIcon = getLocalIcon(app.packageName || '', app.appName);
-                const iconSource = localIcon || (app.iconUrl ? { uri: app.iconUrl } : null);
-                return (
-                  <View
-                    key={index}
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginBottom: 8,
-                      paddingVertical: 6,
-                      paddingHorizontal: 8,
-                      backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.02)",
-                      borderRadius: 8,
-                    }}
-                  >
-                    {iconSource && (
-                      <Image
-                        source={iconSource}
-                        style={{ width: 28, height: 28, borderRadius: 6, marginRight: 10 }}
-                      />
-                    )}
-                    <Text
-                      style={{
-                        flex: 1,
-                        fontSize: 13,
-                        color: isDark ? "#ffffff" : "#111827",
-                      }}
-                    >
-                      {app.appName}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontWeight: "600",
-                        color: isDark ? "#9ca3af" : "#6b7280",
-                      }}
-                    >
-                      {formatDuration(app.timeInForeground)}
-                    </Text>
-                  </View>
-                );
-              })}
-            </>
-          )}
-        </View>
-      </TouchableOpacity>
-    </Modal>
-  );
-};
+// Import extracted components
+import {
+  getLocalIcon,
+  ShimmerEffect,
+  SkeletonDayCard,
+  SkeletonStatCard,
+  SkeletonChart,
+  SkeletonAppItem,
+  AnimatedBar,
+  DayCard,
+  StatCard,
+  AppUsageItem,
+  CalendarHeatmap,
+  DayTooltip,
+  ShareCard,
+} from "@/components/stats";
 
 export default function StatsScreen() {
   const { t } = useTranslation();
@@ -1046,6 +63,8 @@ export default function StatsScreen() {
   const [showCalendar, setShowCalendar] = useState(false);
   const [selectedDay, setSelectedDay] = useState<any>(null);
   const [calendarData, setCalendarData] = useState<any[]>([]);
+  const [showShareCard, setShowShareCard] = useState(false);
+  const [weekComparison, setWeekComparison] = useState<WeekComparisonData | null>(null);
 
   // State for real data
   const [stats, setStats] = useState<{
@@ -1067,67 +86,108 @@ export default function StatsScreen() {
   const [appsUsage, setAppsUsage] = useState<any[]>([]);
   const [weekDates, setWeekDates] = useState<any[]>([]);
 
-  // Initialize database and backfill historical data
+  // Initialize database and backfill historical data (full month)
   useEffect(() => {
     const initDatabase = async () => {
       await initUsageDatabase();
 
-      // Backfill the last 7 days of data into the database
+      // Backfill the current month's data into the database
       try {
+        // Get current month daily data
+        const monthDailyData = await getDailyUsageForMonth(0);
         const weekStats = await getWeekUsageStatsWithOffset(0);
-        const dailyStats = await getDailyUsageForWeek(0);
 
-        // Save each day from the last week
-        for (let i = 0; i < 7; i++) {
-          const dayData = dailyStats[i];
-          if (dayData && dayData.hours !== undefined) {
-            const date = new Date();
-            date.setDate(date.getDate() - date.getDay() + i);
-            date.setHours(0, 0, 0, 0);
+        // Save each day from the month
+        for (const dayData of monthDailyData) {
+          if (dayData && dayData.hours > 0) {
+            const healthScore = calculateHealthScore(
+              dayData.hours * 60 * 60 * 1000,
+              dayData.pickups
+            );
+            const orbLevel = getOrbLevel(healthScore);
 
-            // Don't save future dates
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            if (date <= today) {
-              const dateStr = formatDate(date);
-              const healthScore = calculateHealthScore(
-                dayData.hours * 60 * 60 * 1000,
-                Math.round(weekStats.pickups / 7)
-              );
-              const orbLevel = getOrbLevel(healthScore);
-
-              // Get apps data for this day (use weekly data as approximation)
-              await saveDailyUsage(
-                dateStr,
-                dayData.hours * 60 * 60 * 1000,
-                Math.round(weekStats.pickups / 7),
-                healthScore,
-                orbLevel,
-                weekStats.apps
-              );
-            }
+            await saveDailyUsage(
+              dayData.date,
+              dayData.hours * 60 * 60 * 1000,
+              dayData.pickups,
+              healthScore,
+              orbLevel,
+              weekStats.apps
+            );
           }
         }
-        console.log('Database backfilled with last week data');
+
+        // Also fetch previous month for comprehensive history
+        const prevMonthData = await getDailyUsageForMonth(-1);
+        for (const dayData of prevMonthData) {
+          if (dayData && dayData.hours > 0) {
+            const healthScore = calculateHealthScore(
+              dayData.hours * 60 * 60 * 1000,
+              dayData.pickups
+            );
+            const orbLevel = getOrbLevel(healthScore);
+
+            await saveDailyUsage(
+              dayData.date,
+              dayData.hours * 60 * 60 * 1000,
+              dayData.pickups,
+              healthScore,
+              orbLevel,
+              []
+            );
+          }
+        }
+
+        console.log("Database backfilled with month data");
       } catch (error) {
-        console.error('Error backfilling database:', error);
+        console.error("Error backfilling database:", error);
       }
     };
 
     initDatabase();
   }, []);
 
-  // Load calendar data when calendar view is shown
+  // Load calendar data when calendar view is shown or weekOffset changes
   useEffect(() => {
     if (showCalendar) {
       loadCalendarData();
     }
-  }, [showCalendar]);
+  }, [showCalendar, weekOffset]);
 
   const loadCalendarData = async () => {
     try {
-      const data = await getAllDatesWithData();
-      setCalendarData(data);
+      // Get data from database
+      const dbData = await getAllDatesWithData();
+
+      // Also generate data for the month containing the selected week
+      // This ensures we have something to show even if DB doesn't have it
+      const weekStart = new Date();
+      weekStart.setHours(0, 0, 0, 0);
+      weekStart.setDate(weekStart.getDate() - 6 + (weekOffset * 7));
+
+      // Get the month containing this week
+      const monthStart = new Date(weekStart.getFullYear(), weekStart.getMonth(), 1);
+      const monthEnd = new Date(weekStart.getFullYear(), weekStart.getMonth() + 1, 0);
+
+      // Create a map of existing data
+      const dataMap = new Map(dbData.map((d: any) => [d.date, d]));
+
+      // Generate entries for all days in the month that we don't have
+      const allData = [...dbData];
+      for (let d = new Date(monthStart); d <= monthEnd; d.setDate(d.getDate() + 1)) {
+        const dateStr = formatDate(d);
+        if (!dataMap.has(dateStr) && d <= new Date()) {
+          // Add placeholder with default health score
+          allData.push({
+            date: dateStr,
+            health_score: 50,
+            screen_time: 0,
+            pickups: 0,
+          });
+        }
+      }
+
+      setCalendarData(allData);
     } catch (error) {
       console.error("Error loading calendar data:", error);
     }
@@ -1156,7 +216,7 @@ export default function StatsScreen() {
           );
         }
       } catch (error) {
-        console.error('Error saving today data:', error);
+        console.error("Error saving today data:", error);
       }
     };
 
@@ -1177,25 +237,29 @@ export default function StatsScreen() {
       const hasData = await hasDataForRange(startDate, endDate);
       setHasCurrentWeekData(hasData);
 
-      // Check navigation availability
-      // Previous: Only allow if there's ANY data in previous week (even 1 day)
-      const prevWeekRange = getWeekDateRange(weekOffset - 1);
-      const hasPrevData = await hasDataForRange(prevWeekRange.startDate, prevWeekRange.endDate);
-      setCanGoPrev(hasPrevData);
+      // Check navigation availability - allow going back up to 8 weeks (native module can query historical data)
+      setCanGoPrev(weekOffset > -8);
+      setCanGoNext(weekOffset < 0);
 
-      // Next: Allow going forward up to one week ahead (next week), no further
-      // weekOffset < 1 means we can go from week 0 (current) to week 1 (next), but not beyond
-      setCanGoNext(weekOffset < 1);
-
-      // Get week usage stats (will use DB for past weeks if available)
+      // Get week usage stats
       const weekStats = await getWeekUsageStatsWithOffset(weekOffset);
       const dailyStats = await getDailyUsageForWeek(weekOffset);
 
-      // Calculate stats - only use real data, no fake defaults
-      const hasRealData = weekStats.totalScreenTime > 0 || weekStats.pickups > 0 || dailyStats.some(d => d.hours > 0);
+      // Fetch week comparison for share feature (only for current week)
+      if (weekOffset === 0) {
+        try {
+          const comparison = await getWeekComparison();
+          setWeekComparison(comparison);
+        } catch (e) {
+          console.error("Error fetching week comparison:", e);
+        }
+      }
 
-      // If no data for this week, show "--" instead of 0
-      if (!hasData || !hasRealData) {
+      // Calculate stats - use native data even if not in DB
+      const hasRealData = weekStats.totalScreenTime > 0 || weekStats.pickups > 0 || dailyStats.some(d => d.hours > 0);
+      const daysWithData = dailyStats.filter(d => d.hours > 0).length;
+
+      if (!hasRealData || daysWithData === 0) {
         setStats({
           totalHours: "--",
           dailyAvg: "--",
@@ -1206,27 +270,46 @@ export default function StatsScreen() {
         });
       } else {
         const totalHours = weekStats.totalScreenTime / (1000 * 60 * 60);
-        const dailyAvg = totalHours / 7;
-        const peekDayData = dailyStats.reduce((max, curr) => curr.hours > max.hours ? curr : max, dailyStats[0] || { day: 'Mon', hours: 0 });
+        const dailyAvg = totalHours / Math.max(daysWithData, 1);
+        const peekDayData = dailyStats.reduce((max, curr) => curr.hours > max.hours ? curr : max, dailyStats[0] || { day: "Mon", hours: 0 });
 
         setStats({
           totalHours: Math.round(totalHours * 10) / 10,
           dailyAvg: Math.round(dailyAvg * 10) / 10,
-          peekDay: peekDayData?.day || '--',
+          peekDay: peekDayData?.day || "--",
           peekHours: Math.round((peekDayData?.hours || 0) * 10) / 10,
           pickupsTotal: weekStats.pickups,
-          pickupsAvg: Math.round(weekStats.pickups / 7),
+          pickupsAvg: Math.round(weekStats.pickups / Math.max(daysWithData, 1)),
         });
       }
 
-      // Set chart data
-      setChartData(dailyStats);
+      // Set chart data - ensure exactly 7 days
+      const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const chartStartDate = new Date();
+      chartStartDate.setHours(0, 0, 0, 0);
+      chartStartDate.setDate(chartStartDate.getDate() - 6 + (weekOffset * 7));
+
+      // Create a map from dailyStats for quick lookup
+      const dailyMap = new Map<number, number>();
+      dailyStats.forEach((stat, idx) => {
+        dailyMap.set(idx, stat.hours || 0);
+      });
+
+      // Generate exactly 7 chart items
+      const chartItems = Array.from({ length: 7 }, (_, i) => {
+        const date = new Date(chartStartDate);
+        date.setDate(chartStartDate.getDate() + i);
+        return {
+          day: dayNames[date.getDay()],
+          hours: dailyMap.get(i) ?? dailyStats[i]?.hours ?? 0,
+        };
+      });
+      setChartData(chartItems);
 
       // Format apps usage
       const maxTime = Math.max(...weekStats.apps.map(a => a.timeInForeground), 1);
       const formattedApps = weekStats.apps.map((app, index) => {
-        // Prefer local icon, then device icon, then fallback
-        const localIcon = getLocalIcon(app.packageName || '', app.appName);
+        const localIcon = getLocalIcon(app.packageName || "", app.appName);
         return {
           id: app.packageName || index.toString(),
           appName: app.appName,
@@ -1238,49 +321,41 @@ export default function StatsScreen() {
       });
       setAppsUsage(formattedApps);
 
-      // Generate week dates with orb levels and data availability
-      const currentDate = new Date();
-      const startOfWeek = new Date(currentDate);
-      startOfWeek.setDate(currentDate.getDate() - currentDate.getDay() + (weekOffset * 7));
-
-      const dates = [];
-      const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-      // Get stored data for this week from DB
+      // Generate week dates with orb levels - ensure exactly 7 days
       const storedWeekData = await getWeekUsage(startDate, endDate);
       const storedDataMap = new Map(storedWeekData.map(d => [d.date, d]));
 
-      for (let i = 0; i < 7; i++) {
-        const date = new Date(startOfWeek);
-        date.setDate(startOfWeek.getDate() + i);
+      const weekStartDate = new Date();
+      weekStartDate.setHours(0, 0, 0, 0);
+      weekStartDate.setDate(weekStartDate.getDate() - 6 + (weekOffset * 7));
+
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0);
+
+      const dates = Array.from({ length: 7 }, (_, i) => {
+        const date = new Date(weekStartDate);
+        date.setDate(weekStartDate.getDate() + i);
+        date.setHours(0, 0, 0, 0);
         const dateStr = formatDate(date);
         const dayData = dailyStats[i];
 
-        // Don't show data for future dates
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        date.setHours(0, 0, 0, 0);
-        const isFutureDate = date > today;
-
-        // Check if we have data for this day
-        // A day has data if it exists in our records (even with 0 hours) AND is not in the future
+        const isFutureDate = date > currentDate;
         const storedDay = storedDataMap.get(dateStr);
-        const dayHasData = !isFutureDate && !!(storedDay || (dayData !== undefined && dayData !== null));
+        const dayHasData = !isFutureDate && !!(storedDay || (dayData !== undefined && dayData !== null && dayData.hours > 0));
 
-        // Calculate orb level based on actual hours (no fake defaults)
-        // Only calculate if we have real data, otherwise use default values
         const actualHours = (dayData?.hours || 0) * 60 * 60 * 1000;
-        const actualPickups = hasRealData ? Math.round(weekStats.pickups / 7) : 0;
+        const actualPickups = hasRealData && daysWithData > 0 ? Math.round(weekStats.pickups / daysWithData) : 0;
         const healthScore = dayHasData && hasRealData
           ? calculateHealthScore(actualHours, actualPickups)
-          : 50; // Default neutral score for days without data
-        dates.push({
+          : 50;
+
+        return {
           dayName: dayNames[date.getDay()],
           dateNumber: date.getDate(),
           orbLevel: getOrbLevel(healthScore),
           hasData: dayHasData,
-        });
-      }
+        };
+      });
       setWeekDates(dates);
 
     } catch (error) {
@@ -1301,17 +376,16 @@ export default function StatsScreen() {
   }, [fetchData]);
 
   const getWeekLabel = () => {
-    if (weekOffset === 0) return t('stats.thisWeek');
-    if (weekOffset === -1) return t('stats.lastWeek');
-    if (weekOffset > 0) return t('stats.weeksAhead', { count: weekOffset });
-    return t('stats.weeksAgo', { count: Math.abs(weekOffset) });
+    if (weekOffset === 0) return t("stats.thisWeek");
+    if (weekOffset === -1) return t("stats.lastWeek");
+    if (weekOffset > 0) return t("stats.weeksAhead", { count: weekOffset });
+    return t("stats.weeksAgo", { count: Math.abs(weekOffset) });
   };
 
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: isDark ? "#000000" : "#ffffff" }}
-    >
-      <ScrollView
+    <ThemedBackground>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView
         contentContainerStyle={{ paddingBottom: 80 }}
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -1333,42 +407,47 @@ export default function StatsScreen() {
             >
               <View
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 12,
-                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
+                  width: 44,
+                  height: 44,
+                  borderRadius: 14,
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+                  borderWidth: 0.5,
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
                 }}
               />
               <View style={{ alignItems: "center" }}>
                 <Text
                   style={{
-                    fontSize: 24,
-                    fontWeight: "bold",
-                    color: isDark ? "#ffffff" : "#111827",
+                    fontSize: 28,
+                    fontWeight: "800",
+                    color: isDark ? "#ffffff" : "#0f172a",
+                    letterSpacing: -0.5,
                   }}
                 >
-                  {t('stats.title')}
+                  {t("stats.title")}
                 </Text>
                 <ShimmerEffect isDark={isDark} style={{ width: 80, height: 14, marginTop: 4, borderRadius: 4 }} />
               </View>
               <View
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 12,
-                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
+                  width: 44,
+                  height: 44,
+                  borderRadius: 14,
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+                  borderWidth: 0.5,
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
                 }}
               />
             </View>
 
             {/* Skeleton Day Cards */}
-            <View style={{ marginTop: 20, marginBottom: 24, alignItems: "center" }}>
+            {/* <View style={{ marginTop: 20, marginBottom: 24, alignItems: "center" }}>
               <View style={{ flexDirection: "row", justifyContent: "center", paddingHorizontal: 16 }}>
                 {[0, 1, 2, 3, 4, 5, 6].map((index) => (
                   <SkeletonDayCard key={index} isDark={isDark} />
                 ))}
               </View>
-            </View>
+            </View> */}
 
             {/* Skeleton Stats Cards */}
             <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
@@ -1386,19 +465,14 @@ export default function StatsScreen() {
             <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
               <View
                 style={{
-                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff",
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
                   borderRadius: 20,
-                  padding: 20,
-                  borderWidth: 1.5,
-                  borderColor: isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)",
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 12 },
-                  shadowOpacity: 0.2,
-                  shadowRadius: 24,
-                  elevation: 10,
+                  padding: 16,
+                  borderWidth: 0.5,
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
                 }}
               >
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
                   <ShimmerEffect isDark={isDark} style={{ width: 100, height: 16, borderRadius: 4 }} />
                   <ShimmerEffect isDark={isDark} style={{ width: 36, height: 36, borderRadius: 10 }} />
                 </View>
@@ -1416,276 +490,520 @@ export default function StatsScreen() {
           </>
         ) : (
           <>
-        {/* Header with Week Navigation */}
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: 20,
-            paddingTop: 16,
-            paddingBottom: 12,
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => canGoPrev && setWeekOffset(weekOffset - 1)}
-            disabled={!canGoPrev}
-            activeOpacity={0.7}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 12,
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
-              alignItems: "center",
-              justifyContent: "center",
-              opacity: canGoPrev ? 1 : 0.3,
-            }}
-          >
-            <ChevronLeft size={22} color={isDark ? "#ffffff" : "#111827"} strokeWidth={2} />
-          </TouchableOpacity>
-
-          <View style={{ alignItems: "center" }}>
-            <Text
+            {/* Header with Week Navigation */}
+            <View
               style={{
-                fontSize: 24,
-                fontWeight: "bold",
-                color: isDark ? "#ffffff" : "#111827",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingHorizontal: 20,
+                paddingTop: 16,
+                paddingBottom: 16,
               }}
             >
-              {t('stats.title')}
-            </Text>
-            <Text
-              style={{
-                fontSize: 14,
-                color: isDark ? "#9ca3af" : "#6b7280",
-                marginTop: 4,
-              }}
-            >
-              {getWeekLabel()}
-            </Text>
-          </View>
+              <TouchableOpacity
+                onPress={() => canGoPrev && setWeekOffset(weekOffset - 1)}
+                disabled={!canGoPrev}
+                activeOpacity={0.7}
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 14,
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  opacity: canGoPrev ? 1 : 0.3,
+                  borderWidth: 0.5,
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: isDark ? 0 : 0.03,
+                  shadowRadius: 8,
+                  elevation: 2,
+                }}
+              >
+                <ChevronLeft size={20} color={isDark ? "#ffffff" : "#0f172a"} strokeWidth={1.5} />
+              </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => canGoNext && setWeekOffset(weekOffset + 1)}
-            disabled={!canGoNext}
-            activeOpacity={0.7}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 12,
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
-              alignItems: "center",
-              justifyContent: "center",
-              opacity: canGoNext ? 1 : 0.3,
-            }}
-          >
-            <ChevronRight size={22} color={isDark ? "#ffffff" : "#111827"} strokeWidth={2} />
-          </TouchableOpacity>
-        </View>
+              <View style={{ alignItems: "center" }}>
+                <Text
+                  style={{
+                    fontSize: 28,
+                    fontWeight: "800",
+                    color: isDark ? "#ffffff" : "#0f172a",
+                    letterSpacing: -0.5,
+                  }}
+                >
+                  {t("stats.title")}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: "500",
+                    color: isDark ? "rgba(255,255,255,0.4)" : "#94a3b8",
+                    marginTop: 4,
+                  }}
+                >
+                  {getWeekLabel()}
+                </Text>
+              </View>
 
-        {/* 7 Days Cards */}
-        <View style={{ marginTop: 20, marginBottom: 24, alignItems: "center" }}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              paddingHorizontal: 16,
-            }}
-          >
-            {weekDates.map((item, index) => (
-              <DayCard
-                key={index}
-                dayName={item.dayName}
-                dateNumber={item.dateNumber}
-                orbLevel={item.orbLevel}
-                isDark={isDark}
-                hasData={item.hasData}
-              />
-            ))}
-          </View>
-        </View>
+              <TouchableOpacity
+                onPress={() => canGoNext && setWeekOffset(weekOffset + 1)}
+                disabled={!canGoNext}
+                activeOpacity={0.7}
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 14,
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  opacity: canGoNext ? 1 : 0.3,
+                  borderWidth: 0.5,
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: isDark ? 0 : 0.03,
+                  shadowRadius: 8,
+                  elevation: 2,
+                }}
+              >
+                <ChevronRight size={20} color={isDark ? "#ffffff" : "#0f172a"} strokeWidth={1.5} />
+              </TouchableOpacity>
+            </View>
 
-        {/* 2x2 Stats Table */}
-        <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
-          <View style={{ flexDirection: "row", gap: 10, marginBottom: 10 }}>
-            <StatCard
-              title={t('stats.totalHours')}
-              value={stats.totalHours === "--" ? "--" : `${stats.totalHours}h`}
-              isDark={isDark}
-              animated={typeof stats.totalHours === "number"}
-              numericValue={typeof stats.totalHours === "number" ? stats.totalHours : undefined}
-              suffix="h"
-            />
-            <StatCard
-              title={t('stats.dailyAvg')}
-              value={stats.dailyAvg === "--" ? "--" : `${stats.dailyAvg}h`}
-              isDark={isDark}
-              animated={typeof stats.dailyAvg === "number"}
-              numericValue={typeof stats.dailyAvg === "number" ? stats.dailyAvg : undefined}
-              suffix="h"
-            />
-          </View>
-          <View style={{ flexDirection: "row", gap: 10 }}>
-            <StatCard
-              title={t('stats.peekDay')}
-              value={stats.peekDay}
-              subtitle={stats.peekHours === "--" ? "--" : `${stats.peekHours}h`}
-              isDark={isDark}
-            />
-            <StatCard
-              title={t('stats.pickups')}
-              value={stats.pickupsTotal === "--" ? "--" : `${stats.pickupsTotal}`}
-              subtitle={stats.pickupsAvg === "--" ? "--" : `${stats.pickupsAvg}${t('stats.perDay')}`}
-              isDark={isDark}
-              animated={typeof stats.pickupsTotal === "number"}
-              numericValue={typeof stats.pickupsTotal === "number" ? stats.pickupsTotal : undefined}
-              suffix=""
-            />
-          </View>
-        </View>
-
-        {/* Bar Chart or Calendar */}
-        <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
-          <View
-            style={{
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff",
-              borderRadius: 20,
-              padding: 20,
-              borderWidth: 1.5,
-              borderColor: isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)",
-              borderTopColor: isDark ? "rgba(255, 255, 255, 0.25)" : "rgba(255, 255, 255, 0.8)",
-              borderBottomColor: isDark ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.05)",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 12 },
-              shadowOpacity: 0.2,
-              shadowRadius: 24,
-              elevation: 10,
-            }}
-          >
+            {/* 7 Days Cards */}
+            {/* <View style={{ marginTop: 12, marginBottom: 28, alignItems: "center" }}>
               <View
                 style={{
                   flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  marginBottom: 20,
+                  justifyContent: "center",
+                  paddingHorizontal: 16,
                 }}
               >
-                <Text
-                  style={{
-                    fontSize: 16,
-                    fontWeight: "bold",
-                    color: isDark ? "#ffffff" : "#111827",
-                  }}
-                >
-                  {showCalendar ? t('stats.usageCalendar') : t('stats.statsPerDay')}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => setShowCalendar(!showCalendar)}
-                  activeOpacity={0.7}
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 10,
-                    backgroundColor: showCalendar
-                      ? (isDark ? "#22c55e" : "#16a34a")
-                      : (isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)"),
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <CalendarIcon
-                    size={18}
-                    color={showCalendar ? "#ffffff" : (isDark ? "#ffffff" : "#111827")}
-                    strokeWidth={2}
+                {weekDates.map((item, index) => (
+                  <DayCard
+                    key={index}
+                    dayName={item.dayName}
+                    dateNumber={item.dateNumber}
+                    orbLevel={item.orbLevel}
+                    isDark={isDark}
+                    hasData={item.hasData}
                   />
+                ))}
+              </View>
+            </View> */}
+
+            {/* Week Comparison Card */}
+            {weekOffset === 0 && weekComparison && (
+              <View style={{ paddingHorizontal: 20, marginBottom: 28 }}>
+                <TouchableOpacity
+                  onPress={() => setShowShareCard(true)}
+                  activeOpacity={0.8}
+                  style={{
+                    borderRadius: 20,
+                    padding: 20,
+                    borderWidth: 0.5,
+                    overflow: "hidden",
+                    backgroundColor: isDark ? "#0a0a0a" : "#ffffff",
+                    borderColor: weekComparison.comparison.improved
+                      ? isDark ? "rgba(16, 185, 129, 0.3)" : "rgba(16, 185, 129, 0.5)"
+                      : isDark ? "rgba(239, 68, 68, 0.3)" : "rgba(239, 68, 68, 0.5)",
+                  }}
+                >
+                  <LinearGradient
+                    colors={weekComparison.comparison.improved
+                      ? isDark ? ["rgba(16, 185, 129, 0.15)", "rgba(16, 185, 129, 0.05)"] : ["rgba(16, 185, 129, 0.20)", "rgba(16, 185, 129, 0.08)"]
+                      : isDark ? ["rgba(239, 68, 68, 0.15)", "rgba(239, 68, 68, 0.05)"] : ["rgba(239, 68, 68, 0.20)", "rgba(239, 68, 68, 0.08)"]
+                    }
+                    style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+                  />
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    <View style={{ flex: 1 }}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+                          fontWeight: "600",
+                          marginBottom: 6,
+                          letterSpacing: 0.5,
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        {t("stats.vsLastWeek")}
+                      </Text>
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                        <View
+                          style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: 12,
+                            backgroundColor: weekComparison.comparison.improved
+                              ? "rgba(16, 185, 129, 0.15)"
+                              : "rgba(239, 68, 68, 0.15)",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          {weekComparison.comparison.improved ? (
+                            <TrendingDown size={20} color="#10b981" strokeWidth={2} />
+                          ) : (
+                            <TrendingUp size={20} color="#ef4444" strokeWidth={2} />
+                          )}
+                        </View>
+                        <View>
+                          <Text
+                            style={{
+                              fontSize: 28,
+                              fontWeight: "800",
+                              color: weekComparison.comparison.improved ? "#10b981" : "#ef4444",
+                              letterSpacing: -0.5,
+                            }}
+                          >
+                            {Math.abs(weekComparison.comparison.hoursPercentChange)}%
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+                            }}
+                          >
+                            {weekComparison.comparison.improved
+                              ? t("stats.lessScreenTime")
+                              : t("stats.moreScreenTime")}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+
+                    {/* Mini comparison */}
+                    <View style={{ alignItems: "flex-end", marginRight: 12 }}>
+                      <View style={{ flexDirection: "row", alignItems: "baseline", gap: 4 }}>
+                        <Text style={{ fontSize: 20, fontWeight: "700", color: isDark ? "#ffffff" : "#0f172a" }}>
+                          {weekComparison.thisWeek.totalHours}h
+                        </Text>
+                        <Text style={{ fontSize: 12, color: isDark ? "rgba(255,255,255,0.4)" : "#94a3b8" }}>
+                          vs {weekComparison.lastWeek.totalHours}h
+                        </Text>
+                      </View>
+                      <Text style={{ fontSize: 11, color: isDark ? "rgba(255,255,255,0.4)" : "#94a3b8", marginTop: 2 }}>
+                        {weekComparison.comparison.hoursDiff > 0 ? "+" : ""}
+                        {weekComparison.comparison.hoursDiff}h {t("stats.difference")}
+                      </Text>
+                    </View>
+
+                    {/* Share button */}
+                    <View
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 14,
+                        backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Share2 size={18} color={isDark ? "#ffffff" : "#0f172a"} strokeWidth={1.5} />
+                    </View>
+                  </View>
                 </TouchableOpacity>
               </View>
+            )}
 
-              {showCalendar ? (
-                <CalendarHeatmap
-                  data={calendarData}
+            {/* 2x2 Stats Table */}
+            <View style={{ paddingHorizontal: 20, marginBottom: 28 }}>
+              <View style={{ flexDirection: "row", gap: 12, marginBottom: 12 }}>
+                <StatCard
+                  title={t("stats.totalHours")}
+                  value={stats.totalHours === "--" ? "--" : `${stats.totalHours}h`}
                   isDark={isDark}
-                  onDayPress={(day) => setSelectedDay(day)}
+                  animated={typeof stats.totalHours === "number"}
+                  numericValue={typeof stats.totalHours === "number" ? stats.totalHours : undefined}
+                  suffix="h"
                 />
-              ) : (
+                <StatCard
+                  title={t("stats.dailyAvg")}
+                  value={stats.dailyAvg === "--" ? "--" : `${stats.dailyAvg}h`}
+                  isDark={isDark}
+                  animated={typeof stats.dailyAvg === "number"}
+                  numericValue={typeof stats.dailyAvg === "number" ? stats.dailyAvg : undefined}
+                  suffix="h"
+                />
+              </View>
+              <View style={{ flexDirection: "row", gap: 12 }}>
+                <StatCard
+                  title={t("stats.peekDay")}
+                  value={stats.peekDay}
+                  subtitle={stats.peekHours === "--" ? "--" : `${stats.peekHours}h`}
+                  isDark={isDark}
+                />
+                <StatCard
+                  title={t("stats.pickups")}
+                  value={stats.pickupsTotal === "--" ? "--" : `${stats.pickupsTotal}`}
+                  subtitle={stats.pickupsAvg === "--" ? "--" : `${stats.pickupsAvg}${t("stats.perDay")}`}
+                  isDark={isDark}
+                  animated={typeof stats.pickupsTotal === "number"}
+                  numericValue={typeof stats.pickupsTotal === "number" ? stats.pickupsTotal : undefined}
+                  suffix=""
+                />
+              </View>
+            </View>
+
+            {/* Bar Chart or Calendar */}
+            <View style={{ paddingHorizontal: 20, marginBottom: 28 }}>
+              <View
+                style={{
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+                  borderRadius: 20,
+                  padding: 20,
+                  borderWidth: 0.5,
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: isDark ? 0 : 0.03,
+                  shadowRadius: 12,
+                  elevation: 2,
+                }}
+              >
                 <View
                   style={{
                     flexDirection: "row",
-                    alignItems: "flex-end",
+                    alignItems: "center",
                     justifyContent: "space-between",
-                    height: 150,
+                    marginBottom: 20,
                   }}
                 >
-                  {chartData.map((item, index) => {
-                    const maxHours = Math.max(...chartData.map((d) => d.hours), 1);
-                    return (
-                      <View
-                        key={index}
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <View
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: 10,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        marginRight: 10,
+                        overflow: "hidden",
+                      }}
+                    >
+                      <LinearGradient
+                        colors={showCalendar ? ["#8b5cf6", "#6d28d9"] : ["#3b82f6", "#1d4ed8"]}
                         style={{
-                          flex: 1,
-                          alignItems: "center",
-                          marginHorizontal: 4,
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
                         }}
-                      >
-                        <AnimatedBar
-                          height={item.hours}
-                          maxHeight={maxHours}
-                          isDark={isDark}
-                          delay={index * 80}
-                        />
-                        <Text
-                          style={{
-                            fontSize: 10,
-                            fontWeight: "600",
-                            color: isDark ? "#9ca3af" : "#6b7280",
-                          }}
-                        >
-                          {item.day}
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 9,
-                            color: isDark ? "#64748b" : "#94a3b8",
-                          }}
-                        >
-                          {item.hours}h
-                        </Text>
-                      </View>
-                    );
-                  })}
+                      />
+                      {showCalendar ? (
+                        <CalendarIcon size={16} color="#ffffff" strokeWidth={2} />
+                      ) : (
+                        <BarChart3 size={16} color="#ffffff" strokeWidth={2} />
+                      )}
+                    </View>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: "700",
+                        color: isDark ? "#ffffff" : "#0f172a",
+                        letterSpacing: -0.3,
+                      }}
+                    >
+                      {showCalendar ? t("stats.usageCalendar") : t("stats.statsPerDay")}
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => setShowCalendar(!showCalendar)}
+                    activeOpacity={0.7}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 12,
+                      backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f1f5f9",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderWidth: 0.5,
+                      borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
+                    }}
+                  >
+                    {showCalendar ? (
+                      <BarChart3 size={18} color={isDark ? "#ffffff" : "#0f172a"} strokeWidth={1.5} />
+                    ) : (
+                      <CalendarIcon size={18} color={isDark ? "#ffffff" : "#0f172a"} strokeWidth={1.5} />
+                    )}
+                  </TouchableOpacity>
                 </View>
-              )}
+
+                {showCalendar ? (
+                  <CalendarHeatmap
+                    data={calendarData}
+                    isDark={isDark}
+                    onDayPress={(day) => setSelectedDay(day)}
+                    weekOffset={weekOffset}
+                  />
+                ) : (
+                  <View style={{ position: "relative" }}>
+                    {/* Average line */}
+                    {(() => {
+                      const maxHours = Math.max(...chartData.map((d) => d.hours), 1);
+                      const dailyAvgNum = typeof stats.dailyAvg === "number" ? stats.dailyAvg : 0;
+                      const avgBarHeight = (dailyAvgNum / maxHours) * 120;
+                      const avgLinePosition = 120 - avgBarHeight - 10;
+                      return dailyAvgNum > 0 ? (
+                        <View
+                          style={{
+                            position: "absolute",
+                            top: avgLinePosition,
+                            left: 0,
+                            right: 0,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            zIndex: 10,
+                          }}
+                        >
+                          <View
+                            style={{
+                              flex: 1,
+                              height: 1,
+                              borderStyle: "dashed",
+                              borderWidth: 1,
+                              borderColor: isDark ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.15)",
+                            }}
+                          />
+                          <Text
+                            style={{
+                              fontSize: 9,
+                              color: isDark ? "rgba(255, 255, 255, 0.4)" : "rgba(0, 0, 0, 0.3)",
+                              marginLeft: 6,
+                              fontWeight: "600",
+                            }}
+                          >
+                            avg
+                          </Text>
+                        </View>
+                      ) : null;
+                    })()}
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "flex-end",
+                        justifyContent: "space-between",
+                        height: 150,
+                      }}
+                    >
+                      {chartData.map((item, index) => {
+                        const maxHours = Math.max(...chartData.map((d) => d.hours), 1);
+                        return (
+                          <View
+                            key={index}
+                            style={{
+                              flex: 1,
+                              alignItems: "center",
+                              marginHorizontal: 4,
+                            }}
+                          >
+                            <AnimatedBar
+                              height={item.hours}
+                              maxHeight={maxHours}
+                              isDark={isDark}
+                              delay={index * 80}
+                            />
+                            <Text
+                              style={{
+                                fontSize: 11,
+                                fontWeight: "600",
+                                color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+                              }}
+                            >
+                              {item.day}
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 10,
+                                color: isDark ? "rgba(255,255,255,0.3)" : "#94a3b8",
+                              }}
+                            >
+                              {item.hours}h
+                            </Text>
+                          </View>
+                        );
+                      })}
+                    </View>
+                  </View>
+                )}
+              </View>
             </View>
-          </View>
 
-        {/* App Usage List */}
-        {hasCurrentWeekData && appsUsage.length > 0 && (
-          <View style={{ paddingHorizontal: 20 }}>
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "bold",
-                color: isDark ? "#ffffff" : "#111827",
-                marginBottom: 16,
-              }}
-            >
-              {t('stats.totalTimePerApp')}
-            </Text>
+            {/* App Usage List */}
+            {hasCurrentWeekData && appsUsage.length > 0 && (
+              <View style={{ paddingHorizontal: 20 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
+                  <View
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 10,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginRight: 10,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <LinearGradient
+                      colors={isDark ? ["#ec4899", "#be185d"] : ["#ec4899", "#db2777"]}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                      }}
+                    />
+                    <BarChart3 size={16} color="#ffffff" strokeWidth={2} />
+                  </View>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: "700",
+                      color: isDark ? "#ffffff" : "#0f172a",
+                      letterSpacing: -0.3,
+                    }}
+                  >
+                    {t("stats.totalTimePerApp")}
+                  </Text>
+                </View>
 
-            {appsUsage.map((app, index) => (
-              <AppUsageItem
-                key={app.id}
-                appName={app.appName}
-                duration={app.duration}
-                percentage={app.percentage}
-                iconUrl={app.iconUrl}
-                isDark={isDark}
-                index={index}
-              />
-            ))}
-          </View>
-        )}
-        </>
+                <View
+                  style={{
+                    backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+                    borderRadius: 20,
+                    padding: 8,
+                    borderWidth: 0.5,
+                    borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: isDark ? 0 : 0.03,
+                    shadowRadius: 12,
+                    elevation: 2,
+                  }}
+                >
+                  {appsUsage.map((app, index) => (
+                    <AppUsageItem
+                      key={app.id}
+                      appName={app.appName}
+                      duration={app.duration}
+                      percentage={app.percentage}
+                      iconUrl={app.iconUrl}
+                      isDark={isDark}
+                      index={index}
+                      isLast={index === appsUsage.length - 1}
+                    />
+                  ))}
+                </View>
+              </View>
+            )}
+          </>
         )}
       </ScrollView>
 
@@ -1696,6 +1014,16 @@ export default function StatsScreen() {
         isDark={isDark}
         onClose={() => setSelectedDay(null)}
       />
-    </SafeAreaView>
+
+      {/* Share Card Modal */}
+      {showShareCard && weekComparison && (
+        <ShareCard
+          comparison={weekComparison}
+          onClose={() => setShowShareCard(false)}
+          isDark={isDark}
+        />
+      )}
+      </SafeAreaView>
+    </ThemedBackground>
   );
 }

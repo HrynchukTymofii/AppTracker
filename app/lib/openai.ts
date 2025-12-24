@@ -17,11 +17,11 @@ import i18n from '@/i18n/config';
 const OPENAI_API_KEY = Constants.expoConfig?.extra?.openAiApiKey || '';
 
 // Debug: Log if API key is configured (first 10 chars only for security)
-if (OPENAI_API_KEY) {
-  console.log('[OpenAI] API key configured:', OPENAI_API_KEY.substring(0, 10) + '...');
-} else {
-  console.warn('[OpenAI] API key NOT configured. Check .env file and restart Metro bundler.');
-}
+// if (OPENAI_API_KEY) {
+//   console.log('[OpenAI] API key configured:', OPENAI_API_KEY.substring(0, 10) + '...');
+// } else {
+//   console.warn('[OpenAI] API key NOT configured. Check .env file and restart Metro bundler.');
+// }
 
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
@@ -222,6 +222,101 @@ export interface IntentionAnalysisResult {
   explanation: string;
 }
 
+// Chat-based intention analysis for conversational blocking screen
+export interface IntentionChatResult {
+  approved: boolean;
+  minutes: number; // Time granted (0 if not approved)
+  message: string; // Human-like response message
+}
+
+/**
+ * Analyze intention in a chat-like conversational manner
+ * Returns human, friendly responses that match the user's request
+ */
+export const analyzeIntentionChat = async (
+  userMessage: string,
+  appName: string,
+  healthScore: number,
+  conversationHistory: Array<{ role: string; text: string }>
+): Promise<IntentionChatResult> => {
+  try {
+    const userLanguage = getCurrentLanguage();
+
+    // Build conversation context
+    const historyContext = conversationHistory
+      .map((msg) => `${msg.role === 'user' ? 'User' : 'Coach'}: ${msg.text}`)
+      .join('\n');
+
+    const messages: OpenAIMessage[] = [
+      {
+        role: 'system',
+        content: `You are a friendly digital wellness coach in a chat conversation. You help people be mindful about their app usage while being understanding and human.
+
+CRITICAL INSTRUCTIONS:
+1. RESPOND IN ${userLanguage} LANGUAGE ONLY
+2. Be conversational, warm, and brief (1-2 sentences max)
+3. RESPECT the user's stated time needs - if they say "1 minute", give them 1-2 minutes, not more
+4. NEVER say robotic things like "The user has been approved for X minutes" or "Access granted"
+5. Speak naturally like a supportive friend
+
+RESPONSE GUIDELINES:
+- Productive tasks (work, replying to messages, specific needs): APPROVE with the time they asked for
+  Examples: "Sure, reply to your client! 👍" or "Go for it, handle that message!"
+
+- Mindless scrolling/boredom: DON'T APPROVE, ask a gentle question
+  Examples: "Hmm, is this the best use of your time right now? 🤔" or "Sounds like boredom scrolling... what could you do instead?"
+
+- Vague answers: Ask for clarification
+  Examples: "What specifically do you need to do?" or "How long do you actually need?"
+
+TIME RULES (VERY IMPORTANT):
+- If user specifies time (e.g., "1 min", "5 minutes"), give them exactly that or slightly more (max +1 min)
+- For productive tasks without time specified: 2-5 minutes
+- For checking something quickly: 1-2 minutes
+- Never give more than 10 minutes at once
+
+You must respond with JSON:
+{
+  "approved": boolean,
+  "minutes": number (0 if not approved, otherwise the appropriate time),
+  "message": "your friendly response in ${userLanguage}"
+}`,
+      },
+      {
+        role: 'user',
+        content: `App: ${appName}
+User's health score: ${healthScore}/100 (lower = more screen time today)
+
+${historyContext ? `Previous conversation:\n${historyContext}\n\n` : ''}Current message: "${userMessage}"
+
+Respond naturally in ${userLanguage}. Remember: be human, respect their time request, and keep it brief!`,
+      },
+    ];
+
+    const response = await makeOpenAIRequest(messages, 0.7, 300);
+
+    const jsonMatch = response.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('Invalid response format from OpenAI');
+    }
+
+    const result: IntentionChatResult = JSON.parse(jsonMatch[0]);
+
+    // Ensure minutes is reasonable
+    if (result.approved && result.minutes <= 0) {
+      result.minutes = 2;
+    }
+    if (result.minutes > 10) {
+      result.minutes = 10;
+    }
+
+    return result;
+  } catch (error) {
+    console.error('Error in intention chat analysis:', error);
+    throw error;
+  }
+};
+
 /**
  * Analyze user's intention for opening an app
  */
@@ -421,6 +516,7 @@ export const pregenerateNotifications = async (
 export default {
   verifyTaskWithPhotos,
   analyzeIntention,
+  analyzeIntentionChat,
   generateCoachingResponse,
   generateSmartNotification,
   pregenerateNotifications,

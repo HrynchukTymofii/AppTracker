@@ -59,26 +59,47 @@ class UsageStatsModule : Module() {
             getUsageStatsData(startTime, endTime)
         }
 
-        // Get week's usage stats
+        // Get week's usage stats (rolling 7 days)
         AsyncFunction("getWeekUsageStats") { weekOffset: Int ->
             val calendar = Calendar.getInstance()
-            calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
-            calendar.add(Calendar.WEEK_OF_YEAR, weekOffset)
+            // Set to end of today
+            calendar.set(Calendar.HOUR_OF_DAY, 23)
+            calendar.set(Calendar.MINUTE, 59)
+            calendar.set(Calendar.SECOND, 59)
+            calendar.set(Calendar.MILLISECOND, 999)
+            // Add week offset (weekOffset 0 = last 7 days, weekOffset -1 = 7-14 days ago)
+            calendar.add(Calendar.DAY_OF_YEAR, weekOffset * 7)
+            val endTime = if (weekOffset >= 0) System.currentTimeMillis() else calendar.timeInMillis
+
+            // Go back 6 days for start (today + 6 previous days = 7 days)
+            calendar.add(Calendar.DAY_OF_YEAR, -6)
             calendar.set(Calendar.HOUR_OF_DAY, 0)
             calendar.set(Calendar.MINUTE, 0)
             calendar.set(Calendar.SECOND, 0)
             calendar.set(Calendar.MILLISECOND, 0)
-            
             val startTime = calendar.timeInMillis
-            calendar.add(Calendar.DAY_OF_YEAR, 7)
-            val endTime = if (weekOffset >= 0) System.currentTimeMillis() else calendar.timeInMillis
-            
+
             getUsageStatsData(startTime, endTime)
         }
 
         // Get daily usage for the week
         AsyncFunction("getDailyUsageForWeek") { weekOffset: Int ->
             getDailyUsageData(weekOffset)
+        }
+
+        // Get month's usage stats
+        AsyncFunction("getMonthUsageStats") { monthOffset: Int ->
+            getMonthUsageStatsData(monthOffset)
+        }
+
+        // Get daily usage for entire month
+        AsyncFunction("getDailyUsageForMonth") { monthOffset: Int ->
+            getDailyUsageForMonthData(monthOffset)
+        }
+
+        // Get comparison data between two weeks
+        AsyncFunction("getWeekComparison") {
+            getWeekComparisonData()
         }
 
         // Get installed apps list
@@ -223,25 +244,27 @@ class UsageStatsModule : Module() {
     }
 
     private fun getDailyUsageData(weekOffset: Int): List<Map<String, Any>> {
+        val dayNames = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+
         if (!hasUsagePermission()) {
-            return (0..6).map { mapOf("day" to getDayName(it), "hours" to 0.0) }
+            return (0..6).map { mapOf("day" to dayNames[it], "hours" to 0.0) }
         }
 
         val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
-        calendar.add(Calendar.WEEK_OF_YEAR, weekOffset)
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-
-        val dayNames = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
         val packageManager = context.packageManager
+
+        // Rolling 7 days: start from 6 days ago to today (for weekOffset 0)
+        val baseCalendar = Calendar.getInstance()
+        baseCalendar.set(Calendar.HOUR_OF_DAY, 0)
+        baseCalendar.set(Calendar.MINUTE, 0)
+        baseCalendar.set(Calendar.SECOND, 0)
+        baseCalendar.set(Calendar.MILLISECOND, 0)
+        // Go back 6 days + apply week offset
+        baseCalendar.add(Calendar.DAY_OF_YEAR, -6 + (weekOffset * 7))
 
         return (0..6).map { dayIndex ->
             val dayStart = Calendar.getInstance().apply {
-                timeInMillis = calendar.timeInMillis
+                timeInMillis = baseCalendar.timeInMillis
                 add(Calendar.DAY_OF_YEAR, dayIndex)
             }
             val dayEnd = Calendar.getInstance().apply {
@@ -250,11 +273,12 @@ class UsageStatsModule : Module() {
             }
 
             val actualEndTime = minOf(dayEnd.timeInMillis, System.currentTimeMillis())
+            val dayOfWeek = dayStart.get(Calendar.DAY_OF_WEEK) - 1 // 0 = Sunday
 
             // Skip future days
             if (dayStart.timeInMillis > System.currentTimeMillis()) {
                 return@map mapOf(
-                    "day" to dayNames[dayIndex],
+                    "day" to dayNames[dayOfWeek],
                     "hours" to 0.0
                 )
             }
@@ -313,10 +337,209 @@ class UsageStatsModule : Module() {
 
             val hours = totalTime / (1000.0 * 60 * 60)
             mapOf(
-                "day" to dayNames[dayIndex],
+                "day" to dayNames[dayOfWeek],
                 "hours" to (Math.round(hours * 10) / 10.0)
             )
         }
+    }
+
+    private fun getMonthUsageStatsData(monthOffset: Int): Map<String, Any> {
+        val calendar = Calendar.getInstance()
+
+        // Set to first day of month
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        calendar.add(Calendar.MONTH, monthOffset)
+        val startTime = calendar.timeInMillis
+
+        // Set to end of month
+        calendar.add(Calendar.MONTH, 1)
+        val endOfMonth = calendar.timeInMillis
+        val endTime = if (monthOffset >= 0) minOf(endOfMonth, System.currentTimeMillis()) else endOfMonth
+
+        return getUsageStatsData(startTime, endTime)
+    }
+
+    private fun getDailyUsageForMonthData(monthOffset: Int): List<Map<String, Any>> {
+        if (!hasUsagePermission()) {
+            return emptyList()
+        }
+
+        val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        val packageManager = context.packageManager
+
+        val calendar = Calendar.getInstance()
+
+        // Set to first day of month
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        calendar.add(Calendar.MONTH, monthOffset)
+
+        val daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val monthStart = calendar.timeInMillis
+
+        return (0 until daysInMonth).map { dayIndex ->
+            val dayStart = Calendar.getInstance().apply {
+                timeInMillis = monthStart
+                add(Calendar.DAY_OF_MONTH, dayIndex)
+            }
+            val dayEnd = Calendar.getInstance().apply {
+                timeInMillis = dayStart.timeInMillis
+                add(Calendar.DAY_OF_YEAR, 1)
+            }
+
+            val actualEndTime = minOf(dayEnd.timeInMillis, System.currentTimeMillis())
+
+            // Skip future days
+            if (dayStart.timeInMillis > System.currentTimeMillis()) {
+                return@map mapOf(
+                    "date" to formatDateString(dayStart),
+                    "dayOfMonth" to dayStart.get(Calendar.DAY_OF_MONTH),
+                    "dayOfWeek" to dayStart.get(Calendar.DAY_OF_WEEK) - 1,
+                    "hours" to 0.0,
+                    "pickups" to 0
+                )
+            }
+
+            var totalTime = 0L
+
+            try {
+                val events = usageStatsManager.queryEvents(dayStart.timeInMillis, actualEndTime)
+                val event = android.app.usage.UsageEvents.Event()
+                val appForegroundStart = mutableMapOf<String, Long>()
+
+                while (events.hasNextEvent()) {
+                    events.getNextEvent(event)
+                    val packageName = event.packageName
+
+                    when (event.eventType) {
+                        1 -> appForegroundStart[packageName] = event.timeStamp
+                        2 -> {
+                            val foregroundStart = appForegroundStart[packageName]
+                            if (foregroundStart != null && foregroundStart > 0 && isUserApp(packageName, packageManager)) {
+                                val duration = event.timeStamp - foregroundStart
+                                if (duration > 0 && duration < 24 * 60 * 60 * 1000) {
+                                    totalTime += duration
+                                }
+                            }
+                            appForegroundStart[packageName] = 0L
+                        }
+                    }
+                }
+
+                appForegroundStart.forEach { (packageName, startTime) ->
+                    if (startTime > 0 && isUserApp(packageName, packageManager)) {
+                        val duration = actualEndTime - startTime
+                        if (duration > 0 && duration < 24 * 60 * 60 * 1000) {
+                            totalTime += duration
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                val usageStats = usageStatsManager.queryUsageStats(
+                    UsageStatsManager.INTERVAL_DAILY,
+                    dayStart.timeInMillis,
+                    actualEndTime
+                )
+                usageStats?.forEach { stats ->
+                    if (stats.totalTimeInForeground > 0 && isUserApp(stats.packageName, packageManager)) {
+                        totalTime += stats.totalTimeInForeground
+                    }
+                }
+            }
+
+            val pickups = estimatePickups(usageStatsManager, dayStart.timeInMillis, actualEndTime)
+            val hours = totalTime / (1000.0 * 60 * 60)
+
+            mapOf(
+                "date" to formatDateString(dayStart),
+                "dayOfMonth" to dayStart.get(Calendar.DAY_OF_MONTH),
+                "dayOfWeek" to dayStart.get(Calendar.DAY_OF_WEEK) - 1,
+                "hours" to (Math.round(hours * 10) / 10.0),
+                "pickups" to pickups
+            )
+        }
+    }
+
+    private fun getWeekComparisonData(): Map<String, Any> {
+        val thisWeekStats = getWeekStatsInternal(0)
+        val lastWeekStats = getWeekStatsInternal(-1)
+
+        val thisWeekTotal = thisWeekStats["totalHours"] as Double
+        val lastWeekTotal = lastWeekStats["totalHours"] as Double
+
+        val thisWeekAvg = thisWeekStats["avgHours"] as Double
+        val lastWeekAvg = lastWeekStats["avgHours"] as Double
+
+        val thisWeekPickups = thisWeekStats["totalPickups"] as Int
+        val lastWeekPickups = lastWeekStats["totalPickups"] as Int
+
+        val hoursDiff = thisWeekTotal - lastWeekTotal
+        val percentChange = if (lastWeekTotal > 0) ((thisWeekTotal - lastWeekTotal) / lastWeekTotal) * 100 else 0.0
+        val pickupsDiff = thisWeekPickups - lastWeekPickups
+        val pickupsPercentChange = if (lastWeekPickups > 0) ((thisWeekPickups - lastWeekPickups).toDouble() / lastWeekPickups) * 100 else 0.0
+
+        return mapOf(
+            "thisWeek" to mapOf(
+                "totalHours" to thisWeekTotal,
+                "avgHours" to thisWeekAvg,
+                "pickups" to thisWeekPickups,
+                "dailyData" to (thisWeekStats["dailyData"] as List<*>)
+            ),
+            "lastWeek" to mapOf(
+                "totalHours" to lastWeekTotal,
+                "avgHours" to lastWeekAvg,
+                "pickups" to lastWeekPickups,
+                "dailyData" to (lastWeekStats["dailyData"] as List<*>)
+            ),
+            "comparison" to mapOf(
+                "hoursDiff" to (Math.round(hoursDiff * 10) / 10.0),
+                "hoursPercentChange" to (Math.round(percentChange * 10) / 10.0),
+                "pickupsDiff" to pickupsDiff,
+                "pickupsPercentChange" to (Math.round(pickupsPercentChange * 10) / 10.0),
+                "improved" to (hoursDiff < 0)
+            )
+        )
+    }
+
+    private fun getWeekStatsInternal(weekOffset: Int): Map<String, Any> {
+        val dailyData = getDailyUsageData(weekOffset)
+        val validDays = dailyData.filter { (it["hours"] as Double) > 0 }
+        val totalHours = dailyData.sumOf { it["hours"] as Double }
+        val avgHours = if (validDays.isNotEmpty()) totalHours / validDays.size else 0.0
+
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 23)
+        calendar.set(Calendar.MINUTE, 59)
+        calendar.add(Calendar.DAY_OF_YEAR, weekOffset * 7)
+        val endTime = if (weekOffset >= 0) System.currentTimeMillis() else calendar.timeInMillis
+        calendar.add(Calendar.DAY_OF_YEAR, -6)
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        val startTime = calendar.timeInMillis
+
+        val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        val totalPickups = estimatePickups(usageStatsManager, startTime, endTime)
+
+        return mapOf(
+            "totalHours" to (Math.round(totalHours * 10) / 10.0),
+            "avgHours" to (Math.round(avgHours * 10) / 10.0),
+            "totalPickups" to totalPickups,
+            "dailyData" to dailyData
+        )
+    }
+
+    private fun formatDateString(calendar: Calendar): String {
+        val year = calendar.get(Calendar.YEAR)
+        val month = String.format("%02d", calendar.get(Calendar.MONTH) + 1)
+        val day = String.format("%02d", calendar.get(Calendar.DAY_OF_MONTH))
+        return "$year-$month-$day"
     }
 
     private fun isUserApp(packageName: String, pm: PackageManager): Boolean {

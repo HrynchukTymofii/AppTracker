@@ -23,7 +23,7 @@ export async function handleAppleLogin({
     });
 
     if (credential.identityToken) {
-      const res = await fetch("https://www.satlearner.com/api/auth/apple", {
+      const res = await fetch("https://www.fibipals.com/api/apps/appBlocker/auth/apple", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

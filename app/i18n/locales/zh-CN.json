@@ -22,7 +22,8 @@
     "detox": "数字排毒",
     "stats": "统计",
     "profile": "个人",
-    "community": "社区"
+    "community": "社区",
+    "schedule": "日程"
   },
   "home": {
     "title": "LockIn",
@@ -114,6 +115,18 @@
     "calendarView": "日历视图",
     "everyday": "每天",
     "weekdays": "工作日",
+    "weekends": "周末",
+    "suggestedSchedules": {
+      "title": "快速开始",
+      "morningFocus": "晨间专注",
+      "deepWork": "深度工作",
+      "lunchBreak": "午餐时间",
+      "gymTime": "健身时间",
+      "eveningWinddown": "晚间放松",
+      "studySession": "学习时段",
+      "familyTime": "家庭时光",
+      "sleepMode": "睡眠模式"
+    },
     "activeToday": "今日活跃",
     "scheduledForDay": "当日",
     "noSchedulesWere": "该日没有活跃的计划",
@@ -130,6 +143,8 @@
       "selectApps": "选择要锁定的应用",
       "confirmSelection": "确认选择 ({{count}})",
       "newSchedule": "新建计划",
+      "editSchedule": "编辑计划",
+      "templates": "模板",
       "scheduleName": "计划名称",
       "scheduleNamePlaceholder": "例如：工作时间",
       "appsToBlock": "要锁定的应用",
@@ -170,7 +185,9 @@
       "taskVerifiedDesc": "您的任务已成功验证。\n\n可信度：{{confidence}}%\n\n{{explanation}}",
       "taskNotVerified": "任务未验证",
       "taskNotVerifiedDesc": "任务似乎未完成。\n\n{{explanation}}\n\n请完成任务后重试。",
-      "apiKeySavedSuccess": "API密钥保存成功"
+      "apiKeySavedSuccess": "API密钥保存成功",
+      "removeLimit": "移除限制",
+      "removeLimitConfirm": "确定要移除此应用的每日限制吗？"
     },
     "presetTasks": {
       "cleaning": "清洁",
@@ -178,6 +195,16 @@
       "exercise": "运动",
       "reading": "阅读",
       "custom": "自定义"
+    },
+    "appLimits": "应用限制",
+    "noLimitsSet": "未设置应用限制",
+    "addLimitsHint": "添加应用以设置每日使用限制",
+    "limitExceeded": "已超出限制",
+    "timeLimitModal": {
+      "title": "设置时间限制",
+      "hours": "小时",
+      "minutes": "分钟",
+      "dailyLimit": "每日限制"
     }
   },
   "detox": {
@@ -194,7 +221,10 @@
     "rateUs": "评分",
     "logOut": "登出",
     "errorLoading": "加载个人资料时出错",
-    "loading": "正在加载个人资料..."
+    "loading": "正在加载个人资料...",
+    "defaultAppLimit": "默认应用限制",
+    "defaultAppLimitDesc": "新应用将默认使用此时间限制",
+    "limitUpdated": "默认限制已更新"
   },
   "achievements": {
     "title": "成就",

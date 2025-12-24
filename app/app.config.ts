@@ -4,7 +4,7 @@ import { ExpoConfig } from "expo/config";
 const config: ExpoConfig = {
   name: "App Blocker",
   slug: "app-blocker",
-  version: "1.0.0",
+  version: "1.0.1",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "appblocker",
@@ -16,8 +16,13 @@ const config: ExpoConfig = {
     bundleIdentifier: "com.hrynchuk.appblocker",
     buildNumber: "1",
     icon: "./assets/images/icon.png",
+    entitlements: {
+      "com.apple.developer.family-controls": true,
+      "com.apple.security.application-groups": ["group.com.hrynchuk.appblocker"],
+    },
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
+      NSFaceIDUsageDescription: "Use Face ID to temporarily unblock apps",
     },
     googleServicesFile: "./GoogleService-Info.plist",
   },
@@ -89,6 +94,7 @@ const config: ExpoConfig = {
       },
     ],
     "./plugins/withUsageStats.js",
+    "./plugins/withFamilyControls.js",
     [
       "expo-build-properties",
       {

@@ -3,14 +3,16 @@ import {  Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import "../global.css";
-import "@/i18n/config"; 
+import "@/i18n/config";
 import Toast from "react-native-toast-message";
+import toastConfig from "@/components/ui/CustomToast";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { TourProvider } from "@/context/TourContext";
 import { ThemeProvider as CustomThemeProvider } from "@/context/ThemeContext";
 import { DetoxProvider } from "@/context/DetoxContext";
 import { BlockingProvider } from "@/context/BlockingContext";
 import { GroupProvider } from "@/context/GroupContext";
+import { LockInProvider } from "@/context/LockInContext";
 import { Suspense, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { SQLiteProvider } from "expo-sqlite";
@@ -24,6 +26,8 @@ import {
 import Purchases, { LOG_LEVEL } from "react-native-purchases";
 import { AppState, Platform} from "react-native";
 import { upgradeToPro, removePro } from "@/lib/api/user";
+import * as QuickActions from "expo-quick-actions";
+import { RouterAction } from "expo-quick-actions/router";
 
 configureReanimatedLogger({
   level: ReanimatedLogLevel.warn,
@@ -33,6 +37,49 @@ configureReanimatedLogger({
 function AppSyncWrapper({ children }: { children: React.ReactNode }) {
   const { token, user, setUser } = useAuth();
   const [isOffline, setIsOffline] = useState(false);
+  const router = useRouter();
+
+  // Setup Quick Actions for iOS home screen long-press menu
+  // TODO: Re-enable when special offer is configured
+  // useEffect(() => {
+  //   const setupQuickActions = async () => {
+  //     // Only show discount offer if user is NOT a pro subscriber
+  //     if (user?.isPro) {
+  //       // Clear any existing actions for pro users
+  //       QuickActions.setItems([]);
+  //       return;
+  //     }
+
+  //     // Set up quick actions for non-subscribers
+  //     QuickActions.setItems<RouterAction>([
+  //       {
+  //         id: "special-offer",
+  //         title: "🎁 50% Off First Month",
+  //         subtitle: "Limited time offer",
+  //         icon: Platform.OS === "ios" ? "symbol:gift.fill" : undefined,
+  //         params: { href: "/payment?discount=50" },
+  //       },
+  //     ]);
+  //   };
+
+  //   setupQuickActions();
+  // }, [user?.isPro]);
+
+  // // Handle quick action press
+  // useEffect(() => {
+  //   const subscription = QuickActions.addListener<QuickActions.Action>((action) => {
+  //     if (action.id === "special-offer") {
+  //       router.push("/payment?discount=50");
+  //     }
+  //   });
+
+  //   // Check if app was launched from a quick action
+  //   if (QuickActions.initial?.id === "special-offer") {
+  //     router.push("/payment?discount=50");
+  //   }
+
+  //   return () => subscription.remove();
+  // }, []);
 
   const syncIfOnline = async () => {
     if (!token) return;
@@ -142,13 +189,21 @@ function AppSyncWrapper({ children }: { children: React.ReactNode }) {
   }, [token]);
 
   useEffect(() => {
-    Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+    const configurePurchases = async () => {
+      try {
+        if (Platform.OS === "ios") {
+          await Purchases.configure({ apiKey: "appl_DXtiSBNTmQOgIEgTfHOiqHSFlbm" });
+        } else if (Platform.OS === "android") {
+          await Purchases.configure({ apiKey: "goog_uwxUlQUPmydcyqKsYImEqxdbiip" });
+        }
+        // Set log level after configure to avoid customLogHandler error
+        Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+      } catch (error) {
+        console.warn("Failed to configure Purchases:", error);
+      }
+    };
 
-    if (Platform.OS === "ios") {
-      Purchases.configure({ apiKey: "appl_plYVBUscFYEJQnxkmHBsnMRhbIa" });
-    } else if (Platform.OS === "android") {
-      Purchases.configure({ apiKey: "goog_RDVEiwhMsfMcTDNFxFdGkPiMLes" });
-    }
+    configurePurchases();
   }, []);
 
   return <>{children}</>;
@@ -161,21 +216,21 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
-  const [onboardingDone, setOnboardingDone] = useState<boolean>(true);
+  const [sellingOnboardingDone, setSellingOnboardingDone] = useState<boolean>(true);
 
   useEffect(() => {
     const checkOnboarding = async () => {
-      const done = await SecureStore.getItemAsync("onboardingCompleted");
-      setOnboardingDone(!!done);
+      const done = await SecureStore.getItemAsync("sellingOnboardingCompleted");
+      setSellingOnboardingDone(!!done);
     };
     checkOnboarding();
   }, []);
 
   useEffect(() => {
-    if (onboardingDone === false) {
-      router.replace("/onboarding");
+    if (sellingOnboardingDone === false) {
+      router.replace("/selling-onboarding");
     }
-  }, [onboardingDone]);
+  }, [sellingOnboardingDone]);
 
   // Wait until we know the onboarding status + fonts loaded
   if (!loaded) return <CustomPreloadScreen />;
@@ -186,6 +241,7 @@ export default function RootLayout() {
       <AuthProvider>
         <DetoxProvider>
           <BlockingProvider>
+          <LockInProvider>
           <Suspense fallback={<CustomPreloadScreen />}>
             <SQLiteProvider
               databaseName="satprep.db"
@@ -196,9 +252,9 @@ export default function RootLayout() {
             >
               <AppSyncWrapper>
                 <GroupProvider>
-                 <TourProvider>
+                
                 <CustomThemeProvider>
-                  <PermissionWrapper>
+                 
                     <Stack screenOptions={{ headerShown: false }}>
                       {/* Main tabs */}
                       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -221,15 +277,15 @@ export default function RootLayout() {
                       {/* Not found */}
                       <Stack.Screen name="+not-found" />
                     </Stack>
-                    <Toast />
+                    <Toast config={toastConfig} />
                     <StatusBar style="auto" />
-                  </PermissionWrapper>
                 </CustomThemeProvider>
-                </TourProvider>
+            
                 </GroupProvider>
              </AppSyncWrapper>
             </SQLiteProvider>
           </Suspense>
+          </LockInProvider>
         </BlockingProvider>
         </DetoxProvider>
       </AuthProvider>

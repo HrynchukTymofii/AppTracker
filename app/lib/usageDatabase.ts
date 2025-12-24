@@ -7,6 +7,10 @@ import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabaseSync('usage_history.db');
 
+// Track initialization state
+let isInitialized = false;
+let initPromise: Promise<void> | null = null;
+
 // Type for database row
 interface DailyUsageRow {
   id: number;
@@ -21,26 +25,42 @@ interface DailyUsageRow {
 
 // Initialize database
 export const initUsageDatabase = async () => {
-  try {
-    // Create table for daily usage stats
-    await db.execAsync(`
-      CREATE TABLE IF NOT EXISTS daily_usage (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        date TEXT NOT NULL UNIQUE,
-        total_screen_time INTEGER NOT NULL,
-        pickups INTEGER NOT NULL,
-        health_score INTEGER NOT NULL,
-        orb_level INTEGER NOT NULL,
-        apps_data TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      );
+  // Return existing promise if already initializing
+  if (initPromise) return initPromise;
+  if (isInitialized) return;
 
-      CREATE INDEX IF NOT EXISTS idx_date ON daily_usage(date);
-    `);
+  initPromise = (async () => {
+    try {
+      // Create table for daily usage stats
+      await db.execAsync(`
+        CREATE TABLE IF NOT EXISTS daily_usage (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          date TEXT NOT NULL UNIQUE,
+          total_screen_time INTEGER NOT NULL,
+          pickups INTEGER NOT NULL,
+          health_score INTEGER NOT NULL,
+          orb_level INTEGER NOT NULL,
+          apps_data TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
 
-    console.log('Usage database initialized');
-  } catch (error) {
-    console.error('Error initializing usage database:', error);
+        CREATE INDEX IF NOT EXISTS idx_date ON daily_usage(date);
+      `);
+
+      isInitialized = true;
+      console.log('Usage database initialized');
+    } catch (error) {
+      console.error('Error initializing usage database:', error);
+    }
+  })();
+
+  return initPromise;
+};
+
+// Ensure DB is initialized before any operation
+const ensureInitialized = async () => {
+  if (!isInitialized) {
+    await initUsageDatabase();
   }
 };
 
@@ -54,6 +74,7 @@ export const saveDailyUsage = async (
   appsData: any[]
 ) => {
   try {
+    await ensureInitialized();
     const appsJson = JSON.stringify(appsData);
 
     await db.runAsync(
@@ -62,8 +83,6 @@ export const saveDailyUsage = async (
        VALUES (?, ?, ?, ?, ?, ?)`,
       [date, totalScreenTime, pickups, healthScore, orbLevel, appsJson]
     );
-
-    console.log(`Saved usage data for ${date}`);
   } catch (error) {
     console.error('Error saving daily usage:', error);
   }
@@ -72,6 +91,7 @@ export const saveDailyUsage = async (
 // Get daily usage for a specific date
 export const getDailyUsage = async (date: string) => {
   try {
+    await ensureInitialized();
     const result = await db.getFirstAsync<DailyUsageRow>(
       'SELECT * FROM daily_usage WHERE date = ?',
       [date]
@@ -94,6 +114,7 @@ export const getDailyUsage = async (date: string) => {
 // Get usage data for a week
 export const getWeekUsage = async (startDate: string, endDate: string) => {
   try {
+    await ensureInitialized();
     const results = await db.getAllAsync<DailyUsageRow>(
       `SELECT * FROM daily_usage
        WHERE date >= ? AND date <= ?
@@ -114,13 +135,14 @@ export const getWeekUsage = async (startDate: string, endDate: string) => {
 // Check if data exists for a date range
 export const hasDataForRange = async (startDate: string, endDate: string): Promise<boolean> => {
   try {
+    await ensureInitialized();
     const result = await db.getFirstAsync(
       `SELECT COUNT(*) as count FROM daily_usage
        WHERE date >= ? AND date <= ?`,
       [startDate, endDate]
     ) as { count: number };
 
-    return result.count > 0;
+    return result?.count > 0;
   } catch (error) {
     console.error('Error checking data range:', error);
     return false;
@@ -130,6 +152,7 @@ export const hasDataForRange = async (startDate: string, endDate: string): Promi
 // Get all dates with data (for calendar heatmap)
 export const getAllDatesWithData = async () => {
   try {
+    await ensureInitialized();
     const results = await db.getAllAsync(
       `SELECT date, health_score, orb_level, total_screen_time, pickups
        FROM daily_usage
@@ -152,17 +175,21 @@ export const formatDate = (date: Date): string => {
   return `${year}-${month}-${day}`;
 };
 
-// Helper: Get week date range
+// Helper: Get week date range (rolling 7 days: today + 6 previous days)
 export const getWeekDateRange = (weekOffset: number): { startDate: string; endDate: string } => {
   const today = new Date();
-  const startOfWeek = new Date(today);
-  startOfWeek.setDate(today.getDate() - today.getDay() + (weekOffset * 7));
+  today.setHours(0, 0, 0, 0);
 
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  // End date is today (or offset weeks ago)
+  const endDate = new Date(today);
+  endDate.setDate(today.getDate() + (weekOffset * 7));
+
+  // Start date is 6 days before end date (7 days total including end date)
+  const startDate = new Date(endDate);
+  startDate.setDate(endDate.getDate() - 6);
 
   return {
-    startDate: formatDate(startOfWeek),
-    endDate: formatDate(endOfWeek),
+    startDate: formatDate(startDate),
+    endDate: formatDate(endDate),
   };
 };

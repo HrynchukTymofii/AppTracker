@@ -3,26 +3,29 @@ import {
   Text,
   TextInput,
   Pressable,
-  Alert,
   Modal,
   TouchableOpacity,
   ScrollView,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   ArrowLeft,
   Key,
   Sun,
   Moon,
   Globe,
+  Palette,
+  Check,
+  Smartphone,
 } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
 import { updateUser, deleteUserAccount } from "@/lib/api/user";
-import Toast from "react-native-toast-message";
+import { showErrorToast, showSuccessToast } from "@/components/ui/CustomToast";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { useTheme } from "@/context/ThemeContext";
+import { useTheme, ACCENT_COLORS, AccentColorName } from "@/context/ThemeContext";
 import { LanguageSelector } from "@/components/modals/LanguageSelector";
 import { useTranslation } from "react-i18next";
 import { availableLanguages, getCurrentLanguage } from "@/i18n/config";
@@ -38,7 +41,7 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
-  const { themeMode, setThemeMode } = useTheme();
+  const { themeMode, setThemeMode, accentColor, accentColorName, setAccentColor } = useTheme();
   const { t } = useTranslation();
   const currentLanguage = getCurrentLanguage();
   const currentLanguageData = availableLanguages.find((l) => l.code === currentLanguage);
@@ -50,7 +53,7 @@ export default function SettingsScreen() {
     value: "light" | "dark" | "system";
     icon: typeof Sun;
   }[] = [
-    { label: "System Default", value: "system", icon: Sun },
+    { label: "System Default", value: "system", icon: Smartphone },
     { label: "Light", value: "light", icon: Sun },
     { label: "Dark", value: "dark", icon: Moon },
   ];
@@ -59,57 +62,63 @@ export default function SettingsScreen() {
     setToken(null);
     setUser(null);
     router.replace("/");
-    Toast.show({
-      type: "success",
-      text1: "Account deleted",
-      position: "top",
-      visibilityTime: 700,
-    });
+    showSuccessToast("Account deleted");
   };
 
   const handleSave = async () => {
-    if (!token) return alert("User not authorized");
+    if (!token) {
+      showErrorToast(t("common.error"), "User not authorized");
+      return;
+    }
     const result = await updateUser(token, { password });
     if (result.success) {
       if (user) setUser({ ...user });
       router.back();
-      Toast.show({
-        type: "success",
-        text1: "Profile updated",
-        position: "top",
-        visibilityTime: 700,
-      });
-    } else alert(result.error);
+      showSuccessToast("Profile updated");
+    } else {
+      showErrorToast(t("common.error"), result.error);
+    }
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: isDark ? "#000000" : "#ffffff" }}>
+    <View style={{ flex: 1, backgroundColor: isDark ? "#000000" : "#f8fafc" }}>
       {/* Header */}
       <View style={{
-        paddingTop: insets.top + 16,
+        paddingTop: insets.top + 12,
         paddingBottom: 20,
         paddingHorizontal: 20,
-        backgroundColor: isDark ? "#000000" : "#ffffff",
       }}>
         {/* Back Button */}
         <TouchableOpacity
           onPress={() => router.back()}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginBottom: 20,
-            alignSelf: "flex-start",
-          }}
           activeOpacity={0.7}
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 14,
+            backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#ffffff",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 20,
+            borderWidth: 0.5,
+            borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.06)",
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: isDark ? 0 : 0.04,
+            shadowRadius: 8,
+            elevation: 2,
+          }}
         >
-          <ArrowLeft size={20} color={isDark ? "#ffffff" : "#111827"} />
-          <Text style={{ color: isDark ? "#ffffff" : "#111827", fontWeight: "600", marginLeft: 8, fontSize: 16 }}>
-            {t('common.back')}
-          </Text>
+          <ArrowLeft size={22} color={isDark ? "#ffffff" : "#0f172a"} strokeWidth={1.5} />
         </TouchableOpacity>
 
         {/* Title */}
-        <Text style={{ fontSize: 28, fontWeight: "bold", color: isDark ? "#ffffff" : "#111827" }}>
+        <Text style={{
+          fontSize: 32,
+          fontWeight: "800",
+          color: isDark ? "#ffffff" : "#0f172a",
+          letterSpacing: -0.5,
+        }}>
           {t('common.settings')}
         </Text>
       </View>
@@ -119,138 +128,301 @@ export default function SettingsScreen() {
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Password Section */}
-        <View style={{ marginBottom: 24 }}>
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: "600",
-              color: isDark ? "#9ca3af" : "#6b7280",
-              marginBottom: 12,
-              letterSpacing: 0.5,
-            }}
-          >
-            CHANGE PASSWORD
-          </Text>
-          <TextInput
-            value={password}
-            onChangeText={setPassword}
-            placeholder="New password"
-            secureTextEntry
-            style={{
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#f3f4f6",
-              color: isDark ? "#ffffff" : "#111827",
-              borderRadius: 12,
-              paddingHorizontal: 16,
-              paddingVertical: 14,
-              fontSize: 16,
-            }}
-            placeholderTextColor={isDark ? "#6b7280" : "#9ca3af"}
-          />
-        </View>
+        {/* Accent Color Section */}
+        <View style={{ marginBottom: 28 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 14 }}>
+            <View
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 10,
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: 10,
+                overflow: "hidden",
+              }}
+            >
+              <LinearGradient
+                colors={[accentColor.primary, accentColor.dark]}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                }}
+              />
+              <Palette size={16} color="#ffffff" strokeWidth={2} />
+            </View>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: "700",
+                color: isDark ? "#ffffff" : "#0f172a",
+                letterSpacing: -0.3,
+              }}
+            >
+              Accent Color
+            </Text>
+          </View>
 
-        {/* Theme Section */}
-        <View style={{ marginBottom: 24 }}>
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: "600",
-              color: isDark ? "#9ca3af" : "#6b7280",
-              marginBottom: 12,
-              letterSpacing: 0.5,
-            }}
-          >
-            APP THEME
-          </Text>
           <View
             style={{
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f9fafb",
-              borderRadius: 12,
-              padding: 4,
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+              borderRadius: 20,
+              padding: 16,
+              borderWidth: 0.5,
+              borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: isDark ? 0 : 0.03,
+              shadowRadius: 12,
+              elevation: 2,
             }}
           >
-            {themeOptions.map((option) => (
-              <Pressable
-                key={option.value}
-                onPress={() => setThemeMode(option.value)}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  paddingVertical: 14,
-                  paddingHorizontal: 16,
-                  backgroundColor: themeMode === option.value
-                    ? (isDark ? "rgba(59, 130, 246, 0.2)" : "rgba(59, 130, 246, 0.1)")
-                    : "transparent",
-                  borderRadius: 8,
-                  marginBottom: 4,
-                }}
-              >
-                <View
-                  style={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: 10,
-                    borderWidth: 2,
-                    borderColor: themeMode === option.value ? "#3b82f6" : (isDark ? "#6b7280" : "#9ca3af"),
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {themeMode === option.value && (
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
+              {(Object.keys(ACCENT_COLORS) as AccentColorName[]).map((colorName) => {
+                const color = ACCENT_COLORS[colorName];
+                const isSelected = accentColorName === colorName;
+
+                return (
+                  <TouchableOpacity
+                    key={colorName}
+                    onPress={() => setAccentColor(colorName)}
+                    activeOpacity={0.7}
+                    style={{
+                      width: 64,
+                      alignItems: "center",
+                    }}
+                  >
                     <View
                       style={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: 5,
-                        backgroundColor: "#3b82f6",
+                        width: 48,
+                        height: 48,
+                        borderRadius: 16,
+                        overflow: "hidden",
+                        borderWidth: isSelected ? 3 : 0,
+                        borderColor: isDark ? "#ffffff" : "#0f172a",
+                        shadowColor: color.primary,
+                        shadowOffset: { width: 0, height: isSelected ? 6 : 2 },
+                        shadowOpacity: isSelected ? 0.4 : 0.2,
+                        shadowRadius: isSelected ? 12 : 6,
+                        elevation: isSelected ? 8 : 3,
                       }}
+                    >
+                      <LinearGradient
+                        colors={[color.primary, color.dark]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {isSelected && (
+                          <Check size={22} color="#ffffff" strokeWidth={3} />
+                        )}
+                      </LinearGradient>
+                    </View>
+                    <Text
+                      style={{
+                        fontSize: 11,
+                        fontWeight: isSelected ? "700" : "500",
+                        color: isSelected
+                          ? color.primary
+                          : (isDark ? "rgba(255,255,255,0.6)" : "#64748b"),
+                        marginTop: 8,
+                        textAlign: "center",
+                      }}
+                    >
+                      {color.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+        </View>
+
+        {/* Theme Mode Section */}
+        <View style={{ marginBottom: 28 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 14 }}>
+            <View
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 10,
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: 10,
+              }}
+            >
+              {isDark ? (
+                <Moon size={16} color={isDark ? "#ffffff" : "#0f172a"} strokeWidth={2} />
+              ) : (
+                <Sun size={16} color={isDark ? "#ffffff" : "#0f172a"} strokeWidth={2} />
+              )}
+            </View>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: "700",
+                color: isDark ? "#ffffff" : "#0f172a",
+                letterSpacing: -0.3,
+              }}
+            >
+              Appearance
+            </Text>
+          </View>
+
+          <View
+            style={{
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+              borderRadius: 20,
+              padding: 6,
+              borderWidth: 0.5,
+              borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: isDark ? 0 : 0.03,
+              shadowRadius: 12,
+              elevation: 2,
+            }}
+          >
+            {themeOptions.map((option) => {
+              const isSelected = themeMode === option.value;
+              const IconComponent = option.icon;
+
+              return (
+                <TouchableOpacity
+                  key={option.value}
+                  onPress={() => setThemeMode(option.value)}
+                  activeOpacity={0.7}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    paddingVertical: 14,
+                    paddingHorizontal: 16,
+                    borderRadius: 14,
+                    backgroundColor: isSelected
+                      ? `rgba(${accentColor.rgb}, ${isDark ? 0.15 : 0.1})`
+                      : "transparent",
+                    marginBottom: 4,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 12,
+                      backgroundColor: isSelected
+                        ? `rgba(${accentColor.rgb}, 0.2)`
+                        : (isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.03)"),
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginRight: 14,
+                    }}
+                  >
+                    <IconComponent
+                      size={20}
+                      color={isSelected ? accentColor.primary : (isDark ? "rgba(255,255,255,0.5)" : "#94a3b8")}
+                      strokeWidth={1.5}
                     />
+                  </View>
+                  <Text style={{
+                    flex: 1,
+                    fontSize: 16,
+                    fontWeight: isSelected ? "700" : "500",
+                    color: isSelected ? accentColor.primary : (isDark ? "#ffffff" : "#0f172a"),
+                  }}>
+                    {option.label}
+                  </Text>
+                  {isSelected && (
+                    <View
+                      style={{
+                        width: 24,
+                        height: 24,
+                        borderRadius: 8,
+                        overflow: "hidden",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <LinearGradient
+                        colors={[accentColor.primary, accentColor.dark]}
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                        }}
+                      />
+                      <Check size={14} color="#ffffff" strokeWidth={3} />
+                    </View>
                   )}
-                </View>
-                <Text style={{
-                  marginLeft: 12,
-                  fontSize: 15,
-                  fontWeight: themeMode === option.value ? "600" : "400",
-                  color: isDark ? "#ffffff" : "#111827",
-                }}>
-                  {option.label}
-                </Text>
-              </Pressable>
-            ))}
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </View>
 
         {/* Language Section */}
-        <View style={{ marginBottom: 24 }}>
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: "600",
-              color: isDark ? "#9ca3af" : "#6b7280",
-              marginBottom: 12,
-              letterSpacing: 0.5,
-            }}
-          >
-            {t('language.title').toUpperCase()}
-          </Text>
+        <View style={{ marginBottom: 28 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 14 }}>
+            <View
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 10,
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: 10,
+              }}
+            >
+              <Globe size={16} color={isDark ? "#ffffff" : "#0f172a"} strokeWidth={2} />
+            </View>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: "700",
+                color: isDark ? "#ffffff" : "#0f172a",
+                letterSpacing: -0.3,
+              }}
+            >
+              {t('language.title')}
+            </Text>
+          </View>
+
           <TouchableOpacity
             onPress={() => setShowLanguageModal(true)}
+            activeOpacity={0.7}
             style={{
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#f3f4f6",
-              borderRadius: 12,
-              padding: 16,
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+              borderRadius: 18,
+              padding: 18,
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-between",
+              borderWidth: 0.5,
+              borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: isDark ? 0 : 0.03,
+              shadowRadius: 12,
+              elevation: 2,
             }}
-            activeOpacity={0.7}
           >
             <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-              <Text style={{ fontSize: 32, marginRight: 12 }}>{currentLanguageFlag}</Text>
+              <Text style={{ fontSize: 32, marginRight: 14 }}>{currentLanguageFlag}</Text>
               <View style={{ flex: 1 }}>
                 <Text style={{
-                  fontSize: 14,
-                  color: isDark ? "#9ca3af" : "#6b7280",
+                  fontSize: 13,
+                  color: isDark ? "rgba(255,255,255,0.5)" : "#94a3b8",
                   marginBottom: 4,
                 }}>
                   {t('language.currentLanguage')}
@@ -258,59 +430,156 @@ export default function SettingsScreen() {
                 <Text style={{
                   fontSize: 16,
                   fontWeight: "600",
-                  color: isDark ? "#ffffff" : "#1f2937",
+                  color: isDark ? "#ffffff" : "#0f172a",
                 }}>
                   {currentLanguageName}
                 </Text>
               </View>
             </View>
-            <Globe size={20} color={isDark ? "#6b7280" : "#9ca3af"} />
+            <View
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 12,
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.03)",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Globe size={18} color={isDark ? "rgba(255,255,255,0.4)" : "#94a3b8"} strokeWidth={1.5} />
+            </View>
           </TouchableOpacity>
+        </View>
+
+        {/* Password Section */}
+        <View style={{ marginBottom: 28 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 14 }}>
+            <View
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 10,
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: 10,
+              }}
+            >
+              <Key size={16} color={isDark ? "#ffffff" : "#0f172a"} strokeWidth={2} />
+            </View>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: "700",
+                color: isDark ? "#ffffff" : "#0f172a",
+                letterSpacing: -0.3,
+              }}
+            >
+              Change Password
+            </Text>
+          </View>
+
+          <View
+            style={{
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+              borderRadius: 18,
+              borderWidth: 0.5,
+              borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: isDark ? 0 : 0.03,
+              shadowRadius: 12,
+              elevation: 2,
+            }}
+          >
+            <TextInput
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Enter new password"
+              secureTextEntry
+              style={{
+                color: isDark ? "#ffffff" : "#0f172a",
+                paddingHorizontal: 18,
+                paddingVertical: 16,
+                fontSize: 16,
+              }}
+              placeholderTextColor={isDark ? "rgba(255,255,255,0.3)" : "#94a3b8"}
+            />
+          </View>
         </View>
 
         {/* Save Changes Button */}
         <TouchableOpacity
           onPress={handleSave}
-          style={{
-            backgroundColor: "#3b82f6",
-            borderRadius: 12,
-            paddingVertical: 16,
-            alignItems: "center",
-            marginBottom: 24,
-          }}
           activeOpacity={0.8}
+          style={{
+            borderRadius: 18,
+            paddingVertical: 18,
+            alignItems: "center",
+            marginBottom: 28,
+            overflow: "hidden",
+            shadowColor: accentColor.primary,
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: 0.3,
+            shadowRadius: 20,
+            elevation: 8,
+          }}
         >
-          <Text style={{ color: "#ffffff", fontWeight: "600", fontSize: 16 }}>
+          <LinearGradient
+            colors={[accentColor.primary, accentColor.dark]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+          />
+          <Text style={{ color: "#ffffff", fontWeight: "700", fontSize: 17, letterSpacing: 0.3 }}>
             {t('common.save')}
           </Text>
         </TouchableOpacity>
 
         {/* Danger Zone */}
-        <View style={{
-          paddingTop: 24,
-        }}>
+        <View style={{ marginTop: 12 }}>
           <Text style={{
             fontSize: 14,
-            fontWeight: "600",
-            color: "#EF4444",
-            marginBottom: 12,
+            fontWeight: "700",
+            color: "#ef4444",
+            marginBottom: 14,
             letterSpacing: 0.5,
+            textTransform: "uppercase",
           }}>
-            DANGER ZONE
+            Danger Zone
           </Text>
           <TouchableOpacity
             onPress={() => setShowDeleteModal(true)}
-            style={{
-              borderWidth: 1.5,
-              borderColor: "#EF4444",
-              borderRadius: 12,
-              paddingVertical: 14,
-              alignItems: "center",
-              backgroundColor: isDark ? "rgba(239, 68, 68, 0.1)" : "rgba(239, 68, 68, 0.05)",
-            }}
             activeOpacity={0.7}
+            style={{
+              borderRadius: 18,
+              paddingVertical: 16,
+              alignItems: "center",
+              borderWidth: 0.5,
+              borderColor: "rgba(239, 68, 68, 0.3)",
+              overflow: "hidden",
+            }}
           >
-            <Text style={{ color: "#EF4444", fontWeight: "600", fontSize: 15 }}>
+            <LinearGradient
+              colors={isDark
+                ? ["rgba(239, 68, 68, 0.12)", "rgba(239, 68, 68, 0.06)"]
+                : ["rgba(239, 68, 68, 0.08)", "rgba(239, 68, 68, 0.04)"]
+              }
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            />
+            <Text style={{ color: "#ef4444", fontWeight: "700", fontSize: 16 }}>
               {t('common.delete')} Account
             </Text>
           </TouchableOpacity>
@@ -325,40 +594,49 @@ export default function SettingsScreen() {
       />
 
       {/* Delete Modal */}
-      <Modal visible={showDeleteModal} animationType="slide" transparent>
+      <Modal visible={showDeleteModal} animationType="fade" transparent>
         <View style={{
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
           paddingHorizontal: 24,
         }}>
           <View
             style={{
-              backgroundColor: isDark ? "#1e293b" : "#ffffff",
-              borderRadius: 16,
-              padding: 24,
+              backgroundColor: isDark ? "#0f172a" : "#ffffff",
+              borderRadius: 24,
+              padding: 28,
               width: "100%",
               maxWidth: 400,
+              borderWidth: 0.5,
+              borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.06)",
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 20 },
+              shadowOpacity: 0.3,
+              shadowRadius: 40,
+              elevation: 20,
             }}
           >
             <Text
               style={{
-                fontSize: 20,
-                fontWeight: "bold",
-                marginBottom: 16,
-                color: "#EF4444",
+                fontSize: 22,
+                fontWeight: "800",
+                marginBottom: 12,
+                color: "#ef4444",
+                letterSpacing: -0.3,
               }}
             >
-              Confirm Deletion
+              Delete Account
             </Text>
             <Text style={{
-              fontSize: 16,
-              marginBottom: 12,
-              color: isDark ? "#ffffff" : "#1f2937",
+              fontSize: 15,
+              marginBottom: 20,
+              color: isDark ? "rgba(255,255,255,0.7)" : "#64748b",
+              lineHeight: 22,
             }}>
-              This action is irreversible. To confirm, type{" "}
-              <Text style={{ fontWeight: "bold" }}>Delete</Text> below:
+              This action is irreversible. Type{" "}
+              <Text style={{ fontWeight: "700", color: isDark ? "#ffffff" : "#0f172a" }}>Delete</Text> to confirm:
             </Text>
 
             <TextInput
@@ -366,35 +644,35 @@ export default function SettingsScreen() {
               onChangeText={setConfirmText}
               placeholder="Type Delete"
               style={{
-                backgroundColor: isDark ? "#0f172a" : "#f9fafb",
-                color: isDark ? "#ffffff" : "#1f2937",
-                borderColor: isDark ? "#334155" : "#e5e7eb",
-                borderWidth: 1,
-                borderRadius: 12,
-                paddingHorizontal: 16,
-                paddingVertical: 12,
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f8fafc",
+                color: isDark ? "#ffffff" : "#0f172a",
+                borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)",
+                borderWidth: 0.5,
+                borderRadius: 14,
+                paddingHorizontal: 18,
+                paddingVertical: 14,
                 fontSize: 16,
-                marginBottom: 16,
+                marginBottom: 20,
               }}
-              placeholderTextColor={isDark ? "#6b7280" : "#9ca3af"}
+              placeholderTextColor={isDark ? "rgba(255,255,255,0.3)" : "#94a3b8"}
             />
 
-            <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 12 }}>
+            <View style={{ flexDirection: "row", gap: 12 }}>
               <TouchableOpacity
                 onPress={() => {
                   setShowDeleteModal(false);
                   setConfirmText("");
                 }}
+                activeOpacity={0.7}
                 style={{
                   flex: 1,
-                  paddingVertical: 12,
-                  borderRadius: 12,
-                  backgroundColor: isDark ? "#334155" : "#e5e7eb",
+                  paddingVertical: 14,
+                  borderRadius: 14,
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#f1f5f9",
                   alignItems: "center",
                 }}
-                activeOpacity={0.7}
               >
-                <Text style={{ color: isDark ? "#ffffff" : "#1f2937", fontWeight: "600" }}>
+                <Text style={{ color: isDark ? "#ffffff" : "#0f172a", fontWeight: "600", fontSize: 15 }}>
                   Cancel
                 </Text>
               </TouchableOpacity>
@@ -402,10 +680,13 @@ export default function SettingsScreen() {
               <TouchableOpacity
                 onPress={async () => {
                   if (confirmText !== "Delete") {
-                    Alert.alert("Error", "Type 'Delete' to confirm.");
+                    showErrorToast(t("common.error"), "Type 'Delete' to confirm.");
                     return;
                   }
-                  if (!token) return alert("User not authorized");
+                  if (!token) {
+                    showErrorToast(t("common.error"), "User not authorized");
+                    return;
+                  }
 
                   setIsDeleting(true);
                   const result = await deleteUserAccount(token);
@@ -415,20 +696,20 @@ export default function SettingsScreen() {
                     setShowDeleteModal(false);
                     handleLogout();
                   } else {
-                    alert(result.error || "Failed to delete account");
+                    showErrorToast(t("common.error"), result.error || "Failed to delete account");
                   }
                 }}
+                activeOpacity={0.7}
                 style={{
                   flex: 1,
-                  paddingVertical: 12,
-                  borderRadius: 12,
-                  backgroundColor: "#EF4444",
+                  paddingVertical: 14,
+                  borderRadius: 14,
+                  backgroundColor: "#ef4444",
                   alignItems: "center",
                 }}
-                activeOpacity={0.7}
               >
-                <Text style={{ color: "#ffffff", fontWeight: "600" }}>
-                  {isDeleting ? "Deleting..." : "Confirm"}
+                <Text style={{ color: "#ffffff", fontWeight: "700", fontSize: 15 }}>
+                  {isDeleting ? "Deleting..." : "Delete"}
                 </Text>
               </TouchableOpacity>
             </View>

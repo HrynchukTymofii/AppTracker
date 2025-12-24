@@ -22,7 +22,8 @@
     "detox": "डिटॉक्स",
     "stats": "आंकड़े",
     "profile": "प्रोफ़ाइल",
-    "community": "समुदाय"
+    "community": "समुदाय",
+    "schedule": "शेड्यूल"
   },
   "home": {
     "title": "LockIn",
@@ -114,6 +115,18 @@
     "calendarView": "कैलेंडर दृश्य",
     "everyday": "हर दिन",
     "weekdays": "कार्यदिवस",
+    "weekends": "सप्ताहांत",
+    "suggestedSchedules": {
+      "title": "त्वरित शुरुआत",
+      "morningFocus": "सुबह का फोकस",
+      "deepWork": "गहन कार्य",
+      "lunchBreak": "दोपहर का भोजन",
+      "gymTime": "जिम का समय",
+      "eveningWinddown": "शाम का आराम",
+      "studySession": "अध्ययन सत्र",
+      "familyTime": "परिवार का समय",
+      "sleepMode": "नींद मोड"
+    },
     "activeToday": "आज सक्रिय",
     "scheduledForDay": "इस दिन के लिए",
     "noSchedulesWere": "इस दिन कोई शेड्यूल सक्रिय नहीं था",
@@ -130,6 +143,8 @@
       "selectApps": "ब्लॉक करने के लिए ऐप्स चुनें",
       "confirmSelection": "चयन की पुष्टि करें ({{count}})",
       "newSchedule": "नया शेड्यूल",
+      "editSchedule": "शेड्यूल संपादित करें",
+      "templates": "टेम्पलेट",
       "scheduleName": "शेड्यूल का नाम",
       "scheduleNamePlaceholder": "उदा. कार्य घंटे",
       "appsToBlock": "ब्लॉक करने के लिए ऐप्स",
@@ -170,7 +185,9 @@
       "taskVerifiedDesc": "आपका कार्य सफलतापूर्वक सत्यापित किया गया।\n\nविश्वास: {{confidence}}%\n\n{{explanation}}",
       "taskNotVerified": "कार्य सत्यापित नहीं",
       "taskNotVerifiedDesc": "कार्य पूर्ण नहीं हुआ प्रतीत होता है।\n\n{{explanation}}\n\nकृपया कार्य पूर्ण करें और पुनः प्रयास करें।",
-      "apiKeySavedSuccess": "API कुंजी सफलतापूर्वक सहेजी गई"
+      "apiKeySavedSuccess": "API कुंजी सफलतापूर्वक सहेजी गई",
+      "removeLimit": "सीमा हटाएं",
+      "removeLimitConfirm": "क्या आप वाकई इस ऐप की दैनिक सीमा हटाना चाहते हैं?"
     },
     "presetTasks": {
       "cleaning": "सफाई",
@@ -178,6 +195,16 @@
       "exercise": "व्यायाम",
       "reading": "पढ़ना",
       "custom": "कस्टम"
+    },
+    "appLimits": "ऐप सीमाएं",
+    "noLimitsSet": "कोई ऐप सीमा निर्धारित नहीं",
+    "addLimitsHint": "दैनिक उपयोग सीमा निर्धारित करने के लिए ऐप्स जोड़ें",
+    "limitExceeded": "सीमा पार हो गई",
+    "timeLimitModal": {
+      "title": "समय सीमा निर्धारित करें",
+      "hours": "घंटे",
+      "minutes": "मिनट",
+      "dailyLimit": "दैनिक सीमा"
     }
   },
   "detox": {
@@ -194,7 +221,10 @@
     "rateUs": "हमें रेट करें",
     "logOut": "लॉग आउट करें",
     "errorLoading": "प्रोफ़ाइल लोड करने में त्रुटि",
-    "loading": "प्रोफ़ाइल लोड हो रही है..."
+    "loading": "प्रोफ़ाइल लोड हो रही है...",
+    "defaultAppLimit": "डिफ़ॉल्ट ऐप सीमा",
+    "defaultAppLimitDesc": "नए ऐप्स डिफ़ॉल्ट रूप से इस समय सीमा का उपयोग करेंगे",
+    "limitUpdated": "डिफ़ॉल्ट सीमा अपडेट की गई"
   },
   "achievements": {
     "title": "उपलब्धियां",

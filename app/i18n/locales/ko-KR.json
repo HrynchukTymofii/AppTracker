@@ -22,7 +22,8 @@
     "detox": "디톡스",
     "stats": "통계",
     "profile": "프로필",
-    "community": "커뮤니티"
+    "community": "커뮤니티",
+    "schedule": "일정"
   },
   "home": {
     "title": "LockIn",
@@ -114,6 +115,18 @@
     "calendarView": "캘린더 보기",
     "everyday": "매일",
     "weekdays": "평일",
+    "weekends": "주말",
+    "suggestedSchedules": {
+      "title": "빠른 시작",
+      "morningFocus": "아침 집중",
+      "deepWork": "딥 워크",
+      "lunchBreak": "점심 시간",
+      "gymTime": "운동 시간",
+      "eveningWinddown": "저녁 휴식",
+      "studySession": "공부 시간",
+      "familyTime": "가족 시간",
+      "sleepMode": "수면 모드"
+    },
     "activeToday": "오늘 활성",
     "scheduledForDay": "이 날",
     "noSchedulesWere": "이 날에는 활성 일정이 없었습니다",
@@ -130,6 +143,8 @@
       "selectApps": "차단할 앱 선택",
       "confirmSelection": "선택 확인 ({{count}})",
       "newSchedule": "새 일정",
+      "editSchedule": "일정 편집",
+      "templates": "템플릿",
       "scheduleName": "일정 이름",
       "scheduleNamePlaceholder": "예: 근무 시간",
       "appsToBlock": "차단할 앱",
@@ -170,7 +185,9 @@
       "taskVerifiedDesc": "작업이 성공적으로 검증되었습니다.\n\n신뢰도: {{confidence}}%\n\n{{explanation}}",
       "taskNotVerified": "작업 검증 실패",
       "taskNotVerifiedDesc": "작업이 완료되지 않은 것 같습니다.\n\n{{explanation}}\n\n작업을 완료하고 다시 시도하세요.",
-      "apiKeySavedSuccess": "API 키가 성공적으로 저장되었습니다"
+      "apiKeySavedSuccess": "API 키가 성공적으로 저장되었습니다",
+      "removeLimit": "제한 제거",
+      "removeLimitConfirm": "이 앱의 일일 제한을 제거하시겠습니까?"
     },
     "presetTasks": {
       "cleaning": "청소",
@@ -178,6 +195,16 @@
       "exercise": "운동",
       "reading": "독서",
       "custom": "사용자 정의"
+    },
+    "appLimits": "앱 제한",
+    "noLimitsSet": "앱 제한이 설정되지 않음",
+    "addLimitsHint": "일일 사용 제한을 설정할 앱 추가",
+    "limitExceeded": "제한 초과",
+    "timeLimitModal": {
+      "title": "시간 제한 설정",
+      "hours": "시간",
+      "minutes": "분",
+      "dailyLimit": "일일 제한"
     }
   },
   "detox": {
@@ -194,7 +221,10 @@
     "rateUs": "평가하기",
     "logOut": "로그아웃",
     "errorLoading": "프로필 로드 오류",
-    "loading": "프로필 로딩 중..."
+    "loading": "프로필 로딩 중...",
+    "defaultAppLimit": "기본 앱 제한",
+    "defaultAppLimitDesc": "새 앱은 기본적으로 이 시간 제한을 사용합니다",
+    "limitUpdated": "기본 제한이 업데이트됨"
   },
   "achievements": {
     "title": "업적",
