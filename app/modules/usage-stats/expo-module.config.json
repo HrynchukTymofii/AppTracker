@@ -4,6 +4,7 @@
     "modules": ["expo.modules.usagestats.UsageStatsModule"]
   },
   "ios": {
-    "modules": ["UsageStatsModule"]
+    "modules": ["UsageStatsModule"],
+    "podspecDir": "./ios"
   }
 }

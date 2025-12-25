@@ -1,0 +1,13 @@
+{
+  "name": "usage-stats-module",
+  "version": "1.0.0",
+  "description": "Native module for usage statistics and Screen Time",
+  "main": "index.ts",
+  "scripts": {},
+  "keywords": ["expo", "usage-stats", "screen-time"],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "expo": "*"
+  }
+}

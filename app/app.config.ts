@@ -95,11 +95,12 @@ const config: ExpoConfig = {
     ],
     "./plugins/withUsageStats.js",
     "./plugins/withFamilyControls.js",
+    "./plugins/withScreenTimeExtensions.js",
     [
       "expo-build-properties",
       {
         ios: {
-          deploymentTarget: "15.1",
+          deploymentTarget: "16.0",
         },
         android: {
           compileSdkVersion: 35,

@@ -6,12 +6,15 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Platform,
+  ActivityIndicator,
 } from "react-native";
 import {
   X,
   Check,
   Shield,
   Globe,
+  ChevronRight,
 } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import {
@@ -21,6 +24,7 @@ import {
   setDefaultBlockedWebsites,
 } from "@/lib/appBlocking";
 import { SOCIAL_MEDIA_APPS, POPULAR_WEBSITES } from "@/lib/blockingConstants";
+import * as AppBlocker from "@/modules/app-blocker";
 
 interface DefaultBlockedItemsModalProps {
   visible: boolean;
@@ -40,12 +44,30 @@ export const DefaultBlockedItemsModal = ({
   const [selectedApps, setSelectedApps] = useState<string[]>([]);
   const [selectedWebsites, setSelectedWebsites] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [iosPickerLoading, setIosPickerLoading] = useState(false);
 
   useEffect(() => {
     if (visible) {
       loadDefaults();
     }
   }, [visible]);
+
+  // iOS: Handle native app picker
+  const handleIOSAppSelection = async () => {
+    setIosPickerLoading(true);
+    try {
+      const result = await AppBlocker.showAppPicker();
+      if (result && (result.appsCount > 0 || result.categoriesCount > 0)) {
+        AppBlocker.applyBlocking();
+        onSave();
+        onClose();
+      }
+    } catch (error) {
+      console.error("Error showing iOS app picker:", error);
+    } finally {
+      setIosPickerLoading(false);
+    }
+  };
 
   const loadDefaults = async () => {
     setLoading(true);
@@ -150,73 +172,75 @@ export const DefaultBlockedItemsModal = ({
             </TouchableOpacity>
           </View>
 
-          {/* Tabs */}
-          <View
-            style={{
-              flexDirection: "row",
-              marginBottom: 16,
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f3f4f6",
-              borderRadius: 10,
-              padding: 4,
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => setActiveTab('apps')}
+          {/* Tabs - Hide websites tab on iOS */}
+          {Platform.OS === "android" ? (
+            <View
               style={{
-                flex: 1,
-                paddingVertical: 10,
-                borderRadius: 8,
-                backgroundColor: activeTab === 'apps'
-                  ? isDark ? "#1f2937" : "#ffffff"
-                  : "transparent",
-                alignItems: "center",
                 flexDirection: "row",
-                justifyContent: "center",
-                gap: 6,
+                marginBottom: 16,
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f3f4f6",
+                borderRadius: 10,
+                padding: 4,
               }}
             >
-              <Shield size={16} color={activeTab === 'apps' ? "#3b82f6" : isDark ? "#9ca3af" : "#6b7280"} />
-              <Text
+              <TouchableOpacity
+                onPress={() => setActiveTab('apps')}
                 style={{
-                  fontSize: 14,
-                  fontWeight: "600",
-                  color: activeTab === 'apps'
-                    ? "#3b82f6"
-                    : isDark ? "#9ca3af" : "#6b7280",
+                  flex: 1,
+                  paddingVertical: 10,
+                  borderRadius: 8,
+                  backgroundColor: activeTab === 'apps'
+                    ? isDark ? "#1f2937" : "#ffffff"
+                    : "transparent",
+                  alignItems: "center",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  gap: 6,
                 }}
               >
-                {t("blocking.modals.apps") || "Apps"} ({selectedApps.length})
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setActiveTab('websites')}
-              style={{
-                flex: 1,
-                paddingVertical: 10,
-                borderRadius: 8,
-                backgroundColor: activeTab === 'websites'
-                  ? isDark ? "#1f2937" : "#ffffff"
-                  : "transparent",
-                alignItems: "center",
-                flexDirection: "row",
-                justifyContent: "center",
-                gap: 6,
-              }}
-            >
-              <Globe size={16} color={activeTab === 'websites' ? "#3b82f6" : isDark ? "#9ca3af" : "#6b7280"} />
-              <Text
+                <Shield size={16} color={activeTab === 'apps' ? "#3b82f6" : isDark ? "#9ca3af" : "#6b7280"} />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "600",
+                    color: activeTab === 'apps'
+                      ? "#3b82f6"
+                      : isDark ? "#9ca3af" : "#6b7280",
+                  }}
+                >
+                  {t("blocking.modals.apps") || "Apps"} ({selectedApps.length})
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setActiveTab('websites')}
                 style={{
-                  fontSize: 14,
-                  fontWeight: "600",
-                  color: activeTab === 'websites'
-                    ? "#3b82f6"
-                    : isDark ? "#9ca3af" : "#6b7280",
+                  flex: 1,
+                  paddingVertical: 10,
+                  borderRadius: 8,
+                  backgroundColor: activeTab === 'websites'
+                    ? isDark ? "#1f2937" : "#ffffff"
+                    : "transparent",
+                  alignItems: "center",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  gap: 6,
                 }}
               >
-                {t("blocking.modals.websites") || "Websites"} ({selectedWebsites.length})
-              </Text>
-            </TouchableOpacity>
-          </View>
+                <Globe size={16} color={activeTab === 'websites' ? "#3b82f6" : isDark ? "#9ca3af" : "#6b7280"} />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "600",
+                    color: activeTab === 'websites'
+                      ? "#3b82f6"
+                      : isDark ? "#9ca3af" : "#6b7280",
+                  }}
+                >
+                  {t("blocking.modals.websites") || "Websites"} ({selectedWebsites.length})
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : null}
 
           {/* Content */}
           {loading ? (
@@ -230,7 +254,7 @@ export const DefaultBlockedItemsModal = ({
               style={{ maxHeight: 400 }}
               showsVerticalScrollIndicator={false}
             >
-              {activeTab === 'apps' && (
+              {(Platform.OS === "ios" || activeTab === 'apps') && (
                 <>
                   <Text
                     style={{
@@ -244,67 +268,126 @@ export const DefaultBlockedItemsModal = ({
                   >
                     {t("blocking.modals.selectApps") || "Select Apps"}
                   </Text>
-                  {SOCIAL_MEDIA_APPS.map((app) => (
+
+                  {/* iOS: Show button to open native picker */}
+                  {Platform.OS === "ios" ? (
                     <TouchableOpacity
-                      key={app.id}
-                      onPress={() => toggleApp(app.id)}
+                      onPress={handleIOSAppSelection}
+                      disabled={iosPickerLoading}
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        padding: 12,
-                        backgroundColor: selectedApps.includes(app.id)
-                          ? isDark
-                            ? "rgba(59, 130, 246, 0.2)"
-                            : "rgba(59, 130, 246, 0.1)"
-                          : "transparent",
+                        padding: 16,
+                        backgroundColor: isDark ? "rgba(59, 130, 246, 0.15)" : "rgba(59, 130, 246, 0.1)",
                         borderRadius: 12,
-                        marginBottom: 6,
+                        marginBottom: 12,
+                        borderWidth: 1,
+                        borderColor: isDark ? "rgba(59, 130, 246, 0.3)" : "rgba(59, 130, 246, 0.2)",
                       }}
                     >
-                      {app.icon ? (
-                        <Image
-                          source={app.icon}
-                          style={{
-                            width: 36,
-                            height: 36,
-                            borderRadius: 10,
-                            marginRight: 12,
-                          }}
-                        />
-                      ) : (
-                        <View
-                          style={{
-                            width: 36,
-                            height: 36,
-                            borderRadius: 10,
-                            backgroundColor: isDark ? "#374151" : "#e5e7eb",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            marginRight: 12,
-                          }}
-                        >
-                          <Shield size={18} color={isDark ? "#9ca3af" : "#6b7280"} />
-                        </View>
-                      )}
-                      <Text
+                      <View
                         style={{
-                          flex: 1,
-                          fontSize: 15,
-                          fontWeight: "500",
-                          color: isDark ? "#ffffff" : "#111827",
+                          width: 40,
+                          height: 40,
+                          borderRadius: 10,
+                          backgroundColor: "#3b82f6",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          marginRight: 12,
                         }}
                       >
-                        {app.name}
-                      </Text>
-                      {selectedApps.includes(app.id) && (
-                        <Check size={20} color="#3b82f6" />
+                        <Shield size={20} color="#ffffff" />
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            fontWeight: "600",
+                            color: isDark ? "#ffffff" : "#111827",
+                          }}
+                        >
+                          {t("blocking.modals.selectAppsIOS") || "Select Apps to Block"}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 13,
+                            color: isDark ? "#9ca3af" : "#6b7280",
+                            marginTop: 2,
+                          }}
+                        >
+                          {t("blocking.modals.openNativePicker") || "Opens system app picker"}
+                        </Text>
+                      </View>
+                      {iosPickerLoading ? (
+                        <ActivityIndicator size="small" color="#3b82f6" />
+                      ) : (
+                        <ChevronRight size={20} color="#3b82f6" />
                       )}
                     </TouchableOpacity>
-                  ))}
+                  ) : (
+                    // Android: Show app list
+                    SOCIAL_MEDIA_APPS.map((app) => (
+                      <TouchableOpacity
+                        key={app.id}
+                        onPress={() => toggleApp(app.id)}
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          padding: 12,
+                          backgroundColor: selectedApps.includes(app.id)
+                            ? isDark
+                              ? "rgba(59, 130, 246, 0.2)"
+                              : "rgba(59, 130, 246, 0.1)"
+                            : "transparent",
+                          borderRadius: 12,
+                          marginBottom: 6,
+                        }}
+                      >
+                        {app.icon ? (
+                          <Image
+                            source={app.icon}
+                            style={{
+                              width: 36,
+                              height: 36,
+                              borderRadius: 10,
+                              marginRight: 12,
+                            }}
+                          />
+                        ) : (
+                          <View
+                            style={{
+                              width: 36,
+                              height: 36,
+                              borderRadius: 10,
+                              backgroundColor: isDark ? "#374151" : "#e5e7eb",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              marginRight: 12,
+                            }}
+                          >
+                            <Shield size={18} color={isDark ? "#9ca3af" : "#6b7280"} />
+                          </View>
+                        )}
+                        <Text
+                          style={{
+                            flex: 1,
+                            fontSize: 15,
+                            fontWeight: "500",
+                            color: isDark ? "#ffffff" : "#111827",
+                          }}
+                        >
+                          {app.name}
+                        </Text>
+                        {selectedApps.includes(app.id) && (
+                          <Check size={20} color="#3b82f6" />
+                        )}
+                      </TouchableOpacity>
+                    ))
+                  )}
                 </>
               )}
 
-              {activeTab === 'websites' && (
+              {Platform.OS === "android" && activeTab === 'websites' && (
                 <>
                   <Text
                     style={{

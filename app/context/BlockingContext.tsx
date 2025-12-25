@@ -6,6 +6,7 @@ import React, {
   useCallback,
   ReactNode,
 } from 'react';
+import { Platform } from 'react-native';
 import {
   BlockedApp,
   BlockSchedule,
@@ -37,6 +38,7 @@ import {
   POPULAR_APPS,
   syncBlockedWebsitesToNative,
 } from '@/lib/appBlocking';
+import * as AppBlocker from '@/modules/app-blocker';
 import {
   VerificationTask,
   VerificationResult,
@@ -91,6 +93,12 @@ interface BlockingContextType {
   openOverlaySettings: () => void;
   hasAllRequiredPermissions: () => Promise<boolean>;
 
+  // iOS-specific methods
+  requestIOSAuthorization: () => Promise<boolean>;
+  showIOSAppPicker: () => Promise<{ appsCount: number; categoriesCount: number } | null>;
+  applyIOSBlocking: () => void;
+  clearIOSBlocking: () => void;
+
   // Utility
   refreshData: () => Promise<void>;
 }
@@ -131,7 +139,20 @@ export const BlockingProvider = ({ children }: { children: ReactNode }) => {
     const init = async () => {
       setIsLoading(true);
       await initializeBlocking();
-      await syncBlockedWebsitesToNative(); // Sync websites to native module
+
+      // Platform-specific initialization
+      if (Platform.OS === 'ios') {
+        // Request Family Controls authorization on iOS
+        try {
+          await AppBlocker.requestAuthorization();
+        } catch (error) {
+          console.log('iOS authorization request:', error);
+        }
+      } else {
+        // Android: Sync websites to native module
+        await syncBlockedWebsitesToNative();
+      }
+
       await initializeAppLimitsFromOnboarding(); // Initialize app limits from onboarding
       await refreshData();
       setIsLoading(false);
@@ -271,6 +292,37 @@ export const BlockingProvider = ({ children }: { children: ReactNode }) => {
     return result;
   };
 
+  // iOS-specific methods
+  const requestIOSAuthorization = async (): Promise<boolean> => {
+    if (Platform.OS !== 'ios') return false;
+    try {
+      return await AppBlocker.requestAuthorization();
+    } catch (error) {
+      console.error('Error requesting iOS authorization:', error);
+      return false;
+    }
+  };
+
+  const showIOSAppPicker = async (): Promise<{ appsCount: number; categoriesCount: number } | null> => {
+    if (Platform.OS !== 'ios') return null;
+    try {
+      return await AppBlocker.showAppPicker();
+    } catch (error) {
+      console.error('Error showing iOS app picker:', error);
+      return null;
+    }
+  };
+
+  const applyIOSBlocking = (): void => {
+    if (Platform.OS !== 'ios') return;
+    AppBlocker.applyBlocking();
+  };
+
+  const clearIOSBlocking = (): void => {
+    if (Platform.OS !== 'ios') return;
+    AppBlocker.clearBlocking();
+  };
+
   return (
     <BlockingContext.Provider
       value={{
@@ -299,6 +351,10 @@ export const BlockingProvider = ({ children }: { children: ReactNode }) => {
         hasOverlayPermission,
         openOverlaySettings,
         hasAllRequiredPermissions,
+        requestIOSAuthorization,
+        showIOSAppPicker,
+        applyIOSBlocking,
+        clearIOSBlocking,
         refreshData,
       }}
     >

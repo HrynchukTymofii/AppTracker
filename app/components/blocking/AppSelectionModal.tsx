@@ -6,14 +6,17 @@ import {
   Modal,
   Image,
   ScrollView,
+  Platform,
+  ActivityIndicator,
 } from "react-native";
-import { X, Check, Plus } from "lucide-react-native";
+import { X, Check, Plus, Shield } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as UsageStats from "@/modules/usage-stats";
 import type { InstalledApp } from "@/modules/usage-stats";
 import { POPULAR_APPS } from "@/lib/appBlocking";
 import { getLocalIcon } from "@/lib/appIcons";
+import * as AppBlocker from "@/modules/app-blocker";
 import {
   APPS_CACHE_KEY,
   APPS_CACHE_TIME_KEY,
@@ -43,10 +46,37 @@ export const AppSelectionModal = ({
   const [popularInstalledApps, setPopularInstalledApps] = useState<InstalledApp[]>([]);
   const [showAllApps, setShowAllApps] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [iosPickerLoading, setIosPickerLoading] = useState(false);
 
-  // Reset state when modal opens
+  // iOS: Use native FamilyActivityPicker
   useEffect(() => {
-    if (visible) {
+    if (visible && Platform.OS === "ios") {
+      handleIOSAppSelection();
+    }
+  }, [visible]);
+
+  const handleIOSAppSelection = async () => {
+    setIosPickerLoading(true);
+    try {
+      // Show native iOS app picker
+      const result = await AppBlocker.showAppPicker();
+      if (result && (result.appsCount > 0 || result.categoriesCount > 0)) {
+        // Apply blocking immediately after selection
+        AppBlocker.applyBlocking();
+        // Notify parent with a placeholder - iOS uses tokens, not package names
+        onSelect(["ios-family-controls-selection"]);
+      }
+    } catch (error) {
+      console.error("Error showing iOS app picker:", error);
+    } finally {
+      setIosPickerLoading(false);
+      onClose();
+    }
+  };
+
+  // Reset state when modal opens (Android only)
+  useEffect(() => {
+    if (visible && Platform.OS === "android") {
       setSelected(selectedApps);
       setShowAllApps(false);
       if (popularInstalledApps.length === 0) {
@@ -229,6 +259,47 @@ export const AppSelectionModal = ({
     );
   };
 
+  // iOS: Don't render modal, native picker is used
+  if (Platform.OS === "ios") {
+    if (!visible) return null;
+    // Show loading indicator while iOS picker is opening
+    return (
+      <Modal visible={visible} transparent animationType="fade">
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {iosPickerLoading && (
+            <View
+              style={{
+                backgroundColor: isDark ? "#1f2937" : "#ffffff",
+                padding: 24,
+                borderRadius: 16,
+                alignItems: "center",
+              }}
+            >
+              <ActivityIndicator size="large" color="#3b82f6" />
+              <Text
+                style={{
+                  marginTop: 12,
+                  color: isDark ? "#ffffff" : "#111827",
+                  fontSize: 16,
+                }}
+              >
+                {t("blocking.modals.openingPicker") || "Opening app picker..."}
+              </Text>
+            </View>
+          )}
+        </View>
+      </Modal>
+    );
+  }
+
+  // Android: Show full modal with app list
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View

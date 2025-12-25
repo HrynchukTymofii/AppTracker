@@ -4,6 +4,7 @@
     "modules": ["expo.modules.appblocker.AppBlockerModule"]
   },
   "ios": {
-    "modules": ["AppBlockerModule"]
+    "modules": ["AppBlockerModule"],
+    "podspecDir": "./ios"
   }
 }

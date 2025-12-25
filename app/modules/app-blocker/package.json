@@ -1,10 +1,13 @@
 {
-  "name": "app-blocker",
+  "name": "app-blocker-module",
   "version": "1.0.0",
-  "description": "Native module for blocking apps",
+  "description": "Native module for blocking apps using Family Controls",
   "main": "index.ts",
   "scripts": {},
-  "keywords": ["expo", "app-blocker"],
+  "keywords": ["expo", "app-blocker", "family-controls"],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "peerDependencies": {
+    "expo": "*"
+  }
 }

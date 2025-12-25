@@ -123,10 +123,14 @@ export const ScheduleModal = ({
       showErrorToast(t("common.error"), t("blocking.alerts.enterScheduleName"));
       return;
     }
-    if (selectedApps.length === 0 && selectedWebsites.length === 0) {
-      showErrorToast(t("common.error"), t("blocking.alerts.selectAtLeastOneApp") || "Please select at least one app or website");
-      return;
+    // On iOS, apps are selected via native picker, so we check differently
+    if (Platform.OS === "android") {
+      if (selectedApps.length === 0 && selectedWebsites.length === 0) {
+        showErrorToast(t("common.error"), t("blocking.alerts.selectAtLeastOneApp") || "Please select at least one app or website");
+        return;
+      }
     }
+    // On iOS, we don't track selectedApps count since it uses native picker tokens
     if (selectedDays.length === 0) {
       showErrorToast(t("common.error"), t("blocking.alerts.selectAtLeastOneDay"));
       return;
@@ -135,7 +139,7 @@ export const ScheduleModal = ({
     onSave({
       name,
       apps: selectedApps,
-      websites: selectedWebsites,
+      websites: Platform.OS === "android" ? selectedWebsites : [], // No website blocking on iOS
       startTime,
       endTime,
       daysOfWeek: selectedDays,
@@ -320,76 +324,78 @@ export const ScheduleModal = ({
               }}
             />
 
-            {/* Apps & Websites Tabs */}
-            <View
-              style={{
-                flexDirection: "row",
-                marginBottom: 12,
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f3f4f6",
-                borderRadius: 10,
-                padding: 4,
-              }}
-            >
-              <TouchableOpacity
-                onPress={() => setActiveTab('apps')}
+            {/* Apps & Websites Tabs - Hide websites tab on iOS */}
+            {Platform.OS === "android" ? (
+              <View
                 style={{
-                  flex: 1,
-                  paddingVertical: 10,
-                  borderRadius: 8,
-                  backgroundColor: activeTab === 'apps'
-                    ? isDark ? "#1f2937" : "#ffffff"
-                    : "transparent",
-                  alignItems: "center",
                   flexDirection: "row",
-                  justifyContent: "center",
-                  gap: 6,
+                  marginBottom: 12,
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f3f4f6",
+                  borderRadius: 10,
+                  padding: 4,
                 }}
               >
-                <Shield size={16} color={activeTab === 'apps' ? "#3b82f6" : isDark ? "#9ca3af" : "#6b7280"} />
-                <Text
+                <TouchableOpacity
+                  onPress={() => setActiveTab('apps')}
                   style={{
-                    fontSize: 14,
-                    fontWeight: "600",
-                    color: activeTab === 'apps'
-                      ? "#3b82f6"
-                      : isDark ? "#9ca3af" : "#6b7280",
+                    flex: 1,
+                    paddingVertical: 10,
+                    borderRadius: 8,
+                    backgroundColor: activeTab === 'apps'
+                      ? isDark ? "#1f2937" : "#ffffff"
+                      : "transparent",
+                    alignItems: "center",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    gap: 6,
                   }}
                 >
-                  {t("blocking.modals.apps") || "Apps"} ({selectedApps.length})
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setActiveTab('websites')}
-                style={{
-                  flex: 1,
-                  paddingVertical: 10,
-                  borderRadius: 8,
-                  backgroundColor: activeTab === 'websites'
-                    ? isDark ? "#1f2937" : "#ffffff"
-                    : "transparent",
-                  alignItems: "center",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  gap: 6,
-                }}
-              >
-                <Globe size={16} color={activeTab === 'websites' ? "#3b82f6" : isDark ? "#9ca3af" : "#6b7280"} />
-                <Text
+                  <Shield size={16} color={activeTab === 'apps' ? "#3b82f6" : isDark ? "#9ca3af" : "#6b7280"} />
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: "600",
+                      color: activeTab === 'apps'
+                        ? "#3b82f6"
+                        : isDark ? "#9ca3af" : "#6b7280",
+                    }}
+                  >
+                    {t("blocking.modals.apps") || "Apps"} ({selectedApps.length})
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setActiveTab('websites')}
                   style={{
-                    fontSize: 14,
-                    fontWeight: "600",
-                    color: activeTab === 'websites'
-                      ? "#3b82f6"
-                      : isDark ? "#9ca3af" : "#6b7280",
+                    flex: 1,
+                    paddingVertical: 10,
+                    borderRadius: 8,
+                    backgroundColor: activeTab === 'websites'
+                      ? isDark ? "#1f2937" : "#ffffff"
+                      : "transparent",
+                    alignItems: "center",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    gap: 6,
                   }}
                 >
-                  {t("blocking.modals.websites") || "Websites"} ({selectedWebsites.length})
-                </Text>
-              </TouchableOpacity>
-            </View>
+                  <Globe size={16} color={activeTab === 'websites' ? "#3b82f6" : isDark ? "#9ca3af" : "#6b7280"} />
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: "600",
+                      color: activeTab === 'websites'
+                        ? "#3b82f6"
+                        : isDark ? "#9ca3af" : "#6b7280",
+                    }}
+                  >
+                    {t("blocking.modals.websites") || "Websites"} ({selectedWebsites.length})
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ) : null}
 
-            {/* Apps Selection */}
-            {activeTab === 'apps' && (
+            {/* Apps Selection - Always show on iOS, tab-based on Android */}
+            {(Platform.OS === "ios" || activeTab === 'apps') && (
               <>
                 <Text
                   style={{
@@ -423,19 +429,21 @@ export const ScheduleModal = ({
                       fontSize: 16,
                     }}
                   >
-                    {selectedApps.length > 0
-                      ? t("blocking.modals.appsSelected", {
-                          count: selectedApps.length,
-                        })
-                      : t("blocking.modals.selectAppsPlaceholder")}
+                    {Platform.OS === "ios"
+                      ? (t("blocking.modals.selectAppsIOS") || "Tap to select apps to block")
+                      : selectedApps.length > 0
+                        ? t("blocking.modals.appsSelected", {
+                            count: selectedApps.length,
+                          })
+                        : t("blocking.modals.selectAppsPlaceholder")}
                   </Text>
                   <ChevronRight size={20} color={isDark ? "#9ca3af" : "#6b7280"} />
                 </TouchableOpacity>
               </>
             )}
 
-            {/* Websites Selection */}
-            {activeTab === 'websites' && (
+            {/* Websites Selection - Android only */}
+            {Platform.OS === "android" && activeTab === 'websites' && (
               <>
                 <Text
                   style={{

@@ -20,7 +20,18 @@
       "Bash(find:*)",
       "Bash(cat:*)",
       "Bash(head:*)",
-      "Bash(tail:*)"
+      "Bash(tail:*)",
+      "Bash(npx expo-modules-autolinking:*)",
+      "Bash(npx expo prebuild:*)",
+      "Bash(npx expo run:ios:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(bash -c 'cd /Users/admin/Desktop/LockIn/AppTracker/app && pwd && npx expo prebuild --platform ios')",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(node --check:*)",
+      "Bash(node -c:*)",
+      "Bash(/usr/bin/env node:*)"
     ]
   }
 }
