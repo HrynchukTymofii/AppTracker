@@ -5,3 +5,4 @@ export { TaskList } from "./TaskList";
 export { ScheduledLockIns } from "./ScheduledLockIns";
 export { ActiveSession } from "./ActiveSession";
 export { SessionHistory } from "./SessionHistory";
+export { EarnTimeSection } from "./EarnTimeSection";

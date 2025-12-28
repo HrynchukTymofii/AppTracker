@@ -61,7 +61,11 @@ const config: ExpoConfig = {
         image: "./assets/images/splash-icon.png",
         imageWidth: 200,
         resizeMode: "contain",
-        backgroundColor: "#111827",
+        backgroundColor: "#ffffff",
+        dark: {
+          image: "./assets/images/splash-icon.png",
+          backgroundColor: "#000000",
+        },
       },
     ],
     "expo-secure-store",
@@ -96,6 +100,13 @@ const config: ExpoConfig = {
     "./plugins/withUsageStats.js",
     "./plugins/withFamilyControls.js",
     "./plugins/withScreenTimeExtensions.js",
+    "./plugins/withMLKitMerge.js",
+    [
+      "react-native-vision-camera",
+      {
+        cameraPermissionText: "Allow LockIn to access your camera for exercise pose detection.",
+      },
+    ],
     [
       "expo-build-properties",
       {
@@ -132,7 +143,11 @@ const config: ExpoConfig = {
   splash: {
     image: "./assets/images/splash-icon.png",
     resizeMode: "contain",
-    backgroundColor: "#111827",
+    backgroundColor: "#ffffff",
+    dark: {
+      image: "./assets/images/splash-icon.png",
+      backgroundColor: "#000000",
+    },
   },
 };
 

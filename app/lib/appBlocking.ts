@@ -43,6 +43,7 @@ export interface BlockSchedule {
   daysOfWeek: number[]; // 0-6, Sunday = 0
   isActive: boolean;
   createdAt: number;
+  type: 'block' | 'unlock'; // 'block' = apps blocked, 'unlock' = free usage period
 }
 
 export interface FocusSession {

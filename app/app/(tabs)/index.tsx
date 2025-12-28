@@ -48,6 +48,7 @@ import AnimatedOrb from "@/components/AnimatedOrb";
 import { HelpCarousel } from "@/components/modals/HelpCarousel";
 import { homeHelpCards } from "@/lib/helpContent";
 import { ThemedBackground } from "@/components/ui/ThemedBackground";
+import { WalletBalanceCard } from "@/components/WalletBalanceCard";
 
 const PLANET_SIZE = 160;
 
@@ -667,6 +668,9 @@ export default function HomeScreen() {
             </View>
           </View>
         </View>
+
+        {/* Screen Time Balance Card */}
+        <WalletBalanceCard isDark={isDark} />
 
         {/* Active Focus Session or Upcoming Schedules */}
         <View style={{ paddingHorizontal: 20 }}>

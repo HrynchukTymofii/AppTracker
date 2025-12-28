@@ -13,6 +13,7 @@ import { DetoxProvider } from "@/context/DetoxContext";
 import { BlockingProvider } from "@/context/BlockingContext";
 import { GroupProvider } from "@/context/GroupContext";
 import { LockInProvider } from "@/context/LockInContext";
+import { EarnedTimeProvider } from "@/context/EarnedTimeContext";
 import { Suspense, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { SQLiteProvider } from "expo-sqlite";
@@ -241,6 +242,7 @@ export default function RootLayout() {
       <AuthProvider>
         <DetoxProvider>
           <BlockingProvider>
+          <EarnedTimeProvider>
           <LockInProvider>
           <Suspense fallback={<CustomPreloadScreen />}>
             <SQLiteProvider
@@ -286,6 +288,7 @@ export default function RootLayout() {
             </SQLiteProvider>
           </Suspense>
           </LockInProvider>
+          </EarnedTimeProvider>
         </BlockingProvider>
         </DetoxProvider>
       </AuthProvider>

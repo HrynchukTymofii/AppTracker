@@ -6,7 +6,26 @@ interface AnimatedOrbProps {
   size: number;
   level: number; // 1-5
   isTransitioning?: boolean;
+  monochrome?: "white" | "dark"; // Optional monochrome mode
 }
+
+// Monochrome themes
+const MONOCHROME_THEMES = {
+  white: {
+    core: ["#ffffff", "#f0f0f0", "#e0e0e0"] as const,
+    mid: ["#f5f5f5", "#ebebeb", "#e0e0e0"] as const,
+    outer: ["#e8e8e8", "#dedede", "#d4d4d4"] as const,
+    glow: "#ffffff",
+    particles: "rgba(255, 255, 255, 0.6)",
+  },
+  dark: {
+    core: ["#1a1a1a", "#0f0f0f", "#000000"] as const,
+    mid: ["#2a2a2a", "#1f1f1f", "#141414"] as const,
+    outer: ["#3a3a3a", "#2f2f2f", "#242424"] as const,
+    glow: "#1a1a1a",
+    particles: "rgba(0, 0, 0, 0.6)",
+  },
+};
 
 // Color themes for each level
 const ORB_THEMES = {
@@ -49,8 +68,10 @@ const ORB_THEMES = {
 
 const PARTICLE_COUNT = 8;
 
-export default function AnimatedOrb({ size, level, isTransitioning }: AnimatedOrbProps) {
-  const theme = ORB_THEMES[level as keyof typeof ORB_THEMES] || ORB_THEMES[3];
+export default function AnimatedOrb({ size, level, isTransitioning, monochrome }: AnimatedOrbProps) {
+  const theme = monochrome
+    ? MONOCHROME_THEMES[monochrome]
+    : (ORB_THEMES[level as keyof typeof ORB_THEMES] || ORB_THEMES[3]);
 
   // Core animations
   const coreRotation = useRef(new Animated.Value(0)).current;

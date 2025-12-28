@@ -1,0 +1,61 @@
+{
+  "expo": {
+    "name": "AppBlocker",
+    "slug": "app-blocker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "bundleIdentifier": "com.yourcompany.appblocker",
+      "buildNumber": "1",
+      "deploymentTarget": "15.0",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSFamilyControlsUsageDescription": "This app needs access to Family Controls to help you manage your screen time by blocking distracting apps during focus sessions.",
+        "NSUserNotificationsUsageDescription": "We'll notify you when apps are blocked or unblocked to help you stay focused on your goals.",
+        "UIBackgroundModes": [
+          "fetch",
+          "processing"
+        ]
+      },
+      "entitlements": {
+        "com.apple.developer.family-controls": true
+      }
+    },
+    "android": {
+      "package": "com.yourcompany.appblocker",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "android.permission.PACKAGE_USAGE_STATS",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.BIND_ACCESSIBILITY_SERVICE",
+        "android.permission.POST_NOTIFICATIONS"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "15.0"
+          },
+          "android": {
+            "compileSdkVersion": 34,
+            "targetSdkVersion": 34,
+            "minSdkVersion": 24
+          }
+        }
+      ]
+    ]
+  }
+}
