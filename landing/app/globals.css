@@ -1,0 +1,231 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --accent-primary: #3b82f6;
+  --accent-rgb: 59, 130, 246;
+  --bg-color: #f8fafc;
+  --text-color: #0f172a;
+  --text-secondary: #64748b;
+}
+
+.dark {
+  --bg-color: #000000;
+  --text-color: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.5);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply antialiased transition-colors duration-300;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Glass card effect */
+.glass-card {
+  @apply backdrop-blur-xl border transition-all duration-300;
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.dark .glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.dark .glass-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Gradient background overlay */
+.gradient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.gradient-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  background: radial-gradient(
+    ellipse at top left,
+    rgba(var(--accent-rgb), 0.08) 0%,
+    rgba(var(--accent-rgb), 0.03) 30%,
+    transparent 70%
+  );
+}
+
+.dark .gradient-bg::before {
+  background: radial-gradient(
+    ellipse at top left,
+    rgba(var(--accent-rgb), 0.15) 0%,
+    rgba(var(--accent-rgb), 0.05) 30%,
+    transparent 70%
+  );
+}
+
+.gradient-bg::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(
+    ellipse at bottom right,
+    rgba(var(--accent-rgb), 0.05) 0%,
+    transparent 60%
+  );
+}
+
+.dark .gradient-bg::after {
+  background: radial-gradient(
+    ellipse at bottom right,
+    rgba(var(--accent-rgb), 0.1) 0%,
+    transparent 60%
+  );
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Selection */
+::selection {
+  background: rgba(var(--accent-rgb), 0.3);
+  color: inherit;
+}
+
+/* Focus styles */
+input:focus,
+button:focus,
+[tabindex]:focus {
+  outline: 2px solid rgba(var(--accent-rgb), 0.5);
+  outline-offset: 2px;
+}
+
+/* Checkbox styling */
+input[type="checkbox"] {
+  @apply appearance-none w-5 h-5 rounded border-2 cursor-pointer transition-all duration-200;
+  border-color: rgba(0, 0, 0, 0.2);
+  background: transparent;
+}
+
+.dark input[type="checkbox"] {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+input[type="checkbox"]:checked {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Button gradient */
+.btn-gradient {
+  background: linear-gradient(135deg, var(--accent-primary), #8b5cf6);
+  @apply text-white font-semibold px-8 py-4 rounded-2xl transition-all duration-300;
+  box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.3);
+}
+
+.btn-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(var(--accent-rgb), 0.4);
+}
+
+.btn-gradient:active {
+  transform: translateY(0);
+}
+
+/* Text gradient */
+.text-gradient {
+  background: linear-gradient(135deg, var(--accent-primary), #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animated underline */
+.animated-underline {
+  position: relative;
+}
+
+.animated-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-primary), #8b5cf6);
+  transition: width 0.3s ease;
+}
+
+.animated-underline:hover::after {
+  width: 100%;
+}
+
+/* Counter animation */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-count {
+  animation: countUp 0.5s ease-out forwards;
+}
+
+/* Hide scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
