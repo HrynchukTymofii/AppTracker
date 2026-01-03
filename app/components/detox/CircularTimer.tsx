@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
-import Svg, { Circle } from "react-native-svg";
+import Svg, { Circle, Defs, LinearGradient, Stop } from "react-native-svg";
 
 interface CircularTimerProps {
   size?: number;
@@ -12,7 +12,7 @@ interface CircularTimerProps {
 
 export const CircularTimer = ({
   size = 280,
-  strokeWidth = 12,
+  strokeWidth = 16,
   timeRemaining,
   totalTime,
   isDark,
@@ -30,19 +30,50 @@ export const CircularTimer = ({
 
   return (
     <View style={{ width: size, height: size, position: "relative" }}>
+      {/* Glassy background effect */}
+      <View
+        style={{
+          position: "absolute",
+          top: strokeWidth,
+          left: strokeWidth,
+          right: strokeWidth,
+          bottom: strokeWidth,
+          borderRadius: (size - strokeWidth * 2) / 2,
+          backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "rgba(0, 0, 0, 0.02)",
+          borderWidth: 1,
+          borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
+        }}
+      />
+
       <Svg width={size} height={size}>
-        {/* Background Circle */}
+        <Defs>
+          {/* Glassy gradient for progress ring */}
+          <LinearGradient id="glassyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <Stop offset="0%" stopColor="#10b981" stopOpacity="1" />
+            <Stop offset="50%" stopColor="#34d399" stopOpacity="0.9" />
+            <Stop offset="100%" stopColor="#059669" stopOpacity="1" />
+          </LinearGradient>
+
+          {/* Background ring gradient */}
+          <LinearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <Stop offset="0%" stopColor={isDark ? "#ffffff" : "#000000"} stopOpacity="0.08" />
+            <Stop offset="100%" stopColor={isDark ? "#ffffff" : "#000000"} stopOpacity="0.04" />
+          </LinearGradient>
+        </Defs>
+
+        {/* Background Circle with gradient */}
         <Circle
-          stroke={isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)"}
+          stroke="url(#bgGradient)"
           fill="none"
           cx={size / 2}
           cy={size / 2}
           r={radius}
           strokeWidth={strokeWidth}
         />
-        {/* Progress Circle */}
+
+        {/* Progress Circle with glassy gradient */}
         <Circle
-          stroke={isDark ? "#ffffff" : "#111827"}
+          stroke="url(#glassyGradient)"
           fill="none"
           cx={size / 2}
           cy={size / 2}
@@ -53,7 +84,23 @@ export const CircularTimer = ({
           strokeLinecap="round"
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />
+
+        {/* Inner glow circle */}
+        <Circle
+          stroke="url(#glassyGradient)"
+          fill="none"
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          strokeWidth={2}
+          strokeDasharray={`${circumference} ${circumference}`}
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="round"
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+          opacity={0.3}
+        />
       </Svg>
+
       {/* Time in the middle */}
       <View
         style={{
@@ -68,12 +115,25 @@ export const CircularTimer = ({
       >
         <Text
           style={{
-            fontSize: 56,
-            fontWeight: "bold",
-            color: isDark ? "#ffffff" : "#111827",
+            fontSize: 52,
+            fontWeight: "800",
+            color: isDark ? "#ffffff" : "#0f172a",
+            letterSpacing: -1,
           }}
         >
           {formatTime(timeRemaining)}
+        </Text>
+        <Text
+          style={{
+            fontSize: 14,
+            fontWeight: "600",
+            color: isDark ? "rgba(255,255,255,0.4)" : "#94a3b8",
+            marginTop: 4,
+            textTransform: "uppercase",
+            letterSpacing: 2,
+          }}
+        >
+          {timeRemaining > 0 ? "remaining" : "ready"}
         </Text>
       </View>
     </View>

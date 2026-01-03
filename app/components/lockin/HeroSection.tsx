@@ -172,7 +172,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ isDark }) => {
           letterSpacing: -0.5,
         }}
       >
-        Ready to Lock In?
+        Ready to Earn Time?
       </Text>
 
       {/* Subtitle */}
@@ -184,7 +184,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ isDark }) => {
           textAlign: "center",
         }}
       >
-        Focus on what matters most
+        LockIn to earn screen time
       </Text>
     </View>
   );

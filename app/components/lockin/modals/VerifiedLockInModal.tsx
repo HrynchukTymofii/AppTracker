@@ -34,14 +34,62 @@ const DURATION_OPTIONS = [
   { value: 120, label: "2h" },
 ];
 
+// Tasks that require before photo for comparison
+// - Clean room: need to show messy state vs clean state
+// - Read: need to show starting page number
+// Tasks that DON'T need before photo:
+// - Workout: exercise itself is the proof
+// - Cook a meal: the finished dish is the proof
+// - Complete homework: completion is the proof
+// - Write: word count is the proof
 const PRESET_TASKS = [
-  { emoji: "🏠", name: "Clean room" },
-  { emoji: "📚", name: "Complete homework" },
-  { emoji: "💪", name: "Workout routine" },
-  { emoji: "🍳", name: "Cook a meal" },
-  { emoji: "📖", name: "Read for 30 minutes" },
-  { emoji: "✏️", name: "Write 500 words" },
+  { emoji: "🏠", name: "Clean room", requiresBeforePhoto: true },
+  { emoji: "📚", name: "Complete homework", requiresBeforePhoto: false },
+  { emoji: "💪", name: "Workout routine", requiresBeforePhoto: false },
+  { emoji: "🍳", name: "Cook a meal", requiresBeforePhoto: false },
+  { emoji: "📖", name: "Read for 30 minutes", requiresBeforePhoto: true },
+  { emoji: "✏️", name: "Write 500 words", requiresBeforePhoto: false },
 ];
+
+// Check if a custom task requires before photo using AI
+// TODO: Implement actual OpenAI API call
+const checkIfTaskRequiresBeforePhoto = async (taskDescription: string): Promise<boolean> => {
+  // For custom tasks, determine if they need before photo
+  // Tasks needing before photo: cleaning, organizing, transformations that need visual comparison
+  // Tasks not needing: physical exercises, writing, studying, cooking
+
+  const lowerTask = taskDescription.toLowerCase();
+
+  // Keywords that suggest needing before photo
+  const needsBeforeKeywords = [
+    'clean', 'organize', 'tidy', 'declutter', 'sort', 'arrange',
+    'fix', 'repair', 'paint', 'decorate', 'rearrange', 'room',
+    'desk', 'closet', 'garage', 'laundry', 'fold', 'read', 'page', 'book'
+  ];
+
+  // Keywords that suggest NOT needing before photo
+  const noBeforeKeywords = [
+    'workout', 'exercise', 'run', 'walk', 'jog', 'gym', 'stretch',
+    'cook', 'meal', 'food', 'write', 'study', 'homework', 'assignment',
+    'meditate', 'yoga', 'practice', 'learn', 'code', 'program'
+  ];
+
+  // Check for keywords
+  for (const keyword of needsBeforeKeywords) {
+    if (lowerTask.includes(keyword)) {
+      return true;
+    }
+  }
+
+  for (const keyword of noBeforeKeywords) {
+    if (lowerTask.includes(keyword)) {
+      return false;
+    }
+  }
+
+  // Default: require before photo for safety (ensures accountability)
+  return true;
+};
 
 export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
   visible,
@@ -57,6 +105,8 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
   const [beforePhotoUri, setBeforePhotoUri] = useState<string | undefined>();
   const [showAppSelection, setShowAppSelection] = useState(false);
   const [takingPhoto, setTakingPhoto] = useState(false);
+  const [requiresBeforePhoto, setRequiresBeforePhoto] = useState(true);
+  const [checkingPhotoRequirement, setCheckingPhotoRequirement] = useState(false);
 
   // Reset state when modal opens
   useEffect(() => {
@@ -67,6 +117,8 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
       setSelectedApps(DEFAULT_BLOCKED_APPS);
       setBeforePhotoUri(undefined);
       setTakingPhoto(false);
+      setRequiresBeforePhoto(true);
+      setCheckingPhotoRequirement(false);
     }
   }, [visible]);
 
@@ -74,12 +126,42 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
     onClose();
   };
 
-  const handleNext = () => {
-    if (step < 3) setStep(step + 1);
+  const handleNext = async () => {
+    if (step === 1) {
+      // Check if the task requires before photo
+      setCheckingPhotoRequirement(true);
+
+      // Check if it's a preset task
+      const presetTask = PRESET_TASKS.find((t) => t.name === taskDescription);
+      let needsPhoto = true;
+
+      if (presetTask) {
+        needsPhoto = presetTask.requiresBeforePhoto;
+      } else {
+        // Custom task - check using keyword logic (or AI in future)
+        needsPhoto = await checkIfTaskRequiresBeforePhoto(taskDescription);
+      }
+
+      setRequiresBeforePhoto(needsPhoto);
+      setCheckingPhotoRequirement(false);
+
+      if (needsPhoto) {
+        setStep(2); // Go to before photo step
+      } else {
+        setStep(3); // Skip to final step
+      }
+    } else if (step < 3) {
+      setStep(step + 1);
+    }
   };
 
   const handleBack = () => {
-    if (step > 1) setStep(step - 1);
+    if (step === 3 && !requiresBeforePhoto) {
+      // If before photo was skipped, go back to step 1
+      setStep(1);
+    } else if (step > 1) {
+      setStep(step - 1);
+    }
   };
 
   const handleStart = () => {
@@ -374,7 +456,7 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
           borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.05)",
         }}
       >
-        {beforePhotoUri ? (
+        {requiresBeforePhoto && beforePhotoUri ? (
           <TouchableOpacity onPress={retakePhoto} disabled={takingPhoto}>
             <Image
               source={{ uri: beforePhotoUri }}
@@ -424,7 +506,7 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
               letterSpacing: 0.5,
             }}
           >
-            Before photo ready
+            {requiresBeforePhoto ? "Before photo ready" : "Task selected"}
           </Text>
           <Text
             style={{
@@ -678,10 +760,10 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
             {step === 1 && (
               <TouchableOpacity
                 onPress={handleNext}
-                disabled={!taskDescription.trim()}
+                disabled={!taskDescription.trim() || checkingPhotoRequirement}
                 activeOpacity={0.8}
                 style={{
-                  backgroundColor: taskDescription.trim() ? "#10b981" : isDark ? "rgba(255, 255, 255, 0.1)" : "#e5e7eb",
+                  backgroundColor: taskDescription.trim() && !checkingPhotoRequirement ? "#10b981" : isDark ? "rgba(255, 255, 255, 0.1)" : "#e5e7eb",
                   paddingVertical: 16,
                   borderRadius: 14,
                   flexDirection: "row",
@@ -689,17 +771,23 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
                   justifyContent: "center",
                 }}
               >
-                <Text
-                  style={{
-                    fontSize: 16,
-                    fontWeight: "600",
-                    color: taskDescription.trim() ? "#ffffff" : isDark ? "#6b7280" : "#9ca3af",
-                    marginRight: 8,
-                  }}
-                >
-                  Next: Take Before Photo
-                </Text>
-                <ChevronRight size={20} color={taskDescription.trim() ? "#ffffff" : isDark ? "#6b7280" : "#9ca3af"} />
+                {checkingPhotoRequirement ? (
+                  <ActivityIndicator size="small" color="#ffffff" />
+                ) : (
+                  <>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: "600",
+                        color: taskDescription.trim() ? "#ffffff" : isDark ? "#6b7280" : "#9ca3af",
+                        marginRight: 8,
+                      }}
+                    >
+                      Continue
+                    </Text>
+                    <ChevronRight size={20} color={taskDescription.trim() ? "#ffffff" : isDark ? "#6b7280" : "#9ca3af"} />
+                  </>
+                )}
               </TouchableOpacity>
             )}
 

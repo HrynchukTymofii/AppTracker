@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { trackFocusSession } from "@/lib/achievementTracking";
 
 // Types
 export type TaskCategory = "study" | "health" | "work" | "creative" | "reading" | "custom";
@@ -20,7 +21,7 @@ export interface LockInSession {
   id: string;
   taskId?: string;
   taskDescription: string;
-  type: "quick" | "verified" | "custom";
+  type: "quick" | "verified" | "custom" | "exercise";
   durationMinutes: number;
   startedAt: number;
   completedAt?: number;
@@ -29,6 +30,8 @@ export interface LockInSession {
   blockedApps: string[];
   status: "active" | "completed" | "failed" | "cancelled";
   pointsEarned?: number;
+  exerciseType?: string;
+  exerciseDetails?: string;
 }
 
 export interface ScheduledLockIn {
@@ -57,6 +60,7 @@ interface LockInContextType {
   startSession: (session: Omit<LockInSession, "id" | "startedAt" | "status">) => Promise<void>;
   completeSession: (afterPhotoUri?: string) => Promise<void>;
   cancelSession: () => Promise<void>;
+  addExerciseActivity: (exerciseType: string, earnedMinutes: number, details: string) => Promise<void>;
 
   // Scheduled
   scheduledLockIns: ScheduledLockIn[];
@@ -173,11 +177,18 @@ export function LockInProvider({ children }: { children: ReactNode }) {
     // Update stats
     const newTotalCompleted = totalCompleted + 1;
     const newTotalPoints = totalPoints + (completedSession.pointsEarned || 0);
-    const newStreak = streak + 1; // Simplified streak logic
+    const newStreak = Math.max(1, streak + 1); // Ensure streak is at least 1
 
     setTotalCompleted(newTotalCompleted);
     setTotalPoints(newTotalPoints);
     setStreak(newStreak);
+
+    // Track for achievement system (updates daily streak)
+    await trackFocusSession(
+      activeSession.durationMinutes,
+      activeSession.blockedApps || [],
+      true // taskCompleted
+    );
 
     await Promise.all([
       AsyncStorage.removeItem(STORAGE_KEYS.ACTIVE_SESSION),
@@ -213,6 +224,34 @@ export function LockInProvider({ children }: { children: ReactNode }) {
         totalPoints,
       })),
     ]);
+  };
+
+  // Add exercise activity to history
+  const addExerciseActivity = async (exerciseType: string, earnedMinutes: number, details: string) => {
+    const exerciseSession: LockInSession = {
+      id: `exercise_${Date.now()}`,
+      taskDescription: `${exerciseType.charAt(0).toUpperCase() + exerciseType.slice(1)} - ${details}`,
+      type: "exercise",
+      durationMinutes: earnedMinutes,
+      startedAt: Date.now() - (earnedMinutes * 60 * 1000), // Approximate start time
+      completedAt: Date.now(),
+      blockedApps: [],
+      status: earnedMinutes > 0 ? "completed" : "failed",
+      pointsEarned: Math.round(earnedMinutes * 10),
+      exerciseType,
+      exerciseDetails: details,
+    };
+
+    const updatedHistory = [exerciseSession, ...sessionHistory].slice(0, 100);
+    setSessionHistory(updatedHistory);
+
+    if (earnedMinutes > 0) {
+      setTotalCompleted(prev => prev + 1);
+      // Track for achievement system (updates daily streak)
+      await trackFocusSession(earnedMinutes, [], true);
+    }
+
+    await AsyncStorage.setItem(STORAGE_KEYS.SESSION_HISTORY, JSON.stringify(updatedHistory));
   };
 
   // Scheduled functions
@@ -258,6 +297,7 @@ export function LockInProvider({ children }: { children: ReactNode }) {
         startSession,
         completeSession,
         cancelSession,
+        addExerciseActivity,
         scheduledLockIns,
         addScheduledLockIn,
         updateScheduledLockIn,

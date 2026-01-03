@@ -1,9 +1,38 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getTodayUsageStats, calculateHealthScore } from './usageTracking';
+import * as Notifications from 'expo-notifications';
 
 const ACHIEVEMENT_STATS_KEY = '@achievement_stats';
 const SESSION_HISTORY_KEY = '@session_history';
 const DAILY_STREAKS_KEY = '@daily_streaks';
+const UNLOCKED_ACHIEVEMENTS_KEY = '@unlocked_achievements';
+
+// Achievement definitions for notification checking
+const ACHIEVEMENT_DEFINITIONS = [
+  { id: 'firstBlock', title: 'First Block', condition: (s: AchievementStats) => s.blockedAppsCount >= 1 },
+  { id: 'focusBeginner', title: 'Focus Beginner', condition: (s: AchievementStats) => s.focusSessionsCount >= 1 },
+  { id: 'taskMaster', title: 'Task Master', condition: (s: AchievementStats) => s.tasksCompleted >= 1 },
+  { id: 'earlyBird', title: 'Early Bird', condition: (s: AchievementStats) => s.earlyMorningSessionCount >= 1 },
+  { id: 'nightOwl', title: 'Night Owl', condition: (s: AchievementStats) => s.lateNightSessionCount >= 1 },
+  { id: 'discipline', title: 'Discipline', condition: (s: AchievementStats) => s.currentStreak >= 7 },
+  { id: 'ironWill', title: 'Iron Will', condition: (s: AchievementStats) => s.focusSessionsCount >= 10 },
+  { id: 'zenMaster', title: 'Zen Master', condition: (s: AchievementStats) => s.focusSessionsCount >= 50 },
+  { id: 'schedulePro', title: 'Schedule Pro', condition: (s: AchievementStats) => s.schedulesCount >= 1 },
+  { id: 'timeKeeper', title: 'Time Keeper', condition: (s: AchievementStats) => s.schedulesCount >= 5 },
+  { id: 'digitalDetox', title: 'Digital Detox', condition: (s: AchievementStats) => s.maxFocusDuration >= 1440 },
+  { id: 'weekendWarrior', title: 'Weekend Warrior', condition: (s: AchievementStats) => s.weekendBlockingDays >= 2 },
+  { id: 'minimalist', title: 'Minimalist', condition: (s: AchievementStats) => s.totalAppsBlocked >= 10 },
+  { id: 'focusLegend', title: 'Focus Legend', condition: (s: AchievementStats) => s.maxFocusDuration >= 120 },
+  { id: 'marathon', title: 'Marathon', condition: (s: AchievementStats) => s.maxFocusDuration >= 240 },
+  { id: 'consistencyKing', title: 'Consistency King', condition: (s: AchievementStats) => s.currentStreak >= 30 },
+  { id: 'healthChampion', title: 'Health Champion', condition: (s: AchievementStats) => s.healthScore >= 90 },
+  { id: 'screenTimeSavior', title: 'Screen Time Savior', condition: (s: AchievementStats) => s.screenTimeReduction >= 50 },
+  { id: 'morningRoutine', title: 'Morning Routine', condition: (s: AchievementStats) => s.morningBlockingStreak >= 3 },
+  { id: 'productivityBeast', title: 'Productivity Beast', condition: (s: AchievementStats) => s.tasksCompleted >= 5 },
+  { id: 'appBlockerPro', title: 'App Blocker Pro', condition: (s: AchievementStats) => s.totalAppsBlocked >= 20 },
+  { id: 'focusFlow', title: 'Focus Flow', condition: (s: AchievementStats) => s.focusSessionsToday >= 3 },
+  { id: 'selfControl', title: 'Self Control', condition: (s: AchievementStats) => s.resistedUnblockCount >= 10 },
+];
 
 export interface AchievementStats {
   blockedAppsCount: number;
@@ -94,10 +123,15 @@ export async function getAchievementStats(): Promise<AchievementStats> {
 }
 
 // Update achievement stats
-async function saveAchievementStats(stats: AchievementStats): Promise<void> {
+async function saveAchievementStats(stats: AchievementStats, checkAchievements: boolean = true): Promise<void> {
   try {
     stats.lastUpdated = new Date().toISOString();
     await AsyncStorage.setItem(ACHIEVEMENT_STATS_KEY, JSON.stringify(stats));
+
+    // Check for newly unlocked achievements and send notifications
+    if (checkAchievements) {
+      await checkAndNotifyAchievements(stats);
+    }
   } catch (error) {
     console.error('Error saving achievement stats:', error);
   }
@@ -302,6 +336,10 @@ function calculateCurrentStreak(streaks: DailyStreak[]): number {
   const sorted = streaks.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   let streak = 0;
   const today = new Date();
+  const todayStr = today.toISOString().split('T')[0];
+
+  // Check for today's activity first
+  const hasTodayActivity = sorted.some(s => s.date === todayStr && s.hadBlockingActivity);
 
   for (let i = 0; i < sorted.length; i++) {
     const streakDate = new Date(sorted[i].date);
@@ -313,6 +351,11 @@ function calculateCurrentStreak(streaks: DailyStreak[]): number {
     } else {
       break;
     }
+  }
+
+  // If no consecutive streak from today but has any activity, return at least 1
+  if (streak === 0 && hasTodayActivity) {
+    return 1;
   }
 
   return streak;
@@ -437,8 +480,72 @@ export async function resetAchievementStats(): Promise<void> {
     await AsyncStorage.removeItem(SESSION_HISTORY_KEY);
     await AsyncStorage.removeItem(DAILY_STREAKS_KEY);
     await AsyncStorage.removeItem('@unique_blocked_apps');
+    await AsyncStorage.removeItem(UNLOCKED_ACHIEVEMENTS_KEY);
     await initializeAchievementStats();
   } catch (error) {
     console.error('Error resetting achievement stats:', error);
+  }
+}
+
+// Get previously unlocked achievements
+async function getUnlockedAchievements(): Promise<string[]> {
+  try {
+    const stored = await AsyncStorage.getItem(UNLOCKED_ACHIEVEMENTS_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
+
+// Save unlocked achievements
+async function saveUnlockedAchievements(achievements: string[]): Promise<void> {
+  try {
+    await AsyncStorage.setItem(UNLOCKED_ACHIEVEMENTS_KEY, JSON.stringify(achievements));
+  } catch (error) {
+    console.error('Error saving unlocked achievements:', error);
+  }
+}
+
+// Send achievement notification
+async function sendAchievementNotification(title: string): Promise<void> {
+  try {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: '🏆 Achievement Unlocked!',
+        body: `Congratulations! You earned "${title}"`,
+        sound: true,
+        priority: Notifications.AndroidNotificationPriority.HIGH,
+      },
+      trigger: null, // Send immediately
+    });
+  } catch (error) {
+    console.error('Error sending achievement notification:', error);
+  }
+}
+
+// Check for newly unlocked achievements and send notifications
+export async function checkAndNotifyAchievements(stats: AchievementStats): Promise<void> {
+  try {
+    const previouslyUnlocked = await getUnlockedAchievements();
+    const newlyUnlocked: string[] = [];
+
+    for (const achievement of ACHIEVEMENT_DEFINITIONS) {
+      const isUnlocked = achievement.condition(stats);
+      const wasPreviouslyUnlocked = previouslyUnlocked.includes(achievement.id);
+
+      if (isUnlocked && !wasPreviouslyUnlocked) {
+        newlyUnlocked.push(achievement.id);
+        // Send notification for each newly unlocked achievement
+        await sendAchievementNotification(achievement.title);
+      }
+    }
+
+    if (newlyUnlocked.length > 0) {
+      // Update stored unlocked achievements
+      const allUnlocked = [...previouslyUnlocked, ...newlyUnlocked];
+      await saveUnlockedAchievements(allUnlocked);
+    }
+  } catch (error) {
+    console.error('Error checking achievements:', error);
   }
 }

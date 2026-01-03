@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   ScrollView,
   Text,
   TouchableOpacity,
   View,
   Platform,
+  Share,
 } from "react-native";
 import {
   Plus,
@@ -13,6 +14,10 @@ import {
   Timer,
   Shield,
   ChevronRight,
+  Target,
+  Clock,
+  Dumbbell,
+  Share2,
 } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,11 +26,14 @@ import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useBlocking } from "@/context/BlockingContext";
+import { useEarnedTime } from "@/context/EarnedTimeContext";
 import { BlockSchedule, DailyLimit, POPULAR_APPS } from "@/lib/appBlocking";
 import { ConfirmationModal } from "@/components/modals/ConfirmationModal";
 import { TimeLimitModal } from "@/components/modals/TimeLimitModal";
 import * as UsageStats from "@/modules/usage-stats";
 import { ThemedBackground } from "@/components/ui/ThemedBackground";
+import { getWeekUsage, formatDate, getWeekDateRange } from "@/lib/usageDatabase";
+import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "react-native-svg";
 
 // Import extracted components
 import {
@@ -40,6 +48,57 @@ import {
   CACHE_DURATION,
   SuggestedScheduleTemplate,
 } from "@/components/blocking";
+
+// Circular Progress Component for Total Daily Goal
+const CircularProgress = ({
+  progress,
+  size,
+  strokeWidth,
+  isDark,
+}: {
+  progress: number;
+  size: number;
+  strokeWidth: number;
+  isDark: boolean;
+}) => {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const strokeDashoffset = circumference - (Math.min(progress, 100) / 100) * circumference;
+
+  return (
+    <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
+      <Svg width={size} height={size} style={{ transform: [{ rotate: '-90deg' }] }}>
+        <Defs>
+          <SvgLinearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <Stop offset="0%" stopColor="#10b981" />
+            <Stop offset="100%" stopColor="#059669" />
+          </SvgLinearGradient>
+        </Defs>
+        {/* Background circle */}
+        <Circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke={isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)'}
+          strokeWidth={strokeWidth}
+          fill="none"
+        />
+        {/* Progress circle */}
+        <Circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="url(#progressGradient)"
+          strokeWidth={strokeWidth}
+          fill="none"
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+        />
+      </Svg>
+    </View>
+  );
+};
 
 export default function BlockingPage() {
   const { t } = useTranslation();
@@ -62,6 +121,18 @@ export default function BlockingPage() {
     hasOverlayPermission,
     openOverlaySettings,
   } = useBlocking();
+
+  const {
+    totalDailyLimit,
+    setTotalDailyLimit,
+  } = useEarnedTime();
+
+  const [showTotalLimitOptions, setShowTotalLimitOptions] = useState(false);
+
+  // Real device usage stats
+  const [todayUsage, setTodayUsage] = useState(0); // in minutes
+  const [weeklyUsage, setWeeklyUsage] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]); // last 7 days in minutes
+  const [appUsageMap, setAppUsageMap] = useState<Record<string, number>>({}); // packageName -> minutes used today
 
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [showAppSelection, setShowAppSelection] = useState(false);
@@ -120,14 +191,115 @@ export default function BlockingPage() {
     }
   }, []);
 
+  // Fetch real usage stats from device
+  const fetchUsageStats = useCallback(async () => {
+    try {
+      // Get blocked app package names
+      const blockedPackages = dailyLimits.map(l => l.packageName);
+
+      if (blockedPackages.length === 0) {
+        setTodayUsage(0);
+        setWeeklyUsage([0, 0, 0, 0, 0, 0, 0]);
+        setAppUsageMap({});
+        return;
+      }
+
+      // Get today's usage for blocked apps only
+      const todayStats = await UsageStats.getTodayUsageStats();
+      if (todayStats.hasPermission && todayStats.apps) {
+        // Build per-app usage map
+        const usageMap: Record<string, number> = {};
+        let totalBlockedUsage = 0;
+
+        todayStats.apps.forEach(app => {
+          if (blockedPackages.includes(app.packageName)) {
+            const minutes = Math.round(app.timeInForeground / (1000 * 60));
+            usageMap[app.packageName] = minutes;
+            totalBlockedUsage += app.timeInForeground;
+          }
+        });
+
+        setAppUsageMap(usageMap);
+        setTodayUsage(Math.round(totalBlockedUsage / (1000 * 60)));
+      }
+
+      // Get weekly usage - fetch last 7 days
+      const weekData: number[] = [];
+      const today = new Date();
+
+      // Also try to get data from local database as fallback
+      const { startDate, endDate } = getWeekDateRange(0);
+      const dbWeekData = await getWeekUsage(startDate, endDate);
+      const dbDataMap = new Map(dbWeekData.map(d => [d.date, d]));
+
+      for (let i = 6; i >= 0; i--) {
+        const dayStart = new Date(today);
+        dayStart.setDate(today.getDate() - i);
+        dayStart.setHours(0, 0, 0, 0);
+        const dateStr = formatDate(dayStart);
+
+        const dayEnd = new Date(dayStart);
+        dayEnd.setHours(23, 59, 59, 999);
+
+        const dayStats = await UsageStats.getUsageStats(dayStart.getTime(), dayEnd.getTime());
+        if (dayStats.hasPermission && dayStats.apps) {
+          const blockedDayUsage = dayStats.apps
+            .filter(app => blockedPackages.includes(app.packageName))
+            .reduce((sum, app) => sum + app.timeInForeground, 0);
+
+          if (blockedDayUsage > 0) {
+            weekData.push(Math.round(blockedDayUsage / (1000 * 60))); // minutes
+          } else {
+            // Try database fallback for this day
+            const dbDay = dbDataMap.get(dateStr);
+            if (dbDay && dbDay.total_screen_time > 0) {
+              weekData.push(Math.round(dbDay.total_screen_time / (1000 * 60)));
+            } else {
+              weekData.push(0);
+            }
+          }
+        } else {
+          // Try database fallback
+          const dbDay = dbDataMap.get(dateStr);
+          if (dbDay && dbDay.total_screen_time > 0) {
+            weekData.push(Math.round(dbDay.total_screen_time / (1000 * 60)));
+          } else {
+            weekData.push(0);
+          }
+        }
+      }
+      setWeeklyUsage(weekData);
+    } catch (error) {
+      console.error('Error fetching usage stats:', error);
+    }
+  }, [dailyLimits]);
+
   // Refresh data when screen comes into focus
   useFocusEffect(
     useCallback(() => {
       refreshData();
       checkPermissions();
       refreshAppsCache();
-    }, [refreshData, refreshAppsCache]),
+      fetchUsageStats();
+    }, [refreshData, refreshAppsCache, fetchUsageStats]),
   );
+
+  // Refresh usage stats whenever daily limits change (new apps added/removed)
+  useEffect(() => {
+    fetchUsageStats();
+  }, [dailyLimits.length]);
+
+  // Computed values for the card
+  const remainingLimit = useMemo(() => Math.max(0, totalDailyLimit - todayUsage), [totalDailyLimit, todayUsage]);
+  const usagePercent = useMemo(() => Math.min(100, Math.round((todayUsage / totalDailyLimit) * 100)), [todayUsage, totalDailyLimit]);
+
+  // Enhanced daily limits with real usage from device
+  const enhancedDailyLimits = useMemo(() => {
+    return dailyLimits.map(limit => ({
+      ...limit,
+      usedMinutes: appUsageMap[limit.packageName] || 0,
+    }));
+  }, [dailyLimits, appUsageMap]);
 
   // Check permissions on mount and when app comes to foreground
   useEffect(() => {
@@ -188,58 +360,30 @@ export default function BlockingPage() {
         {/* Header */}
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
             paddingHorizontal: 20,
             paddingTop: 16,
-            paddingBottom: 24,
+            paddingBottom: 16,
           }}
         >
-          <View>
-            <Text
-              style={{
-                fontSize: 32,
-                fontWeight: "800",
-                color: isDark ? "#ffffff" : "#0f172a",
-                letterSpacing: -0.5,
-              }}
-            >
-              {t("blocking.title")}
-            </Text>
-            <Text
-              style={{
-                fontSize: 14,
-                color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
-                marginTop: 4,
-              }}
-            >
-              {schedules.length} {t("blocking.schedules").toLowerCase()} • {dailyLimits.length} {t("blocking.appLimits")?.toLowerCase() || "limits"}
-            </Text>
-          </View>
-          <TouchableOpacity
-            onPress={() => router.push("/scheduleCalendar")}
-            activeOpacity={0.7}
+          <Text
             style={{
-              width: 48,
-              height: 48,
-              borderRadius: 16,
-              backgroundColor: isDark
-                ? "rgba(255, 255, 255, 0.05)"
-                : "#ffffff",
-              alignItems: "center",
-              justifyContent: "center",
-              borderWidth: 0.5,
-              borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.06)",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: isDark ? 0 : 0.04,
-              shadowRadius: 8,
-              elevation: 2,
+              fontSize: 32,
+              fontWeight: "800",
+              color: isDark ? "#ffffff" : "#0f172a",
+              letterSpacing: -0.5,
             }}
           >
-            <CalendarDays size={22} color={isDark ? "#ffffff" : "#0f172a"} strokeWidth={1.5} />
-          </TouchableOpacity>
+            Goals
+          </Text>
+          <Text
+            style={{
+              fontSize: 14,
+              color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+              marginTop: 4,
+            }}
+          >
+            Set your daily screen time limits
+          </Text>
         </View>
 
         {/* Permission Warning Banner */}
@@ -252,14 +396,410 @@ export default function BlockingPage() {
           />
         )}
 
-        {/* Suggested Schedules */}
+        {/* Today's Progress Card */}
+        <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
+          <View
+            style={{
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#ffffff",
+              borderRadius: 24,
+              padding: 20,
+              borderWidth: 1,
+              borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.05)",
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: isDark ? 0 : 0.06,
+              shadowRadius: 12,
+              elevation: 3,
+            }}
+          >
+            {/* Header Row */}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "flex-start",
+                justifyContent: "space-between",
+                marginBottom: 20,
+              }}
+            >
+              <View>
+                <Text
+                  style={{
+                    fontSize: 11,
+                    fontWeight: "600",
+                    color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+                    letterSpacing: 1,
+                    textTransform: "uppercase",
+                    marginBottom: 4,
+                  }}
+                >
+                  TODAY'S PROGRESS
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setShowTotalLimitOptions(!showTotalLimitOptions)}
+                  activeOpacity={0.7}
+                >
+                  <Text
+                    style={{
+                      fontSize: 28,
+                      fontWeight: "800",
+                      color: isDark ? "#ffffff" : "#0f172a",
+                    }}
+                  >
+                    {totalDailyLimit >= 60
+                      ? `${Math.floor(totalDailyLimit / 60)}h`
+                      : `${totalDailyLimit}m`}
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: "500",
+                        color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+                      }}
+                    >
+                      {" "}goal
+                    </Text>
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                onPress={async () => {
+                  try {
+                    const usedFormatted = todayUsage >= 60
+                      ? `${Math.floor(todayUsage / 60)}h ${todayUsage % 60}m`
+                      : `${todayUsage}m`;
+                    const remainingFormatted = remainingLimit >= 60
+                      ? `${Math.floor(remainingLimit / 60)}h ${remainingLimit % 60}m`
+                      : `${remainingLimit}m`;
+                    const goalFormatted = totalDailyLimit >= 60
+                      ? `${Math.floor(totalDailyLimit / 60)}h`
+                      : `${totalDailyLimit}m`;
+
+                    const message = `📱 My Screen Time Today\n\n` +
+                      `🎯 Goal: ${goalFormatted}\n` +
+                      `⏱️ Used: ${usedFormatted}\n` +
+                      `✅ Remaining: ${remainingFormatted}\n` +
+                      `📊 Progress: ${usagePercent}%\n\n` +
+                      `Taking control of my screen time with LockIn! 💪`;
+
+                    await Share.share({
+                      message,
+                      title: "My Screen Time Progress",
+                    });
+                  } catch (error) {
+                    console.error('Error sharing:', error);
+                  }
+                }}
+                activeOpacity={0.7}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 12,
+                  backgroundColor: isDark ? "rgba(59, 130, 246, 0.15)" : "rgba(59, 130, 246, 0.1)",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Share2 size={18} color="#3b82f6" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Progress Section */}
+            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20 }}>
+              {/* Circular Progress with Time Left */}
+              <View style={{ position: "relative", marginRight: 24 }}>
+                <CircularProgress
+                  progress={usagePercent}
+                  size={100}
+                  strokeWidth={8}
+                  isDark={isDark}
+                />
+                <View
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 22,
+                      fontWeight: "800",
+                      color: "#10b981",
+                    }}
+                  >
+                    {remainingLimit >= 60
+                      ? `${Math.floor(remainingLimit / 60)}h`
+                      : `${remainingLimit}m`}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 11,
+                      color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+                      fontWeight: "500",
+                    }}
+                  >
+                    left
+                  </Text>
+                </View>
+              </View>
+
+              {/* Weekly Bar Chart */}
+              <View style={{ flex: 1 }}>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+                    marginBottom: 12,
+                  }}
+                >
+                  This Week
+                </Text>
+                <View style={{ flexDirection: "row", alignItems: "flex-end", gap: 6 }}>
+                  {(() => {
+                    const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+                    const today = new Date().getDay();
+                    // Get day labels for last 7 days ending with today
+                    const orderedDays = [];
+                    for (let i = 6; i >= 0; i--) {
+                      const d = new Date();
+                      d.setDate(d.getDate() - i);
+                      orderedDays.push(days[d.getDay()]);
+                    }
+
+                    // weeklyUsage is already in order [6 days ago, ..., today]
+                    const maxUsage = Math.max(...weeklyUsage, totalDailyLimit);
+
+                    return orderedDays.map((day, idx) => {
+                      const usage = weeklyUsage[idx] || 0;
+                      const heightPercent = maxUsage > 0 ? (usage / maxUsage) * 100 : 0;
+                      const isToday = idx === 6;
+
+                      return (
+                        <View key={idx} style={{ flex: 1, alignItems: "center" }}>
+                          <View
+                            style={{
+                              width: "100%",
+                              height: 50,
+                              justifyContent: "flex-end",
+                            }}
+                          >
+                            <View
+                              style={{
+                                width: "100%",
+                                height: Math.max(heightPercent * 0.5, 4),
+                                backgroundColor: isToday
+                                  ? "#10b981"
+                                  : isDark
+                                  ? "rgba(255, 255, 255, 0.2)"
+                                  : "#d1d5db",
+                                borderRadius: 3,
+                              }}
+                            />
+                          </View>
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              color: isToday ? "#10b981" : (isDark ? "rgba(255,255,255,0.5)" : "#9ca3af"),
+                              marginTop: 6,
+                              fontWeight: isToday ? "700" : "500",
+                            }}
+                          >
+                            {day}
+                          </Text>
+                        </View>
+                      );
+                    });
+                  })()}
+                </View>
+              </View>
+            </View>
+
+            {/* Bottom Stats Row */}
+            <View
+              style={{
+                flexDirection: "row",
+                borderTopWidth: 1,
+                borderTopColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)",
+                paddingTop: 16,
+              }}
+            >
+              {/* Used */}
+              <View style={{ flex: 1, alignItems: "center" }}>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "800",
+                    color: "#10b981",
+                  }}
+                >
+                  {todayUsage >= 60
+                    ? `${Math.floor(todayUsage / 60)}h${todayUsage % 60}m`
+                    : `${todayUsage}m`}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 11,
+                    color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+                    marginTop: 2,
+                  }}
+                >
+                  Used
+                </Text>
+              </View>
+
+              {/* Divider */}
+              <View
+                style={{
+                  width: 1,
+                  backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)",
+                }}
+              />
+
+              {/* Remaining */}
+              <View style={{ flex: 1, alignItems: "center" }}>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "800",
+                    color: isDark ? "#ffffff" : "#0f172a",
+                  }}
+                >
+                  {remainingLimit >= 60
+                    ? `${Math.floor(remainingLimit / 60)}h${remainingLimit % 60}m`
+                    : `${remainingLimit}m`}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 11,
+                    color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+                    marginTop: 2,
+                  }}
+                >
+                  Remaining
+                </Text>
+              </View>
+
+              {/* Divider */}
+              <View
+                style={{
+                  width: 1,
+                  backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)",
+                }}
+              />
+
+              {/* Percentage of goal */}
+              <View style={{ flex: 1, alignItems: "center" }}>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "800",
+                    color: isDark ? "#ffffff" : "#0f172a",
+                  }}
+                >
+                  {usagePercent}%
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 11,
+                    color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+                    marginTop: 2,
+                  }}
+                >
+                  Of goal
+                </Text>
+              </View>
+            </View>
+
+            {/* Total Limit Options */}
+            {showTotalLimitOptions && (
+              <View style={{ marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)" }}>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: "600",
+                    color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+                    marginBottom: 12,
+                  }}
+                >
+                  Set daily goal:
+                </Text>
+                <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+                  {[30, 60, 90, 120, 180, 240].map((mins) => {
+                    const isSelected = totalDailyLimit === mins;
+                    const label = mins >= 60 ? `${mins / 60}h` : `${mins}m`;
+                    return (
+                      <TouchableOpacity
+                        key={mins}
+                        onPress={() => {
+                          setTotalDailyLimit(mins);
+                          setShowTotalLimitOptions(false);
+                        }}
+                        style={{
+                          paddingVertical: 10,
+                          paddingHorizontal: 18,
+                          borderRadius: 10,
+                          backgroundColor: isSelected
+                            ? "#10b981"
+                            : isDark
+                            ? "rgba(255, 255, 255, 0.08)"
+                            : "#f3f4f6",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontWeight: "700",
+                            color: isSelected ? "#ffffff" : isDark ? "#ffffff" : "#374151",
+                          }}
+                        >
+                          {label}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </View>
+            )}
+
+            {/* Warning if limit reached */}
+            {remainingLimit <= 0 && (
+              <View
+                style={{
+                  marginTop: 16,
+                  backgroundColor: "rgba(239, 68, 68, 0.1)",
+                  padding: 14,
+                  borderRadius: 12,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Shield size={18} color="#ef4444" />
+                <Text
+                  style={{
+                    fontSize: 13,
+                    color: "#ef4444",
+                    fontWeight: "600",
+                    marginLeft: 10,
+                    flex: 1,
+                  }}
+                >
+                  Daily limit reached! All apps are blocked.
+                </Text>
+              </View>
+            )}
+          </View>
+        </View>
+
+        {/* SCHEDULES COMMENTED OUT - App now uses earned time model
         <SuggestedSchedules
           schedules={schedules}
           isDark={isDark}
           onSelectTemplate={handleSuggestedSchedule}
         />
 
-        {/* Schedules Section */}
         <View style={{ paddingHorizontal: 20, marginBottom: 32 }}>
           <View
             style={{
@@ -373,6 +913,7 @@ export default function BlockingPage() {
             ))
           )}
         </View>
+        END SCHEDULES SECTION */}
 
         {/* App Limits Section */}
         <View style={{ paddingHorizontal: 20 }}>
@@ -454,7 +995,7 @@ export default function BlockingPage() {
             </TouchableOpacity>
           </View>
 
-          {dailyLimits.length === 0 ? (
+          {enhancedDailyLimits.length === 0 ? (
             <View
               style={{
                 backgroundColor: isDark
@@ -507,7 +1048,7 @@ export default function BlockingPage() {
               </Text>
             </View>
           ) : (
-            dailyLimits.map((limit) => (
+            enhancedDailyLimits.map((limit) => (
               <AppLimitCard
                 key={limit.packageName}
                 limit={limit}
@@ -527,6 +1068,7 @@ export default function BlockingPage() {
       </ScrollView>
 
       {/* Modals */}
+      {/* SCHEDULE MODAL COMMENTED OUT
       <ScheduleModal
         visible={showScheduleModal}
         onClose={() => {
@@ -540,6 +1082,7 @@ export default function BlockingPage() {
         initialValues={scheduleInitialValues || undefined}
         existingSchedules={schedules}
       />
+      */}
 
       <AppSelectionModal
         visible={showAppSelection}
@@ -599,7 +1142,7 @@ export default function BlockingPage() {
         }}
       />
 
-      {/* Floating Action Button - New Schedule */}
+      {/* FLOATING ACTION BUTTON COMMENTED OUT - Schedule feature disabled
       <TouchableOpacity
         onPress={() => setShowScheduleModal(true)}
         activeOpacity={0.9}
@@ -645,6 +1188,7 @@ export default function BlockingPage() {
           {t("blocking.newSchedule")}
         </Text>
       </TouchableOpacity>
+      */}
 
       {/* Delete Schedule Confirmation Modal */}
       <ConfirmationModal

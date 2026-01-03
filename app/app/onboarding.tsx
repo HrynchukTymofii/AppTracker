@@ -1,639 +1,1003 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
-  FlatList,
+  ScrollView,
   Dimensions,
   Animated,
-  Image,
   StatusBar,
   useColorScheme,
+  Platform,
+  TextInput,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Svg, { Path } from "react-native-svg";
 import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+import * as SecureStore from "expo-secure-store";
+import {
+  Shield,
+  Clock,
+  Target,
+  ChevronRight,
+  Check,
+  Globe,
+  Smartphone,
+  Plus,
+  X,
+  Sparkles,
+} from "lucide-react-native";
+import {
+  POPULAR_APPS,
+  setDefaultBlockedApps,
+  setDefaultBlockedWebsites,
+  setDefaultAppLimitMinutes,
+} from "@/lib/appBlocking";
+import * as AppBlocker from "@/modules/app-blocker";
 
 const { width, height } = Dimensions.get("window");
 
-const onboardingData = [
-  {
-    id: "1",
-    title: "Master SAT Math\nWith Confidence",
-    description:
-      "Your complete SAT Math preparation platform with comprehensive lessons, practice problems, mock exams, and detailed test modes to help you achieve your target score.",
-    imageLight: require("@/assets/images/onboarding1l.png"),
-    imageDark: require("@/assets/images/onboarding1d.png"),
-    badge: "700+ practice problems",
-  },
-  {
-    id: "2",
-    title: "Learn and Revise\nEvery Topic",
-    description:
-      "Follow our expertly designed curriculum covering all SAT Math topics. From algebra to advanced problem-solving, master every concept step by step.",
-    imageLight: require("@/assets/images/onboarding2l.png"),
-    imageDark: require("@/assets/images/onboarding2d.png"),
-    badge: "Complete SAT curriculum",
-  },
-  {
-    id: "3",
-    title: "Practice Like\nThe Real Exam",
-    description:
-      "Take full-length practice exams, timed tests, and review your mistakes. Track your progress and identify areas that need improvement.",
-    imageLight: require("@/assets/images/onboarding3l.png"),
-    imageDark: require("@/assets/images/onboarding3d.png"),
-    badge: "Real exam experience",
-  },
+// Daily goal options in minutes
+const DAILY_GOAL_OPTIONS = [
+  { label: "30 min", value: 30, description: "Light usage" },
+  { label: "1 hour", value: 60, description: "Moderate" },
+  { label: "2 hours", value: 120, description: "Balanced" },
+  { label: "3 hours", value: 180, description: "Flexible" },
 ];
 
-function UCurve({ width = "100%", height = 200, fill = "#ffffff" }) {
-  return (
-    <Svg
-      viewBox="0 0 1200 400"
-      preserveAspectRatio="none"
-      width={width}
-      height={height}
-    >
-      <Path
-        d="M0 80
-           C 200 260, 400 300, 600 280
-           C 800 260, 1000 200, 1200 80
-           L1200 400 L0 400 Z"
-        fill={fill}
-      />
-    </Svg>
-  );
-}
+// Common websites to block
+const POPULAR_WEBSITES = [
+  { domain: "youtube.com", name: "YouTube" },
+  { domain: "tiktok.com", name: "TikTok" },
+  { domain: "instagram.com", name: "Instagram" },
+  { domain: "twitter.com", name: "Twitter/X" },
+  { domain: "facebook.com", name: "Facebook" },
+  { domain: "reddit.com", name: "Reddit" },
+  { domain: "twitch.tv", name: "Twitch" },
+  { domain: "netflix.com", name: "Netflix" },
+];
+
+type OnboardingStep = "welcome" | "apps" | "websites" | "goal" | "complete";
 
 export default function OnboardingScreen() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const scrollX = useRef(new Animated.Value(0)).current;
-  const flatListRef = useRef<FlatList>(null);
-  const router = useRouter()
+  const [currentStep, setCurrentStep] = useState<OnboardingStep>("welcome");
+  const [selectedApps, setSelectedApps] = useState<string[]>([]);
+  const [selectedWebsites, setSelectedWebsites] = useState<string[]>([]);
+  const [customWebsite, setCustomWebsite] = useState("");
+  const [dailyGoal, setDailyGoal] = useState<number>(60); // Default 1 hour
+  const [iosAppsSelected, setIosAppsSelected] = useState(false);
+  const [iosSelectionInfo, setIosSelectionInfo] = useState<{
+    appsCount: number;
+    categoriesCount: number;
+  } | null>(null);
+
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const slideAnim = useRef(new Animated.Value(0)).current;
+  const router = useRouter();
   const colorScheme = useColorScheme();
-  // useEffect(() => {
-  //     console.log("🧠 Onboarding mounted");
-  
-  //     return () => {
-  //       console.log("🧹 Onboarding unmounted");
-  //     };
-  //   }, []);
+  const isDark = colorScheme === "dark";
 
-  const handleScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-    { useNativeDriver: false }
-  );
+  const animateTransition = (callback: () => void) => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: -30,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      callback();
+      slideAnim.setValue(30);
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    });
+  };
 
-  const handleViewableItemsChanged = useRef(({ viewableItems }: any) => {
-    if (viewableItems[0]) {
-      setCurrentIndex(viewableItems[0].index);
-    }
-  }).current;
-
-  const viewabilityConfig = useRef({
-    itemVisiblePercentThreshold: 50,
-  }).current;
-
-  const handleContinue = () => {
-    if (currentIndex < onboardingData.length - 1) {
-      flatListRef.current?.scrollToIndex({
-        index: currentIndex + 1,
-        animated: true,
-      });
-    } else {
-      router.replace('/auth' as any)
+  const handleNext = () => {
+    switch (currentStep) {
+      case "welcome":
+        animateTransition(() => setCurrentStep("apps"));
+        break;
+      case "apps":
+        animateTransition(() => setCurrentStep("websites"));
+        break;
+      case "websites":
+        animateTransition(() => setCurrentStep("goal"));
+        break;
+      case "goal":
+        animateTransition(() => setCurrentStep("complete"));
+        break;
+      case "complete":
+        handleComplete();
+        break;
     }
   };
 
-  const renderItem = ({ item, index }: any) => {
-    const inputRange = [
-      (index - 1) * width,
-      index * width,
-      (index + 1) * width,
-    ];
+  const handleComplete = async () => {
+    try {
+      // Save all selections
+      await setDefaultBlockedApps(selectedApps);
+      await setDefaultBlockedWebsites(selectedWebsites);
+      await setDefaultAppLimitMinutes(dailyGoal);
 
-    const scale = scrollX.interpolate({
-      inputRange,
-      outputRange: [0.85, 1, 0.85],
-      extrapolate: "clamp",
-    });
+      // Mark onboarding as completed
+      await SecureStore.setItemAsync("onboardingCompleted", "true");
+      await SecureStore.setItemAsync("dailyGoal", dailyGoal.toString());
 
-    const translateY = scrollX.interpolate({
-      inputRange,
-      outputRange: [50, 0, 50],
-      extrapolate: "clamp",
-    });
+      // On iOS, apply blocking immediately if apps were selected
+      if (Platform.OS === "ios" && iosAppsSelected) {
+        AppBlocker.applyBlocking();
+      }
 
-    const opacity = scrollX.interpolate({
-      inputRange,
-      outputRange: [0.5, 1, 0.5],
-      extrapolate: "clamp",
-    });
+      // Navigate to auth
+      router.replace("/auth" as any);
+    } catch (error) {
+      console.error("Error completing onboarding:", error);
+      router.replace("/auth" as any);
+    }
+  };
 
-    return (
-      <View style={{ width }} className="flex-1">
-        {/* Top Section with Phone Image */}
-        <View
-          className="relative bg-white dark:bg-gray-900"
-          style={{ height: height * 0.58 }}
-        >
-          {/* Phone Screenshot Image */}
-          <View className="absolute bottom-0 left-0 right-0 items-center z-10">
-            <Animated.View
-              style={{
-                transform: [{ scale }, { translateY }],
-                opacity,
-              }}
-              className="items-center"
-            >
-              <Image
-                source={colorScheme === 'dark' ? item.imageDark : item.imageLight}
-                style={{
-                  width: width * 0.75,
-                  height: undefined,
-                  aspectRatio: 2 / 3,
-                }}
-                resizeMode="contain"
-              />
-            </Animated.View>
-          </View>
-
-          {/* Badge */}
-          <View className="absolute bottom-1 left-0 right-0 items-center z-50">
-            <View
-              style={{
-                shadowColor: "#fff",
-                shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 0.3,
-                shadowRadius: 25,
-              }}
-            >
-              <View
-                className="bg-white dark:bg-gray-900 px-6 py-2.5 rounded-full"
-                style={{
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 8 },
-                  shadowOpacity: 0.2,
-                  shadowRadius: 20,
-                  elevation: 8,
-                  borderWidth: 1.5,
-                  borderColor: "rgba(255, 255, 255, 0.3)",
-                  borderTopColor: "rgba(255, 255, 255, 0.5)",
-                  borderBottomColor: "rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <Text className="text-gray-600 dark:text-white text-xs font-semibold">
-                  {item.badge}
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Curve Overlay */}
-          <View className="absolute bottom-0 left-0 right-0 z-20">
-            <UCurve height={80} fill={colorScheme === 'light' ? "#111827" : "#000"} />
-          </View>
-        </View>
-
-        {/* Bottom Content Section */}
-        <View className="flex-1 bg-gray-900 dark:bg-black px-6 pt-6">
-          <View className="flex-1 justify-between">
-            {/* Text Content */}
-            <View className="items-center">
-              <Text className="text-3xl font-bold text-center text-white mb-3 leading-9">
-                {item.title}
-              </Text>
-              <Text className="text-[15px] text-center text-gray-300 leading-[22px]">
-                {item.description}
-              </Text>
-            </View>
-
-            {/* Bottom Section with Dots and Buttons */}
-            <View className="pb-8">
-              {/* Pagination Dots */}
-              <View className="flex-row items-center justify-center gap-2 mb-6">
-                {onboardingData.map((_, i) => {
-                  const inputRange = [
-                    (i - 1) * width,
-                    i * width,
-                    (i + 1) * width,
-                  ];
-
-                  const dotWidth = scrollX.interpolate({
-                    inputRange,
-                    outputRange: [8, 24, 8],
-                    extrapolate: "clamp",
-                  });
-
-                  const dotOpacity = scrollX.interpolate({
-                    inputRange,
-                    outputRange: [0.3, 1, 0.3],
-                    extrapolate: "clamp",
-                  });
-
-                  return (
-                    <Animated.View
-                      key={i}
-                      style={{
-                        width: dotWidth,
-                        opacity: dotOpacity,
-                      }}
-                      className="h-2 bg-white rounded-full"
-                    />
-                  );
-                })}
-              </View>
-
-              {/* Navigation Buttons */}
-              <View className="flex-row gap-3">
-                {currentIndex < onboardingData.length - 1 ? (
-                    <TouchableOpacity
-                      onPress={handleContinue}
-                      className="flex-[1.5] bg-white rounded-full py-5 items-center justify-center"
-                      activeOpacity={0.8}
-                      style={{
-                        shadowColor: "#000",
-                        shadowOffset: { width: 0, height: 16 },
-                        shadowOpacity: 0.3,
-                        shadowRadius: 32,
-                        elevation: 12,
-                      }}
-                    >
-                      <Text className="text-black font-bold text-base tracking-wide">
-                        Continue
-                      </Text>
-                    </TouchableOpacity>
-                ) : (
-                  <TouchableOpacity
-                    onPress={handleContinue}
-                    className="flex-1 bg-white rounded-full py-5 items-center justify-center"
-                    activeOpacity={0.8}
-                    style={{
-                      shadowColor: "#000",
-                      shadowOffset: { width: 0, height: 16 },
-                      shadowOpacity: 0.3,
-                      shadowRadius: 32,
-                      elevation: 12,
-                    }}
-                  >
-                    <Text className="text-black font-bold text-base tracking-wide">
-                      Let's Get Started
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
+  const toggleApp = (packageName: string) => {
+    setSelectedApps((prev) =>
+      prev.includes(packageName)
+        ? prev.filter((p) => p !== packageName)
+        : [...prev, packageName]
     );
   };
 
-  return (
-    <SafeAreaView edges={["top", "bottom"]} className="flex-1 bg-white dark:bg-gray-900">
-      <StatusBar barStyle="dark-content" />
+  const toggleWebsite = (domain: string) => {
+    setSelectedWebsites((prev) =>
+      prev.includes(domain)
+        ? prev.filter((d) => d !== domain)
+        : [...prev, domain]
+    );
+  };
 
-      <Animated.FlatList
-        ref={flatListRef}
-        data={onboardingData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
-        onViewableItemsChanged={handleViewableItemsChanged}
-        viewabilityConfig={viewabilityConfig}
-        scrollEventThrottle={16}
-        bounces={false}
-      />
+  const addCustomWebsite = () => {
+    if (customWebsite.trim()) {
+      const domain = customWebsite
+        .trim()
+        .toLowerCase()
+        .replace(/^(https?:\/\/)?(www\.)?/, "")
+        .split("/")[0];
+      if (domain && !selectedWebsites.includes(domain)) {
+        setSelectedWebsites((prev) => [...prev, domain]);
+      }
+      setCustomWebsite("");
+    }
+  };
+
+  const handleIOSAppPicker = async () => {
+    try {
+      // First request authorization
+      const authorized = await AppBlocker.requestAuthorization();
+      if (!authorized) {
+        console.log("iOS authorization denied");
+        return;
+      }
+
+      // Show the app picker
+      const result = await AppBlocker.showAppPicker();
+      if (result) {
+        setIosSelectionInfo(result);
+        setIosAppsSelected(true);
+      }
+    } catch (error) {
+      console.error("Error with iOS app picker:", error);
+    }
+  };
+
+  const getStepProgress = () => {
+    const steps: OnboardingStep[] = ["welcome", "apps", "websites", "goal", "complete"];
+    return ((steps.indexOf(currentStep) + 1) / steps.length) * 100;
+  };
+
+  const canProceed = () => {
+    switch (currentStep) {
+      case "apps":
+        return Platform.OS === "ios" ? iosAppsSelected : selectedApps.length > 0;
+      case "websites":
+        return true; // Websites are optional
+      case "goal":
+        return dailyGoal > 0;
+      default:
+        return true;
+    }
+  };
+
+  const renderWelcome = () => (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingHorizontal: 24 }}>
+      <View
+        style={{
+          width: 100,
+          height: 100,
+          borderRadius: 50,
+          backgroundColor: isDark ? "rgba(59, 130, 246, 0.2)" : "rgba(59, 130, 246, 0.1)",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: 32,
+        }}
+      >
+        <Shield size={48} color="#3b82f6" />
+      </View>
+
+      <Text
+        style={{
+          fontSize: 32,
+          fontWeight: "800",
+          color: isDark ? "#ffffff" : "#111827",
+          textAlign: "center",
+          marginBottom: 16,
+        }}
+      >
+        Take Control of{"\n"}Your Screen Time
+      </Text>
+
+      <Text
+        style={{
+          fontSize: 16,
+          color: isDark ? "#9ca3af" : "#6b7280",
+          textAlign: "center",
+          lineHeight: 24,
+          marginBottom: 40,
+        }}
+      >
+        Block distracting apps and earn time back through healthy activities. You're in control.
+      </Text>
+
+      <View style={{ width: "100%", gap: 16 }}>
+        {[
+          { icon: Smartphone, text: "Choose apps to limit" },
+          { icon: Target, text: "Set your daily goal" },
+          { icon: Sparkles, text: "Earn time through exercise" },
+        ].map((item, index) => (
+          <View
+            key={index}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f3f4f6",
+              padding: 16,
+              borderRadius: 12,
+            }}
+          >
+            <View
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 20,
+                backgroundColor: isDark ? "rgba(59, 130, 246, 0.2)" : "rgba(59, 130, 246, 0.1)",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: 12,
+              }}
+            >
+              <item.icon size={20} color="#3b82f6" />
+            </View>
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: "600",
+                color: isDark ? "#ffffff" : "#111827",
+              }}
+            >
+              {item.text}
+            </Text>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+
+  const renderAppsSelection = () => (
+    <View style={{ flex: 1, paddingHorizontal: 24 }}>
+      <View style={{ alignItems: "center", marginBottom: 24 }}>
+        <View
+          style={{
+            width: 64,
+            height: 64,
+            borderRadius: 32,
+            backgroundColor: isDark ? "rgba(239, 68, 68, 0.2)" : "rgba(239, 68, 68, 0.1)",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 16,
+          }}
+        >
+          <Smartphone size={32} color="#ef4444" />
+        </View>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: "700",
+            color: isDark ? "#ffffff" : "#111827",
+            textAlign: "center",
+            marginBottom: 8,
+          }}
+        >
+          Select Apps to Block
+        </Text>
+        <Text
+          style={{
+            fontSize: 14,
+            color: isDark ? "#9ca3af" : "#6b7280",
+            textAlign: "center",
+          }}
+        >
+          These apps will be blocked until you earn time
+        </Text>
+      </View>
+
+      {Platform.OS === "ios" ? (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <TouchableOpacity
+            onPress={handleIOSAppPicker}
+            activeOpacity={0.8}
+            style={{
+              backgroundColor: "#3b82f6",
+              paddingVertical: 16,
+              paddingHorizontal: 32,
+              borderRadius: 16,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Plus size={20} color="#ffffff" />
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "700",
+                color: "#ffffff",
+                marginLeft: 8,
+              }}
+            >
+              {iosAppsSelected ? "Change Selection" : "Select Apps"}
+            </Text>
+          </TouchableOpacity>
+
+          {iosSelectionInfo && (
+            <View
+              style={{
+                marginTop: 24,
+                backgroundColor: isDark ? "rgba(16, 185, 129, 0.1)" : "rgba(16, 185, 129, 0.1)",
+                padding: 16,
+                borderRadius: 12,
+                alignItems: "center",
+              }}
+            >
+              <Check size={24} color="#10b981" />
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "600",
+                  color: "#10b981",
+                  marginTop: 8,
+                }}
+              >
+                {iosSelectionInfo.appsCount} apps selected
+              </Text>
+              {iosSelectionInfo.categoriesCount > 0 && (
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: isDark ? "#9ca3af" : "#6b7280",
+                    marginTop: 4,
+                  }}
+                >
+                  {iosSelectionInfo.categoriesCount} categories included
+                </Text>
+              )}
+            </View>
+          )}
+        </View>
+      ) : (
+        <ScrollView
+          style={{ flex: 1 }}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        >
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
+            {POPULAR_APPS.map((app) => {
+              const isSelected = selectedApps.includes(app.packageName);
+              return (
+                <TouchableOpacity
+                  key={app.packageName}
+                  onPress={() => toggleApp(app.packageName)}
+                  activeOpacity={0.7}
+                  style={{
+                    paddingVertical: 12,
+                    paddingHorizontal: 16,
+                    borderRadius: 12,
+                    backgroundColor: isSelected
+                      ? "#ef4444"
+                      : isDark
+                      ? "rgba(255, 255, 255, 0.08)"
+                      : "#f3f4f6",
+                    borderWidth: 1,
+                    borderColor: isSelected
+                      ? "#ef4444"
+                      : isDark
+                      ? "rgba(255, 255, 255, 0.1)"
+                      : "transparent",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: "600",
+                      color: isSelected ? "#ffffff" : isDark ? "#ffffff" : "#374151",
+                    }}
+                  >
+                    {app.appName}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          <View
+            style={{
+              marginTop: 20,
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f9fafb",
+              padding: 16,
+              borderRadius: 12,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 13,
+                color: isDark ? "#9ca3af" : "#6b7280",
+                textAlign: "center",
+              }}
+            >
+              {selectedApps.length} app{selectedApps.length !== 1 ? "s" : ""} selected
+            </Text>
+          </View>
+        </ScrollView>
+      )}
+    </View>
+  );
+
+  const renderWebsitesSelection = () => (
+    <View style={{ flex: 1, paddingHorizontal: 24 }}>
+      <View style={{ alignItems: "center", marginBottom: 24 }}>
+        <View
+          style={{
+            width: 64,
+            height: 64,
+            borderRadius: 32,
+            backgroundColor: isDark ? "rgba(139, 92, 246, 0.2)" : "rgba(139, 92, 246, 0.1)",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 16,
+          }}
+        >
+          <Globe size={32} color="#8b5cf6" />
+        </View>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: "700",
+            color: isDark ? "#ffffff" : "#111827",
+            textAlign: "center",
+            marginBottom: 8,
+          }}
+        >
+          Block Websites
+        </Text>
+        <Text
+          style={{
+            fontSize: 14,
+            color: isDark ? "#9ca3af" : "#6b7280",
+            textAlign: "center",
+          }}
+        >
+          Optional: Block distracting websites in browsers
+        </Text>
+      </View>
+
+      <ScrollView
+        style={{ flex: 1 }}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      >
+        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
+          {POPULAR_WEBSITES.map((site) => {
+            const isSelected = selectedWebsites.includes(site.domain);
+            return (
+              <TouchableOpacity
+                key={site.domain}
+                onPress={() => toggleWebsite(site.domain)}
+                activeOpacity={0.7}
+                style={{
+                  paddingVertical: 12,
+                  paddingHorizontal: 16,
+                  borderRadius: 12,
+                  backgroundColor: isSelected
+                    ? "#8b5cf6"
+                    : isDark
+                    ? "rgba(255, 255, 255, 0.08)"
+                    : "#f3f4f6",
+                  borderWidth: 1,
+                  borderColor: isSelected
+                    ? "#8b5cf6"
+                    : isDark
+                    ? "rgba(255, 255, 255, 0.1)"
+                    : "transparent",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: "600",
+                    color: isSelected ? "#ffffff" : isDark ? "#ffffff" : "#374151",
+                  }}
+                >
+                  {site.name}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        {/* Custom website input */}
+        <View style={{ marginTop: 20 }}>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: "600",
+              color: isDark ? "#ffffff" : "#374151",
+              marginBottom: 8,
+            }}
+          >
+            Add custom website
+          </Text>
+          <View style={{ flexDirection: "row", gap: 8 }}>
+            <TextInput
+              value={customWebsite}
+              onChangeText={setCustomWebsite}
+              placeholder="example.com"
+              placeholderTextColor={isDark ? "#6b7280" : "#9ca3af"}
+              style={{
+                flex: 1,
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#f3f4f6",
+                borderRadius: 12,
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+                fontSize: 14,
+                color: isDark ? "#ffffff" : "#111827",
+              }}
+              onSubmitEditing={addCustomWebsite}
+            />
+            <TouchableOpacity
+              onPress={addCustomWebsite}
+              activeOpacity={0.7}
+              style={{
+                backgroundColor: "#8b5cf6",
+                borderRadius: 12,
+                width: 48,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Plus size={20} color="#ffffff" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Selected custom websites */}
+        {selectedWebsites.filter(
+          (w) => !POPULAR_WEBSITES.find((pw) => pw.domain === w)
+        ).length > 0 && (
+          <View style={{ marginTop: 16 }}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: "600",
+                color: isDark ? "#9ca3af" : "#6b7280",
+                marginBottom: 8,
+              }}
+            >
+              Custom websites:
+            </Text>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+              {selectedWebsites
+                .filter((w) => !POPULAR_WEBSITES.find((pw) => pw.domain === w))
+                .map((domain) => (
+                  <View
+                    key={domain}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: "#8b5cf6",
+                      paddingVertical: 8,
+                      paddingLeft: 12,
+                      paddingRight: 8,
+                      borderRadius: 8,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        color: "#ffffff",
+                        marginRight: 6,
+                      }}
+                    >
+                      {domain}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => toggleWebsite(domain)}
+                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                    >
+                      <X size={14} color="#ffffff" />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+            </View>
+          </View>
+        )}
+
+        <View
+          style={{
+            marginTop: 20,
+            backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f9fafb",
+            padding: 16,
+            borderRadius: 12,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 13,
+              color: isDark ? "#9ca3af" : "#6b7280",
+              textAlign: "center",
+            }}
+          >
+            {selectedWebsites.length} website{selectedWebsites.length !== 1 ? "s" : ""} selected
+          </Text>
+        </View>
+      </ScrollView>
+    </View>
+  );
+
+  const renderGoalSelection = () => (
+    <View style={{ flex: 1, paddingHorizontal: 24, justifyContent: "center" }}>
+      <View style={{ alignItems: "center", marginBottom: 32 }}>
+        <View
+          style={{
+            width: 64,
+            height: 64,
+            borderRadius: 32,
+            backgroundColor: isDark ? "rgba(16, 185, 129, 0.2)" : "rgba(16, 185, 129, 0.1)",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 16,
+          }}
+        >
+          <Target size={32} color="#10b981" />
+        </View>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: "700",
+            color: isDark ? "#ffffff" : "#111827",
+            textAlign: "center",
+            marginBottom: 8,
+          }}
+        >
+          Set Your Daily Goal
+        </Text>
+        <Text
+          style={{
+            fontSize: 14,
+            color: isDark ? "#9ca3af" : "#6b7280",
+            textAlign: "center",
+          }}
+        >
+          How much screen time do you want per app?
+        </Text>
+      </View>
+
+      <View style={{ gap: 12 }}>
+        {DAILY_GOAL_OPTIONS.map((option) => {
+          const isSelected = dailyGoal === option.value;
+          return (
+            <TouchableOpacity
+              key={option.value}
+              onPress={() => setDailyGoal(option.value)}
+              activeOpacity={0.7}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: 16,
+                borderRadius: 16,
+                backgroundColor: isSelected
+                  ? isDark
+                    ? "rgba(16, 185, 129, 0.2)"
+                    : "rgba(16, 185, 129, 0.1)"
+                  : isDark
+                  ? "rgba(255, 255, 255, 0.05)"
+                  : "#f3f4f6",
+                borderWidth: 2,
+                borderColor: isSelected ? "#10b981" : "transparent",
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <View
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 22,
+                    backgroundColor: isSelected
+                      ? "#10b981"
+                      : isDark
+                      ? "rgba(255, 255, 255, 0.1)"
+                      : "#e5e7eb",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 12,
+                  }}
+                >
+                  <Clock
+                    size={20}
+                    color={isSelected ? "#ffffff" : isDark ? "#9ca3af" : "#6b7280"}
+                  />
+                </View>
+                <View>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: "700",
+                      color: isSelected
+                        ? "#10b981"
+                        : isDark
+                        ? "#ffffff"
+                        : "#111827",
+                    }}
+                  >
+                    {option.label}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      color: isDark ? "#9ca3af" : "#6b7280",
+                    }}
+                  >
+                    {option.description}
+                  </Text>
+                </View>
+              </View>
+
+              {isSelected && (
+                <View
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: 14,
+                    backgroundColor: "#10b981",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Check size={16} color="#ffffff" />
+                </View>
+              )}
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+
+      <Text
+        style={{
+          fontSize: 13,
+          color: isDark ? "#6b7280" : "#9ca3af",
+          textAlign: "center",
+          marginTop: 24,
+        }}
+      >
+        You can change this anytime in settings
+      </Text>
+    </View>
+  );
+
+  const renderComplete = () => (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingHorizontal: 24 }}>
+      <View
+        style={{
+          width: 100,
+          height: 100,
+          borderRadius: 50,
+          backgroundColor: isDark ? "rgba(16, 185, 129, 0.2)" : "rgba(16, 185, 129, 0.1)",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: 32,
+        }}
+      >
+        <Check size={48} color="#10b981" />
+      </View>
+
+      <Text
+        style={{
+          fontSize: 28,
+          fontWeight: "800",
+          color: isDark ? "#ffffff" : "#111827",
+          textAlign: "center",
+          marginBottom: 16,
+        }}
+      >
+        You're All Set!
+      </Text>
+
+      <Text
+        style={{
+          fontSize: 16,
+          color: isDark ? "#9ca3af" : "#6b7280",
+          textAlign: "center",
+          lineHeight: 24,
+          marginBottom: 40,
+        }}
+      >
+        Your selected apps are now blocked.{"\n"}Earn time through exercises to use them!
+      </Text>
+
+      <View
+        style={{
+          width: "100%",
+          backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f3f4f6",
+          borderRadius: 16,
+          padding: 20,
+          gap: 12,
+        }}
+      >
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <Text style={{ fontSize: 14, color: isDark ? "#9ca3af" : "#6b7280" }}>
+            Apps blocked
+          </Text>
+          <Text style={{ fontSize: 14, fontWeight: "700", color: isDark ? "#ffffff" : "#111827" }}>
+            {Platform.OS === "ios" ? (iosSelectionInfo?.appsCount || 0) : selectedApps.length}
+          </Text>
+        </View>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <Text style={{ fontSize: 14, color: isDark ? "#9ca3af" : "#6b7280" }}>
+            Websites blocked
+          </Text>
+          <Text style={{ fontSize: 14, fontWeight: "700", color: isDark ? "#ffffff" : "#111827" }}>
+            {selectedWebsites.length}
+          </Text>
+        </View>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <Text style={{ fontSize: 14, color: isDark ? "#9ca3af" : "#6b7280" }}>
+            Daily limit per app
+          </Text>
+          <Text style={{ fontSize: 14, fontWeight: "700", color: "#10b981" }}>
+            {dailyGoal >= 60 ? `${dailyGoal / 60}h` : `${dailyGoal}m`}
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+
+  const renderContent = () => {
+    switch (currentStep) {
+      case "welcome":
+        return renderWelcome();
+      case "apps":
+        return renderAppsSelection();
+      case "websites":
+        return renderWebsitesSelection();
+      case "goal":
+        return renderGoalSelection();
+      case "complete":
+        return renderComplete();
+    }
+  };
+
+  const getButtonText = () => {
+    switch (currentStep) {
+      case "welcome":
+        return "Get Started";
+      case "apps":
+        return "Continue";
+      case "websites":
+        return selectedWebsites.length > 0 ? "Continue" : "Skip";
+      case "goal":
+        return "Continue";
+      case "complete":
+        return "Start Using App";
+    }
+  };
+
+  return (
+    <SafeAreaView
+      edges={["top", "bottom"]}
+      style={{
+        flex: 1,
+        backgroundColor: isDark ? "#000000" : "#ffffff",
+      }}
+    >
+      <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
+
+      {/* Progress bar */}
+      {currentStep !== "welcome" && (
+        <View
+          style={{
+            height: 4,
+            backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "#e5e7eb",
+            marginHorizontal: 24,
+            marginTop: 8,
+            borderRadius: 2,
+            overflow: "hidden",
+          }}
+        >
+          <View
+            style={{
+              width: `${getStepProgress()}%`,
+              height: "100%",
+              backgroundColor: "#3b82f6",
+              borderRadius: 2,
+            }}
+          />
+        </View>
+      )}
+
+      {/* Content */}
+      <Animated.View
+        style={{
+          flex: 1,
+          opacity: fadeAnim,
+          transform: [{ translateX: slideAnim }],
+          paddingTop: 24,
+        }}
+      >
+        {renderContent()}
+      </Animated.View>
+
+      {/* Bottom button */}
+      <View style={{ paddingHorizontal: 24, paddingBottom: 16 }}>
+        <TouchableOpacity
+          onPress={handleNext}
+          disabled={!canProceed()}
+          activeOpacity={0.8}
+          style={{
+            backgroundColor: canProceed() ? "#3b82f6" : isDark ? "#374151" : "#e5e7eb",
+            borderRadius: 16,
+            paddingVertical: 18,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 17,
+              fontWeight: "700",
+              color: canProceed() ? "#ffffff" : isDark ? "#6b7280" : "#9ca3af",
+            }}
+          >
+            {getButtonText()}
+          </Text>
+          {currentStep !== "complete" && (
+            <ChevronRight
+              size={20}
+              color={canProceed() ? "#ffffff" : isDark ? "#6b7280" : "#9ca3af"}
+              style={{ marginLeft: 4 }}
+            />
+          )}
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
-
-
-// type OnboardingStep = {
-//   type:
-//     | "welcome"
-//     | "text"
-//     | "avatar"
-//     | "select"
-//     | "timepicker"
-//     | "passionSelect"
-//     | "loginRedirect";
-//   title: string;
-//   description?: string;
-//   key: string;
-//   placeholder?: string;
-//   options?: string[];
-// };
-
-// const passionsList = [
-//   "Science",
-//   "Technology",
-//   "Art",
-//   "Music",
-//   "Sports",
-//   "Literature",
-//   "History",
-//   "Business",
-//   "Medicine",
-//   "Engineering",
-//   "Travel",
-//   "Languages",
-//   "Other",
-// ];
-
-// const onboardingQuestions: OnboardingStep[] = [
-//   {
-//     type: "welcome",
-//     title: "Welcome to SAT Prep",
-//     description: "Let's personalize your journey with a few quick questions.",
-//     key: "welcome",
-//   },
-//   {
-//     type: "text",
-//     title: "What's your name?",
-//     placeholder: "Enter your name",
-//     key: "name",
-//   },
-//   { type: "avatar", title: "Pick an avatar", key: "avatar" },
-//   {
-//     type: "select",
-//     title: "Have you tried SAT before?",
-//     options: ["Never", "Once", "Multiple times"],
-//     key: "satExperience",
-//   },
-//   {
-//     type: "timepicker",
-//     title: "When do you plan to take the SAT?",
-//     key: "satDate",
-//   },
-//   {
-//     type: "select",
-//     title: "Most difficult part for you?",
-//     options: ["Math", "Reading", "Writing", "Time management"],
-//     key: "difficulty",
-//   },
-//   {
-//     type: "passionSelect",
-//     title: "What's your passion?",
-//     key: "passion",
-//   },
-//   {
-//     type: "loginRedirect",
-//     title: "You're all set! 🎉",
-//     description: "Final step: create your account to begin your journey.",
-//     key: "gotoRegister",
-//   },
-// ];
-
-// export default function Onboarding() {
-//   const [currentStep, setCurrentStep] = useState(0);
-//   const [answers, setAnswers] = useState<Record<string, string>>({});
-//   const [showDatePicker, setShowDatePicker] = useState(false);
-//   const router = useRouter();
-
-//   const fadeAnim = useState(new Animated.Value(0))[0];
-//   const slideAnim = useState(new Animated.Value(20))[0];
-
-//   const step = onboardingQuestions[currentStep];
-//   const totalSteps = onboardingQuestions.length;
-
-//   useEffect(() => {
-//     Animated.parallel([
-//       Animated.timing(fadeAnim, {
-//         toValue: 1,
-//         duration: 400,
-//         useNativeDriver: true,
-//       }),
-//       Animated.timing(slideAnim, {
-//         toValue: 0,
-//         duration: 400,
-//         easing: Easing.out(Easing.exp),
-//         useNativeDriver: true,
-//       }),
-//     ]).start();
-//   }, [currentStep]);
-
-//   const handleNext = async () => {
-//     if (currentStep < totalSteps - 1) {
-//       fadeAnim.setValue(0);
-//       slideAnim.setValue(20);
-//       setCurrentStep(currentStep + 1);
-//     } else {
-//       try {
-//         await SecureStore.setItemAsync("onboardingCompleted", "true");
-
-//         await SecureStore.setItemAsync("onboardingAnswers", JSON.stringify(answers));
-
-//         router.push({ pathname: "/login", params: { tab: "register" } });
-//       } catch (err) {
-//         console.error("Error saving onboarding data:", err);
-//         router.push({ pathname: "/login", params: { tab: "register" } });
-//       }
-//     }
-//   };
-
-//   const handleAnswer = (key: string, value: string) => {
-//     setAnswers((prev) => ({ ...prev, [key]: value }));
-//   };
-
-//   const progress = ((currentStep + 1) / totalSteps) * 100;
-
-//   return (
-//     <LinearGradient
-//       colors={["#1e3a8a", "#3b82f6", "#60a5fa"]}
-//       start={{ x: 0, y: 0 }}
-//       end={{ x: 1, y: 1 }}
-//       style={{ flex: 1 }}
-
-//     >
-//       <ScrollView
-//         className="flex-1 px-6"
-//         contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
-//       >
-//         {/* Progress Bar */}
-//         <View className="w-full h-2 bg-white/20 rounded-full mb-8 overflow-hidden">
-//           <View
-//             style={{
-//               width: `${progress}%`,
-//               height: "100%",
-//               backgroundColor: "white",
-//             }}
-//           />
-//         </View>
-
-//         {/* Step Content */}
-//         <Animated.View
-//           style={{
-//             opacity: fadeAnim,
-//             transform: [{ translateY: slideAnim }],
-//           }}
-//         >
-//           <MotiText
-//             from={{ opacity: 0, translateY: 10 }}
-//             animate={{ opacity: 1, translateY: 0 }}
-//             transition={{ delay: 100 }}
-//             className="text-3xl font-extrabold text-white text-center mb-3"
-//           >
-//             {step.title}
-//           </MotiText>
-
-//           {step.description && (
-//             <MotiText
-//               from={{ opacity: 0 }}
-//               animate={{ opacity: 1 }}
-//               transition={{ delay: 150 }}
-//               className="text-center text-white/90 mb-8 text-base"
-//             >
-//               {step.description}
-//             </MotiText>
-//           )}
-
-//           {/* Text Input (Glass style) */}
-//           {step.type === "text" && (
-//             <View className="bg-white/15 rounded-2xl mb-6 ">
-//               <TextInput
-//                 className="bg-white/20 rounded-2xl text-white px-4 py-3 text-base"
-//                 placeholder={step.placeholder}
-//                 placeholderTextColor="rgba(255,255,255,0.7)"
-//                 value={answers[step.key] || ""}
-//                 onChangeText={(text) => handleAnswer(step.key, text)}
-//               />
-//             </View>
-//           )}
-
-//           {/* Avatar Selection */}
-//           {step.type === "avatar" && (
-//             <View className="flex-row items-center gap-8 mb-6 mx-auto">
-//               {["👩‍🎓", "🧑‍🎓", "🎓"].map((emoji) => (
-//                 <TouchableOpacity
-//                   key={emoji}
-//                   className={`p-4 px-5 rounded-full border-2 ${
-//                     answers[step.key] === emoji
-//                       ? "border-yellow-400 bg-white/30"
-//                       : "border-white/40"
-//                   }`}
-//                   onPress={() => handleAnswer(step.key, emoji)}
-//                 >
-//                   <Text style={{ fontSize: 36 }}>{emoji}</Text>
-//                 </TouchableOpacity>
-//               ))}
-//             </View>
-//           )}
-
-//           {/* Select Options */}
-//           {step.type === "select" &&
-//             step.options?.map((opt) => (
-//               <TouchableOpacity
-//                 key={opt}
-//                 className={`p-4 mb-3 rounded-xl ${
-//                   answers[step.key] === opt
-//                     ? "bg-white"
-//                     : "bg-white/20 border border-white/30"
-//                 }`}
-//                 onPress={() => handleAnswer(step.key, opt)}
-//               >
-//                 <Text
-//                   className={`text-center ${
-//                     answers[step.key] === opt
-//                       ? "text-blue-600 font-bold"
-//                       : "text-white"
-//                   }`}
-//                 >
-//                   {opt}
-//                 </Text>
-//               </TouchableOpacity>
-//             ))}
-
-//           {/* Time Picker */}
-//           {step.type === "timepicker" && (
-//             <View className="items-center">
-//               <TouchableOpacity
-//                 onPress={() => setShowDatePicker(true)}
-//                 className="bg-white/20 border border-white/30 p-4 rounded-xl mb-4"
-//               >
-//                 <Text className="text-white text-center">
-//                   {answers[step.key]
-//                     ? `📅 ${answers[step.key]}`
-//                     : "Select your exam date"}
-//                 </Text>
-//               </TouchableOpacity>
-
-//               {showDatePicker && (
-//                 <DateTimePicker
-//                   mode="date"
-//                   value={new Date()}
-//                   display={Platform.OS === "ios" ? "spinner" : "default"}
-//                   onChange={(event, date) => {
-//                     setShowDatePicker(false);
-//                     if (date) {
-//                       handleAnswer(step.key, date.toDateString());
-//                     }
-//                   }}
-//                 />
-//               )}
-//             </View>
-//           )}
-
-//           {/* Passion Select */}
-//           {step.type === "passionSelect" && (
-//             <View className="flex flex-wrap flex-row justify-center gap-3 mb-6">
-//               {passionsList.map((p) => (
-//                 <TouchableOpacity
-//                   key={p}
-//                   onPress={() => handleAnswer(step.key, p)}
-//                   className={`px-4 py-2 rounded-full ${
-//                     answers[step.key] === p
-//                       ? "bg-white"
-//                       : "bg-white/20 border border-white/30"
-//                   }`}
-//                 >
-//                   <Text
-//                     className={`${
-//                       answers[step.key] === p
-//                         ? "text-blue-600 font-bold"
-//                         : "text-white"
-//                     }`}
-//                   >
-//                     {p}
-//                   </Text>
-//                 </TouchableOpacity>
-//               ))}
-//             </View>
-//           )}
-
-//           {/* Next Button */}
-//           <TouchableOpacity
-//             activeOpacity={0.9}
-//             onPress={handleNext}
-//             className="rounded-2xl overflow-hidden shadow-lg mt-6"
-//           >
-//             <LinearGradient
-//               colors={["#f59e0b", "#fbbf24"]}
-//               start={{ x: 0, y: 0 }}
-//               end={{ x: 1, y: 1 }}
-//               style={{ paddingVertical: 14 }}
-//             >
-//               <Text className="text-center text-white font-semibold text-base">
-//                 {currentStep === totalSteps - 1 ? "Go to Register" : "Next"}
-//               </Text>
-//             </LinearGradient>
-//           </TouchableOpacity>
-//         </Animated.View>
-
-//       </ScrollView>
-//       <View className="items-center justify-center py-6 mb-12">
-//         <TouchableOpacity
-//           onPress={() => router.replace("/login")}
-//           activeOpacity={0.8}
-//         >
-//           <Text className="text-white/80 text-sm font-semibold mt-1 underline underline-offset-4">
-//             Already have an account? Log in
-//           </Text>
-//         </TouchableOpacity>
-//       </View>
-//     </LinearGradient>
-//   );
-// }

@@ -1383,10 +1383,168 @@ export const Step14Notifications = ({
 };
 
 // ============================================
-// SCREEN 15: Apps & Websites Selection
+// SCREEN 15: Daily Goal Selection
 // ============================================
 
-export const Step15AppSelection = ({
+export const Step15DailyGoal = ({
+  onSelect,
+}: {
+  onSelect: (minutes: number) => void;
+}) => {
+  const { colors, isDark } = useOnboardingTheme();
+  const [goalMinutes, setGoalMinutes] = useState(30); // Default 30 minutes
+
+  const formatTime = (minutes: number) => {
+    if (minutes < 60) {
+      return `${minutes} min`;
+    }
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (mins === 0) {
+      return `${hours}h`;
+    }
+    return `${hours}h ${mins}m`;
+  };
+
+  const getGoalDescription = (minutes: number) => {
+    if (minutes <= 15) return 'Minimal usage - very strict';
+    if (minutes <= 30) return 'Light usage - recommended';
+    if (minutes <= 60) return 'Moderate usage';
+    if (minutes <= 120) return 'Balanced approach';
+    return 'Flexible usage';
+  };
+
+  return (
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, paddingBottom: 40 }}>
+      <FadeInView delay={0}>
+        <View style={{ alignItems: 'center', marginBottom: 24 }}>
+          <Target size={56} color={COLORS.success} />
+        </View>
+        <Text style={{
+          fontSize: 32,
+          fontWeight: '800',
+          color: colors.textPrimary,
+          textAlign: 'center',
+          marginBottom: 12,
+          letterSpacing: -0.5,
+        }}>
+          Set Your Daily Goal
+        </Text>
+      </FadeInView>
+
+      <FadeInView delay={100}>
+        <Text style={{
+          fontSize: 16,
+          color: colors.textSecondary,
+          textAlign: 'center',
+          marginBottom: 40,
+          lineHeight: 24,
+        }}>
+          How much screen time per app{'\n'}do you want to allow daily?
+        </Text>
+      </FadeInView>
+
+      {/* Big Time Display */}
+      <FadeInView delay={200}>
+        <View style={{
+          backgroundColor: isDark ? 'rgba(16, 185, 129, 0.1)' : 'rgba(16, 185, 129, 0.08)',
+          borderRadius: 24,
+          padding: 32,
+          marginBottom: 32,
+          alignItems: 'center',
+          borderWidth: 1,
+          borderColor: 'rgba(16, 185, 129, 0.2)',
+        }}>
+          <Text style={{
+            fontSize: 64,
+            fontWeight: '800',
+            color: COLORS.success,
+            letterSpacing: -2,
+          }}>
+            {formatTime(goalMinutes)}
+          </Text>
+          <Text style={{
+            fontSize: 14,
+            color: colors.textSecondary,
+            marginTop: 8,
+          }}>
+            {getGoalDescription(goalMinutes)}
+          </Text>
+        </View>
+      </FadeInView>
+
+      {/* Custom Slider */}
+      <FadeInView delay={300}>
+        <View style={{ marginBottom: 16, paddingHorizontal: 8 }}>
+          <View style={{
+            height: 8,
+            backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)',
+            borderRadius: 4,
+            overflow: 'hidden',
+          }}>
+            <LinearGradient
+              colors={GRADIENT_COLORS.success}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{
+                height: '100%',
+                width: `${((goalMinutes - 5) / (180 - 5)) * 100}%`,
+                borderRadius: 4,
+              }}
+            />
+          </View>
+
+          {/* Touch area for slider */}
+          <View
+            style={{
+              position: 'absolute',
+              top: -20,
+              left: 0,
+              right: 0,
+              height: 48,
+            }}
+            onStartShouldSetResponder={() => true}
+            onMoveShouldSetResponder={() => true}
+            onResponderGrant={(e) => {
+              const { locationX } = e.nativeEvent;
+              const containerWidth = width - 64; // 24*2 padding + 8*2 extra
+              const percentage = Math.max(0, Math.min(1, locationX / containerWidth));
+              const newValue = Math.round(5 + percentage * (180 - 5));
+              setGoalMinutes(newValue);
+            }}
+            onResponderMove={(e) => {
+              const { locationX } = e.nativeEvent;
+              const containerWidth = width - 64;
+              const percentage = Math.max(0, Math.min(1, locationX / containerWidth));
+              const newValue = Math.round(5 + percentage * (180 - 5));
+              setGoalMinutes(newValue);
+            }}
+          />
+        </View>
+
+        {/* Labels */}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8, marginBottom: 40 }}>
+          <Text style={{ fontSize: 12, color: colors.textTertiary }}>5 min</Text>
+          <Text style={{ fontSize: 12, color: colors.textTertiary }}>3 hours</Text>
+        </View>
+      </FadeInView>
+
+      <FadeInView delay={400}>
+        <GradientButton
+          onPress={() => onSelect(goalMinutes)}
+          title="Continue"
+          colors={GRADIENT_COLORS.success}
+        />
+      </FadeInView>
+    </ScrollView>
+  );
+};
+
+// ============================================
+// SCREEN 16: Apps & Websites Selection
+// ============================================
+
+export const Step16AppSelection = ({
   preloadedApps = [],
   appsLoading = false,
   onConfirm,

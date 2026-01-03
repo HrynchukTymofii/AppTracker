@@ -1,71 +1,35 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Dumbbell, Clock, TrendingUp, ChevronRight } from "lucide-react-native";
-import { useTheme } from "@/context/ThemeContext";
+import { Camera, TrendingUp, ChevronRight } from "lucide-react-native";
 import { useEarnedTime } from "@/context/EarnedTimeContext";
+import { ExerciseType } from "@/lib/poseUtils";
 
 interface EarnTimeSectionProps {
   isDark: boolean;
-  onStartExercise: () => void;
+  onStartExercise: (type: ExerciseType) => void;
+  onVerifiedStart: () => void;
 }
 
 export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
   isDark,
   onStartExercise,
+  onVerifiedStart,
 }) => {
-  const { accentColor } = useTheme();
   const { wallet, getTodayEarned, getTodaySpent, getWeekStats } = useEarnedTime();
 
   const todayEarned = getTodayEarned();
   const todaySpent = getTodaySpent();
   const weekStats = getWeekStats();
 
+  const exercises: { type: ExerciseType; emoji: string; label: string; description: string; iconColors: [string, string] }[] = [
+    { type: "pushups", emoji: "💪", label: "Push-ups", description: "0.5 min per rep", iconColors: ["#ef4444", "#dc2626"] },
+    { type: "squats", emoji: "🏋️", label: "Squats", description: "0.4 min per rep", iconColors: ["#8b5cf6", "#7c3aed"] },
+    { type: "plank", emoji: "🧘", label: "Plank", description: "0.1 min per second", iconColors: ["#10b981", "#059669"] },
+  ];
+
   return (
     <View style={{ paddingHorizontal: 20, marginTop: 16 }}>
-      {/* Section Header */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: 16,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: "800",
-            color: isDark ? "#ffffff" : "#111827",
-            letterSpacing: -0.3,
-          }}
-        >
-          Earn Time
-        </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: isDark ? "rgba(59, 130, 246, 0.12)" : "rgba(59, 130, 246, 0.08)",
-            paddingHorizontal: 12,
-            paddingVertical: 6,
-            borderRadius: 20,
-          }}
-        >
-          <Clock size={14} color="#3b82f6" />
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: "700",
-              color: "#3b82f6",
-              marginLeft: 6,
-            }}
-          >
-            {wallet.availableMinutes.toFixed(1)} min
-          </Text>
-        </View>
-      </View>
-
       {/* Balance Card */}
       <View
         style={{
@@ -228,45 +192,39 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
         </View>
       </View>
 
-      {/* Exercise CTA Card */}
+      {/* Photo Task Button */}
       <TouchableOpacity
-        onPress={onStartExercise}
+        onPress={onVerifiedStart}
         activeOpacity={0.7}
         style={{
           backgroundColor: isDark ? "#0a0a0a" : "#ffffff",
-          borderRadius: 20,
-          padding: 18,
+          borderRadius: 16,
+          padding: 16,
           flexDirection: "row",
           alignItems: "center",
-          overflow: "hidden",
+          marginBottom: 12,
           borderWidth: 1,
-          borderColor: "rgba(16, 185, 129, 0.3)",
-          shadowColor: "#10b981",
-          shadowOffset: { width: 0, height: 8 },
-          shadowOpacity: 0.25,
-          shadowRadius: 20,
-          elevation: 8,
+          borderColor: "rgba(59, 130, 246, 0.3)",
+          shadowColor: "#3b82f6",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.15,
+          shadowRadius: 12,
+          elevation: 4,
         }}
       >
-        {/* Icon with gradient */}
         <View
           style={{
-            width: 56,
-            height: 56,
-            borderRadius: 18,
+            width: 48,
+            height: 48,
+            borderRadius: 14,
             alignItems: "center",
             justifyContent: "center",
-            marginRight: 16,
+            marginRight: 14,
             overflow: "hidden",
-            shadowColor: "#10b981",
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.3,
-            shadowRadius: 8,
-            elevation: 4,
           }}
         >
           <LinearGradient
-            colors={["#10b981", "#059669"]}
+            colors={["#3b82f6", "#2563eb"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={{
@@ -277,52 +235,120 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
               bottom: 0,
             }}
           />
-          <Dumbbell size={26} color="#ffffff" strokeWidth={2} />
+          <Camera size={24} color="#ffffff" strokeWidth={2} />
         </View>
 
-        {/* Content */}
         <View style={{ flex: 1 }}>
-          <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "700",
+              color: isDark ? "#ffffff" : "#0f172a",
+              letterSpacing: -0.3,
+            }}
+          >
+            Photo Task
+          </Text>
+          <Text
+            style={{
+              fontSize: 13,
+              color: isDark ? "rgba(255,255,255,0.5)" : "#94a3b8",
+              marginTop: 2,
+            }}
+          >
+            Verify your focus with before/after photos
+          </Text>
+        </View>
+
+        <ChevronRight size={20} color="#3b82f6" strokeWidth={2} />
+      </TouchableOpacity>
+
+      {/* Exercises Header */}
+      <Text
+        style={{
+          fontSize: 18,
+          fontWeight: "700",
+          color: isDark ? "#ffffff" : "#111827",
+          marginTop: 8,
+          marginBottom: 12,
+        }}
+      >
+        Earn with Exercise
+      </Text>
+
+      {/* Exercise Buttons */}
+      {exercises.map((exercise) => (
+        <TouchableOpacity
+          key={exercise.type}
+          onPress={() => onStartExercise(exercise.type)}
+          activeOpacity={0.7}
+          style={{
+            backgroundColor: isDark ? "#0a0a0a" : "#ffffff",
+            borderRadius: 16,
+            padding: 16,
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 12,
+            borderWidth: 1,
+            borderColor: "rgba(16, 185, 129, 0.3)",
+            shadowColor: "#10b981",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.15,
+            shadowRadius: 12,
+            elevation: 4,
+          }}
+        >
+          <View
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: 14,
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: 14,
+              overflow: "hidden",
+            }}
+          >
+            <LinearGradient
+              colors={exercise.iconColors}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            />
+            <Text style={{ fontSize: 24 }}>{exercise.emoji}</Text>
+          </View>
+
+          <View style={{ flex: 1 }}>
             <Text
               style={{
-                fontSize: 17,
+                fontSize: 16,
                 fontWeight: "700",
                 color: isDark ? "#ffffff" : "#0f172a",
                 letterSpacing: -0.3,
               }}
             >
-              Exercise to Earn
+              {exercise.label}
+            </Text>
+            <Text
+              style={{
+                fontSize: 13,
+                color: isDark ? "rgba(255,255,255,0.5)" : "#94a3b8",
+                marginTop: 2,
+              }}
+            >
+              {exercise.description}
             </Text>
           </View>
-          <Text
-            style={{
-              fontSize: 13,
-              color: isDark ? "rgba(255,255,255,0.5)" : "#94a3b8",
-              lineHeight: 18,
-            }}
-          >
-            Pushups, squats, or plank to earn minutes
-          </Text>
-        </View>
 
-        {/* Arrow */}
-        <View
-          style={{
-            width: 36,
-            height: 36,
-            borderRadius: 12,
-            backgroundColor: "rgba(16, 185, 129, 0.15)",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <ChevronRight
-            size={18}
-            color="#10b981"
-            strokeWidth={2}
-          />
-        </View>
-      </TouchableOpacity>
+          <ChevronRight size={20} color="#10b981" strokeWidth={2} />
+        </TouchableOpacity>
+      ))}
     </View>
   );
 };

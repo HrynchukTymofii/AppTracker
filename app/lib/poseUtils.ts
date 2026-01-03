@@ -384,21 +384,28 @@ export const DEFAULT_EXERCISE_REWARDS: Record<ExerciseType, ExerciseReward> = {
   pushups: {
     type: 'pushups',
     minutesPerRep: 0.5,
-    minimumReps: 5,
-    bonusMultiplier: 1.2,
+    minimumReps: 3,
+    bonusMultiplier: 1.1,
   },
   squats: {
     type: 'squats',
     minutesPerRep: 0.5,
-    minimumReps: 5,
-    bonusMultiplier: 1.2,
+    minimumReps: 3,
+    bonusMultiplier: 1.1,
   },
   plank: {
     type: 'plank',
     minutesPerSecond: 0.1,
-    minimumSeconds: 20,
-    bonusMultiplier: 1.5,
+    minimumSeconds: 10,
+    bonusMultiplier: 1.1,
   },
+};
+
+// Bonus thresholds
+export const BONUS_THRESHOLDS = {
+  pushups: 20,
+  squats: 20,
+  plank: 30, // seconds
 };
 
 export function calculateEarnedMinutes(
@@ -412,7 +419,8 @@ export function calculateEarnedMinutes(
         return 0;
       }
       const baseMinutes = state.repCount * (rewards.minutesPerRep || 0.5);
-      const bonus = state.repCount >= (rewards.minimumReps || 5) * 2
+      // Apply 1.1x bonus after 20 reps
+      const bonus = state.repCount >= BONUS_THRESHOLDS[state.type]
         ? (rewards.bonusMultiplier || 1)
         : 1;
       return Math.round(baseMinutes * bonus * 10) / 10;
@@ -423,7 +431,8 @@ export function calculateEarnedMinutes(
         return 0;
       }
       const baseMinutes = state.holdTime * (rewards.minutesPerSecond || 0.1);
-      const bonus = state.holdTime >= (rewards.minimumSeconds || 20) * 2
+      // Apply 1.1x bonus after 30 seconds
+      const bonus = state.holdTime >= BONUS_THRESHOLDS.plank
         ? (rewards.bonusMultiplier || 1)
         : 1;
       return Math.round(baseMinutes * bonus * 10) / 10;
@@ -445,36 +454,39 @@ export function getExerciseInfo(type: ExerciseType): {
       return {
         name: 'Pushups',
         icon: '💪',
-        description: 'Earn 0.5 min per rep (min 5 reps)',
+        description: 'Earn 0.5 min per rep (min 3 reps)',
         instructions: [
           'Position your phone to see your full body from the side',
           'Get into pushup position with arms extended',
           'Lower your chest to the ground',
           'Push back up to complete a rep',
+          '1.1x bonus after 20 reps!',
         ],
       };
     case 'squats':
       return {
         name: 'Squats',
         icon: '🏋️',
-        description: 'Earn 0.5 min per rep (min 5 reps)',
+        description: 'Earn 0.5 min per rep (min 3 reps)',
         instructions: [
           'Position your phone to see your full body from the side',
           'Stand with feet shoulder-width apart',
           'Squat down until thighs are parallel to ground',
           'Stand back up to complete a rep',
+          '1.1x bonus after 20 reps!',
         ],
       };
     case 'plank':
       return {
         name: 'Plank',
         icon: '🧘',
-        description: 'Earn 0.1 min per second (min 20s)',
+        description: 'Earn 0.1 min per second (min 10s)',
         instructions: [
           'Position your phone to see your full body from the side',
           'Get into plank position with body straight',
           'Hold the position as long as you can',
           'Keep your hips level - no sagging or raising',
+          '1.1x bonus after 30 seconds!',
         ],
       };
   }

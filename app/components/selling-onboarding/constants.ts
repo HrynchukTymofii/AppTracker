@@ -9,6 +9,7 @@ export interface UserAnswers {
   weeklyData: { day: string; hours: number }[] | null;
   blockedApps: string[];
   blockedWebsites: string[];
+  dailyGoal: number; // Daily screen time goal in minutes (5-180)
 }
 
 // ============================================

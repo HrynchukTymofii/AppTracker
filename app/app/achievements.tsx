@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import {
-  CheckCircle,
   LucideIcon,
   ArrowLeft,
   Target,
@@ -31,7 +30,9 @@ import {
   Sparkles,
   Activity,
   ShieldCheck,
+  CheckCircle,
 } from "lucide-react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter, useFocusEffect } from "expo-router";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useTranslation } from 'react-i18next';
@@ -40,139 +41,8 @@ import {
   SafeAreaView,
 } from "react-native-safe-area-context";
 import { getAchievementStats, hasWeeklyHealthAbove80 } from "@/lib/achievementTracking";
-
-export interface Achievement {
-  id: string;
-  title: string;
-  description: string;
-  icon: LucideIcon;
-  unlocked: boolean;
-  color: string;
-}
-
-const AchievementBadge = ({
-  achievement,
-  isDark,
-}: {
-  achievement: Achievement;
-  isDark: boolean;
-}) => {
-  const Icon = achievement.icon;
-
-  return (
-    <View
-      style={{
-        width: "48%",
-        borderRadius: 16,
-        backgroundColor: achievement.unlocked
-          ? isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff"
-          : isDark
-            ? "rgba(255, 255, 255, 0.03)"
-            : "rgba(0, 0, 0, 0.02)",
-        padding: 16,
-        marginBottom: 16,
-        alignItems: "center",
-        opacity: achievement.unlocked ? 1 : 0.5,
-        shadowColor: achievement.unlocked ? achievement.color : "#000",
-        shadowOffset: { width: 0, height: achievement.unlocked ? 8 : 2 },
-        shadowOpacity: achievement.unlocked ? 0.2 : 0.05,
-        shadowRadius: achievement.unlocked ? 16 : 4,
-        elevation: achievement.unlocked ? 6 : 2,
-        borderWidth: 1.5,
-        borderColor: achievement.unlocked
-          ? isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)"
-          : isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
-        borderTopColor: achievement.unlocked
-          ? isDark ? "rgba(255, 255, 255, 0.25)" : "rgba(255, 255, 255, 0.8)"
-          : "transparent",
-        borderBottomColor: achievement.unlocked
-          ? isDark ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.05)"
-          : "transparent",
-      }}
-    >
-      <View
-        style={{
-          width: 64,
-          height: 64,
-          borderRadius: 32,
-          backgroundColor: achievement.unlocked
-            ? achievement.color + "20"
-            : isDark
-              ? "rgba(255, 255, 255, 0.05)"
-              : "rgba(0, 0, 0, 0.03)",
-          alignItems: "center",
-          justifyContent: "center",
-          marginBottom: 12,
-          borderWidth: 2.5,
-          borderColor: achievement.unlocked
-            ? achievement.color
-            : isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.05)",
-        }}
-      >
-        <Icon
-          size={32}
-          color={
-            achievement.unlocked ? achievement.color : isDark ? "#64748b" : "#94a3b8"
-          }
-          strokeWidth={2.5}
-        />
-      </View>
-      <Text
-        style={{
-          fontSize: 15,
-          fontWeight: "700",
-          color: achievement.unlocked
-            ? isDark ? "#ffffff" : "#111827"
-            : isDark
-              ? "#64748b"
-              : "#94a3b8",
-          textAlign: "center",
-          marginBottom: 6,
-          lineHeight: 18,
-        }}
-      >
-        {achievement.title}
-      </Text>
-      <Text
-        style={{
-          fontSize: 12,
-          color: achievement.unlocked
-            ? isDark ? "#9ca3af" : "#6b7280"
-            : isDark
-              ? "#64748b"
-              : "#94a3b8",
-          textAlign: "center",
-          lineHeight: 16,
-        }}
-      >
-        {achievement.description}
-      </Text>
-
-      {achievement.unlocked && (
-        <View
-          style={{
-            position: "absolute",
-            top: 8,
-            right: 8,
-            width: 24,
-            height: 24,
-            borderRadius: 12,
-            backgroundColor: "#10B981",
-            alignItems: "center",
-            justifyContent: "center",
-            shadowColor: "#10B981",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.5,
-            shadowRadius: 4,
-            elevation: 4,
-          }}
-        >
-          <CheckCircle size={18} color="#ffffff" fill="#10B981" strokeWidth={3} />
-        </View>
-      )}
-    </View>
-  );
-};
+import { AchievementBadge } from "@/components/profile/AchievementBadge";
+import { Achievement } from "@/components/profile/achievements";
 
 async function getDynamicAchievements(t: any) {
   const stats = await getAchievementStats();
@@ -475,67 +345,170 @@ export default function AchievementsScreen() {
             </View>
           </View>
 
-          {/* Progress Bar */}
+          {/* Progress Card with Gradient Border */}
           <View
             style={{
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff",
-              borderRadius: 16,
-              padding: 20,
+              borderRadius: 20,
+              overflow: 'hidden',
               marginBottom: 24,
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 12 },
-              shadowOpacity: 0.2,
-              shadowRadius: 24,
-              elevation: 10,
-              borderWidth: 1.5,
-              borderColor: isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.08)",
-              borderTopColor: isDark ? "rgba(255, 255, 255, 0.25)" : "rgba(255, 255, 255, 0.8)",
-              borderBottomColor: isDark ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.05)",
+              position: 'relative',
             }}
           >
+            {/* Gradient border */}
+            <LinearGradient
+              colors={['#10b981', '#8b5cf6', '#3b82f6']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            />
+
+            {/* Inner content */}
             <View
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: 12,
+                margin: 1.5,
+                borderRadius: 19,
+                backgroundColor: isDark ? '#0a0a0a' : '#ffffff',
+                padding: 20,
               }}
             >
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontWeight: "700",
-                  color: isDark ? "#ffffff" : "#111827",
-                }}
-              >
-                {t('achievements.unlocked')}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 24,
-                  fontWeight: "bold",
-                  color: "#10B981",
-                }}
-              >
-                {Math.round((unlockedCount / achievements.length) * 100)}%
-              </Text>
-            </View>
-            <View
-              style={{
-                height: 10,
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)",
-                borderRadius: 5,
-                overflow: "hidden",
-              }}
-            >
+              {/* Glass shine */}
               <View
                 style={{
-                  height: "100%",
-                  width: `${(unlockedCount / achievements.length) * 100}%`,
-                  backgroundColor: "#10B981",
-                  borderRadius: 5,
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 60,
+                  backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.5)',
+                  borderTopLeftRadius: 19,
+                  borderTopRightRadius: 19,
                 }}
               />
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 16,
+                }}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <View
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 12,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginRight: 12,
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <LinearGradient
+                      colors={['#10b981', '#059669']}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                      }}
+                    />
+                    <Trophy size={20} color="#ffffff" strokeWidth={2} />
+                  </View>
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        fontWeight: "700",
+                        color: isDark ? "#ffffff" : "#111827",
+                      }}
+                    >
+                      {t('achievements.unlocked')}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: isDark ? "#6b7280" : "#9ca3af",
+                        marginTop: 2,
+                      }}
+                    >
+                      {unlockedCount} of {achievements.length} badges
+                    </Text>
+                  </View>
+                </View>
+                <View
+                  style={{
+                    backgroundColor: isDark ? 'rgba(16, 185, 129, 0.15)' : 'rgba(16, 185, 129, 0.1)',
+                    paddingHorizontal: 14,
+                    paddingVertical: 8,
+                    borderRadius: 12,
+                    borderWidth: 1,
+                    borderColor: 'rgba(16, 185, 129, 0.3)',
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 22,
+                      fontWeight: "800",
+                      color: "#10b981",
+                    }}
+                  >
+                    {Math.round((unlockedCount / achievements.length) * 100)}%
+                  </Text>
+                </View>
+              </View>
+
+              {/* Progress bar with gradient */}
+              <View
+                style={{
+                  height: 12,
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
+                  borderRadius: 6,
+                  overflow: "hidden",
+                }}
+              >
+                <View
+                  style={{
+                    height: "100%",
+                    width: `${(unlockedCount / achievements.length) * 100}%`,
+                    borderRadius: 6,
+                    overflow: 'hidden',
+                  }}
+                >
+                  <LinearGradient
+                    colors={['#10b981', '#8b5cf6', '#3b82f6']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={{
+                      flex: 1,
+                      borderRadius: 6,
+                    }}
+                  />
+                  {/* Shine overlay */}
+                  <LinearGradient
+                    colors={['rgba(255,255,255,0.4)', 'rgba(255,255,255,0.1)', 'rgba(255,255,255,0)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 1 }}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: '50%',
+                      borderTopLeftRadius: 6,
+                      borderTopRightRadius: 6,
+                    }}
+                  />
+                </View>
+              </View>
             </View>
           </View>
 
@@ -562,6 +535,7 @@ export default function AchievementsScreen() {
                 key={ach.id}
                 achievement={ach}
                 isDark={isDark}
+                isFullPage={true}
               />
             ))}
           </View>

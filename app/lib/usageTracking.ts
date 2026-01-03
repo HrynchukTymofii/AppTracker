@@ -240,22 +240,30 @@ export const getWeekUsageStatsWithOffset = async (weekOffset: number): Promise<U
         const totalScreenTime = nativeData.totalScreenTime ||
           nativeData.apps.reduce((sum: number, app: AppUsageData) => sum + app.timeInForeground, 0);
 
-        // Only return if we actually have meaningful data
-        if (totalScreenTime > 0 || filteredApps.length > 0) {
-          return {
-            apps: filteredApps,
-            totalScreenTime,
-            pickups: nativeData.pickups || 0,
-            hasRealData: true,
-          };
-        }
+        return {
+          apps: filteredApps,
+          totalScreenTime,
+          pickups: nativeData.pickups || 0,
+          hasRealData: true,
+        };
       }
     } catch (error) {
-      // Silently fall back to simulated data
+      // Silently fall back to empty data
     }
   }
 
-  // Fall back to simulated data for this week offset
+  // Return empty data instead of simulated data for past weeks
+  // This shows "no data" to user rather than fake data
+  if (weekOffset < 0) {
+    return {
+      apps: [],
+      totalScreenTime: 0,
+      pickups: 0,
+      hasRealData: false,
+    };
+  }
+
+  // Only use simulated data for current week (weekOffset = 0) when native not available
   return getSimulatedWeekUsageData(weekOffset);
 };
 
@@ -271,13 +279,6 @@ export const getDailyUsageForWeek = async (weekOffset: number = 0): Promise<{ da
   const startDate = new Date(today);
   startDate.setDate(today.getDate() - 6 + (weekOffset * 7));
 
-  // Generate simulated data for fallback/filling gaps
-  const seed = Math.abs(weekOffset * 7) + new Date().getMonth() + 10;
-  const generateSimulatedHours = (index: number, date: Date): number => {
-    const isFuture = date > new Date();
-    return isFuture ? 0 : 2 + ((seed + index) % 5);
-  };
-
   // Try native module first
   if (NativeUsageStats && Platform.OS === 'android') {
     try {
@@ -286,40 +287,37 @@ export const getDailyUsageForWeek = async (weekOffset: number = 0): Promise<{ da
         const dailyData = await NativeUsageStats.getDailyUsageForWeek(weekOffset);
 
         if (dailyData && dailyData.length === 7) {
-          // For current week (weekOffset >= 0), use native data as-is
-          if (weekOffset >= 0) {
-            return dailyData;
-          }
-
-          // For past weeks, fill in zeros with simulated data (Android may purge old events)
-          return dailyData.map((d: any, index: number) => {
-            const date = new Date(startDate);
-            date.setDate(startDate.getDate() + index);
-
-            // If native has 0 hours for a past day, use simulated
-            if (d.hours === 0 && date <= new Date()) {
-              return {
-                day: d.day || dayNames[date.getDay()],
-                hours: Math.round(generateSimulatedHours(index, date) * 10) / 10,
-              };
-            }
-            return d;
-          });
+          // Return native data as-is - don't fill in with fake data
+          return dailyData;
         }
       }
     } catch (error) {
-      // Silently fall back to simulated data
+      // Silently fall back to empty data
     }
   }
 
-  // Fall back to fully simulated data
+  // For past weeks without native data, return zeros (no fake data)
+  if (weekOffset < 0) {
+    return Array.from({ length: 7 }, (_, index) => {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + index);
+      return {
+        day: dayNames[date.getDay()],
+        hours: 0, // No data available
+      };
+    });
+  }
+
+  // Only for current week when native not available: use minimal simulated data
+  const seed = Math.abs(weekOffset * 7) + new Date().getMonth() + 10;
   return Array.from({ length: 7 }, (_, index) => {
     const date = new Date(startDate);
     date.setDate(startDate.getDate() + index);
+    const isFuture = date > new Date();
 
     return {
       day: dayNames[date.getDay()],
-      hours: Math.round(generateSimulatedHours(index, date) * 10) / 10,
+      hours: isFuture ? 0 : Math.round((2 + ((seed + index) % 5)) * 10) / 10,
     };
   });
 };
@@ -460,27 +458,64 @@ export const formatDuration = (milliseconds: number): string => {
 };
 
 /**
- * Calculate health score based on usage
- * Lower usage = higher health score
+ * Calculate health score based on usage and earned time
+ * Formula: base + (earned * 0.3) - (spent * 0.3) - (pickups * 0.2)
+ * Returns: { displayScore: 0-100 capped, rawScore: actual value which can exceed 100 }
  */
-export const calculateHealthScore = (totalScreenTimeMs: number, pickups: number): number => {
-  const targetScreenTime = 3 * 60 * 60 * 1000; // 3 hours in ms
-  const targetPickups = 80;
+export const calculateHealthScore = (
+  totalScreenTimeMs: number,
+  pickups: number,
+  earnedMinutes: number = 0,
+  dailyGoalMinutes: number = 180 // Default 3 hours
+): number => {
+  // Start at 100, decrease based on usage
+  const baseScore = 100;
+  const screenTimeMinutes = totalScreenTimeMs / 1000 / 60;
 
-  const screenTimeScore = Math.max(0, 100 - ((totalScreenTimeMs / targetScreenTime) * 50));
-  const pickupsScore = Math.max(0, 100 - ((pickups / targetPickups) * 50));
+  // Screen time penalty: deduct proportionally to daily goal
+  // At 100% of goal = -40 points, at 200% = -80 points
+  const screenTimePenalty = (screenTimeMinutes / dailyGoalMinutes) * 40;
 
-  return Math.round((screenTimeScore + pickupsScore) / 2);
+  // Pickups penalty: small deduction (max -15 at 150 pickups)
+  const pickupsPenalty = Math.min((pickups / 150) * 15, 15);
+
+  // Earned time bonus: reward exercise (0.5 per min, max +20)
+  const earnedBonus = Math.min(earnedMinutes * 0.5, 20);
+
+  // Calculate score
+  const rawScore = baseScore - screenTimePenalty - pickupsPenalty + earnedBonus;
+
+  // Return score capped between 0 and 100
+  return Math.round(Math.max(0, Math.min(100, rawScore)));
+};
+
+/**
+ * Calculate raw health score (without 0-100 cap for internal tracking)
+ */
+export const calculateRawHealthScore = (
+  totalScreenTimeMs: number,
+  pickups: number,
+  earnedMinutes: number = 0,
+  dailyGoalMinutes: number = 180
+): number => {
+  const baseScore = 100;
+  const screenTimeMinutes = totalScreenTimeMs / 1000 / 60;
+
+  const screenTimePenalty = (screenTimeMinutes / dailyGoalMinutes) * 40;
+  const pickupsPenalty = Math.min((pickups / 150) * 15, 15);
+  const earnedBonus = Math.min(earnedMinutes * 0.5, 20);
+
+  return Math.round(Math.max(0, baseScore - screenTimePenalty - pickupsPenalty + earnedBonus));
 };
 
 /**
  * Get orb level (1-5) based on health score
  */
 export const getOrbLevel = (healthScore: number): number => {
-  if (healthScore >= 90) return 5;
-  if (healthScore >= 75) return 4;
-  if (healthScore >= 60) return 3;
-  if (healthScore >= 40) return 2;
+  if (healthScore >= 80) return 5;
+  if (healthScore >= 60) return 4;
+  if (healthScore >= 40) return 3;
+  if (healthScore >= 20) return 2;
   return 1;
 };
 
@@ -578,37 +613,31 @@ export const getWeekComparison = async (): Promise<WeekComparisonData> => {
     }
   }
 
-  // Fall back to simulated data
-  const seed = new Date().getDate();
-  const thisWeekTotal = 20 + (seed % 15);
-  const lastWeekTotal = 22 + ((seed + 7) % 15);
-  const diff = thisWeekTotal - lastWeekTotal;
+  // Return empty comparison data - no fake data
+  const emptyDailyData = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => ({
+    day,
+    hours: 0,
+  }));
 
   return {
     thisWeek: {
-      totalHours: thisWeekTotal,
-      avgHours: Math.round((thisWeekTotal / 7) * 10) / 10,
-      pickups: 400 + (seed % 200),
-      dailyData: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, i) => ({
-        day,
-        hours: 2 + ((seed + i) % 4),
-      })),
+      totalHours: 0,
+      avgHours: 0,
+      pickups: 0,
+      dailyData: emptyDailyData,
     },
     lastWeek: {
-      totalHours: lastWeekTotal,
-      avgHours: Math.round((lastWeekTotal / 7) * 10) / 10,
-      pickups: 420 + ((seed + 7) % 200),
-      dailyData: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, i) => ({
-        day,
-        hours: 2.5 + ((seed + i + 7) % 4),
-      })),
+      totalHours: 0,
+      avgHours: 0,
+      pickups: 0,
+      dailyData: emptyDailyData,
     },
     comparison: {
-      hoursDiff: Math.round(diff * 10) / 10,
-      hoursPercentChange: Math.round((diff / lastWeekTotal) * 1000) / 10,
-      pickupsDiff: -20 + (seed % 40),
-      pickupsPercentChange: -5 + (seed % 10),
-      improved: diff < 0,
+      hoursDiff: 0,
+      hoursPercentChange: 0,
+      pickupsDiff: 0,
+      pickupsPercentChange: 0,
+      improved: false,
     },
   };
 };

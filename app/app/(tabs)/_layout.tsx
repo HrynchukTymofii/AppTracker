@@ -4,12 +4,13 @@ import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { HapticTab } from '@/components/HapticTab';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { Home, Shield, BarChart3, User, Crosshair } from 'lucide-react-native';
+import { useTheme, AccentColor } from '@/context/ThemeContext';
+import { Home, Target, BarChart3, User, Crosshair } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 // Custom LockIn Button Component (big center button with target icon)
-const LockInButton = ({ onPress, accessibilityState, isDark }: any) => {
+const LockInButton = ({ onPress, accessibilityState, isDark, accentColor }: any) => {
   const focused = accessibilityState?.selected;
 
   return (
@@ -32,7 +33,7 @@ const LockInButton = ({ onPress, accessibilityState, isDark }: any) => {
           justifyContent: 'center',
           marginTop: -12,
           overflow: 'hidden',
-          shadowColor: '#3b82f6',
+          shadowColor: accentColor.primary,
           shadowOffset: { width: 0, height: 8 },
           shadowOpacity: 0.4,
           shadowRadius: 16,
@@ -40,7 +41,7 @@ const LockInButton = ({ onPress, accessibilityState, isDark }: any) => {
         }}
       >
         <LinearGradient
-          colors={['#3b82f6', '#1d4ed8']}
+          colors={[accentColor.primary, accentColor.secondary || accentColor.primary]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{
@@ -62,7 +63,7 @@ const LockInButton = ({ onPress, accessibilityState, isDark }: any) => {
           marginTop: 6,
           fontSize: 10,
           fontWeight: '700',
-          color: focused ? '#3b82f6' : (isDark ? 'rgba(255,255,255,0.5)' : '#94a3b8'),
+          color: focused ? accentColor.primary : (isDark ? 'rgba(255,255,255,0.5)' : '#94a3b8'),
           letterSpacing: 0.2,
         }}
       >
@@ -77,12 +78,14 @@ const TabIcon = ({
   Icon,
   color,
   focused,
-  isDark
+  isDark,
+  accentColor
 }: {
   Icon: any;
   color: string;
   focused: boolean;
   isDark: boolean;
+  accentColor: AccentColor;
 }) => (
   <View
     style={{
@@ -92,13 +95,13 @@ const TabIcon = ({
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: focused
-        ? (isDark ? 'rgba(59, 130, 246, 0.15)' : 'rgba(59, 130, 246, 0.1)')
+        ? (isDark ? `${accentColor.primary}25` : `${accentColor.primary}18`)
         : 'transparent',
     }}
   >
     <Icon
       size={22}
-      color={focused ? '#3b82f6' : color}
+      color={focused ? accentColor.primary : color}
       strokeWidth={focused ? 2.2 : 1.8}
     />
   </View>
@@ -107,6 +110,7 @@ const TabIcon = ({
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const { accentColor } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
 
@@ -115,7 +119,7 @@ export default function TabLayout() {
       initialRouteName="index"
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#3b82f6',
+        tabBarActiveTintColor: accentColor.primary,
         tabBarInactiveTintColor: isDark ? 'rgba(255,255,255,0.5)' : '#94a3b8',
         tabBarButton: HapticTab,
         tabBarBackground: () => (
@@ -160,16 +164,16 @@ export default function TabLayout() {
         options={{
           title: t('tabs.home'),
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon Icon={Home} color={color} focused={focused} isDark={isDark} />
+            <TabIcon Icon={Home} color={color} focused={focused} isDark={isDark} accentColor={accentColor} />
           ),
         }}
       />
       <Tabs.Screen
         name="blocking/index"
         options={{
-          title: t('tabs.blocking'),
+          title: "Goals",
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon Icon={Shield} color={color} focused={focused} isDark={isDark} />
+            <TabIcon Icon={Target} color={color} focused={focused} isDark={isDark} accentColor={accentColor} />
           ),
         }}
       />
@@ -181,6 +185,7 @@ export default function TabLayout() {
             <LockInButton
               {...props}
               isDark={isDark}
+              accentColor={accentColor}
             />
           ),
         }}
@@ -190,7 +195,7 @@ export default function TabLayout() {
         options={{
           title: t('tabs.stats'),
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon Icon={BarChart3} color={color} focused={focused} isDark={isDark} />
+            <TabIcon Icon={BarChart3} color={color} focused={focused} isDark={isDark} accentColor={accentColor} />
           ),
         }}
       />
@@ -199,7 +204,7 @@ export default function TabLayout() {
         options={{
           title: t('tabs.profile'),
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon Icon={User} color={color} focused={focused} isDark={isDark} />
+            <TabIcon Icon={User} color={color} focused={focused} isDark={isDark} accentColor={accentColor} />
           ),
         }}
       />

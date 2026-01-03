@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { Clock, Dumbbell, ChevronRight } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEarnedTime } from '@/context/EarnedTimeContext';
+import { useTheme } from '@/context/ThemeContext';
 import { useRouter } from 'expo-router';
 
 interface WalletBalanceCardProps {
@@ -12,6 +13,7 @@ interface WalletBalanceCardProps {
 export const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({ isDark }) => {
   const router = useRouter();
   const { wallet, getTodayEarned } = useEarnedTime();
+  const { accentColor } = useTheme();
 
   const todayEarned = getTodayEarned();
 
@@ -22,11 +24,11 @@ export const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({ isDark }) 
       style={{
         marginHorizontal: 20,
         marginBottom: 16,
-        backgroundColor: isDark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.05)',
+        backgroundColor: isDark ? `${accentColor.primary}18` : `${accentColor.primary}0D`,
         borderRadius: 16,
         padding: 16,
         borderWidth: 1,
-        borderColor: 'rgba(59, 130, 246, 0.2)',
+        borderColor: `${accentColor.primary}33`,
         flexDirection: 'row',
         alignItems: 'center',
       }}
@@ -42,7 +44,7 @@ export const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({ isDark }) 
         }}
       >
         <LinearGradient
-          colors={['#3b82f6', '#2563eb']}
+          colors={[accentColor.primary, accentColor.secondary || accentColor.primary]}
           style={{
             flex: 1,
             alignItems: 'center',
@@ -70,7 +72,7 @@ export const WalletBalanceCard: React.FC<WalletBalanceCardProps> = ({ isDark }) 
             style={{
               fontSize: 24,
               fontWeight: '800',
-              color: '#3b82f6',
+              color: accentColor.primary,
             }}
           >
             {wallet.availableMinutes.toFixed(1)}

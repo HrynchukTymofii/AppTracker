@@ -1,39 +1,56 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { View, ScrollView, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { useLockIn, LockInTask } from "@/context/LockInContext";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLockIn } from "@/context/LockInContext";
 import { useEarnedTime } from "@/context/EarnedTimeContext";
 import {
   HeroSection,
-  QuickActions,
-  TaskList,
   ActiveSession,
   SessionHistory,
   EarnTimeSection,
 } from "@/components/lockin";
-import { QuickLockInModal } from "@/components/lockin/modals/QuickLockInModal";
 import { VerifiedLockInModal } from "@/components/lockin/modals/VerifiedLockInModal";
-import { AddTaskModal } from "@/components/lockin/modals/AddTaskModal";
 import { ConfirmationModal } from "@/components/modals/ConfirmationModal";
 import { ExerciseModal } from "@/components/exercise";
 import { ThemedBackground } from "@/components/ui/ThemedBackground";
+import { ExerciseType } from "@/lib/poseUtils";
 
 export default function LockInScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const router = useRouter();
+  const params = useLocalSearchParams<{
+    exercise?: string;
+    openVerified?: string;
+  }>();
   const [refreshing, setRefreshing] = useState(false);
 
   // Modal states
-  const [showQuickModal, setShowQuickModal] = useState(false);
   const [showVerifiedModal, setShowVerifiedModal] = useState(false);
-  const [showAddTaskModal, setShowAddTaskModal] = useState(false);
   const [showGiveUpConfirm, setShowGiveUpConfirm] = useState(false);
   const [showExerciseModal, setShowExerciseModal] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<LockInTask | null>(null);
+  const [selectedExerciseType, setSelectedExerciseType] = useState<ExerciseType | undefined>(undefined);
+
+  // Handle URL params to auto-open modals
+  useEffect(() => {
+    if (params.exercise) {
+      const exerciseType = params.exercise as ExerciseType;
+      if (["pushups", "squats", "plank"].includes(exerciseType)) {
+        setSelectedExerciseType(exerciseType);
+        setShowExerciseModal(true);
+        // Clear the param after handling
+        router.setParams({ exercise: undefined });
+      }
+    } else if (params.openVerified === "true") {
+      setShowVerifiedModal(true);
+      // Clear the param after handling
+      router.setParams({ openVerified: undefined });
+    }
+  }, [params.exercise, params.openVerified]);
 
   const {
-    tasks,
     activeSession,
     sessionHistory,
     startSession,
@@ -47,31 +64,13 @@ export default function LockInScreen() {
     setTimeout(() => setRefreshing(false), 500);
   }, []);
 
-  const handleQuickStart = () => {
-    setShowQuickModal(true);
-  };
-
   const handleVerifiedStart = () => {
     setShowVerifiedModal(true);
   };
 
-  const handleStartExercise = () => {
+  const handleStartExercise = (type?: ExerciseType) => {
+    setSelectedExerciseType(type);
     setShowExerciseModal(true);
-  };
-
-  const handleAddTask = () => {
-    setSelectedTask(null);
-    setShowAddTaskModal(true);
-  };
-
-  const handleTaskPress = (task: LockInTask) => {
-    setSelectedTask(task);
-    setShowAddTaskModal(true);
-  };
-
-  const handleTaskLongPress = (task: LockInTask) => {
-    setSelectedTask(task);
-    setShowAddTaskModal(true);
   };
 
   const handleGiveUp = () => {
@@ -132,24 +131,6 @@ export default function LockInScreen() {
         <EarnTimeSection
           isDark={isDark}
           onStartExercise={handleStartExercise}
-        />
-
-        {/* Divider */}
-        <View
-          style={{
-            height: 1,
-            backgroundColor: isDark
-              ? "rgba(255, 255, 255, 0.06)"
-              : "rgba(0, 0, 0, 0.05)",
-            marginHorizontal: 20,
-            marginTop: 24,
-          }}
-        />
-
-        {/* Quick Action Cards */}
-        <QuickActions
-          isDark={isDark}
-          onQuickStart={handleQuickStart}
           onVerifiedStart={handleVerifiedStart}
         />
 
@@ -165,7 +146,7 @@ export default function LockInScreen() {
           }}
         />
 
-        {/* Scheduled LockIns (formerly My Tasks) */}
+        {/* TODO: Scheduled LockIns - Uncomment when ready
         <TaskList
           tasks={tasks}
           isDark={isDark}
@@ -174,7 +155,6 @@ export default function LockInScreen() {
           onTaskLongPress={handleTaskLongPress}
         />
 
-        {/* Divider */}
         <View
           style={{
             height: 1,
@@ -185,6 +165,7 @@ export default function LockInScreen() {
             marginTop: 12,
           }}
         />
+        */}
 
         {/* Session History */}
         <SessionHistory
@@ -195,21 +176,6 @@ export default function LockInScreen() {
       </ScrollView>
 
       {/* Modals */}
-      <QuickLockInModal
-        visible={showQuickModal}
-        isDark={isDark}
-        onClose={() => setShowQuickModal(false)}
-        onStart={async (minutes, blockedApps) => {
-          await startSession({
-            taskDescription: "Quick Focus",
-            type: "quick",
-            durationMinutes: minutes,
-            blockedApps,
-          });
-          setShowQuickModal(false);
-        }}
-      />
-
       <VerifiedLockInModal
         visible={showVerifiedModal}
         isDark={isDark}
@@ -226,21 +192,15 @@ export default function LockInScreen() {
         }}
       />
 
-        <AddTaskModal
-          visible={showAddTaskModal}
-          isDark={isDark}
-          task={selectedTask}
-          onClose={() => {
-            setShowAddTaskModal(false);
-            setSelectedTask(null);
-          }}
-        />
-
-        <ExerciseModal
-          visible={showExerciseModal}
-          isDark={isDark}
-          onClose={() => setShowExerciseModal(false)}
-        />
+      <ExerciseModal
+        visible={showExerciseModal}
+        isDark={isDark}
+        initialExercise={selectedExerciseType}
+        onClose={() => {
+          setShowExerciseModal(false);
+          setSelectedExerciseType(undefined);
+        }}
+      />
       </SafeAreaView>
     </ThemedBackground>
   );

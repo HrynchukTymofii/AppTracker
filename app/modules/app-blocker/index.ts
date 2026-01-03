@@ -25,6 +25,9 @@ interface AppBlockerModule extends NativeModule {
   setTempUnblockWebsite?(website: string, minutes: number): void;
   isTempUnblocked?(packageName: string): Promise<boolean>;
   launchApp?(packageName: string): boolean;
+  goToHomeScreen?(): void;
+  getPendingBlockedApp?(): Promise<{ packageName: string; appName: string; timestamp: number } | null>;
+  clearPendingBlockedApp?(): void;
 
   // iOS-specific methods (Family Controls)
   requestAuthorization?(): Promise<boolean>;
@@ -143,6 +146,35 @@ export function launchApp(packageName: string): boolean {
     return AppBlocker.launchApp(packageName);
   }
   return false;
+}
+
+export function goToHomeScreen(): void {
+  if (!AppBlocker || Platform.OS === 'ios') return;
+  if (AppBlocker.goToHomeScreen) {
+    AppBlocker.goToHomeScreen();
+  }
+}
+
+/**
+ * Get pending blocked app info (Android only)
+ * Called by native BlockInterstitialActivity to pass blocked app info
+ */
+export async function getPendingBlockedApp(): Promise<{ packageName: string; appName: string; timestamp: number } | null> {
+  if (!AppBlocker || Platform.OS === 'ios') return null;
+  if (AppBlocker.getPendingBlockedApp) {
+    return await AppBlocker.getPendingBlockedApp();
+  }
+  return null;
+}
+
+/**
+ * Clear pending blocked app info (Android only)
+ */
+export function clearPendingBlockedApp(): void {
+  if (!AppBlocker || Platform.OS === 'ios') return;
+  if (AppBlocker.clearPendingBlockedApp) {
+    AppBlocker.clearPendingBlockedApp();
+  }
 }
 
 // ==================== Temp Unblock (Platform-aware) ====================
@@ -358,6 +390,9 @@ export default {
   getBlockedWebsites,
   setTempUnblockWebsite,
   launchApp,
+  goToHomeScreen,
+  getPendingBlockedApp,
+  clearPendingBlockedApp,
 
   // Platform-aware
   setTempUnblock,

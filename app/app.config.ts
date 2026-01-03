@@ -2,9 +2,9 @@ import 'dotenv/config';
 import { ExpoConfig } from "expo/config";
 
 const config: ExpoConfig = {
-  name: "App Blocker",
+  name: "LockIn",
   slug: "app-blocker",
-  version: "1.0.1",
+  version: "1.0.2",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "appblocker",
@@ -44,7 +44,7 @@ const config: ExpoConfig = {
     icon: "./assets/images/icon.png",
     color: "#06b6d4",
     androidMode: "default",
-    androidCollapsedTitle: "App Blocker",
+    androidCollapsedTitle: "LockIn",
   },
 
   web: {

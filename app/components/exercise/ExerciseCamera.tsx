@@ -24,7 +24,9 @@ interface ExerciseCameraProps {
   isDark: boolean;
   onStateUpdate: (state: ExerciseState) => void;
   onComplete?: (state: ExerciseState, earnedMinutes: number) => void;
-  isActive: boolean;
+  isActive: boolean; // Controls counting/detection
+  cameraActive?: boolean; // Controls camera display (defaults to isActive)
+  hideStats?: boolean; // Hide the stats overlay (for complete screen)
 }
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -39,7 +41,11 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
   onStateUpdate,
   onComplete,
   isActive,
+  cameraActive,
+  hideStats = false,
 }) => {
+  // Camera is active if cameraActive is true OR if isActive is true (for detection)
+  const isCameraOn = cameraActive ?? isActive;
   const device = useCameraDevice('front');
   const cameraRef = useRef<Camera>(null);
   const detectionIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -560,7 +566,7 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
           ref={cameraRef}
           style={styles.camera}
           device={device}
-          isActive={isActive}
+          isActive={isCameraOn}
           photo={true}
         />
 
@@ -574,38 +580,39 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
 
         {/* Overlay */}
         <View style={styles.overlay} pointerEvents="box-none">
-          {/* Top: Exercise info */}
-          <View style={styles.topOverlay}>
-            <Text style={styles.exerciseIcon}>{exerciseInfo.icon}</Text>
-            <Text style={styles.exerciseName}>{exerciseInfo.name}</Text>
-            <View style={styles.fpsContainer}>
-              <Text style={styles.fpsText}>{fps} FPS</Text>
+          {/* Top: Exercise info - hidden when hideStats is true */}
+          {!hideStats && (
+            <View style={styles.topOverlay}>
+              <Text style={styles.exerciseIcon}>{exerciseInfo.icon}</Text>
+              <Text style={styles.exerciseName}>{exerciseInfo.name}</Text>
             </View>
-          </View>
+          )}
 
-          {/* Center: Rep counter / Hold timer */}
-          <View style={styles.centerOverlay}>
-            <View style={[
-              styles.statContainer,
-              poseDetected && styles.statContainerSuccess,
-              exercisePhase === 'down' && styles.statContainerDown,
-            ]}>
-              <Text style={styles.statValue}>
-                {exerciseType === 'plank' ? Math.floor(holdTime) : repCount}
-              </Text>
-              <Text style={styles.statLabel}>
-                {exerciseType === 'pushups' ? 'PUSH-UPS' :
-                 exerciseType === 'squats' ? 'SQUATS' : 'SECONDS'}
-              </Text>
-              {poseDetected && (
-                <Text style={styles.phaseText}>
-                  {exerciseType === 'plank'
-                    ? (exercisePhase === 'down' ? '✓ HOLDING' : '⚠️ GET IN POSITION')
-                    : (exercisePhase === 'down' ? '⬇️ DOWN' : exercisePhase === 'up' ? '⬆️ UP' : '...')}
+          {/* Center: Rep counter / Hold timer - hidden when hideStats is true */}
+          {!hideStats && (
+            <View style={styles.centerOverlay}>
+              <View style={[
+                styles.statContainer,
+                poseDetected && styles.statContainerSuccess,
+                exercisePhase === 'down' && styles.statContainerDown,
+              ]}>
+                <Text style={styles.statValue}>
+                  {exerciseType === 'plank' ? Math.floor(holdTime) : repCount}
                 </Text>
-              )}
+                <Text style={styles.statLabel}>
+                  {exerciseType === 'pushups' ? 'PUSH-UPS' :
+                   exerciseType === 'squats' ? 'SQUATS' : 'SECONDS'}
+                </Text>
+                {poseDetected && (
+                  <Text style={styles.phaseText}>
+                    {exerciseType === 'plank'
+                      ? (exercisePhase === 'down' ? '✓ HOLDING' : '⚠️ GET IN POSITION')
+                      : (exercisePhase === 'down' ? '⬇️ DOWN' : exercisePhase === 'up' ? '⬆️ UP' : '...')}
+                  </Text>
+                )}
+              </View>
             </View>
-          </View>
+          )}
 
           {/* Bottom: Status info - commented out for production
           <View style={styles.bottomOverlay}>
@@ -680,18 +687,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: '700',
-  },
-  fpsContainer: {
-    marginLeft: 12,
-    backgroundColor: 'rgba(16, 185, 129, 0.8)',
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  fpsText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '600',
   },
   centerOverlay: {
     alignItems: 'center',

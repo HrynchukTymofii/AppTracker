@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
-import { Clock, Check, X, Camera, ChevronRight, History } from "lucide-react-native";
+import { Clock, Check, X, Camera, ChevronRight, History, Dumbbell } from "lucide-react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { LockInSession } from "@/context/LockInContext";
 
 interface SessionHistoryProps {
@@ -38,7 +39,10 @@ export const SessionHistory: React.FC<SessionHistoryProps> = ({
 }) => {
   const recentSessions = sessions.slice(0, 5);
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string, type?: string) => {
+    if (type === "exercise") {
+      return status === "completed" ? "#10b981" : "#ef4444";
+    }
     switch (status) {
       case "completed":
         return "#10b981";
@@ -50,7 +54,10 @@ export const SessionHistory: React.FC<SessionHistoryProps> = ({
     }
   };
 
-  const getStatusIcon = (status: string) => {
+  const getStatusIcon = (status: string, type?: string) => {
+    if (type === "exercise") {
+      return <Dumbbell size={14} color="#ffffff" />;
+    }
     switch (status) {
       case "completed":
         return <Check size={14} color="#ffffff" />;
@@ -83,7 +90,7 @@ export const SessionHistory: React.FC<SessionHistoryProps> = ({
               marginLeft: 8,
             }}
           >
-            Recent Sessions
+            Recent Activities
           </Text>
         </View>
         {sessions.length > 5 && (
@@ -115,7 +122,6 @@ export const SessionHistory: React.FC<SessionHistoryProps> = ({
           <View
             key={session.id}
             style={{
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
               borderRadius: 14,
               padding: 14,
               marginBottom: 10,
@@ -123,21 +129,38 @@ export const SessionHistory: React.FC<SessionHistoryProps> = ({
               alignItems: "center",
               borderWidth: 1,
               borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.05)",
+              overflow: "hidden",
             }}
           >
+            {/* Inner gradient background */}
+            <LinearGradient
+              colors={isDark
+                ? ["rgba(255, 255, 255, 0.04)", "rgba(255, 255, 255, 0.01)"]
+                : ["#ffffff", "#f9fafb"]
+              }
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            />
             {/* Status indicator */}
             <View
               style={{
                 width: 36,
                 height: 36,
                 borderRadius: 10,
-                backgroundColor: getStatusColor(session.status),
+                backgroundColor: getStatusColor(session.status, session.type),
                 alignItems: "center",
                 justifyContent: "center",
                 marginRight: 12,
               }}
             >
-              {getStatusIcon(session.status)}
+              {getStatusIcon(session.status, session.type)}
             </View>
 
             {/* Content */}
@@ -198,11 +221,11 @@ export const SessionHistory: React.FC<SessionHistoryProps> = ({
               </View>
             </View>
 
-            {/* Points */}
-            {session.pointsEarned && session.status === "completed" && (
+            {/* Earned Minutes (shown instead of points) */}
+            {session.durationMinutes > 0 && session.status === "completed" && (
               <View
                 style={{
-                  backgroundColor: isDark ? "rgba(245, 158, 11, 0.1)" : "rgba(245, 158, 11, 0.08)",
+                  backgroundColor: isDark ? "rgba(16, 185, 129, 0.1)" : "rgba(16, 185, 129, 0.08)",
                   paddingHorizontal: 10,
                   paddingVertical: 6,
                   borderRadius: 8,
@@ -212,10 +235,12 @@ export const SessionHistory: React.FC<SessionHistoryProps> = ({
                   style={{
                     fontSize: 13,
                     fontWeight: "700",
-                    color: "#f59e0b",
+                    color: "#10b981",
                   }}
                 >
-                  +{session.pointsEarned}
+                  +{session.durationMinutes % 1 !== 0
+                    ? session.durationMinutes.toFixed(1)
+                    : session.durationMinutes} min
                 </Text>
               </View>
             )}

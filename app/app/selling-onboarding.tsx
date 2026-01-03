@@ -48,7 +48,8 @@ import {
   Step12Projection,
   Step13Comparison,
   Step14Notifications,
-  Step15AppSelection,
+  Step15DailyGoal,
+  Step16AppSelection,
 } from '@/components/selling-onboarding';
 import type { UserAnswers } from '@/components/selling-onboarding';
 
@@ -66,6 +67,7 @@ export default function SellingOnboarding() {
     weeklyData: null,
     blockedApps: [],
     blockedWebsites: [],
+    dailyGoal: 30, // Default 30 minutes
   });
 
   // Pre-load apps state - start loading after screen time permission is granted
@@ -88,7 +90,7 @@ export default function SellingOnboarding() {
     }
   };
 
-  const totalSteps = 15;
+  const totalSteps = 16;
   const progress = (currentStep / totalSteps) * 100;
 
   const nextStep = () => {
@@ -101,6 +103,8 @@ export default function SellingOnboarding() {
     await SecureStore.setItemAsync('sellingOnboardingCompleted', 'true');
     await SecureStore.setItemAsync('blockedApps', JSON.stringify(apps));
     await SecureStore.setItemAsync('blockedWebsites', JSON.stringify(websites));
+    await SecureStore.setItemAsync('dailyGoal', userAnswers.dailyGoal.toString());
+    await SecureStore.setItemAsync('defaultAppLimit', userAnswers.dailyGoal.toString());
 
     // Sync to native module immediately so blocking works right away
     setBlockedApps(apps);
@@ -169,7 +173,16 @@ export default function SellingOnboarding() {
         return <Step14Notifications onContinue={nextStep} />;
       case 15:
         return (
-          <Step15AppSelection
+          <Step15DailyGoal
+            onSelect={(minutes) => {
+              setUserAnswers({ ...userAnswers, dailyGoal: minutes });
+              nextStep();
+            }}
+          />
+        );
+      case 16:
+        return (
+          <Step16AppSelection
             preloadedApps={preloadedApps}
             appsLoading={appsLoading}
             onConfirm={(apps, websites) => {

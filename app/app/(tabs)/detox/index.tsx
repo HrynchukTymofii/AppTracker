@@ -12,38 +12,32 @@ import {
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { ThemedBackground } from "@/components/ui/ThemedBackground";
 import { useFocusEffect } from "expo-router";
-import { useDetox } from "@/context/DetoxContext";
 import { useTranslation } from 'react-i18next';
 import { useBlocking } from "@/context/BlockingContext";
 import { POPULAR_APPS } from "@/lib/appBlocking";
 import * as UsageStats from "@/modules/usage-stats";
 import type { InstalledApp } from "@/modules/usage-stats";
 import {
-  Lock,
   Target,
-  Settings,
-  Camera,
+  Clock,
+  ChevronRight,
 } from "lucide-react-native";
-import { TaskVerificationModal } from "@/components/modals/TaskVerificationModal";
+import { LinearGradient } from "expo-linear-gradient";
 
 // Import extracted components
 import {
   POPULAR_APP_KEYWORDS,
   CircularTimer,
   DetoxSettingsModal,
-  FocusModal,
 } from "@/components/detox";
 
 export default function DetoxScreen() {
   const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
-  const { isActive, timeRemaining, startDetox, TOTAL_TIME } = useDetox();
   const { focusSession, startFocus, endFocus, refreshData } = useBlocking();
 
   const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const [showFocusModal, setShowFocusModal] = useState(false);
-  const [showTaskVerification, setShowTaskVerification] = useState(false);
   const [detoxDuration, setDetoxDuration] = useState(30); // Default 30 minutes
   const [detoxApps, setDetoxApps] = useState<string[]>([]); // Will be populated with installed time wasters
   const [appsLoaded, setAppsLoaded] = useState(false);
@@ -95,314 +89,275 @@ export default function DetoxScreen() {
     }, [refreshData])
   );
 
-  const handleEndFocus = async () => {
-    if (focusSession?.requiresTaskCompletion) {
-      // Show the task verification chat modal
-      setShowTaskVerification(true);
-    } else {
-      await endFocus();
-    }
-  };
-
-  const handleTaskVerified = async () => {
-    setShowTaskVerification(false);
-    await endFocus();
-    await refreshData();
-  };
-
-  const handleForceUnlock = async () => {
-    setShowTaskVerification(false);
-    await endFocus(); // End without verification
-    await refreshData();
-  };
-
   // Calculate remaining time for focus session
-  const getFocusTimeRemaining = () => {
-    if (!focusSession) return null;
-    const endTime = focusSession.startTime + focusSession.durationMinutes * 60 * 1000;
-    const remaining = Math.max(0, endTime - Date.now());
-    const minutes = Math.floor(remaining / 60000);
-    const seconds = Math.floor((remaining % 60000) / 1000);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  };
+  const [focusTimeRemaining, setFocusTimeRemaining] = useState(0);
+
+  // Update focus session timer every second
+  useEffect(() => {
+    if (!focusSession) {
+      setFocusTimeRemaining(0);
+      return;
+    }
+
+    const updateTimer = () => {
+      const endTime = focusSession.startTime + focusSession.durationMinutes * 60 * 1000;
+      const remaining = Math.max(0, endTime - Date.now());
+      setFocusTimeRemaining(remaining);
+    };
+
+    updateTimer();
+    const interval = setInterval(updateTimer, 1000);
+    return () => clearInterval(interval);
+  }, [focusSession]);
 
   return (
     <ThemedBackground>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
-        contentContainerStyle={{ paddingBottom: 100 }}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Header */}
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: 20,
-            paddingTop: 16,
-            paddingBottom: 20,
-          }}
+          contentContainerStyle={{ paddingBottom: 100 }}
+          showsVerticalScrollIndicator={false}
         >
-          <View style={{ width: 40 }} />
-          <Text
+          {/* Header */}
+          <View
             style={{
-              fontSize: 28,
-              fontWeight: "bold",
-              color: isDark ? "#ffffff" : "#111827",
+              paddingHorizontal: 20,
+              paddingTop: 16,
+              paddingBottom: 8,
             }}
           >
-            {t('detox.title')}
-          </Text>
-          <TouchableOpacity
-            onPress={() => setShowSettingsModal(true)}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 20,
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.05)",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Settings size={22} color={isDark ? "#ffffff" : "#111827"} />
-          </TouchableOpacity>
-        </View>
+            <Text
+              style={{
+                fontSize: 32,
+                fontWeight: "800",
+                color: isDark ? "#ffffff" : "#0f172a",
+                letterSpacing: -0.5,
+              }}
+            >
+              Focus Mode
+            </Text>
+            <Text
+              style={{
+                fontSize: 15,
+                color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+                marginTop: 4,
+              }}
+            >
+              Block distractions and stay focused
+            </Text>
+          </View>
 
-
-        {/* Active Focus Session Banner */}
-        {focusSession && (
+          {/* Timer Section */}
           <View
             style={{
               marginHorizontal: 20,
-              marginBottom: 20,
-              backgroundColor: '#ef4444',
-              borderRadius: 16,
-              padding: 20,
+              marginTop: 32,
+              marginBottom: 32,
+              alignItems: "center",
             }}
           >
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
-              <Lock size={24} color="#ffffff" />
-              <Text
+            <CircularTimer
+              size={280}
+              strokeWidth={16}
+              timeRemaining={focusSession ? Math.floor(focusTimeRemaining / 1000) : detoxDuration * 60}
+              totalTime={focusSession ? focusSession.durationMinutes * 60 : detoxDuration * 60}
+              isDark={isDark}
+            />
+          </View>
+
+          {/* Start/End Focus Button */}
+          <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
+            {focusSession ? (
+              <TouchableOpacity
+                onPress={() => endFocus()}
+                activeOpacity={0.8}
                 style={{
-                  marginLeft: 12,
-                  fontSize: 18,
-                  fontWeight: 'bold',
-                  color: '#ffffff',
+                  borderRadius: 20,
+                  overflow: "hidden",
+                  shadowColor: "#ef4444",
+                  shadowOffset: { width: 0, height: 8 },
+                  shadowOpacity: 0.4,
+                  shadowRadius: 16,
+                  elevation: 8,
                 }}
               >
-                {t('blocking.focusSessionActive')}
-              </Text>
-            </View>
-            <Text style={{ color: 'rgba(255,255,255,0.9)', marginBottom: 12 }}>
-              {focusSession.blockedApps.length} apps blocked •{' '}
-              {focusSession.requiresTaskCompletion
-                ? t('blocking.taskRequiredToUnlock')
-                : `${getFocusTimeRemaining()} ${t('blocking.timeRemaining')}`}
-            </Text>
+                <LinearGradient
+                  colors={["#ef4444", "#dc2626"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{
+                    padding: 20,
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    gap: 12,
+                  }}
+                >
+                  <Target size={26} color="#ffffff" strokeWidth={2} />
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: '700',
+                      color: '#ffffff',
+                    }}
+                  >
+                    End Focus Session
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                onPress={() => {
+                  if (detoxApps.length === 0) {
+                    showErrorToast(t('common.error'), t('blocking.alerts.selectAtLeastOneAppToBlock'));
+                    return;
+                  }
+                  startFocus(detoxDuration, detoxApps, false);
+                }}
+                activeOpacity={0.8}
+                style={{
+                  borderRadius: 20,
+                  overflow: "hidden",
+                  shadowColor: "#10b981",
+                  shadowOffset: { width: 0, height: 8 },
+                  shadowOpacity: 0.4,
+                  shadowRadius: 16,
+                  elevation: 8,
+                }}
+              >
+                <LinearGradient
+                  colors={["#10b981", "#059669"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{
+                    padding: 20,
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    gap: 12,
+                  }}
+                >
+                  <Target size={26} color="#ffffff" strokeWidth={2} />
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: '700',
+                      color: '#ffffff',
+                    }}
+                  >
+                    Start Focus Session
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {/* Duration Card */}
+          <View style={{ paddingHorizontal: 20 }}>
             <TouchableOpacity
-              onPress={handleEndFocus}
+              onPress={() => setShowSettingsModal(true)}
+              activeOpacity={0.7}
               style={{
-                backgroundColor: 'rgba(255,255,255,0.2)',
-                padding: 12,
-                borderRadius: 8,
-                alignItems: 'center',
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#ffffff",
+                borderRadius: 16,
+                padding: 16,
+                flexDirection: "row",
+                alignItems: "center",
+                borderWidth: 1,
+                borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
               }}
             >
-              <Text style={{ color: '#ffffff', fontWeight: '600' }}>
-                {focusSession.requiresTaskCompletion ? t('blocking.completeTaskUnlock') : t('blocking.endSession')}
-              </Text>
+              <View
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: 14,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "hidden",
+                }}
+              >
+                <LinearGradient
+                  colors={["#3b82f6", "#2563eb"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                  }}
+                />
+                <Clock size={24} color="#ffffff" strokeWidth={2} />
+              </View>
+              <View style={{ flex: 1, marginLeft: 14 }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "700",
+                    color: isDark ? "#ffffff" : "#0f172a",
+                  }}
+                >
+                  Duration
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+                    marginTop: 2,
+                  }}
+                >
+                  {detoxDuration} minutes
+                </Text>
+              </View>
+              <ChevronRight size={20} color={isDark ? "rgba(255,255,255,0.3)" : "#94a3b8"} />
             </TouchableOpacity>
           </View>
-        )}
 
-        {/* Timer Section */}
-        <View
-          style={{
-            marginHorizontal: 20,
-            marginBottom: 32,
-            alignItems: "center",
-          }}
-        >
-
-          <CircularTimer
-            size={280}
-            strokeWidth={12}
-            timeRemaining={timeRemaining}
-            totalTime={TOTAL_TIME}
-            isDark={isDark}
-          />
-
-          <Text
-            style={{
-              fontSize: 14,
-              color: isDark ? "#9ca3af" : "#6b7280",
-              marginTop: 24,
-              textAlign: "center",
-            }}
-          >
-            {isActive
-              ? "Click the Detox button to stop the timer"
-              : "Click the Detox button to start the timer"
-            }
-          </Text>
-        </View>
-
-        {/* Start Focus Buttons */}
-        <View style={{ paddingHorizontal: 20, marginBottom: 24, gap: 12 }}>
-          {/* Quick Focus Button */}
-          <TouchableOpacity
-            onPress={() => {
-              if (detoxApps.length === 0) {
-                showErrorToast(t('common.error'), t('blocking.alerts.selectAtLeastOneAppToBlock'));
-                return;
-              }
-              startFocus(detoxDuration, detoxApps, false);
-            }}
-            disabled={!!focusSession}
-            style={{
-              backgroundColor: focusSession
-                ? isDark
-                  ? '#374151'
-                  : '#e5e7eb'
-                : '#ef4444',
-              borderRadius: 16,
-              padding: 20,
-              alignItems: 'center',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              gap: 12,
-            }}
-          >
-            <Target size={28} color={focusSession ? '#9ca3af' : '#ffffff'} />
-            <View style={{ alignItems: 'center' }}>
+          {/* Info Section */}
+          <View style={{ paddingHorizontal: 20, marginTop: 24 }}>
+            <View
+              style={{
+                backgroundColor: isDark ? "rgba(16, 185, 129, 0.1)" : "rgba(16, 185, 129, 0.08)",
+                borderRadius: 16,
+                padding: 20,
+                borderWidth: 1,
+                borderColor: "rgba(16, 185, 129, 0.2)",
+              }}
+            >
               <Text
                 style={{
-                  fontSize: 18,
-                  fontWeight: '600',
-                  color: focusSession ? '#9ca3af' : '#ffffff',
+                  fontSize: 15,
+                  fontWeight: "700",
+                  color: "#10b981",
+                  marginBottom: 8,
                 }}
               >
-                {t('blocking.startFocus')}
+                Why Focus Mode?
               </Text>
               <Text
                 style={{
-                  fontSize: 12,
-                  color: focusSession ? '#9ca3af' : 'rgba(255, 255, 255, 0.8)',
-                  marginTop: 2,
+                  fontSize: 14,
+                  color: isDark ? "rgba(255,255,255,0.6)" : "#64748b",
+                  lineHeight: 20,
                 }}
               >
-                {detoxDuration}m • {detoxApps.length} apps
+                Block distracting apps and stay productive. Focus sessions help you concentrate on what matters most.
               </Text>
             </View>
-          </TouchableOpacity>
-
-          {/* Focus with Task Button */}
-          <TouchableOpacity
-            onPress={() => setShowFocusModal(true)}
-            disabled={!!focusSession}
-            style={{
-              backgroundColor: focusSession
-                ? isDark
-                  ? '#374151'
-                  : '#e5e7eb'
-                : isDark
-                ? 'rgba(59, 130, 246, 0.15)'
-                : 'rgba(59, 130, 246, 0.1)',
-              borderRadius: 16,
-              padding: 16,
-              alignItems: 'center',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              gap: 10,
-              borderWidth: 1.5,
-              borderColor: focusSession
-                ? 'transparent'
-                : '#3b82f6',
-            }}
-          >
-            <Camera size={22} color={focusSession ? '#9ca3af' : '#3b82f6'} />
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: '600',
-                color: focusSession ? '#9ca3af' : '#3b82f6',
-              }}
-            >
-              Focus with Task Verification
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Info Section */}
-        <View style={{ paddingHorizontal: 20 }}>
-          <View
-            style={{
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.02)",
-              borderRadius: 16,
-              padding: 20,
-              borderWidth: 1,
-              borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: "600",
-                color: isDark ? "#ffffff" : "#111827",
-                marginBottom: 8,
-              }}
-            >
-              About Digital Detox
-            </Text>
-            <Text
-              style={{
-                fontSize: 14,
-                color: isDark ? "#9ca3af" : "#6b7280",
-                lineHeight: 20,
-              }}
-            >
-              Take a break from your phone and improve your mental health. During detox mode, you'll be encouraged to stay away from distracting apps.
-            </Text>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
 
-      {/* Settings Modal */}
-      <DetoxSettingsModal
-        visible={showSettingsModal}
-        onClose={() => setShowSettingsModal(false)}
-        duration={detoxDuration}
-        setDuration={setDetoxDuration}
-        selectedApps={detoxApps}
-        setSelectedApps={setDetoxApps}
-        isDark={isDark}
-      />
-
-      {/* Focus with Task Modal */}
-      <FocusModal
-        visible={showFocusModal}
-        onClose={() => setShowFocusModal(false)}
-        onStart={(duration, apps, requiresTask, beforePhoto, taskDescription) => {
-          startFocus(duration, apps, requiresTask, beforePhoto, taskDescription);
-          setShowFocusModal(false);
-        }}
-        isDark={isDark}
-      />
-
-      {/* Task Verification Chat Modal */}
-      {focusSession?.requiresTaskCompletion && focusSession?.beforePhotoUri && (
-        <TaskVerificationModal
-          visible={showTaskVerification}
-          taskDescription={
-            focusSession.taskDescription || 'Complete your task'
-          }
-          beforePhotoUri={focusSession.beforePhotoUri}
-          onClose={() => setShowTaskVerification(false)}
-          onVerified={handleTaskVerified}
-          onForceUnlock={handleForceUnlock}
+        {/* Settings Modal */}
+        <DetoxSettingsModal
+          visible={showSettingsModal}
+          onClose={() => setShowSettingsModal(false)}
+          duration={detoxDuration}
+          setDuration={setDetoxDuration}
+          selectedApps={detoxApps}
+          setSelectedApps={setDetoxApps}
+          isDark={isDark}
         />
-      )}
       </SafeAreaView>
     </ThemedBackground>
   );

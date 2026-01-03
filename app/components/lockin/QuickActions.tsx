@@ -40,24 +40,39 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
       onPress={onPress}
       activeOpacity={0.7}
       style={{
-        backgroundColor: isDark ? "#0a0a0a" : "#ffffff",
         borderRadius: 20,
         padding: 18,
         marginBottom: 12,
         flexDirection: "row",
         alignItems: "center",
         overflow: "hidden",
-        borderWidth: 0.5,
+        borderWidth: 1,
         borderColor: isPrimary
           ? `rgba(${accentColor.rgb}, 0.3)`
           : (isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)"),
         shadowColor: isPrimary ? accentColor.primary : "#000",
         shadowOffset: { width: 0, height: isPrimary ? 8 : 4 },
-        shadowOpacity: isPrimary ? 0.25 : (isDark ? 0.15 : 0.06),
+        shadowOpacity: isPrimary ? 0.3 : (isDark ? 0.15 : 0.06),
         shadowRadius: isPrimary ? 20 : 12,
         elevation: isPrimary ? 8 : 3,
       }}
     >
+      {/* Inner gradient background */}
+      <LinearGradient
+        colors={isPrimary
+          ? (isDark ? [`rgba(${accentColor.rgb}, 0.15)`, `rgba(${accentColor.rgb}, 0.05)`] : [`rgba(${accentColor.rgb}, 0.1)`, `rgba(${accentColor.rgb}, 0.02)`])
+          : (isDark ? ["rgba(255, 255, 255, 0.03)", "rgba(255, 255, 255, 0.01)"] : ["#ffffff", "#f9fafb"])
+        }
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
+      />
       {/* Icon with gradient */}
       <View
         style={{
@@ -182,16 +197,6 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
         subtitle="Block distractions instantly"
         onPress={onQuickStart}
         isPrimary
-      />
-
-      <ActionCard
-        icon={Camera}
-        gradientColors={["#10b981", "#059669"]}
-        title="Verified LockIn"
-        subtitle="Before/after photos • 1.5x points"
-        badge="Bonus"
-        badgeGradient={["#10b981", "#059669"]}
-        onPress={onVerifiedStart}
       />
     </View>
   );

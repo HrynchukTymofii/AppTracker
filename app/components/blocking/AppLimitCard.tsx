@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTranslation } from "react-i18next";
+import { Lock } from "lucide-react-native";
 import { DailyLimit } from "@/lib/appBlocking";
 import { getLocalIcon } from "@/lib/appIcons";
 import { getAppIconEmoji, formatTime } from "./constants";
@@ -46,36 +47,54 @@ export const AppLimitCard = ({
             : "rgba(0, 0, 0, 0.05)",
       }}
     >
-      {/* App Icon */}
-      {localIcon ? (
-        <Image
-          source={localIcon}
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: 12,
-            marginRight: 12,
-            opacity: isExceeded ? 0.5 : 1,
-          }}
-        />
-      ) : (
-        <View
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: 12,
-            backgroundColor: isDark ? "#374151" : "#e5e7eb",
-            alignItems: "center",
-            justifyContent: "center",
-            marginRight: 12,
-            opacity: isExceeded ? 0.5 : 1,
-          }}
-        >
-          <Text style={{ fontSize: 22 }}>
-            {getAppIconEmoji(limit.packageName, limit.appName)}
-          </Text>
-        </View>
-      )}
+      {/* App Icon with Blocked Overlay */}
+      <View style={{ position: "relative", marginRight: 12 }}>
+        {localIcon ? (
+          <Image
+            source={localIcon}
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              opacity: isExceeded ? 0.4 : 1,
+            }}
+          />
+        ) : (
+          <View
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              backgroundColor: isDark ? "#374151" : "#e5e7eb",
+              alignItems: "center",
+              justifyContent: "center",
+              opacity: isExceeded ? 0.4 : 1,
+            }}
+          >
+            <Text style={{ fontSize: 22 }}>
+              {getAppIconEmoji(limit.packageName, limit.appName)}
+            </Text>
+          </View>
+        )}
+        {/* Lock overlay when blocked */}
+        {isExceeded && (
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              borderRadius: 12,
+              backgroundColor: "rgba(239, 68, 68, 0.85)",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Lock size={20} color="#ffffff" strokeWidth={2.5} />
+          </View>
+        )}
+      </View>
 
       {/* App Name and Usage Info */}
       <View style={{ flex: 1 }}>

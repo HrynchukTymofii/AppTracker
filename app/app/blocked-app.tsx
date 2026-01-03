@@ -5,26 +5,69 @@ import { SpendTimeModal } from '@/components/modals/SpendTimeModal';
 import { useEarnedTime } from '@/context/EarnedTimeContext';
 import { useBlocking } from '@/context/BlockingContext';
 import * as AppBlocker from '@/modules/app-blocker';
+import * as UsageStats from '@/modules/usage-stats';
 
 export default function BlockedAppScreen() {
-  const router = useRouter();
+  const router = useRouter(); // Keep for onEarnTime navigation
   const params = useLocalSearchParams<{ packageName: string; appName: string }>();
   const [visible, setVisible] = useState(true);
+  const [realUsedMinutes, setRealUsedMinutes] = useState(0);
 
-  const { spendTime, recordFreeUsage } = useEarnedTime();
-  const { dailyLimits, schedules } = useBlocking();
+  const { urgentSpend, syncUsageWithWallet } = useEarnedTime();
+  const { dailyLimits } = useBlocking();
 
   const packageName = params.packageName || '';
   const appName = params.appName || packageName;
-
-  console.log('[BlockedApp] Screen loaded with:', { packageName, appName });
 
   // Get daily limit for this app (default 30 min if not set)
   const appLimit = dailyLimits.find(l => l.packageName === packageName);
   const dailyLimitMinutes = appLimit?.limitMinutes || 30;
 
-  // Check if currently in a free schedule period
-  const isScheduleFreeTime = checkIfScheduleFreeTime(schedules, packageName);
+  // Schedule functionality removed - always false
+  const isScheduleFreeTime = false;
+
+  console.log('[BlockedApp] Screen loaded with:', {
+    packageName,
+    appName,
+    dailyLimitMinutes,
+    hasAppLimit: !!appLimit,
+  });
+
+  // Get list of blocked app package names
+  const blockedPackages = dailyLimits.map(l => l.packageName);
+
+  // Fetch real device usage for this app and sync with wallet
+  useEffect(() => {
+    const fetchRealUsage = async () => {
+      try {
+        const todayStats = await UsageStats.getTodayUsageStats();
+        if (todayStats.hasPermission && todayStats.apps) {
+          // Build usage map for ONLY blocked apps
+          const usageMap: Record<string, number> = {};
+          for (const app of todayStats.apps) {
+            // Only track apps that are in our blocked list
+            if (blockedPackages.includes(app.packageName)) {
+              const usedMins = Math.round(app.timeInForeground / (1000 * 60));
+              if (usedMins > 0) {
+                usageMap[app.packageName] = usedMins;
+              }
+            }
+          }
+
+          // Sync with wallet to deduct actual usage (only for blocked apps)
+          await syncUsageWithWallet(usageMap);
+
+          // Get this app's usage
+          const thisAppUsage = usageMap[packageName] || 0;
+          setRealUsedMinutes(thisAppUsage);
+          console.log(`[BlockedApp] Real usage for ${appName}: ${thisAppUsage} minutes`);
+        }
+      } catch (error) {
+        console.error('[BlockedApp] Error fetching usage stats:', error);
+      }
+    };
+    fetchRealUsage();
+  }, [packageName, appName, syncUsageWithWallet, blockedPackages]);
 
   // Prevent back button from bypassing the block
   useEffect(() => {
@@ -37,9 +80,10 @@ export default function BlockedAppScreen() {
   }, []);
 
   const goHome = () => {
-    console.log('[BlockedApp] Going home');
+    console.log('[BlockedApp] Going to phone home screen');
     setVisible(false);
-    router.replace('/(tabs)');
+    router.back(); // Remove blocked-app screen from navigation stack
+    AppBlocker.goToHomeScreen(); // Go to phone's home screen
   };
 
   const handleClose = () => {
@@ -47,24 +91,15 @@ export default function BlockedAppScreen() {
   };
 
   const handleSpend = async (minutes: number) => {
-    console.log(`[BlockedApp] Spending ${minutes} minutes for ${appName}`);
+    console.log(`[BlockedApp] Opening ${appName} with ${minutes} minutes limit`);
 
     try {
-      if (isScheduleFreeTime) {
-        // Record usage but don't deduct from wallet
-        await recordFreeUsage(packageName, appName, minutes);
-      } else {
-        // Deduct from wallet
-        const success = await spendTime(packageName, appName, minutes);
-        if (!success) {
-          console.log('[BlockedApp] Insufficient balance');
-          return;
-        }
-      }
+      // Don't deduct from wallet upfront - real usage is tracked by device
+      // The temp unblock sets the time limit, and UsageStats tracks actual usage
 
-      // Store temporary unblock
+      // Store temporary unblock (this is the time limit for this session)
       AppBlocker.setTempUnblock(packageName, minutes);
-      console.log('[BlockedApp] Temp unblock set');
+      console.log('[BlockedApp] Temp unblock set for', minutes, 'minutes');
 
       // Launch the app
       const launched = AppBlocker.launchApp(packageName);
@@ -74,16 +109,39 @@ export default function BlockedAppScreen() {
         console.log('[BlockedApp] Could not launch app directly');
       }
     } catch (error) {
-      console.error('[BlockedApp] Error spending time:', error);
+      console.error('[BlockedApp] Error opening app:', error);
     }
 
     setVisible(false);
+    router.back(); // Remove blocked-app screen from navigation stack
   };
 
   const handleEarnTime = () => {
     // Navigate to LockIn tab to earn time
     setVisible(false);
     router.replace('/(tabs)/lockin');
+  };
+
+  const handleUrgentAccess = async (minutes: number) => {
+    console.log(`[BlockedApp] Urgent access: ${minutes} minutes for ${appName}`);
+
+    try {
+      // Deduct from wallet (can go negative for urgent access)
+      await urgentSpend(packageName, appName, minutes);
+
+      // Store temporary unblock
+      AppBlocker.setTempUnblock(packageName, minutes);
+      console.log('[BlockedApp] Urgent temp unblock set');
+
+      // Launch the app
+      const launched = AppBlocker.launchApp(packageName);
+      console.log('[BlockedApp] Urgent app launch result:', launched);
+    } catch (error) {
+      console.error('[BlockedApp] Error with urgent access:', error);
+    }
+
+    setVisible(false);
+    router.back(); // Remove blocked-app screen from navigation stack
   };
 
   return (
@@ -93,43 +151,13 @@ export default function BlockedAppScreen() {
         appName={appName}
         packageName={packageName}
         dailyLimitMinutes={dailyLimitMinutes}
+        realUsedMinutes={realUsedMinutes}
         isScheduleFreeTime={isScheduleFreeTime}
         onClose={handleClose}
         onSpend={handleSpend}
         onEarnTime={handleEarnTime}
+        onUrgentAccess={handleUrgentAccess}
       />
     </View>
   );
-}
-
-// Helper function to check if currently in a free schedule period
-function checkIfScheduleFreeTime(schedules: any[], packageName: string): boolean {
-  const now = new Date();
-  const currentDay = now.getDay();
-  const currentHour = now.getHours();
-  const currentMinute = now.getMinutes();
-  const currentTimeMinutes = currentHour * 60 + currentMinute;
-
-  for (const schedule of schedules) {
-    // Check if schedule is active and includes this app
-    if (!schedule.isActive) continue;
-    if (!schedule.apps.includes(packageName)) continue;
-    if (!schedule.daysOfWeek.includes(currentDay)) continue;
-
-    // Check if schedule type is 'unlock' (free time)
-    if (schedule.type !== 'unlock') continue;
-
-    // Parse start and end times
-    const [startHour, startMin] = schedule.startTime.split(':').map(Number);
-    const [endHour, endMin] = schedule.endTime.split(':').map(Number);
-    const startMinutes = startHour * 60 + startMin;
-    const endMinutes = endHour * 60 + endMin;
-
-    // Check if current time is within the schedule
-    if (currentTimeMinutes >= startMinutes && currentTimeMinutes < endMinutes) {
-      return true;
-    }
-  }
-
-  return false;
 }

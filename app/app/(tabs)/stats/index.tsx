@@ -232,10 +232,11 @@ export default function StatsScreen() {
     try {
       setIsLoading(true);
 
-      // Check if this week has data in DB
+      // Always show current week data (native or simulated)
       const { startDate, endDate } = getWeekDateRange(weekOffset);
       const hasData = await hasDataForRange(startDate, endDate);
-      setHasCurrentWeekData(hasData);
+      // Show data if we have DB data OR if it's the current week (which always has simulated data)
+      setHasCurrentWeekData(hasData || weekOffset === 0);
 
       // Check navigation availability - allow going back up to 8 weeks (native module can query historical data)
       setCanGoPrev(weekOffset > -8);
@@ -255,33 +256,21 @@ export default function StatsScreen() {
         }
       }
 
-      // Calculate stats - use native data even if not in DB
+      // Calculate stats - always show values (even if 0)
       const hasRealData = weekStats.totalScreenTime > 0 || weekStats.pickups > 0 || dailyStats.some(d => d.hours > 0);
-      const daysWithData = dailyStats.filter(d => d.hours > 0).length;
+      const daysWithData = dailyStats.filter(d => d.hours > 0).length || 1; // At least 1 to avoid division by 0
+      const totalHours = weekStats.totalScreenTime / (1000 * 60 * 60);
+      const dailyAvg = totalHours / Math.max(daysWithData, 1);
+      const peekDayData = dailyStats.reduce((max, curr) => curr.hours > max.hours ? curr : max, dailyStats[0] || { day: "Mon", hours: 0 });
 
-      if (!hasRealData || daysWithData === 0) {
-        setStats({
-          totalHours: "--",
-          dailyAvg: "--",
-          peekDay: "--",
-          peekHours: "--",
-          pickupsTotal: "--",
-          pickupsAvg: "--",
-        });
-      } else {
-        const totalHours = weekStats.totalScreenTime / (1000 * 60 * 60);
-        const dailyAvg = totalHours / Math.max(daysWithData, 1);
-        const peekDayData = dailyStats.reduce((max, curr) => curr.hours > max.hours ? curr : max, dailyStats[0] || { day: "Mon", hours: 0 });
-
-        setStats({
-          totalHours: Math.round(totalHours * 10) / 10,
-          dailyAvg: Math.round(dailyAvg * 10) / 10,
-          peekDay: peekDayData?.day || "--",
-          peekHours: Math.round((peekDayData?.hours || 0) * 10) / 10,
-          pickupsTotal: weekStats.pickups,
-          pickupsAvg: Math.round(weekStats.pickups / Math.max(daysWithData, 1)),
-        });
-      }
+      setStats({
+        totalHours: Math.round(totalHours * 10) / 10,
+        dailyAvg: Math.round(dailyAvg * 10) / 10,
+        peekDay: peekDayData?.day || "Mon",
+        peekHours: Math.round((peekDayData?.hours || 0) * 10) / 10,
+        pickupsTotal: weekStats.pickups,
+        pickupsAvg: Math.round(weekStats.pickups / Math.max(daysWithData, 1)),
+      });
 
       // Set chart data - ensure exactly 7 days
       const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

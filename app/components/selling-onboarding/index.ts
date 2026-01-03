@@ -57,7 +57,7 @@ export {
   Step8ScreenTimePermission,
 } from "./Steps";
 
-// Steps 9-15
+// Steps 9-16
 export {
   Step9OverlayPermission,
   Step10AccessibilityPermission,
@@ -65,5 +65,6 @@ export {
   Step12Projection,
   Step13Comparison,
   Step14Notifications,
-  Step15AppSelection,
+  Step15DailyGoal,
+  Step16AppSelection,
 } from "./StepsRemaining";

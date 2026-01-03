@@ -1,5 +1,5 @@
 import { useFonts } from "expo-font";
-import {  Stack, useRouter } from "expo-router";
+import { Stack, useRouter, useNavigationContainerRef } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import "../global.css";
@@ -14,7 +14,7 @@ import { BlockingProvider } from "@/context/BlockingContext";
 import { GroupProvider } from "@/context/GroupContext";
 import { LockInProvider } from "@/context/LockInContext";
 import { EarnedTimeProvider } from "@/context/EarnedTimeContext";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, useRef, useCallback } from "react";
 import * as SecureStore from "expo-secure-store";
 import { SQLiteProvider } from "expo-sqlite";
 import CustomPreloadScreen from "@/components/ui/CustomPreloadScreen";
@@ -25,10 +25,11 @@ import {
   ReanimatedLogLevel,
 } from "react-native-reanimated";
 import Purchases, { LOG_LEVEL } from "react-native-purchases";
-import { AppState, Platform} from "react-native";
+import { AppState, Platform } from "react-native";
 import { upgradeToPro, removePro } from "@/lib/api/user";
 import * as QuickActions from "expo-quick-actions";
 import { RouterAction } from "expo-quick-actions/router";
+import * as AppBlocker from "@/modules/app-blocker";
 
 configureReanimatedLogger({
   level: ReanimatedLogLevel.warn,
@@ -39,6 +40,96 @@ function AppSyncWrapper({ children }: { children: React.ReactNode }) {
   const { token, user, setUser } = useAuth();
   const [isOffline, setIsOffline] = useState(false);
   const router = useRouter();
+  const rootNavigation = useNavigationContainerRef();
+  const isNavigatingToBlockedApp = useRef(false);
+  const lastProcessedTimestamp = useRef(0);
+
+  // Check for pending blocked app (Android only - set by native BlockInterstitialActivity)
+  const checkPendingBlockedApp = useCallback(async () => {
+    if (Platform.OS !== 'android') return;
+
+    // Check if navigation is ready
+    if (!rootNavigation?.isReady()) {
+      console.log('[Layout] Navigation not ready yet, will retry...');
+      return;
+    }
+
+    // Prevent multiple simultaneous navigations
+    if (isNavigatingToBlockedApp.current) {
+      console.log('[Layout] Already navigating to blocked app, skipping...');
+      return;
+    }
+
+    try {
+      const pending = await AppBlocker.getPendingBlockedApp();
+
+      if (pending && pending.packageName) {
+        // Prevent processing the same pending app multiple times
+        if (pending.timestamp === lastProcessedTimestamp.current) {
+          console.log('[Layout] Already processed this pending app, skipping...');
+          return;
+        }
+
+        console.log('[Layout] Found pending blocked app:', pending.packageName, 'timestamp:', pending.timestamp);
+
+        // Mark as navigating and store timestamp
+        isNavigatingToBlockedApp.current = true;
+        lastProcessedTimestamp.current = pending.timestamp;
+
+        // Clear pending data first to prevent re-processing
+        AppBlocker.clearPendingBlockedApp();
+
+        // Navigate to blocked-app screen with params
+        router.push({
+          pathname: '/blocked-app',
+          params: {
+            packageName: pending.packageName,
+            appName: pending.appName,
+          },
+        });
+
+        // Reset navigation flag after a delay
+        setTimeout(() => {
+          isNavigatingToBlockedApp.current = false;
+          console.log('[Layout] Navigation complete, ready for next blocked app');
+        }, 1000);
+      }
+    } catch (error) {
+      console.error('[Layout] Error checking pending blocked app:', error);
+      isNavigatingToBlockedApp.current = false;
+    }
+  }, [router, rootNavigation]);
+
+  // Check when navigation becomes ready and when app becomes active
+  useEffect(() => {
+    if (Platform.OS !== 'android') return;
+
+    // Wait for navigation to be ready, then check
+    const checkWhenReady = () => {
+      if (rootNavigation?.isReady()) {
+        checkPendingBlockedApp();
+      } else {
+        // Retry after a short delay if not ready
+        setTimeout(checkWhenReady, 100);
+      }
+    };
+
+    // Initial check with delay to ensure everything is mounted
+    const initialTimer = setTimeout(checkWhenReady, 200);
+
+    // Also check when app becomes active
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (nextAppState === "active") {
+        // Small delay to ensure app is fully foregrounded
+        setTimeout(checkPendingBlockedApp, 100);
+      }
+    });
+
+    return () => {
+      clearTimeout(initialTimer);
+      subscription.remove();
+    };
+  }, [checkPendingBlockedApp, rootNavigation]);
 
   // Setup Quick Actions for iOS home screen long-press menu
   // TODO: Re-enable when special offer is configured
@@ -275,6 +366,15 @@ export default function RootLayout() {
                       {/* Calendar */}
                       <Stack.Screen name="calendar" options={{ headerShown: false }} />
 
+                      {/* Blocked App Screen (deep linked from native module) */}
+                      <Stack.Screen
+                        name="blocked-app"
+                        options={{
+                          headerShown: false,
+                          animation: 'fade',
+                          presentation: 'transparentModal',
+                        }}
+                      />
 
                       {/* Not found */}
                       <Stack.Screen name="+not-found" />

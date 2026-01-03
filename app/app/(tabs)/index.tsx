@@ -26,6 +26,8 @@ import {
   Timer,
   X,
   Plus,
+  Camera,
+  Dumbbell,
 } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -49,6 +51,7 @@ import { HelpCarousel } from "@/components/modals/HelpCarousel";
 import { homeHelpCards } from "@/lib/helpContent";
 import { ThemedBackground } from "@/components/ui/ThemedBackground";
 import { WalletBalanceCard } from "@/components/WalletBalanceCard";
+import { TodaysProgress } from "@/components/TodaysProgress";
 
 const PLANET_SIZE = 160;
 
@@ -130,7 +133,7 @@ export default function HomeScreen() {
   const toggleMenu = () => {
     if (quickMenuOpen) {
       // Staggered close animation (reverse order)
-      Animated.stagger(50, [
+      Animated.stagger(40, [
         Animated.parallel([
           Animated.timing(text1Anim, { toValue: 0, duration: 150, useNativeDriver: true }),
           Animated.timing(icon1Anim, { toValue: 0, duration: 200, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
@@ -147,11 +150,19 @@ export default function HomeScreen() {
           Animated.timing(text4Anim, { toValue: 0, duration: 150, useNativeDriver: true }),
           Animated.timing(icon4Anim, { toValue: 0, duration: 200, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
         ]),
+        Animated.parallel([
+          Animated.timing(text5Anim, { toValue: 0, duration: 150, useNativeDriver: true }),
+          Animated.timing(icon5Anim, { toValue: 0, duration: 200, easing: Easing.in(Easing.cubic), useNativeDriver: true }),
+        ]),
       ]).start(() => setQuickMenuOpen(false));
     } else {
       setQuickMenuOpen(true);
       // Staggered open animation
-      Animated.stagger(60, [
+      Animated.stagger(50, [
+        Animated.parallel([
+          Animated.spring(icon5Anim, { toValue: 1, tension: 50, friction: 7, useNativeDriver: true }),
+          Animated.timing(text5Anim, { toValue: 1, duration: 200, delay: 50, useNativeDriver: true }),
+        ]),
         Animated.parallel([
           Animated.spring(icon4Anim, { toValue: 1, tension: 50, friction: 7, useNativeDriver: true }),
           Animated.timing(text4Anim, { toValue: 1, duration: 200, delay: 50, useNativeDriver: true }),
@@ -669,13 +680,12 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* Screen Time Balance Card */}
-        <WalletBalanceCard isDark={isDark} />
+        {/* Today's Progress Card */}
+        <TodaysProgress isDark={isDark} />
 
-        {/* Active Focus Session or Upcoming Schedules */}
-        <View style={{ paddingHorizontal: 20 }}>
-          {focusSession ? (
-            /* Active Focus Session Card */
+        {/* Active Focus Session - SCHEDULES SECTION REMOVED */}
+        {focusSession && (
+          <View style={{ paddingHorizontal: 20 }}>
             <TouchableOpacity
               onPress={() => router.push("/(tabs)/blocking")}
               activeOpacity={0.9}
@@ -736,289 +746,8 @@ export default function HomeScreen() {
                 </View>
               </View>
             </TouchableOpacity>
-          ) : (
-            /* Schedules Section - Active first, then Upcoming */
-            <View>
-              {/* Active Schedules */}
-              {upcomingSchedules.filter((s) => getScheduleStatus(s).isActive).length > 0 && (
-                <View style={{ marginBottom: 16 }}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontWeight: "600",
-                      color: "#10b981",
-                      marginBottom: 10,
-                      textTransform: "uppercase",
-                      letterSpacing: 0.5,
-                    }}
-                  >
-                    Active Now
-                  </Text>
-                  {upcomingSchedules
-                    .filter((s) => getScheduleStatus(s).isActive)
-                    .map((schedule) => {
-                      const status = getScheduleStatus(schedule);
-                      return (
-                        <TouchableOpacity
-                          key={schedule.id}
-                          onPress={() => router.push("/(tabs)/blocking")}
-                          activeOpacity={0.8}
-                          style={{
-                            backgroundColor: isDark
-                              ? "rgba(16, 185, 129, 0.1)"
-                              : "rgba(16, 185, 129, 0.08)",
-                            borderRadius: 14,
-                            padding: 14,
-                            marginBottom: 10,
-                            borderWidth: 1,
-                            borderColor: "#10b981",
-                          }}
-                        >
-                          <View style={{ flexDirection: "row", alignItems: "center" }}>
-                            <View
-                              style={{
-                                width: 40,
-                                height: 40,
-                                borderRadius: 10,
-                                backgroundColor: "rgba(16, 185, 129, 0.2)",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                marginRight: 12,
-                              }}
-                            >
-                              <Shield size={18} color="#10b981" />
-                            </View>
-                            <View style={{ flex: 1 }}>
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontWeight: "600",
-                                  color: isDark ? "#ffffff" : "#111827",
-                                  marginBottom: 2,
-                                }}
-                              >
-                                {schedule.name}
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize: 12,
-                                  color: isDark ? "#9ca3af" : "#6b7280",
-                                }}
-                              >
-                                {getScheduleDaysLabel(schedule.daysOfWeek)} • {schedule.startTime} - {schedule.endTime}
-                              </Text>
-                            </View>
-                            <ChevronRight size={18} color="#10b981" />
-                          </View>
-                          {/* Countdown below */}
-                          <View
-                            style={{
-                              marginTop: 10,
-                              backgroundColor: "rgba(16, 185, 129, 0.15)",
-                              paddingHorizontal: 10,
-                              paddingVertical: 6,
-                              borderRadius: 8,
-                              alignSelf: "flex-start",
-                              flexDirection: "row",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Clock size={12} color="#10b981" style={{ marginRight: 5 }} />
-                            <Text
-                              style={{
-                                fontSize: 12,
-                                fontWeight: "600",
-                                color: "#10b981",
-                              }}
-                            >
-                              {status.text}
-                            </Text>
-                          </View>
-                        </TouchableOpacity>
-                      );
-                    })}
-                </View>
-              )}
-
-              {/* Upcoming Schedules */}
-              {upcomingSchedules.filter((s) => !getScheduleStatus(s).isActive).length > 0 && (
-                <View>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontWeight: "600",
-                      color: isDark ? "#9ca3af" : "#6b7280",
-                      marginBottom: 10,
-                      textTransform: "uppercase",
-                      letterSpacing: 0.5,
-                    }}
-                  >
-                    {t("home.upcomingSchedules") || "Upcoming"}
-                  </Text>
-                  {upcomingSchedules
-                    .filter((s) => !getScheduleStatus(s).isActive)
-                    .map((schedule) => {
-                      const status = getScheduleStatus(schedule);
-                      return (
-                        <TouchableOpacity
-                          key={schedule.id}
-                          onPress={() => router.push("/(tabs)/blocking")}
-                          activeOpacity={0.8}
-                          style={{
-                            backgroundColor: isDark
-                              ? "rgba(255, 255, 255, 0.05)"
-                              : "#ffffff",
-                            borderRadius: 14,
-                            padding: 14,
-                            marginBottom: 10,
-                            borderWidth: 1,
-                            borderColor: isDark
-                              ? "rgba(255, 255, 255, 0.08)"
-                              : "rgba(0, 0, 0, 0.06)",
-                          }}
-                        >
-                          <View style={{ flexDirection: "row", alignItems: "center" }}>
-                            <View
-                              style={{
-                                width: 40,
-                                height: 40,
-                                borderRadius: 10,
-                                backgroundColor: isDark
-                                  ? "rgba(59, 130, 246, 0.15)"
-                                  : "rgba(59, 130, 246, 0.1)",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                marginRight: 12,
-                              }}
-                            >
-                              <Calendar size={18} color="#3b82f6" />
-                            </View>
-                            <View style={{ flex: 1 }}>
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontWeight: "600",
-                                  color: isDark ? "#ffffff" : "#111827",
-                                  marginBottom: 2,
-                                }}
-                              >
-                                {schedule.name}
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize: 12,
-                                  color: isDark ? "#9ca3af" : "#6b7280",
-                                }}
-                              >
-                                {getScheduleDaysLabel(schedule.daysOfWeek)} • {schedule.startTime} - {schedule.endTime}
-                              </Text>
-                            </View>
-                            <ChevronRight size={18} color={isDark ? "#6b7280" : "#9ca3af"} />
-                          </View>
-                          {/* Starting time below */}
-                          {status.text && (
-                            <View
-                              style={{
-                                marginTop: 10,
-                                backgroundColor: isDark
-                                  ? "rgba(255, 255, 255, 0.08)"
-                                  : "rgba(0, 0, 0, 0.04)",
-                                paddingHorizontal: 10,
-                                paddingVertical: 6,
-                                borderRadius: 8,
-                                alignSelf: "flex-start",
-                                flexDirection: "row",
-                                alignItems: "center",
-                              }}
-                            >
-                              <Clock size={12} color={isDark ? "#9ca3af" : "#6b7280"} style={{ marginRight: 5 }} />
-                              <Text
-                                style={{
-                                  fontSize: 12,
-                                  fontWeight: "500",
-                                  color: isDark ? "#9ca3af" : "#6b7280",
-                                }}
-                              >
-                                {status.text}
-                              </Text>
-                            </View>
-                          )}
-                        </TouchableOpacity>
-                      );
-                    })}
-                </View>
-              )}
-
-              {/* No Schedules - Create One */}
-              {upcomingSchedules.length === 0 && (
-                <View>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontWeight: "600",
-                      color: isDark ? "#9ca3af" : "#6b7280",
-                      marginBottom: 10,
-                      textTransform: "uppercase",
-                      letterSpacing: 0.5,
-                    }}
-                  >
-                    {t("home.upcomingSchedules") || "Upcoming"}
-                  </Text>
-                  <TouchableOpacity
-                    onPress={() => router.push("/(tabs)/blocking?openSchedule=true")}
-                    activeOpacity={0.8}
-                    style={{
-                      backgroundColor: isDark
-                        ? "rgba(59, 130, 246, 0.08)"
-                        : "rgba(59, 130, 246, 0.05)",
-                      borderRadius: 14,
-                      padding: 16,
-                      flexDirection: "row",
-                      alignItems: "center",
-                      borderWidth: 1.5,
-                      borderColor: "#3b82f6",
-                      borderStyle: "dashed",
-                    }}
-                  >
-                    <View
-                      style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: 10,
-                        backgroundColor: "#3b82f6",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        marginRight: 12,
-                      }}
-                    >
-                      <Plus size={20} color="#ffffff" />
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontWeight: "600",
-                          color: "#3b82f6",
-                          marginBottom: 2,
-                        }}
-                      >
-                        {t("home.createSchedule") || "Create a Schedule"}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: isDark ? "#9ca3af" : "#6b7280",
-                        }}
-                      >
-                        {t("blocking.createScheduleHint")}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
-          )}
-        </View>
+          </View>
+        )}
 
         {/* App Usage Today Section */}
         <View style={{ paddingHorizontal: 20, marginTop: 24 }}>
@@ -1253,10 +982,10 @@ export default function HomeScreen() {
         </TouchableOpacity>
       )}
 
-      {/* Menu Items - 4 Options */}
+      {/* Menu Items - 5 Options (Exercises + Photo Task + Focus Mode) */}
       {quickMenuOpen && (
         <>
-          {/* Item 1 - Block Now (Top) */}
+          {/* Item 1 - Push-ups (Top) */}
           {(() => {
             const iconScale = icon1Anim.interpolate({
               inputRange: [0, 1],
@@ -1264,14 +993,14 @@ export default function HomeScreen() {
             });
             const iconTranslateY = icon1Anim.interpolate({
               inputRange: [0, 1],
-              outputRange: [280, 0],
+              outputRange: [340, 0],
             });
 
             return (
               <Animated.View
                 style={{
                   position: "absolute",
-                  bottom: 420,
+                  bottom: 480,
                   right: 24,
                   flexDirection: "row",
                   alignItems: "center",
@@ -1297,7 +1026,7 @@ export default function HomeScreen() {
                       textShadowRadius: 4,
                     }}
                   >
-                    Block Now
+                    💪 Push-ups
                   </Text>
                   <Text
                     style={{
@@ -1308,22 +1037,22 @@ export default function HomeScreen() {
                       textShadowRadius: 4,
                     }}
                   >
-                    Block apps for a set duration
+                    0.5 min per rep
                   </Text>
                 </Animated.View>
 
                 <TouchableOpacity
                   onPress={() => {
                     toggleMenu();
-                    setTimeout(() => router.push("/(tabs)/blocking?openFocus=true"), 300);
+                    setTimeout(() => router.push("/(tabs)/lockin?exercise=pushups"), 300);
                   }}
                   activeOpacity={0.8}
                   style={{
-                    width: 56,
-                    height: 56,
-                    borderRadius: 16,
+                    width: 52,
+                    height: 52,
+                    borderRadius: 14,
                     overflow: "hidden",
-                    shadowColor: "#f59e0b",
+                    shadowColor: "#ef4444",
                     shadowOffset: { width: 0, height: 6 },
                     shadowOpacity: 0.5,
                     shadowRadius: 12,
@@ -1331,7 +1060,7 @@ export default function HomeScreen() {
                   }}
                 >
                   <LinearGradient
-                    colors={["#fbbf24", "#f59e0b", "#d97706"]}
+                    colors={["#f87171", "#ef4444", "#dc2626"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={{
@@ -1340,14 +1069,14 @@ export default function HomeScreen() {
                       justifyContent: "center",
                     }}
                   >
-                    <Zap size={26} color="#ffffff" fill="#ffffff" />
+                    <Dumbbell size={24} color="#ffffff" />
                   </LinearGradient>
                 </TouchableOpacity>
               </Animated.View>
             );
           })()}
 
-          {/* Item 2 - Schedule Block */}
+          {/* Item 2 - Squats */}
           {(() => {
             const iconScale = icon2Anim.interpolate({
               inputRange: [0, 1],
@@ -1355,14 +1084,14 @@ export default function HomeScreen() {
             });
             const iconTranslateY = icon2Anim.interpolate({
               inputRange: [0, 1],
-              outputRange: [200, 0],
+              outputRange: [260, 0],
             });
 
             return (
               <Animated.View
                 style={{
                   position: "absolute",
-                  bottom: 350,
+                  bottom: 415,
                   right: 24,
                   flexDirection: "row",
                   alignItems: "center",
@@ -1388,7 +1117,7 @@ export default function HomeScreen() {
                       textShadowRadius: 4,
                     }}
                   >
-                    Schedule Block
+                    🦵 Squats
                   </Text>
                   <Text
                     style={{
@@ -1399,22 +1128,22 @@ export default function HomeScreen() {
                       textShadowRadius: 4,
                     }}
                   >
-                    Block on the times and days
+                    0.4 min per rep
                   </Text>
                 </Animated.View>
 
                 <TouchableOpacity
                   onPress={() => {
                     toggleMenu();
-                    setTimeout(() => router.push("/(tabs)/blocking?openSchedule=true"), 300);
+                    setTimeout(() => router.push("/(tabs)/lockin?exercise=squats"), 300);
                   }}
                   activeOpacity={0.8}
                   style={{
-                    width: 56,
-                    height: 56,
-                    borderRadius: 16,
+                    width: 52,
+                    height: 52,
+                    borderRadius: 14,
                     overflow: "hidden",
-                    shadowColor: "#3b82f6",
+                    shadowColor: "#8b5cf6",
                     shadowOffset: { width: 0, height: 6 },
                     shadowOpacity: 0.5,
                     shadowRadius: 12,
@@ -1422,7 +1151,7 @@ export default function HomeScreen() {
                   }}
                 >
                   <LinearGradient
-                    colors={["#60a5fa", "#3b82f6", "#2563eb"]}
+                    colors={["#a78bfa", "#8b5cf6", "#7c3aed"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={{
@@ -1431,14 +1160,14 @@ export default function HomeScreen() {
                       justifyContent: "center",
                     }}
                   >
-                    <Calendar size={26} color="#ffffff" />
+                    <Dumbbell size={24} color="#ffffff" />
                   </LinearGradient>
                 </TouchableOpacity>
               </Animated.View>
             );
           })()}
 
-          {/* Item 3 - Set Limits */}
+          {/* Item 3 - Plank */}
           {(() => {
             const iconScale = icon3Anim.interpolate({
               inputRange: [0, 1],
@@ -1446,14 +1175,14 @@ export default function HomeScreen() {
             });
             const iconTranslateY = icon3Anim.interpolate({
               inputRange: [0, 1],
-              outputRange: [120, 0],
+              outputRange: [180, 0],
             });
 
             return (
               <Animated.View
                 style={{
                   position: "absolute",
-                  bottom: 280,
+                  bottom: 350,
                   right: 24,
                   flexDirection: "row",
                   alignItems: "center",
@@ -1479,7 +1208,7 @@ export default function HomeScreen() {
                       textShadowRadius: 4,
                     }}
                   >
-                    Set Limits
+                    🧘 Plank
                   </Text>
                   <Text
                     style={{
@@ -1490,22 +1219,22 @@ export default function HomeScreen() {
                       textShadowRadius: 4,
                     }}
                   >
-                    Set daily usage limits
+                    0.1 min per second
                   </Text>
                 </Animated.View>
 
                 <TouchableOpacity
                   onPress={() => {
                     toggleMenu();
-                    setTimeout(() => router.push("/(tabs)/blocking?openLimits=true"), 300);
+                    setTimeout(() => router.push("/(tabs)/lockin?exercise=plank"), 300);
                   }}
                   activeOpacity={0.8}
                   style={{
-                    width: 56,
-                    height: 56,
-                    borderRadius: 16,
+                    width: 52,
+                    height: 52,
+                    borderRadius: 14,
                     overflow: "hidden",
-                    shadowColor: "#8b5cf6",
+                    shadowColor: "#10b981",
                     shadowOffset: { width: 0, height: 6 },
                     shadowOpacity: 0.5,
                     shadowRadius: 12,
@@ -1513,7 +1242,7 @@ export default function HomeScreen() {
                   }}
                 >
                   <LinearGradient
-                    colors={["#a78bfa", "#8b5cf6", "#7c3aed"]}
+                    colors={["#34d399", "#10b981", "#059669"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={{
@@ -1522,14 +1251,14 @@ export default function HomeScreen() {
                       justifyContent: "center",
                     }}
                   >
-                    <Timer size={26} color="#ffffff" />
+                    <Dumbbell size={24} color="#ffffff" />
                   </LinearGradient>
                 </TouchableOpacity>
               </Animated.View>
             );
           })()}
 
-          {/* Item 4 - Focus Mode */}
+          {/* Item 4 - Photo Task (Verified LockIn) */}
           {(() => {
             const iconScale = icon4Anim.interpolate({
               inputRange: [0, 1],
@@ -1537,14 +1266,14 @@ export default function HomeScreen() {
             });
             const iconTranslateY = icon4Anim.interpolate({
               inputRange: [0, 1],
-              outputRange: [40, 0],
+              outputRange: [100, 0],
             });
 
             return (
               <Animated.View
                 style={{
                   position: "absolute",
-                  bottom: 210,
+                  bottom: 285,
                   right: 24,
                   flexDirection: "row",
                   alignItems: "center",
@@ -1570,7 +1299,7 @@ export default function HomeScreen() {
                       textShadowRadius: 4,
                     }}
                   >
-                    Focus Mode
+                    📸 Photo Task
                   </Text>
                   <Text
                     style={{
@@ -1581,7 +1310,98 @@ export default function HomeScreen() {
                       textShadowRadius: 4,
                     }}
                   >
-                    Block until you complete a task
+                    Before/after photos • 1.5x bonus
+                  </Text>
+                </Animated.View>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    toggleMenu();
+                    setTimeout(() => router.push("/(tabs)/lockin?openVerified=true"), 300);
+                  }}
+                  activeOpacity={0.8}
+                  style={{
+                    width: 52,
+                    height: 52,
+                    borderRadius: 14,
+                    overflow: "hidden",
+                    shadowColor: "#3b82f6",
+                    shadowOffset: { width: 0, height: 6 },
+                    shadowOpacity: 0.5,
+                    shadowRadius: 12,
+                    elevation: 8,
+                  }}
+                >
+                  <LinearGradient
+                    colors={["#60a5fa", "#3b82f6", "#2563eb"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={{
+                      flex: 1,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Camera size={24} color="#ffffff" />
+                  </LinearGradient>
+                </TouchableOpacity>
+              </Animated.View>
+            );
+          })()}
+
+          {/* Item 5 - Focus Mode */}
+          {(() => {
+            const iconScale = icon5Anim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0.5, 1],
+            });
+            const iconTranslateY = icon5Anim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [40, 0],
+            });
+
+            return (
+              <Animated.View
+                style={{
+                  position: "absolute",
+                  bottom: 220,
+                  right: 24,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 14,
+                  opacity: icon5Anim,
+                  transform: [{ translateY: iconTranslateY }, { scale: iconScale }],
+                }}
+              >
+                <Animated.View
+                  style={{
+                    opacity: text5Anim,
+                    alignItems: "flex-end",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#ffffff",
+                      fontWeight: "700",
+                      fontSize: 16,
+                      marginBottom: 2,
+                      textShadowColor: "rgba(0, 0, 0, 0.5)",
+                      textShadowOffset: { width: 0, height: 1 },
+                      textShadowRadius: 4,
+                    }}
+                  >
+                    🎯 Focus Mode
+                  </Text>
+                  <Text
+                    style={{
+                      color: "rgba(255, 255, 255, 0.7)",
+                      fontSize: 12,
+                      textShadowColor: "rgba(0, 0, 0, 0.5)",
+                      textShadowOffset: { width: 0, height: 1 },
+                      textShadowRadius: 4,
+                    }}
+                  >
+                    LockIn to earn screen time
                   </Text>
                 </Animated.View>
 
@@ -1592,11 +1412,11 @@ export default function HomeScreen() {
                   }}
                   activeOpacity={0.8}
                   style={{
-                    width: 56,
-                    height: 56,
-                    borderRadius: 16,
+                    width: 52,
+                    height: 52,
+                    borderRadius: 14,
                     overflow: "hidden",
-                    shadowColor: "#10b981",
+                    shadowColor: "#f59e0b",
                     shadowOffset: { width: 0, height: 6 },
                     shadowOpacity: 0.5,
                     shadowRadius: 12,
@@ -1604,7 +1424,7 @@ export default function HomeScreen() {
                   }}
                 >
                   <LinearGradient
-                    colors={["#34d399", "#10b981", "#059669"]}
+                    colors={["#fbbf24", "#f59e0b", "#d97706"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={{
@@ -1613,7 +1433,7 @@ export default function HomeScreen() {
                       justifyContent: "center",
                     }}
                   >
-                    <Target size={26} color="#ffffff" />
+                    <Target size={24} color="#ffffff" />
                   </LinearGradient>
                 </TouchableOpacity>
               </Animated.View>
