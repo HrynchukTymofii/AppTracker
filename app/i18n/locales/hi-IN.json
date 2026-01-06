@@ -14,7 +14,8 @@
     "settings": "सेटिंग्स",
     "back": "वापस",
     "next": "अगला",
-    "done": "हो गया"
+    "done": "हो गया",
+    "or": "या"
   },
   "tabs": {
     "home": "होम",
@@ -224,7 +225,26 @@
     "loading": "प्रोफ़ाइल लोड हो रही है...",
     "defaultAppLimit": "डिफ़ॉल्ट ऐप सीमा",
     "defaultAppLimitDesc": "नए ऐप्स डिफ़ॉल्ट रूप से इस समय सीमा का उपयोग करेंगे",
-    "limitUpdated": "डिफ़ॉल्ट सीमा अपडेट की गई"
+    "limitUpdated": "डिफ़ॉल्ट सीमा अपडेट की गई",
+    "contactDescription": "हमें एक संदेश भेजें और हम जल्द ही जवाब देंगे",
+    "writeMessage": "अपना संदेश लिखें...",
+    "sendMessage": "संदेश भेजें",
+    "emailUs": "ईमेल करें",
+    "messageSent": "संदेश भेजा गया!",
+    "messageThankYou": "हम जल्द ही जवाब देंगे",
+    "messageError": "संदेश भेजने में विफल",
+    "rateExperience": "अपने अनुभव को रेट करें",
+    "rateDescription": "आप LockIn को कैसे रेट करेंगे?",
+    "tapToRate": "रेट करने के लिए स्टार पर टैप करें",
+    "thankYouRating": "आपकी रेटिंग के लिए धन्यवाद!",
+    "tellUsMore": "हमें और बताएं",
+    "helpUsImprove": "अपने अनुभव को बेहतर बनाने में हमारी मदद करें",
+    "describeProblem": "हम क्या बेहतर कर सकते हैं?",
+    "sendFeedback": "फीडबैक भेजें",
+    "changeRating": "रेटिंग बदलें",
+    "feedbackSent": "फीडबैक भेजा गया!",
+    "feedbackThanks": "सुधार में मदद के लिए धन्यवाद",
+    "feedbackError": "फीडबैक भेजने में विफल"
   },
   "achievements": {
     "title": "उपलब्धियां",

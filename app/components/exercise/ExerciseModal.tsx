@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, Modal, TouchableOpacity, ScrollView, Animated, Easing, Dimensions } from "react-native";
+import { View, Text, Modal, TouchableOpacity, ScrollView, Animated, Easing, Dimensions, Image } from "react-native";
 import { X, Dumbbell, Check, Clock, Flame, ChevronRight, Info, Play } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import { useTheme } from "@/context/ThemeContext";
 import { useEarnedTime } from "@/context/EarnedTimeContext";
 import { useLockIn } from "@/context/LockInContext";
 import { ExerciseCamera } from "./ExerciseCamera";
+import { getExerciseIcon } from "@/lib/exerciseIcons";
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -36,7 +38,15 @@ interface ExerciseModalProps {
 
 type ModalStep = 'select' | 'instructions' | 'ready' | 'exercise' | 'complete';
 
-const EXERCISES: ExerciseType[] = ['pushups', 'squats', 'plank'];
+const EXERCISES: ExerciseType[] = [
+  // Original exercises
+  'pushups', 'squats', 'plank',
+  // New rep-based exercises
+  'jumping-jacks', 'lunges', 'crunches', 'shoulder-press',
+  'leg-raises', 'high-knees', 'pull-ups',
+  // New hold-based exercises
+  'wall-sit', 'side-plank',
+];
 
 export const ExerciseModal: React.FC<ExerciseModalProps> = ({
   visible,
@@ -76,6 +86,20 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
       checkFirstRun();
     }
   }, [visible]);
+
+  // Keep screen awake during exercise and ready steps
+  useEffect(() => {
+    if (step === 'exercise' || step === 'ready') {
+      activateKeepAwakeAsync('exercise-session').catch(() => {
+        // Ignore errors - keep awake is not critical
+      });
+    } else {
+      deactivateKeepAwake('exercise-session');
+    }
+    return () => {
+      deactivateKeepAwake('exercise-session');
+    };
+  }, [step]);
 
   // Pulse animation for the exercise indicator
   useEffect(() => {
@@ -239,6 +263,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
         const info = getExerciseInfo(type);
         const reward = DEFAULT_EXERCISE_REWARDS[type];
         const gradientColors = getExerciseGradient(type);
+        const iconInfo = getExerciseIcon(type);
 
         return (
           <TouchableOpacity
@@ -286,7 +311,15 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                   bottom: 0,
                 }}
               />
-              <Text style={{ fontSize: 28 }}>{info.icon}</Text>
+              {iconInfo.image ? (
+                <Image
+                  source={iconInfo.image}
+                  style={{ width: 36, height: 36 }}
+                  resizeMode="contain"
+                />
+              ) : (
+                <Text style={{ fontSize: 28 }}>{iconInfo.emoji}</Text>
+              )}
             </View>
 
             {/* Content */}
@@ -1460,12 +1493,35 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
 
 function getExerciseGradient(type: ExerciseType): [string, string] {
   switch (type) {
+    // Original exercises
     case 'pushups':
-      return ['#ef4444', '#dc2626'];
+      return ['#ef4444', '#dc2626']; // Red
     case 'squats':
-      return ['#8b5cf6', '#7c3aed'];
+      return ['#8b5cf6', '#7c3aed']; // Purple
     case 'plank':
-      return ['#10b981', '#059669'];
+      return ['#10b981', '#059669']; // Green
+    // New rep-based exercises
+    case 'jumping-jacks':
+      return ['#f59e0b', '#d97706']; // Amber
+    case 'lunges':
+      return ['#06b6d4', '#0891b2']; // Cyan
+    case 'crunches':
+      return ['#ec4899', '#db2777']; // Pink
+    case 'shoulder-press':
+      return ['#6366f1', '#4f46e5']; // Indigo
+    case 'leg-raises':
+      return ['#14b8a6', '#0d9488']; // Teal
+    case 'high-knees':
+      return ['#f97316', '#ea580c']; // Orange
+    case 'pull-ups':
+      return ['#a855f7', '#9333ea']; // Violet
+    // New hold-based exercises
+    case 'wall-sit':
+      return ['#22c55e', '#16a34a']; // Emerald
+    case 'side-plank':
+      return ['#0ea5e9', '#0284c7']; // Sky
+    default:
+      return ['#6b7280', '#4b5563']; // Gray fallback
   }
 }
 

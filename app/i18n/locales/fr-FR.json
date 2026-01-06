@@ -14,7 +14,8 @@
     "settings": "Paramètres",
     "back": "Retour",
     "next": "Suivant",
-    "done": "Terminé"
+    "done": "Terminé",
+    "or": "ou"
   },
   "tabs": {
     "home": "Accueil",
@@ -224,7 +225,26 @@
     "loading": "Chargement du profil...",
     "defaultAppLimit": "Limite d'App par Défaut",
     "defaultAppLimitDesc": "Les nouvelles apps utiliseront cette limite de temps par défaut",
-    "limitUpdated": "Limite par défaut mise à jour"
+    "limitUpdated": "Limite par défaut mise à jour",
+    "contactDescription": "Envoyez-nous un message et nous vous répondrons bientôt",
+    "writeMessage": "Écrivez votre message...",
+    "sendMessage": "Envoyer le message",
+    "emailUs": "Envoyez-nous un e-mail",
+    "messageSent": "Message envoyé !",
+    "messageThankYou": "Nous vous répondrons bientôt",
+    "messageError": "Échec de l'envoi du message",
+    "rateExperience": "Évaluez votre expérience",
+    "rateDescription": "Comment évalueriez-vous LockIn ?",
+    "tapToRate": "Appuyez sur une étoile pour évaluer",
+    "thankYouRating": "Merci pour votre évaluation !",
+    "tellUsMore": "Dites-nous en plus",
+    "helpUsImprove": "Aidez-nous à améliorer votre expérience",
+    "describeProblem": "Que pouvons-nous améliorer ?",
+    "sendFeedback": "Envoyer les commentaires",
+    "changeRating": "Modifier l'évaluation",
+    "feedbackSent": "Commentaires envoyés !",
+    "feedbackThanks": "Merci de nous aider à nous améliorer",
+    "feedbackError": "Échec de l'envoi des commentaires"
   },
   "achievements": {
     "title": "Réalisations",

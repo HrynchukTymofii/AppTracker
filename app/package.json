@@ -1,7 +1,7 @@
 {
   "name": "app-blocker",
   "main": "expo-router/entry",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
@@ -43,6 +43,7 @@
     "expo-iap": "^3.0.6",
     "expo-image": "~3.0.11",
     "expo-image-picker": "~17.0.10",
+    "expo-keep-awake": "~15.0.8",
     "expo-linear-gradient": "~15.0.8",
     "expo-linking": "~8.0.11",
     "expo-localization": "^17.0.8",

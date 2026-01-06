@@ -35,7 +35,7 @@ const getGlowingGradient = (color: string): [string, string, string] => {
   return gradientMap[color] || ['#6366f1', '#8b5cf6', '#a855f7'];
 };
 
-// Pentagon SVG shape component with glowing gradient
+// Pentagon SVG shape component with gradient fill
 const PentagonShape = ({
   size,
   gradientColors,
@@ -50,8 +50,8 @@ const PentagonShape = ({
   achievementId: string;
 }) => {
   // Pentagon path for a 100x100 viewBox
-  const pentagonPath = "M50 5 L95 35 L80 90 L20 90 L5 35 Z";
-  const innerPentagonPath = "M50 12 L88 38 L75 85 L25 85 L12 38 Z";
+  const pentagonPath = "M50 8 L92 35 L78 88 L22 88 L8 35 Z";
+  const innerPentagonPath = "M50 15 L85 38 L73 82 L27 82 L15 38 Z";
   const gradientId = `grad-${achievementId}-${gradientColors[0].replace('#', '')}`;
 
   return (
@@ -59,44 +59,24 @@ const PentagonShape = ({
       <Defs>
         {/* Main gradient for fill */}
         <SvgLinearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <Stop offset="0%" stopColor={unlocked ? gradientColors[0] : isDark ? '#2a2a2a' : '#d4d4d4'} stopOpacity={unlocked ? 0.9 : 0.5} />
-          <Stop offset="50%" stopColor={unlocked ? gradientColors[1] : isDark ? '#1f1f1f' : '#c4c4c4'} stopOpacity={unlocked ? 0.85 : 0.4} />
-          <Stop offset="100%" stopColor={unlocked ? gradientColors[2] : isDark ? '#1a1a1a' : '#b4b4b4'} stopOpacity={unlocked ? 0.8 : 0.3} />
+          <Stop offset="0%" stopColor={unlocked ? gradientColors[0] : isDark ? '#2a2a2a' : '#d4d4d4'} stopOpacity={unlocked ? 0.95 : 0.5} />
+          <Stop offset="50%" stopColor={unlocked ? gradientColors[1] : isDark ? '#1f1f1f' : '#c4c4c4'} stopOpacity={unlocked ? 0.9 : 0.4} />
+          <Stop offset="100%" stopColor={unlocked ? gradientColors[2] : isDark ? '#1a1a1a' : '#b4b4b4'} stopOpacity={unlocked ? 0.85 : 0.3} />
         </SvgLinearGradient>
-        {/* Glow gradient for border */}
-        <SvgLinearGradient id={`${gradientId}-glow`} x1="0%" y1="0%" x2="100%" y2="100%">
+        {/* Border gradient */}
+        <SvgLinearGradient id={`${gradientId}-border`} x1="0%" y1="0%" x2="100%" y2="100%">
           <Stop offset="0%" stopColor={gradientColors[0]} />
           <Stop offset="50%" stopColor={gradientColors[1]} />
           <Stop offset="100%" stopColor={gradientColors[2]} />
         </SvgLinearGradient>
       </Defs>
 
-      {/* Outer glow effect for unlocked badges */}
-      {unlocked && (
-        <>
-          <Path
-            d={pentagonPath}
-            fill="none"
-            stroke={`url(#${gradientId}-glow)`}
-            strokeWidth="4"
-            opacity={0.4}
-          />
-          <Path
-            d={pentagonPath}
-            fill="none"
-            stroke={`url(#${gradientId}-glow)`}
-            strokeWidth="2"
-            opacity={0.6}
-          />
-        </>
-      )}
-
       {/* Main pentagon fill */}
       <Path
         d={pentagonPath}
         fill={`url(#${gradientId})`}
-        stroke={unlocked ? `url(#${gradientId}-glow)` : isDark ? '#3a3a3a' : '#d4d4d4'}
-        strokeWidth="1.5"
+        stroke={unlocked ? `url(#${gradientId}-border)` : isDark ? '#3a3a3a' : '#d4d4d4'}
+        strokeWidth="2"
         opacity={unlocked ? 1 : 0.5}
       />
 
@@ -105,7 +85,7 @@ const PentagonShape = ({
         <Path
           d={innerPentagonPath}
           fill="none"
-          stroke="rgba(255,255,255,0.15)"
+          stroke="rgba(255,255,255,0.12)"
           strokeWidth="1"
         />
       )}
@@ -113,8 +93,8 @@ const PentagonShape = ({
       {/* Top shine effect */}
       {unlocked && (
         <Path
-          d="M50 12 L75 30 L68 28 L50 18 L32 28 L25 30 Z"
-          fill="rgba(255,255,255,0.2)"
+          d="M50 15 L72 30 L65 28 L50 20 L35 28 L28 30 Z"
+          fill="rgba(255,255,255,0.18)"
         />
       )}
     </Svg>
@@ -156,27 +136,38 @@ export const AchievementBadge = ({
           position: "relative",
         }}
       >
-        {/* Outer glow effect for unlocked */}
+        {/* Shadow glow layer for unlocked badges */}
         {achievement.unlocked && (
           <View
             style={{
               position: "absolute",
-              width: badgeSize + 24,
-              height: badgeSize + 24,
-              borderRadius: badgeSize / 2,
-              backgroundColor: gradientColors[1],
-              opacity: 0.2,
+              width: badgeSize * 0.85,
+              height: badgeSize * 0.85,
+              borderRadius: badgeSize * 0.5,
+              backgroundColor: `${gradientColors[1]}40`,
+              opacity: 0.9,
             }}
           />
         )}
-
+        {achievement.unlocked && (
+          <View
+            style={{
+              position: "absolute",
+              width: badgeSize * 1.1,
+              height: badgeSize * 1.1,
+              borderRadius: badgeSize * 0.6,
+              backgroundColor: `${gradientColors[1]}20`,
+              opacity: 0.7,
+            }}
+          />
+        )}
         {/* Pentagon Shape */}
         <PentagonShape
           size={badgeSize}
           gradientColors={gradientColors}
           unlocked={achievement.unlocked}
           isDark={isDark}
-          achievementId={achievement.id}
+          achievementId={String(achievement.id)}
         />
 
         {/* Icon centered in pentagon */}
@@ -233,7 +224,7 @@ export const AchievementBadge = ({
       {/* Achievement Title */}
       <Text
         style={{
-          fontSize: isFullPage ? 13 : 11,
+          fontSize: isFullPage ? 11 : 9,
           fontWeight: "700",
           color: achievement.unlocked
             ? isDark
@@ -243,10 +234,10 @@ export const AchievementBadge = ({
               ? "#4a4a4a"
               : "#9ca3af",
           textAlign: "center",
-          marginTop: 8,
-          lineHeight: isFullPage ? 16 : 14,
+          marginTop: 6,
+          lineHeight: isFullPage ? 14 : 11,
           textTransform: "uppercase",
-          letterSpacing: 0.5,
+          letterSpacing: 0.3,
         }}
         numberOfLines={2}
       >
@@ -257,11 +248,11 @@ export const AchievementBadge = ({
       {isFullPage && (
         <Text
           style={{
-            fontSize: 11,
+            fontSize: 10,
             color: isDark ? "rgba(255,255,255,0.4)" : "#9ca3af",
             textAlign: "center",
-            marginTop: 4,
-            lineHeight: 14,
+            marginTop: 3,
+            lineHeight: 12,
           }}
           numberOfLines={2}
         >

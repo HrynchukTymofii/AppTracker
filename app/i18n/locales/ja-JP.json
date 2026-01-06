@@ -14,7 +14,8 @@
     "settings": "設定",
     "back": "戻る",
     "next": "次へ",
-    "done": "完了"
+    "done": "完了",
+    "or": "または"
   },
   "tabs": {
     "home": "ホーム",
@@ -224,7 +225,26 @@
     "loading": "プロフィール読み込み中...",
     "defaultAppLimit": "デフォルトアプリ制限",
     "defaultAppLimitDesc": "新しいアプリはデフォルトでこの時間制限を使用します",
-    "limitUpdated": "デフォルト制限を更新しました"
+    "limitUpdated": "デフォルト制限を更新しました",
+    "contactDescription": "メッセージを送信してください。すぐに返信いたします",
+    "writeMessage": "メッセージを入力...",
+    "sendMessage": "メッセージを送信",
+    "emailUs": "メールを送る",
+    "messageSent": "メッセージを送信しました！",
+    "messageThankYou": "すぐに返信いたします",
+    "messageError": "メッセージの送信に失敗しました",
+    "rateExperience": "体験を評価してください",
+    "rateDescription": "LockInをどう評価しますか？",
+    "tapToRate": "星をタップして評価",
+    "thankYouRating": "評価ありがとうございます！",
+    "tellUsMore": "詳しく教えてください",
+    "helpUsImprove": "体験の改善にご協力ください",
+    "describeProblem": "改善点は何ですか？",
+    "sendFeedback": "フィードバックを送信",
+    "changeRating": "評価を変更",
+    "feedbackSent": "フィードバックを送信しました！",
+    "feedbackThanks": "改善へのご協力ありがとうございます",
+    "feedbackError": "フィードバックの送信に失敗しました"
   },
   "achievements": {
     "title": "実績",

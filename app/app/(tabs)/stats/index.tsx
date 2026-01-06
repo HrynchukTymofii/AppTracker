@@ -57,7 +57,7 @@ export default function StatsScreen() {
   const [weekOffset, setWeekOffset] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [canGoPrev, setCanGoPrev] = useState(true);
+  const [canGoPrev, setCanGoPrev] = useState(false);
   const [canGoNext, setCanGoNext] = useState(false);
   const [hasCurrentWeekData, setHasCurrentWeekData] = useState(true);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -232,14 +232,19 @@ export default function StatsScreen() {
     try {
       setIsLoading(true);
 
-      // Always show current week data (native or simulated)
+      // Check current week data availability
       const { startDate, endDate } = getWeekDateRange(weekOffset);
       const hasData = await hasDataForRange(startDate, endDate);
-      // Show data if we have DB data OR if it's the current week (which always has simulated data)
       setHasCurrentWeekData(hasData || weekOffset === 0);
 
-      // Check navigation availability - allow going back up to 8 weeks (native module can query historical data)
-      setCanGoPrev(weekOffset > -8);
+      // Check if previous week has data before allowing navigation back (max -3 weeks = ~1 month)
+      let canNavigateBack = false;
+      if (weekOffset > -3) {
+        const prevWeekRange = getWeekDateRange(weekOffset - 1);
+        const hasPrevWeekData = await hasDataForRange(prevWeekRange.startDate, prevWeekRange.endDate);
+        canNavigateBack = hasPrevWeekData;
+      }
+      setCanGoPrev(canNavigateBack);
       setCanGoNext(weekOffset < 0);
 
       // Get week usage stats

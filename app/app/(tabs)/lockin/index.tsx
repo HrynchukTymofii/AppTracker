@@ -37,7 +37,13 @@ export default function LockInScreen() {
   useEffect(() => {
     if (params.exercise) {
       const exerciseType = params.exercise as ExerciseType;
-      if (["pushups", "squats", "plank"].includes(exerciseType)) {
+      const validExercises: ExerciseType[] = [
+        'pushups', 'squats', 'plank',
+        'jumping-jacks', 'lunges', 'crunches', 'shoulder-press',
+        'leg-raises', 'high-knees', 'pull-ups',
+        'wall-sit', 'side-plank',
+      ];
+      if (validExercises.includes(exerciseType)) {
         setSelectedExerciseType(exerciseType);
         setShowExerciseModal(true);
         // Clear the param after handling

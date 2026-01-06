@@ -1,9 +1,11 @@
-import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Camera, TrendingUp, ChevronRight } from "lucide-react-native";
+import { Camera, TrendingUp, ChevronRight, Star } from "lucide-react-native";
 import { useEarnedTime } from "@/context/EarnedTimeContext";
 import { ExerciseType } from "@/lib/poseUtils";
+import { getFavorites, toggleFavorite, MAX_EXERCISE_FAVORITES } from "@/lib/exerciseFavorites";
+import { EXERCISE_DISPLAY_INFO, ExerciseDisplayInfo } from "@/lib/exerciseIcons";
 
 interface EarnTimeSectionProps {
   isDark: boolean;
@@ -17,16 +19,128 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
   onVerifiedStart,
 }) => {
   const { wallet, getTodayEarned, getTodaySpent, getWeekStats } = useEarnedTime();
+  const [favorites, setFavorites] = useState<ExerciseType[]>([]);
+  const lastTapRef = useRef<{ type: ExerciseType | null; time: number }>({ type: null, time: 0 });
 
   const todayEarned = getTodayEarned();
   const todaySpent = getTodaySpent();
   const weekStats = getWeekStats();
 
-  const exercises: { type: ExerciseType; emoji: string; label: string; description: string; iconColors: [string, string] }[] = [
-    { type: "pushups", emoji: "💪", label: "Push-ups", description: "0.5 min per rep", iconColors: ["#ef4444", "#dc2626"] },
-    { type: "squats", emoji: "🏋️", label: "Squats", description: "0.4 min per rep", iconColors: ["#8b5cf6", "#7c3aed"] },
-    { type: "plank", emoji: "🧘", label: "Plank", description: "0.1 min per second", iconColors: ["#10b981", "#059669"] },
-  ];
+  // Load favorites on mount
+  useEffect(() => {
+    getFavorites().then(setFavorites);
+  }, []);
+
+  // Handle exercise press with double-tap detection
+  const handleExercisePress = async (type: ExerciseType) => {
+    const now = Date.now();
+    const lastTap = lastTapRef.current;
+
+    if (lastTap.type === type && now - lastTap.time < 300) {
+      // Double tap - toggle favorite
+      const result = await toggleFavorite(type);
+      setFavorites(result.favorites);
+      lastTapRef.current = { type: null, time: 0 };
+    } else {
+      // Single tap - start exercise after delay to check for double tap
+      lastTapRef.current = { type, time: now };
+      setTimeout(() => {
+        if (lastTapRef.current.type === type && Date.now() - lastTapRef.current.time >= 280) {
+          onStartExercise(type);
+          lastTapRef.current = { type: null, time: 0 };
+        }
+      }, 300);
+    }
+  };
+
+  // Split exercises into favorites and non-favorites
+  const favoriteExercises = EXERCISE_DISPLAY_INFO.filter(e => favorites.includes(e.type));
+  const otherExercises = EXERCISE_DISPLAY_INFO.filter(e => !favorites.includes(e.type));
+
+  // Render exercise card
+  const renderExerciseCard = (exercise: ExerciseDisplayInfo, isFavorite: boolean) => (
+    <TouchableOpacity
+      key={exercise.type}
+      onPress={() => handleExercisePress(exercise.type)}
+      activeOpacity={0.7}
+      style={{
+        backgroundColor: isDark ? "#0a0a0a" : "#ffffff",
+        borderRadius: 16,
+        padding: 16,
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: 12,
+        borderWidth: 1,
+        borderColor: isFavorite ? "rgba(251, 191, 36, 0.4)" : "rgba(16, 185, 129, 0.3)",
+        shadowColor: isFavorite ? "#fbbf24" : "#10b981",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 12,
+        elevation: 4,
+      }}
+    >
+      <View
+        style={{
+          width: 48,
+          height: 48,
+          borderRadius: 14,
+          alignItems: "center",
+          justifyContent: "center",
+          marginRight: 14,
+          overflow: "hidden",
+        }}
+      >
+        <LinearGradient
+          colors={exercise.colors}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+        />
+        {exercise.image ? (
+          <Image
+            source={exercise.image}
+            style={{ width: 32, height: 32 }}
+            resizeMode="contain"
+          />
+        ) : (
+          <Text style={{ fontSize: 24 }}>{exercise.emoji}</Text>
+        )}
+      </View>
+
+      <View style={{ flex: 1 }}>
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: "700",
+            color: isDark ? "#ffffff" : "#0f172a",
+            letterSpacing: -0.3,
+          }}
+        >
+          {exercise.label}
+        </Text>
+        <Text
+          style={{
+            fontSize: 13,
+            color: isDark ? "rgba(255,255,255,0.5)" : "#94a3b8",
+            marginTop: 2,
+          }}
+        >
+          {exercise.description}
+        </Text>
+      </View>
+
+      {isFavorite && (
+        <Star size={16} color="#fbbf24" fill="#fbbf24" style={{ marginRight: 8 }} />
+      )}
+      <ChevronRight size={20} color={isFavorite ? "#fbbf24" : "#10b981"} strokeWidth={2} />
+    </TouchableOpacity>
+  );
 
   return (
     <View style={{ paddingHorizontal: 20, marginTop: 16 }}>
@@ -263,92 +377,61 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
         <ChevronRight size={20} color="#3b82f6" strokeWidth={2} />
       </TouchableOpacity>
 
-      {/* Exercises Header */}
-      <Text
-        style={{
-          fontSize: 18,
-          fontWeight: "700",
-          color: isDark ? "#ffffff" : "#111827",
-          marginTop: 8,
-          marginBottom: 12,
-        }}
-      >
-        Earn with Exercise
-      </Text>
+      {/* Favorites Section */}
+      {favoriteExercises.length > 0 && (
+        <>
+          <View style={{ flexDirection: "row", alignItems: "center", marginTop: 8, marginBottom: 12 }}>
+            <Star size={16} color="#fbbf24" fill="#fbbf24" />
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: "700",
+                color: isDark ? "#ffffff" : "#111827",
+                marginLeft: 8,
+              }}
+            >
+              Favorites
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+                color: isDark ? "#6b7280" : "#9ca3af",
+                marginLeft: 8,
+              }}
+            >
+              (double-tap to remove)
+            </Text>
+          </View>
+          {favoriteExercises.map((exercise) => renderExerciseCard(exercise, true))}
+        </>
+      )}
 
-      {/* Exercise Buttons */}
-      {exercises.map((exercise) => (
-        <TouchableOpacity
-          key={exercise.type}
-          onPress={() => onStartExercise(exercise.type)}
-          activeOpacity={0.7}
+      {/* All Exercises Header */}
+      <View style={{ flexDirection: "row", alignItems: "center", marginTop: favoriteExercises.length > 0 ? 8 : 8, marginBottom: 12 }}>
+        <Text
           style={{
-            backgroundColor: isDark ? "#0a0a0a" : "#ffffff",
-            borderRadius: 16,
-            padding: 16,
-            flexDirection: "row",
-            alignItems: "center",
-            marginBottom: 12,
-            borderWidth: 1,
-            borderColor: "rgba(16, 185, 129, 0.3)",
-            shadowColor: "#10b981",
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.15,
-            shadowRadius: 12,
-            elevation: 4,
+            fontSize: 18,
+            fontWeight: "700",
+            color: isDark ? "#ffffff" : "#111827",
           }}
         >
-          <View
+          {favoriteExercises.length > 0 ? "All Exercises" : "Earn with Exercise"}
+        </Text>
+        {favoriteExercises.length < MAX_EXERCISE_FAVORITES && (
+          <Text
             style={{
-              width: 48,
-              height: 48,
-              borderRadius: 14,
-              alignItems: "center",
-              justifyContent: "center",
-              marginRight: 14,
-              overflow: "hidden",
+              fontSize: 12,
+              color: isDark ? "#6b7280" : "#9ca3af",
+              marginLeft: 8,
             }}
           >
-            <LinearGradient
-              colors={exercise.iconColors}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-              }}
-            />
-            <Text style={{ fontSize: 24 }}>{exercise.emoji}</Text>
-          </View>
+            (double-tap to favorite)
+          </Text>
+        )}
+      </View>
 
-          <View style={{ flex: 1 }}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: "700",
-                color: isDark ? "#ffffff" : "#0f172a",
-                letterSpacing: -0.3,
-              }}
-            >
-              {exercise.label}
-            </Text>
-            <Text
-              style={{
-                fontSize: 13,
-                color: isDark ? "rgba(255,255,255,0.5)" : "#94a3b8",
-                marginTop: 2,
-              }}
-            >
-              {exercise.description}
-            </Text>
-          </View>
-
-          <ChevronRight size={20} color="#10b981" strokeWidth={2} />
-        </TouchableOpacity>
-      ))}
+      {/* Exercise Buttons */}
+      {otherExercises.map((exercise) => renderExerciseCard(exercise, false))}
     </View>
   );
 };

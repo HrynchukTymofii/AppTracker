@@ -9,7 +9,7 @@ import * as UsageStats from '@/modules/usage-stats';
 
 export default function BlockedAppScreen() {
   const router = useRouter(); // Keep for onEarnTime navigation
-  const params = useLocalSearchParams<{ packageName: string; appName: string }>();
+  const params = useLocalSearchParams<{ packageName: string; appName: string; showCoachChat?: string }>();
   const [visible, setVisible] = useState(true);
   const [realUsedMinutes, setRealUsedMinutes] = useState(0);
 
@@ -18,6 +18,8 @@ export default function BlockedAppScreen() {
 
   const packageName = params.packageName || '';
   const appName = params.appName || packageName;
+  // If native screen says show coach chat, user has hit limit - set high usage to trigger coach chat view
+  const forceCoachChat = params.showCoachChat === 'true';
 
   // Get daily limit for this app (default 30 min if not set)
   const appLimit = dailyLimits.find(l => l.packageName === packageName);
@@ -31,6 +33,7 @@ export default function BlockedAppScreen() {
     appName,
     dailyLimitMinutes,
     hasAppLimit: !!appLimit,
+    forceCoachChat,
   });
 
   // Get list of blocked app package names
@@ -91,15 +94,14 @@ export default function BlockedAppScreen() {
   };
 
   const handleSpend = async (minutes: number) => {
-    console.log(`[BlockedApp] Opening ${appName} with ${minutes} minutes limit`);
+    console.log(`[BlockedApp] Opening ${appName} (single entry - time tracked automatically)`);
 
     try {
-      // Don't deduct from wallet upfront - real usage is tracked by device
-      // The temp unblock sets the time limit, and UsageStats tracks actual usage
-
-      // Store temporary unblock (this is the time limit for this session)
-      AppBlocker.setTempUnblock(packageName, minutes);
-      console.log('[BlockedApp] Temp unblock set for', minutes, 'minutes');
+      // Set a short temp unblock just to allow app to launch (10 seconds)
+      // Time is tracked automatically via UsageStats sync
+      // Shield will show again on every re-entry
+      AppBlocker.setTempUnblock(packageName, 1); // ~1 minute buffer for launch
+      console.log('[BlockedApp] Single entry pass set');
 
       // Launch the app
       const launched = AppBlocker.launchApp(packageName);
@@ -123,15 +125,16 @@ export default function BlockedAppScreen() {
   };
 
   const handleUrgentAccess = async (minutes: number) => {
-    console.log(`[BlockedApp] Urgent access: ${minutes} minutes for ${appName}`);
+    console.log(`[BlockedApp] Urgent access for ${appName}`);
 
     try {
       // Deduct from wallet (can go negative for urgent access)
       await urgentSpend(packageName, appName, minutes);
 
-      // Store temporary unblock
-      AppBlocker.setTempUnblock(packageName, minutes);
-      console.log('[BlockedApp] Urgent temp unblock set');
+      // Set a short temp unblock just to allow app to launch
+      // Shield will show again on every re-entry
+      AppBlocker.setTempUnblock(packageName, 1); // ~1 minute buffer for launch
+      console.log('[BlockedApp] Urgent single entry pass set');
 
       // Launch the app
       const launched = AppBlocker.launchApp(packageName);
@@ -151,8 +154,9 @@ export default function BlockedAppScreen() {
         appName={appName}
         packageName={packageName}
         dailyLimitMinutes={dailyLimitMinutes}
-        realUsedMinutes={realUsedMinutes}
+        realUsedMinutes={forceCoachChat ? dailyLimitMinutes : realUsedMinutes}
         isScheduleFreeTime={isScheduleFreeTime}
+        forceCoachChat={forceCoachChat}
         onClose={handleClose}
         onSpend={handleSpend}
         onEarnTime={handleEarnTime}

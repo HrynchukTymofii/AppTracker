@@ -24,9 +24,9 @@ interface AppSelectionModalProps {
   onSelect: (apps: string[]) => void;
 }
 
-// Cache keys
-const APPS_CACHE_KEY = "@installed_apps_cache";
-const APPS_CACHE_TIME_KEY = "@installed_apps_cache_time";
+// Cache keys (v2 includes iconUrl)
+const APPS_CACHE_KEY = "@installed_apps_cache_v2";
+const APPS_CACHE_TIME_KEY = "@installed_apps_cache_time_v2";
 const CACHE_DURATION = 1000 * 60 * 60; // 1 hour
 
 // Popular app keywords for filtering
@@ -97,41 +97,11 @@ export const AppSelectionModal: React.FC<AppSelectionModalProps> = ({
     return popularWithIndex.slice(0, 15).map(({ app }) => app);
   };
 
+  // Fetch apps fresh each time (icons are too large to cache)
   const fetchApps = async () => {
+    setLoading(true);
     try {
-      // Try cache first
-      const cachedApps = await AsyncStorage.getItem(APPS_CACHE_KEY);
-      const cacheTime = await AsyncStorage.getItem(APPS_CACHE_TIME_KEY);
-
-      if (cachedApps) {
-        const cachedData: { packageName: string; appName: string }[] = JSON.parse(cachedApps);
-        const apps: InstalledApp[] = cachedData.map((app) => ({
-          ...app,
-          iconUrl: undefined,
-        }));
-        setAllInstalledApps(apps);
-        setPopularInstalledApps(filterPopularApps(apps));
-        setLoading(false);
-
-        const isCacheFresh = cacheTime && Date.now() - parseInt(cacheTime) < CACHE_DURATION;
-        if (isCacheFresh) {
-          fetchIconsInBackground();
-          return;
-        }
-      } else {
-        setLoading(true);
-      }
-
-      // Fetch fresh data
       const apps = await UsageStats.getInstalledApps();
-
-      const cacheData = apps.map((app) => ({
-        packageName: app.packageName,
-        appName: app.appName,
-      }));
-      await AsyncStorage.setItem(APPS_CACHE_KEY, JSON.stringify(cacheData));
-      await AsyncStorage.setItem(APPS_CACHE_TIME_KEY, Date.now().toString());
-
       setAllInstalledApps(apps);
       setPopularInstalledApps(filterPopularApps(apps));
     } catch (error) {
@@ -146,16 +116,6 @@ export const AppSelectionModal: React.FC<AppSelectionModalProps> = ({
       );
     }
     setLoading(false);
-  };
-
-  const fetchIconsInBackground = async () => {
-    try {
-      const apps = await UsageStats.getInstalledApps();
-      setAllInstalledApps(apps);
-      setPopularInstalledApps(filterPopularApps(apps));
-    } catch (error) {
-      // Silently fail
-    }
   };
 
   const toggleApp = (packageName: string) => {
@@ -180,7 +140,8 @@ export const AppSelectionModal: React.FC<AppSelectionModalProps> = ({
   const otherAppsCount = allInstalledApps.length - popularInstalledApps.length;
 
   const renderAppItem = (app: InstalledApp) => {
-    const localIcon = getLocalIcon(app.packageName, app.appName);
+    // Prioritize real app icon, fallback to local bundled icon
+    const fallbackIcon = getLocalIcon(app.packageName, app.appName);
     const isSelected = selected.includes(app.packageName);
     const isDefault = DEFAULT_BLOCKED_APPS.includes(app.packageName);
 
@@ -207,17 +168,7 @@ export const AppSelectionModal: React.FC<AppSelectionModalProps> = ({
             : "rgba(0, 0, 0, 0.04)",
         }}
       >
-        {localIcon ? (
-          <Image
-            source={localIcon}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 10,
-              marginRight: 12,
-            }}
-          />
-        ) : app.iconUrl ? (
+        {app.iconUrl ? (
           <Image
             source={{ uri: app.iconUrl }}
             style={{
@@ -228,21 +179,15 @@ export const AppSelectionModal: React.FC<AppSelectionModalProps> = ({
             }}
           />
         ) : (
-          <View
+          <Image
+            source={fallbackIcon}
             style={{
               width: 40,
               height: 40,
               borderRadius: 10,
-              backgroundColor: isDark ? "#374151" : "#e5e7eb",
-              alignItems: "center",
-              justifyContent: "center",
               marginRight: 12,
             }}
-          >
-            <Text style={{ fontSize: 18 }}>
-              {app.appName.charAt(0).toUpperCase()}
-            </Text>
-          </View>
+          />
         )}
         <View style={{ flex: 1 }}>
           <Text
@@ -298,7 +243,7 @@ export const AppSelectionModal: React.FC<AppSelectionModalProps> = ({
             backgroundColor: isDark ? "#0a0a0a" : "#ffffff",
             borderTopLeftRadius: 28,
             borderTopRightRadius: 28,
-            paddingBottom: Math.max(insets.bottom, 20),
+            paddingBottom: insets.bottom + 24,
             maxHeight: "85%",
             borderTopWidth: 1,
             borderLeftWidth: 1,

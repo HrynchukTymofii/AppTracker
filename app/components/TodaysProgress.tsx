@@ -18,12 +18,14 @@ const WeeklyChart = ({
   isDark,
   accentColor,
 }: {
-  data: { day: string; earned: number; spent: number }[];
+  data: { day: string; earned: number; spent: number; isToday: boolean }[];
   isDark: boolean;
   accentColor: string;
 }) => {
-  const maxMinutes = Math.max(...data.map(d => Math.max(d.earned, d.spent)), 60);
+  // Find the max value for scaling - max bar will be full height
+  const maxValue = Math.max(...data.map(d => Math.max(d.earned, d.spent)), 1);
   const chartHeight = 70;
+  const barMaxHeight = chartHeight - 16; // Leave room for labels
   const barWidth = 10;
 
   return (
@@ -40,10 +42,10 @@ const WeeklyChart = ({
         </View>
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', height: chartHeight }}>
-        {data.map((item, index) => {
-          const earnedHeight = maxMinutes > 0 ? (item.earned / maxMinutes) * (chartHeight - 16) : 4;
-          const spentHeight = maxMinutes > 0 ? (item.spent / maxMinutes) * (chartHeight - 16) : 4;
-          const isToday = index === data.length - 1;
+        {data.map((item) => {
+          // Scale proportionally - max value gets full height
+          const earnedHeight = maxValue > 0 ? (item.earned / maxValue) * barMaxHeight : 0;
+          const spentHeight = maxValue > 0 ? (item.spent / maxValue) * barMaxHeight : 0;
 
           return (
             <View key={item.day} style={{ alignItems: 'center', flex: 1 }}>
@@ -56,7 +58,7 @@ const WeeklyChart = ({
                     height: Math.max(earnedHeight, 4),
                     borderRadius: 5,
                     backgroundColor: '#10b981',
-                    opacity: isToday ? 1 : 0.6,
+                    opacity: item.isToday ? 1 : 0.6,
                   }}
                 />
                 {/* Spent bar (accent) */}
@@ -66,7 +68,7 @@ const WeeklyChart = ({
                     height: Math.max(spentHeight, 4),
                     borderRadius: 5,
                     backgroundColor: accentColor,
-                    opacity: isToday ? 1 : 0.6,
+                    opacity: item.isToday ? 1 : 0.6,
                   }}
                 />
               </View>
@@ -74,8 +76,8 @@ const WeeklyChart = ({
                 style={{
                   marginTop: 6,
                   fontSize: 9,
-                  fontWeight: isToday ? '700' : '500',
-                  color: isToday ? (isDark ? '#ffffff' : '#111827') : (isDark ? '#6b7280' : '#9ca3af'),
+                  fontWeight: item.isToday ? '700' : '500',
+                  color: item.isToday ? (isDark ? '#ffffff' : '#111827') : (isDark ? '#6b7280' : '#9ca3af'),
                 }}
               >
                 {item.day}
@@ -144,7 +146,7 @@ const CircularProgress = ({
 
 export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
   const router = useRouter();
-  const { wallet, getTodayEarned, getTodaySpent } = useEarnedTime();
+  const { wallet, getTodayEarned, getTodaySpent, getWeeklyDailyStats } = useEarnedTime();
   const { accentColor } = useTheme();
   const [dailyGoal, setDailyGoal] = useState(60); // Default 1 hour
 
@@ -166,33 +168,10 @@ export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
   const todayEarned = getTodayEarned();
   const todaySpent = getTodaySpent();
 
-  // Calculate progress (spent vs goal - shows how much of daily limit is used)
-  const progressPercent = dailyGoal > 0 ? (todaySpent / dailyGoal) * 100 : 0;
-
-  // Generate weekly data for the dual-candle chart (earned + spent per day)
+  // Get real weekly data from context (includes isToday flag)
   const weeklyData = useMemo(() => {
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const today = new Date();
-    const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
-    const mondayOffset = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-
-    return days.map((day, index) => {
-      // For today, use actual values
-      if (index === mondayOffset) {
-        return { day, earned: todayEarned, spent: todaySpent };
-      }
-      // For past days - in production, load from historical storage
-      if (index < mondayOffset) {
-        // Seed based on day for consistent values
-        const seed = index + today.getDate();
-        const earnedSim = Math.round((10 + (seed % 20)) * 10) / 10;
-        const spentSim = Math.round((20 + ((seed * 3) % 40)) * 10) / 10;
-        return { day, earned: earnedSim, spent: spentSim };
-      }
-      // Future days
-      return { day, earned: 0, spent: 0 };
-    });
-  }, [todayEarned, todaySpent]);
+    return getWeeklyDailyStats();
+  }, [getWeeklyDailyStats]);
 
   // Format minutes to readable string
   const formatMinutes = (minutes: number): string => {
@@ -401,37 +380,6 @@ export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
                   {formatMinutes(wallet.availableMinutes)}
                 </Text>
               </View>
-            </View>
-          </View>
-
-          {/* Progress Bar */}
-          <View style={{ marginBottom: 16 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 }}>
-              <Text style={{ fontSize: 11, fontWeight: '600', color: isDark ? '#9ca3af' : '#6b7280' }}>
-                Daily Progress
-              </Text>
-              <Text style={{ fontSize: 11, fontWeight: '700', color: accentColor.primary }}>
-                {Math.min(Math.round(progressPercent), 100)}%
-              </Text>
-            </View>
-            <View
-              style={{
-                height: 8,
-                backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
-                borderRadius: 4,
-                overflow: 'hidden',
-              }}
-            >
-              <LinearGradient
-                colors={[accentColor.primary, '#8b5cf6', '#10b981']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={{
-                  height: '100%',
-                  width: `${Math.min(progressPercent, 100)}%`,
-                  borderRadius: 4,
-                }}
-              />
             </View>
           </View>
 

@@ -14,7 +14,8 @@
     "settings": "الإعدادات",
     "back": "رجوع",
     "next": "التالي",
-    "done": "تم"
+    "done": "تم",
+    "or": "أو"
   },
   "tabs": {
     "home": "الرئيسية",
@@ -224,7 +225,26 @@
     "loading": "جاري تحميل الملف الشخصي...",
     "defaultAppLimit": "حد التطبيق الافتراضي",
     "defaultAppLimitDesc": "ستستخدم التطبيقات الجديدة هذا الحد الزمني بشكل افتراضي",
-    "limitUpdated": "تم تحديث الحد الافتراضي"
+    "limitUpdated": "تم تحديث الحد الافتراضي",
+    "contactDescription": "أرسل لنا رسالة وسنرد عليك قريباً",
+    "writeMessage": "اكتب رسالتك...",
+    "sendMessage": "إرسال الرسالة",
+    "emailUs": "راسلنا",
+    "messageSent": "تم إرسال الرسالة!",
+    "messageThankYou": "سنرد عليك قريباً",
+    "messageError": "فشل إرسال الرسالة",
+    "rateExperience": "قيّم تجربتك",
+    "rateDescription": "كيف تقيّم LockIn؟",
+    "tapToRate": "اضغط على نجمة للتقييم",
+    "thankYouRating": "شكراً لتقييمك!",
+    "tellUsMore": "أخبرنا المزيد",
+    "helpUsImprove": "ساعدنا في تحسين تجربتك",
+    "describeProblem": "ما الذي يمكننا تحسينه؟",
+    "sendFeedback": "إرسال الملاحظات",
+    "changeRating": "تغيير التقييم",
+    "feedbackSent": "تم إرسال الملاحظات!",
+    "feedbackThanks": "شكراً لمساعدتنا في التحسين",
+    "feedbackError": "فشل إرسال الملاحظات"
   },
   "achievements": {
     "title": "الإنجازات",

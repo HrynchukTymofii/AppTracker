@@ -94,7 +94,7 @@
 ### Features
 - [ ] Fix the PP and ToS in the lockin ios/android
 - [ ] Add action for the uninstall menu ios/android with the link to the discount plan
-- [x] Add the examples of the exercise completion for user to understand ios/android ✅
+- [ ] Add the examples of the exercise completion for user to understand ios/android
 
 ---
 

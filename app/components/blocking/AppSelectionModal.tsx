@@ -9,6 +9,7 @@ import {
   Platform,
   ActivityIndicator,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { X, Check, Plus, Shield } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -41,6 +42,7 @@ export const AppSelectionModal = ({
   isDark,
 }: AppSelectionModalProps) => {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const [selected, setSelected] = useState<string[]>(selectedApps);
   const [allInstalledApps, setAllInstalledApps] = useState<InstalledApp[]>([]);
   const [popularInstalledApps, setPopularInstalledApps] = useState<InstalledApp[]>([]);
@@ -109,44 +111,11 @@ export const AppSelectionModal = ({
     return popularWithIndex.slice(0, 15).map(({ app }) => app);
   };
 
-  // Load apps from cache first, then refresh in background
+  // Fetch apps fresh each time (icons are too large to cache)
   const fetchPopularApps = async () => {
+    setLoading(true);
     try {
-      // Try to load from cache first (instant)
-      const cachedApps = await AsyncStorage.getItem(APPS_CACHE_KEY);
-      const cacheTime = await AsyncStorage.getItem(APPS_CACHE_TIME_KEY);
-
-      if (cachedApps) {
-        const cachedData: { packageName: string; appName: string }[] = JSON.parse(cachedApps);
-        const apps: InstalledApp[] = cachedData.map((app) => ({
-          ...app,
-          iconUrl: undefined,
-        }));
-        setAllInstalledApps(apps);
-        setPopularInstalledApps(filterPopularApps(apps));
-        setLoading(false);
-
-        const isCacheFresh = cacheTime &&
-          Date.now() - parseInt(cacheTime) < CACHE_DURATION;
-
-        if (isCacheFresh) {
-          fetchIconsInBackground();
-          return;
-        }
-      } else {
-        setLoading(true);
-      }
-
-      // Fetch fresh data
       const apps = await UsageStats.getInstalledApps();
-
-      const cacheData = apps.map((app) => ({
-        packageName: app.packageName,
-        appName: app.appName,
-      }));
-      await AsyncStorage.setItem(APPS_CACHE_KEY, JSON.stringify(cacheData));
-      await AsyncStorage.setItem(APPS_CACHE_TIME_KEY, Date.now().toString());
-
       setAllInstalledApps(apps);
       setPopularInstalledApps(filterPopularApps(apps));
     } catch (error) {
@@ -162,17 +131,6 @@ export const AppSelectionModal = ({
     setLoading(false);
   };
 
-  // Fetch icons for popular apps in background
-  const fetchIconsInBackground = async () => {
-    try {
-      const apps = await UsageStats.getInstalledApps();
-      setAllInstalledApps(apps);
-      setPopularInstalledApps(filterPopularApps(apps));
-    } catch (error) {
-      // Silently fail - icons aren't critical
-    }
-  };
-
   const toggleApp = (packageName: string) => {
     if (selected.includes(packageName)) {
       setSelected(selected.filter((p) => p !== packageName));
@@ -185,7 +143,8 @@ export const AppSelectionModal = ({
   const otherAppsCount = allInstalledApps.length - popularInstalledApps.length;
 
   const renderAppItem = (app: InstalledApp) => {
-    const localIcon = getLocalIcon(app.packageName, app.appName);
+    // Prioritize real app icon, fallback to local bundled icon
+    const fallbackIcon = getLocalIcon(app.packageName, app.appName);
 
     return (
       <TouchableOpacity
@@ -204,17 +163,7 @@ export const AppSelectionModal = ({
           marginBottom: 6,
         }}
       >
-        {localIcon ? (
-          <Image
-            source={localIcon}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 10,
-              marginRight: 12,
-            }}
-          />
-        ) : app.iconUrl ? (
+        {app.iconUrl ? (
           <Image
             source={{ uri: app.iconUrl }}
             style={{
@@ -225,21 +174,15 @@ export const AppSelectionModal = ({
             }}
           />
         ) : (
-          <View
+          <Image
+            source={fallbackIcon}
             style={{
               width: 40,
               height: 40,
               borderRadius: 10,
-              backgroundColor: isDark ? "#374151" : "#f3f4f6",
-              alignItems: "center",
-              justifyContent: "center",
               marginRight: 12,
             }}
-          >
-            <Text style={{ fontSize: 20 }}>
-              {getAppIconEmoji(app.packageName, app.appName)}
-            </Text>
-          </View>
+          />
         )}
         <Text
           style={{
@@ -314,7 +257,9 @@ export const AppSelectionModal = ({
             backgroundColor: isDark ? "#000000" : "#ffffff",
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,
-            padding: 20,
+            paddingTop: 20,
+            paddingHorizontal: 20,
+            paddingBottom: insets.bottom + 24,
             maxHeight: "85%",
             borderTopWidth: 1,
             borderLeftWidth: 1,

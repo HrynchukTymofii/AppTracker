@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
+import * as AppBlocker from '@/modules/app-blocker';
+import { ExerciseType } from '@/lib/poseUtils';
 
 // Types
 export interface EarnedTimeWallet {
@@ -11,7 +14,7 @@ export interface EarnedTimeWallet {
 
 export interface EarningRecord {
   id: string;
-  type: 'pushups' | 'squats' | 'plank' | 'photo_task' | 'custom';
+  type: ExerciseType | 'photo_task' | 'custom';
   minutesEarned: number;
   details: string;           // e.g., "10 pushups" or "30s plank"
   timestamp: number;
@@ -90,6 +93,8 @@ interface EarnedTimeContextType {
   getTodayEarned: () => number;
   getTodaySpent: () => number;
   getWeekStats: () => { earned: number; spent: number };
+  getDayStats: (date: Date) => { earned: number; spent: number };
+  getWeeklyDailyStats: () => { day: string; earned: number; spent: number; isToday: boolean }[];
 
   // Sync real usage with wallet
   syncUsageWithWallet: (realUsageMap: Record<string, number>) => Promise<number>;
@@ -172,7 +177,17 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
       }
 
       if (storedTotalLimit) {
-        setTotalDailyLimitState(parseInt(storedTotalLimit, 10));
+        const limit = parseInt(storedTotalLimit, 10);
+        setTotalDailyLimitState(limit);
+        // Sync to native for Android blocking screen
+        if (Platform.OS === 'android') {
+          AppBlocker.setTotalDailyLimit(limit);
+        }
+      } else {
+        // Sync default limit to native
+        if (Platform.OS === 'android') {
+          AppBlocker.setTotalDailyLimit(60); // Default 1 hour
+        }
       }
 
       if (syncedUsageData) {
@@ -388,6 +403,10 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
   const setTotalDailyLimit = async (minutes: number) => {
     setTotalDailyLimitState(minutes);
     await SecureStore.setItemAsync('totalDailyLimit', minutes.toString());
+    // Sync to native for Android blocking screen
+    if (Platform.OS === 'android') {
+      AppBlocker.setTotalDailyLimit(minutes);
+    }
   };
 
   // Check if user can use an app
@@ -473,8 +492,54 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
     return { earned, spent };
   };
 
+  // Get stats for a specific day
+  const getDayStats = (date: Date): { earned: number; spent: number } => {
+    const dayStart = new Date(date);
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(date);
+    dayEnd.setHours(23, 59, 59, 999);
+
+    const earned = earningHistory
+      .filter(r => r.timestamp >= dayStart.getTime() && r.timestamp <= dayEnd.getTime())
+      .reduce((sum, r) => sum + r.minutesEarned, 0);
+
+    const spent = spendingHistory
+      .filter(r => r.timestamp >= dayStart.getTime() && r.timestamp <= dayEnd.getTime() && !r.wasScheduleFree)
+      .reduce((sum, r) => sum + r.minutesSpent, 0);
+
+    return { earned, spent };
+  };
+
+  // Get daily stats for the current week (Mon-Sun)
+  const getWeeklyDailyStats = (): { day: string; earned: number; spent: number; isToday: boolean }[] => {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const mondayOffset = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Days since Monday
+
+    // Get the Monday of current week
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - mondayOffset);
+    monday.setHours(0, 0, 0, 0);
+
+    return days.map((day, index) => {
+      const date = new Date(monday);
+      date.setDate(monday.getDate() + index);
+
+      const isToday = index === mondayOffset;
+      const stats = getDayStats(date);
+
+      return {
+        day,
+        earned: stats.earned,
+        spent: stats.spent,
+        isToday,
+      };
+    });
+  };
+
   // Sync real device usage with wallet - deducts actual usage from earned time
-  // Only syncs apps that have been previously tracked (not first time usage)
+  // Also updates todayUsage so native blocking screen can see real usage for limit checks
   const syncUsageWithWallet = async (realUsageMap: Record<string, number>): Promise<number> => {
     let totalDeducted = 0;
     const newSyncedUsage = { ...lastSyncedUsage };
@@ -506,6 +571,14 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
     if (hasChanges) {
       setLastSyncedUsage(newSyncedUsage);
       await AsyncStorage.setItem(STORAGE_KEYS.LAST_SYNCED_USAGE, JSON.stringify(newSyncedUsage));
+
+      // Update todayUsage with real usage values so native blocking screen can check limits
+      const newUsage: DailyUsage = {
+        date: getTodayDateString(),
+        appUsage: { ...realUsageMap }, // Use real usage directly
+      };
+      setTodayUsage(newUsage);
+      await AsyncStorage.setItem(STORAGE_KEYS.DAILY_USAGE, JSON.stringify(newUsage));
     }
 
     if (totalDeducted > 0) {
@@ -528,7 +601,6 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
         minutesSpent: totalDeducted,
         timestamp: Date.now(),
         wasScheduleFree: false,
-        wasUrgent: false,
       };
 
       const updatedSpendingHistory = [...spendingHistory, newSpendRecord].slice(0, MAX_HISTORY_ITEMS);
@@ -582,6 +654,8 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
         getTodayEarned,
         getTodaySpent,
         getWeekStats,
+        getDayStats,
+        getWeeklyDailyStats,
         syncUsageWithWallet,
         resetWallet,
         refreshData,

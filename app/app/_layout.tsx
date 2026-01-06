@@ -10,12 +10,13 @@ import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { TourProvider } from "@/context/TourContext";
 import { ThemeProvider as CustomThemeProvider } from "@/context/ThemeContext";
 import { DetoxProvider } from "@/context/DetoxContext";
-import { BlockingProvider } from "@/context/BlockingContext";
+import { BlockingProvider, useBlocking } from "@/context/BlockingContext";
 import { GroupProvider } from "@/context/GroupContext";
 import { LockInProvider } from "@/context/LockInContext";
-import { EarnedTimeProvider } from "@/context/EarnedTimeContext";
+import { EarnedTimeProvider, useEarnedTime } from "@/context/EarnedTimeContext";
 import { Suspense, useEffect, useState, useRef, useCallback } from "react";
 import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SQLiteProvider } from "expo-sqlite";
 import CustomPreloadScreen from "@/components/ui/CustomPreloadScreen";
 import * as Network from "expo-network";
@@ -30,6 +31,15 @@ import { upgradeToPro, removePro } from "@/lib/api/user";
 import * as QuickActions from "expo-quick-actions";
 import { RouterAction } from "expo-quick-actions/router";
 import * as AppBlocker from "@/modules/app-blocker";
+import * as UsageStats from "@/modules/usage-stats";
+
+// Clear corrupted app cache on startup (one-time fix for SQLite full error)
+AsyncStorage.multiRemove([
+  "@installed_apps_cache",
+  "@installed_apps_cache_time",
+  "@installed_apps_cache_v2",
+  "@installed_apps_cache_time_v2",
+]).catch(() => {});
 
 configureReanimatedLogger({
   level: ReanimatedLogLevel.warn,
@@ -38,29 +48,111 @@ configureReanimatedLogger({
 
 function AppSyncWrapper({ children }: { children: React.ReactNode }) {
   const { token, user, setUser } = useAuth();
+  const { dailyLimits } = useBlocking();
+  const { syncUsageWithWallet } = useEarnedTime();
   const [isOffline, setIsOffline] = useState(false);
   const router = useRouter();
   const rootNavigation = useNavigationContainerRef();
   const isNavigatingToBlockedApp = useRef(false);
   const lastProcessedTimestamp = useRef(0);
+  const isLayoutMounted = useRef(false);
+  const initialCheckDone = useRef(false);
 
-  // Check for pending blocked app (Android only - set by native BlockInterstitialActivity)
-  const checkPendingBlockedApp = useCallback(async () => {
+  // Get list of blocked package names for sync
+  const blockedPackages = dailyLimits.map(l => l.packageName);
+
+  // Mark layout as mounted after initial render
+  useEffect(() => {
+    // Use a longer delay to ensure the entire component tree is mounted
+    const mountTimer = setTimeout(() => {
+      isLayoutMounted.current = true;
+      console.log('[Layout] Layout fully mounted');
+    }, 500);
+
+    return () => {
+      clearTimeout(mountTimer);
+      isLayoutMounted.current = false;
+    };
+  }, []);
+
+  // Check for navigation flags from native blocking screen (Android only)
+  const checkNativeNavigationFlags = useCallback(async () => {
     if (Platform.OS !== 'android') return;
 
-    // Check if navigation is ready
+    // Check if navigation is ready AND layout is mounted
     if (!rootNavigation?.isReady()) {
       console.log('[Layout] Navigation not ready yet, will retry...');
       return;
     }
 
+    if (!isLayoutMounted.current) {
+      console.log('[Layout] Layout not mounted yet, will retry...');
+      return;
+    }
+
     // Prevent multiple simultaneous navigations
     if (isNavigatingToBlockedApp.current) {
-      console.log('[Layout] Already navigating to blocked app, skipping...');
+      console.log('[Layout] Already navigating, skipping...');
       return;
     }
 
     try {
+      // First check navigation flags from native blocking screen
+      const flags = await AppBlocker.getNavigationFlags();
+
+      if (flags) {
+        if (flags.navigateToLockin) {
+          console.log('[Layout] Native requested navigation to LockIn tab');
+
+          isNavigatingToBlockedApp.current = true;
+          AppBlocker.clearNavigationFlags();
+
+          await new Promise(resolve => setTimeout(resolve, 100));
+
+          if (!rootNavigation?.isReady()) {
+            isNavigatingToBlockedApp.current = false;
+            return;
+          }
+
+          router.replace('/(tabs)/lockin');
+
+          setTimeout(() => {
+            isNavigatingToBlockedApp.current = false;
+          }, 1000);
+          return;
+        }
+
+        if (flags.showCoachChat && flags.packageName) {
+          console.log('[Layout] Native requested coach chat for:', flags.packageName);
+
+          isNavigatingToBlockedApp.current = true;
+          AppBlocker.clearNavigationFlags();
+
+          await new Promise(resolve => setTimeout(resolve, 100));
+
+          if (!rootNavigation?.isReady()) {
+            isNavigatingToBlockedApp.current = false;
+            return;
+          }
+
+          // Navigate to blocked-app screen (it will show coach chat when limit is reached)
+          router.push({
+            pathname: '/blocked-app',
+            params: {
+              packageName: flags.packageName,
+              appName: flags.appName || flags.packageName,
+              showCoachChat: 'true',
+            },
+          });
+
+          setTimeout(() => {
+            isNavigatingToBlockedApp.current = false;
+          }, 1000);
+          return;
+        }
+      }
+
+      // Fallback: check for legacy pending blocked app (shouldn't be needed with native screen)
       const pending = await AppBlocker.getPendingBlockedApp();
 
       if (pending && pending.packageName) {
@@ -77,7 +169,17 @@ function AppSyncWrapper({ children }: { children: React.ReactNode }) {
         lastProcessedTimestamp.current = pending.timestamp;
 
         // Clear pending data first to prevent re-processing
-        AppBlocker.clearPendingBlockedApp();
+        await AppBlocker.clearPendingBlockedApp();
+
+        // Small delay before navigation to ensure everything is stable
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        // Double-check navigation is still ready
+        if (!rootNavigation?.isReady()) {
+          console.log('[Layout] Navigation became unready, aborting...');
+          isNavigatingToBlockedApp.current = false;
+          return;
+        }
 
         // Navigate to blocked-app screen with params
         router.push({
@@ -95,7 +197,7 @@ function AppSyncWrapper({ children }: { children: React.ReactNode }) {
         }, 1000);
       }
     } catch (error) {
-      console.error('[Layout] Error checking pending blocked app:', error);
+      console.error('[Layout] Error checking navigation flags:', error);
       isNavigatingToBlockedApp.current = false;
     }
   }, [router, rootNavigation]);
@@ -104,32 +206,36 @@ function AppSyncWrapper({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (Platform.OS !== 'android') return;
 
-    // Wait for navigation to be ready, then check
+    // Wait for both navigation ready AND layout mounted
     const checkWhenReady = () => {
-      if (rootNavigation?.isReady()) {
-        checkPendingBlockedApp();
+      if (rootNavigation?.isReady() && isLayoutMounted.current) {
+        if (!initialCheckDone.current) {
+          initialCheckDone.current = true;
+          checkNativeNavigationFlags();
+        }
       } else {
         // Retry after a short delay if not ready
-        setTimeout(checkWhenReady, 100);
+        setTimeout(checkWhenReady, 150);
       }
     };
 
-    // Initial check with delay to ensure everything is mounted
-    const initialTimer = setTimeout(checkWhenReady, 200);
+    // Initial check with longer delay to ensure everything is mounted
+    const initialTimer = setTimeout(checkWhenReady, 600);
 
     // Also check when app becomes active
     const subscription = AppState.addEventListener("change", (nextAppState) => {
-      if (nextAppState === "active") {
-        // Small delay to ensure app is fully foregrounded
-        setTimeout(checkPendingBlockedApp, 100);
+      if (nextAppState === "active" && isLayoutMounted.current) {
+        // Delay to ensure app is fully foregrounded and stable
+        setTimeout(checkNativeNavigationFlags, 300);
       }
     });
 
     return () => {
       clearTimeout(initialTimer);
       subscription.remove();
+      initialCheckDone.current = false;
     };
-  }, [checkPendingBlockedApp, rootNavigation]);
+  }, [checkNativeNavigationFlags, rootNavigation]);
 
   // Setup Quick Actions for iOS home screen long-press menu
   // TODO: Re-enable when special offer is configured
@@ -297,6 +403,43 @@ function AppSyncWrapper({ children }: { children: React.ReactNode }) {
 
     configurePurchases();
   }, []);
+
+  // Periodic usage sync - syncs real device usage with wallet every 30 seconds
+  useEffect(() => {
+    if (Platform.OS !== 'android' || blockedPackages.length === 0) return;
+
+    const syncUsage = async () => {
+      try {
+        const todayStats = await UsageStats.getTodayUsageStats();
+        if (todayStats.hasPermission && todayStats.apps) {
+          const usageMap: Record<string, number> = {};
+          for (const app of todayStats.apps) {
+            if (blockedPackages.includes(app.packageName)) {
+              const usedMins = Math.round(app.timeInForeground / (1000 * 60));
+              if (usedMins > 0) {
+                usageMap[app.packageName] = usedMins;
+              }
+            }
+          }
+          if (Object.keys(usageMap).length > 0) {
+            await syncUsageWithWallet(usageMap);
+          }
+        }
+      } catch (error) {
+        console.log('[UsageSync] Error syncing usage:', error);
+      }
+    };
+
+    // Initial sync
+    syncUsage();
+
+    // Set up periodic sync every 30 seconds
+    const syncInterval = setInterval(syncUsage, 30000);
+
+    return () => {
+      clearInterval(syncInterval);
+    };
+  }, [blockedPackages, syncUsageWithWallet]);
 
   return <>{children}</>;
 }

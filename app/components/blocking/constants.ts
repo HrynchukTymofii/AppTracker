@@ -1,6 +1,6 @@
-// Cache keys for installed apps
-export const APPS_CACHE_KEY = "@installed_apps_cache";
-export const APPS_CACHE_TIME_KEY = "@installed_apps_cache_time";
+// Cache keys for installed apps (v2 includes iconUrl)
+export const APPS_CACHE_KEY = "@installed_apps_cache_v2";
+export const APPS_CACHE_TIME_KEY = "@installed_apps_cache_time_v2";
 export const CACHE_DURATION = 1000 * 60 * 60; // 1 hour cache validity
 
 // Helper function to get app icon emoji

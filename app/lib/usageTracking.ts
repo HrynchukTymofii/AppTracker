@@ -10,6 +10,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
+import { getWeekUsage, getWeekDateRange } from './usageDatabase';
 
 // Import native module (will be null if not available)
 let NativeUsageStats: any = null;
@@ -252,9 +253,51 @@ export const getWeekUsageStatsWithOffset = async (weekOffset: number): Promise<U
     }
   }
 
-  // Return empty data instead of simulated data for past weeks
-  // This shows "no data" to user rather than fake data
+  // For past weeks, try to get data from the database
   if (weekOffset < 0) {
+    try {
+      const { startDate, endDate } = getWeekDateRange(weekOffset);
+      const dbData = await getWeekUsage(startDate, endDate);
+
+      if (dbData && dbData.length > 0) {
+        // Sum up screen time and pickups from database
+        let totalScreenTime = 0;
+        let totalPickups = 0;
+        const appsMap = new Map<string, any>();
+
+        dbData.forEach(row => {
+          totalScreenTime += row.screen_time || 0;
+          totalPickups += row.pickups || 0;
+
+          // Aggregate app data
+          if (row.apps_data && Array.isArray(row.apps_data)) {
+            row.apps_data.forEach((app: any) => {
+              const existing = appsMap.get(app.packageName);
+              if (existing) {
+                existing.timeInForeground += app.timeInForeground || 0;
+              } else {
+                appsMap.set(app.packageName, { ...app });
+              }
+            });
+          }
+        });
+
+        const apps = Array.from(appsMap.values())
+          .sort((a, b) => b.timeInForeground - a.timeInForeground)
+          .slice(0, 15);
+
+        return {
+          apps,
+          totalScreenTime,
+          pickups: totalPickups,
+          hasRealData: true,
+        };
+      }
+    } catch (error) {
+      console.error('Error fetching from database:', error);
+    }
+
+    // If database also has no data, return empty
     return {
       apps: [],
       totalScreenTime: 0,
@@ -286,24 +329,56 @@ export const getDailyUsageForWeek = async (weekOffset: number = 0): Promise<{ da
       if (hasPermission) {
         const dailyData = await NativeUsageStats.getDailyUsageForWeek(weekOffset);
 
+        // Only use native data if it has actual content (not all zeros)
         if (dailyData && dailyData.length === 7) {
-          // Return native data as-is - don't fill in with fake data
-          return dailyData;
+          const hasActualData = dailyData.some((d: any) => d.hours > 0);
+          if (hasActualData) {
+            return dailyData;
+          }
         }
       }
     } catch (error) {
-      // Silently fall back to empty data
+      // Silently fall back to database/empty data
     }
   }
 
-  // For past weeks without native data, return zeros (no fake data)
-  if (weekOffset < 0) {
+  // For past weeks (or when native returned zeros), try to get data from the database
+  if (weekOffset <= 0) {
+    try {
+      const { startDate: dbStartDate, endDate: dbEndDate } = getWeekDateRange(weekOffset);
+      const dbData = await getWeekUsage(dbStartDate, dbEndDate);
+
+      if (dbData && dbData.length > 0) {
+        // Create a map of date -> hours from database
+        const dateHoursMap = new Map<string, number>();
+        dbData.forEach(row => {
+          const hours = row.screen_time / (1000 * 60 * 60); // Convert ms to hours
+          dateHoursMap.set(row.date, hours);
+        });
+
+        // Generate 7 days of data
+        return Array.from({ length: 7 }, (_, index) => {
+          const date = new Date(startDate);
+          date.setDate(startDate.getDate() + index);
+          const dateStr = date.toISOString().split('T')[0];
+          const hours = dateHoursMap.get(dateStr) || 0;
+          return {
+            day: dayNames[date.getDay()],
+            hours: Math.round(hours * 10) / 10,
+          };
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching from database:', error);
+    }
+
+    // If database also has no data, return zeros
     return Array.from({ length: 7 }, (_, index) => {
       const date = new Date(startDate);
       date.setDate(startDate.getDate() + index);
       return {
         day: dayNames[date.getDay()],
-        hours: 0, // No data available
+        hours: 0,
       };
     });
   }
@@ -597,47 +672,95 @@ export const getDailyUsageForMonth = async (monthOffset: number = 0): Promise<Da
 
 /**
  * Get week comparison data (this week vs last week)
+ * Calculates comparison using getDailyUsageForWeek and getWeekUsageStatsWithOffset
  */
 export const getWeekComparison = async (): Promise<WeekComparisonData> => {
-  if (NativeUsageStats && Platform.OS === 'android' && typeof NativeUsageStats.getWeekComparison === 'function') {
-    try {
-      const hasPermission = await NativeUsageStats.hasUsageStatsPermission();
-      if (hasPermission) {
-        const comparison = await NativeUsageStats.getWeekComparison();
-        if (comparison) {
-          return comparison as WeekComparisonData;
-        }
-      }
-    } catch (error) {
-      // Native function may not exist until rebuild - silently fall back
-    }
+  try {
+    // Get this week's data
+    const thisWeekDaily = await getDailyUsageForWeek(0);
+    const thisWeekStats = await getWeekUsageStatsWithOffset(0);
+
+    // Get last week's data
+    const lastWeekDaily = await getDailyUsageForWeek(-1);
+    const lastWeekStats = await getWeekUsageStatsWithOffset(-1);
+
+    // Calculate totals
+    const thisWeekTotalHours = thisWeekDaily.reduce((sum, d) => sum + d.hours, 0);
+    const lastWeekTotalHours = lastWeekDaily.reduce((sum, d) => sum + d.hours, 0);
+
+    const thisWeekDaysWithData = thisWeekDaily.filter(d => d.hours > 0).length || 1;
+    const lastWeekDaysWithData = lastWeekDaily.filter(d => d.hours > 0).length || 1;
+
+    const thisWeekAvgHours = thisWeekTotalHours / thisWeekDaysWithData;
+    const lastWeekAvgHours = lastWeekTotalHours / lastWeekDaysWithData;
+
+    const thisWeekPickups = thisWeekStats.pickups || 0;
+    const lastWeekPickups = lastWeekStats.pickups || 0;
+
+    // Calculate differences
+    const hoursDiff = thisWeekTotalHours - lastWeekTotalHours;
+    const hoursPercentChange = lastWeekTotalHours > 0
+      ? Math.round((hoursDiff / lastWeekTotalHours) * 100)
+      : 0;
+
+    const pickupsDiff = thisWeekPickups - lastWeekPickups;
+    const pickupsPercentChange = lastWeekPickups > 0
+      ? Math.round((pickupsDiff / lastWeekPickups) * 100)
+      : 0;
+
+    // Improved = less screen time this week
+    const improved = hoursDiff < 0;
+
+    return {
+      thisWeek: {
+        totalHours: Math.round(thisWeekTotalHours * 10) / 10,
+        avgHours: Math.round(thisWeekAvgHours * 10) / 10,
+        pickups: thisWeekPickups,
+        dailyData: thisWeekDaily,
+      },
+      lastWeek: {
+        totalHours: Math.round(lastWeekTotalHours * 10) / 10,
+        avgHours: Math.round(lastWeekAvgHours * 10) / 10,
+        pickups: lastWeekPickups,
+        dailyData: lastWeekDaily,
+      },
+      comparison: {
+        hoursDiff: Math.round(hoursDiff * 10) / 10,
+        hoursPercentChange,
+        pickupsDiff,
+        pickupsPercentChange,
+        improved,
+      },
+    };
+  } catch (error) {
+    console.error('Error calculating week comparison:', error);
+
+    // Return empty comparison data on error
+    const emptyDailyData = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => ({
+      day,
+      hours: 0,
+    }));
+
+    return {
+      thisWeek: {
+        totalHours: 0,
+        avgHours: 0,
+        pickups: 0,
+        dailyData: emptyDailyData,
+      },
+      lastWeek: {
+        totalHours: 0,
+        avgHours: 0,
+        pickups: 0,
+        dailyData: emptyDailyData,
+      },
+      comparison: {
+        hoursDiff: 0,
+        hoursPercentChange: 0,
+        pickupsDiff: 0,
+        pickupsPercentChange: 0,
+        improved: false,
+      },
+    };
   }
-
-  // Return empty comparison data - no fake data
-  const emptyDailyData = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => ({
-    day,
-    hours: 0,
-  }));
-
-  return {
-    thisWeek: {
-      totalHours: 0,
-      avgHours: 0,
-      pickups: 0,
-      dailyData: emptyDailyData,
-    },
-    lastWeek: {
-      totalHours: 0,
-      avgHours: 0,
-      pickups: 0,
-      dailyData: emptyDailyData,
-    },
-    comparison: {
-      hoursDiff: 0,
-      hoursPercentChange: 0,
-      pickupsDiff: 0,
-      pickupsPercentChange: 0,
-      improved: false,
-    },
-  };
 };

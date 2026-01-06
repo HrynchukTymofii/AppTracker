@@ -9,14 +9,17 @@ import {
   Platform,
   ActivityIndicator,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   X,
   Check,
   Shield,
   Globe,
   ChevronRight,
+  Plus,
 } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   getDefaultBlockedApps,
   getDefaultBlockedWebsites,
@@ -25,6 +28,33 @@ import {
 } from "@/lib/appBlocking";
 import { SOCIAL_MEDIA_APPS, POPULAR_WEBSITES } from "@/lib/blockingConstants";
 import * as AppBlocker from "@/modules/app-blocker";
+import * as UsageStats from "@/modules/usage-stats";
+import type { InstalledApp } from "@/modules/usage-stats";
+import { getLocalIcon } from "@/lib/appIcons";
+
+// Cache keys (v2 includes iconUrl)
+const APPS_CACHE_KEY = "@installed_apps_cache_v2";
+const APPS_CACHE_TIME_KEY = "@installed_apps_cache_time_v2";
+const CACHE_DURATION = 1000 * 60 * 60; // 1 hour
+
+// Popular app keywords for filtering
+const POPULAR_APP_KEYWORDS = [
+  "instagram",
+  "youtube",
+  "tiktok",
+  "musically",
+  "twitter",
+  "facebook",
+  "whatsapp",
+  "snapchat",
+  "reddit",
+  "discord",
+  "telegram",
+  "messenger",
+  "twitch",
+  "netflix",
+  "pinterest",
+];
 
 interface DefaultBlockedItemsModalProps {
   visible: boolean;
@@ -40,17 +70,73 @@ export const DefaultBlockedItemsModal = ({
   isDark,
 }: DefaultBlockedItemsModalProps) => {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<'apps' | 'websites'>('apps');
   const [selectedApps, setSelectedApps] = useState<string[]>([]);
   const [selectedWebsites, setSelectedWebsites] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [appsLoading, setAppsLoading] = useState(false);
   const [iosPickerLoading, setIosPickerLoading] = useState(false);
+  const [allInstalledApps, setAllInstalledApps] = useState<InstalledApp[]>([]);
+  const [popularInstalledApps, setPopularInstalledApps] = useState<InstalledApp[]>([]);
+  const [showAllApps, setShowAllApps] = useState(false);
 
   useEffect(() => {
     if (visible) {
       loadDefaults();
+      setShowAllApps(false);
+      if (Platform.OS === "android" && popularInstalledApps.length === 0) {
+        fetchInstalledApps();
+      }
     }
   }, [visible]);
+
+  // Check if app matches any popular keyword
+  const isPopularApp = (app: InstalledApp): number => {
+    const packageLower = app.packageName.toLowerCase();
+    const nameLower = app.appName.toLowerCase();
+
+    for (let i = 0; i < POPULAR_APP_KEYWORDS.length; i++) {
+      const keyword = POPULAR_APP_KEYWORDS[i];
+      if (packageLower.includes(keyword) || nameLower.includes(keyword)) {
+        return i;
+      }
+    }
+    return -1;
+  };
+
+  // Filter and sort apps to get popular ones
+  const filterPopularApps = (apps: InstalledApp[]): InstalledApp[] => {
+    const popularWithIndex = apps
+      .map((app) => ({ app, index: isPopularApp(app) }))
+      .filter(({ index }) => index >= 0);
+
+    popularWithIndex.sort((a, b) => a.index - b.index);
+    return popularWithIndex.slice(0, 15).map(({ app }) => app);
+  };
+
+  // Fetch real installed apps (icons fetched separately - too large for cache)
+  const fetchInstalledApps = async () => {
+    setAppsLoading(true);
+    try {
+      // Always fetch fresh to get icons
+      const apps = await UsageStats.getInstalledApps();
+      setAllInstalledApps(apps);
+      setPopularInstalledApps(filterPopularApps(apps));
+    } catch (error) {
+      console.error("Error fetching apps:", error);
+      // Fallback to hardcoded list
+      setPopularInstalledApps(
+        SOCIAL_MEDIA_APPS.map((app) => ({
+          packageName: app.id,
+          appName: app.name,
+          iconUrl: undefined,
+        }))
+      );
+    } finally {
+      setAppsLoading(false);
+    }
+  };
 
   // iOS: Handle native app picker
   const handleIOSAppSelection = async () => {
@@ -84,13 +170,16 @@ export const DefaultBlockedItemsModal = ({
     setLoading(false);
   };
 
-  const toggleApp = (appId: string) => {
-    if (selectedApps.includes(appId)) {
-      setSelectedApps(selectedApps.filter((a) => a !== appId));
+  const toggleApp = (packageName: string) => {
+    if (selectedApps.includes(packageName)) {
+      setSelectedApps(selectedApps.filter((a) => a !== packageName));
     } else {
-      setSelectedApps([...selectedApps, appId]);
+      setSelectedApps([...selectedApps, packageName]);
     }
   };
+
+  const displayedApps = showAllApps ? allInstalledApps : popularInstalledApps;
+  const otherAppsCount = allInstalledApps.length - popularInstalledApps.length;
 
   const toggleWebsite = (websiteId: string) => {
     if (selectedWebsites.includes(websiteId)) {
@@ -127,7 +216,9 @@ export const DefaultBlockedItemsModal = ({
             backgroundColor: isDark ? "#000000" : "#ffffff",
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,
-            padding: 20,
+            paddingTop: 20,
+            paddingHorizontal: 20,
+            paddingBottom: insets.bottom + 24,
             maxHeight: "85%",
             borderTopWidth: 1,
             borderLeftWidth: 1,
@@ -324,65 +415,154 @@ export const DefaultBlockedItemsModal = ({
                         <ChevronRight size={20} color="#3b82f6" />
                       )}
                     </TouchableOpacity>
-                  ) : (
-                    // Android: Show app list
-                    SOCIAL_MEDIA_APPS.map((app) => (
-                      <TouchableOpacity
-                        key={app.id}
-                        onPress={() => toggleApp(app.id)}
+                  ) : appsLoading ? (
+                    // Android: Show loading state
+                    <View style={{ padding: 40, alignItems: "center" }}>
+                      <ActivityIndicator size="large" color="#3b82f6" />
+                      <Text
                         style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          padding: 12,
-                          backgroundColor: selectedApps.includes(app.id)
-                            ? isDark
-                              ? "rgba(59, 130, 246, 0.2)"
-                              : "rgba(59, 130, 246, 0.1)"
-                            : "transparent",
-                          borderRadius: 12,
-                          marginBottom: 6,
+                          color: isDark ? "#9ca3af" : "#6b7280",
+                          marginTop: 12,
+                          fontSize: 14,
                         }}
                       >
-                        {app.icon ? (
-                          <Image
-                            source={app.icon}
-                            style={{
-                              width: 36,
-                              height: 36,
-                              borderRadius: 10,
-                              marginRight: 12,
-                            }}
-                          />
-                        ) : (
-                          <View
-                            style={{
-                              width: 36,
-                              height: 36,
-                              borderRadius: 10,
-                              backgroundColor: isDark ? "#374151" : "#e5e7eb",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              marginRight: 12,
-                            }}
-                          >
-                            <Shield size={18} color={isDark ? "#9ca3af" : "#6b7280"} />
-                          </View>
-                        )}
+                        {t("blocking.modals.loadingApps") || "Loading apps..."}
+                      </Text>
+                    </View>
+                  ) : (
+                    // Android: Show real installed app list
+                    <>
+                      {!showAllApps && (
                         <Text
                           style={{
-                            flex: 1,
-                            fontSize: 15,
-                            fontWeight: "500",
-                            color: isDark ? "#ffffff" : "#111827",
+                            fontSize: 11,
+                            fontWeight: "600",
+                            color: isDark ? "#6b7280" : "#9ca3af",
+                            marginBottom: 8,
+                            textTransform: "uppercase",
+                            letterSpacing: 0.5,
                           }}
                         >
-                          {app.name}
+                          {t("blocking.modals.popularApps") || "Popular Apps"}
                         </Text>
-                        {selectedApps.includes(app.id) && (
-                          <Check size={20} color="#3b82f6" />
-                        )}
-                      </TouchableOpacity>
-                    ))
+                      )}
+                      {displayedApps.map((app) => {
+                        // Prioritize real app icon, fallback to local bundled icon
+                        const fallbackIcon = getLocalIcon(app.packageName, app.appName);
+                        return (
+                          <TouchableOpacity
+                            key={app.packageName}
+                            onPress={() => toggleApp(app.packageName)}
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              padding: 12,
+                              backgroundColor: selectedApps.includes(app.packageName)
+                                ? isDark
+                                  ? "rgba(59, 130, 246, 0.2)"
+                                  : "rgba(59, 130, 246, 0.1)"
+                                : "transparent",
+                              borderRadius: 12,
+                              marginBottom: 6,
+                            }}
+                          >
+                            {app.iconUrl ? (
+                              <Image
+                                source={{ uri: app.iconUrl }}
+                                style={{
+                                  width: 36,
+                                  height: 36,
+                                  borderRadius: 10,
+                                  marginRight: 12,
+                                }}
+                              />
+                            ) : (
+                              <Image
+                                source={fallbackIcon}
+                                style={{
+                                  width: 36,
+                                  height: 36,
+                                  borderRadius: 10,
+                                  marginRight: 12,
+                                }}
+                              />
+                            )}
+                            <Text
+                              style={{
+                                flex: 1,
+                                fontSize: 15,
+                                fontWeight: "500",
+                                color: isDark ? "#ffffff" : "#111827",
+                              }}
+                              numberOfLines={1}
+                            >
+                              {app.appName}
+                            </Text>
+                            {selectedApps.includes(app.packageName) && (
+                              <Check size={20} color="#3b82f6" />
+                            )}
+                          </TouchableOpacity>
+                        );
+                      })}
+
+                      {/* More Apps Button */}
+                      {!showAllApps && otherAppsCount > 0 && (
+                        <TouchableOpacity
+                          onPress={() => setShowAllApps(true)}
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            padding: 14,
+                            marginTop: 8,
+                            backgroundColor: isDark
+                              ? "rgba(255, 255, 255, 0.05)"
+                              : "#f3f4f6",
+                            borderRadius: 12,
+                            borderWidth: 1,
+                            borderColor: isDark
+                              ? "rgba(255, 255, 255, 0.1)"
+                              : "rgba(0, 0, 0, 0.05)",
+                            borderStyle: "dashed",
+                          }}
+                        >
+                          <Plus size={18} color={isDark ? "#9ca3af" : "#6b7280"} />
+                          <Text
+                            style={{
+                              marginLeft: 8,
+                              fontSize: 14,
+                              fontWeight: "600",
+                              color: isDark ? "#9ca3af" : "#6b7280",
+                            }}
+                          >
+                            {t("blocking.modals.moreApps", { count: otherAppsCount }) ||
+                              `More Apps (${otherAppsCount})`}
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+
+                      {/* Show Less Button */}
+                      {showAllApps && (
+                        <TouchableOpacity
+                          onPress={() => setShowAllApps(false)}
+                          style={{
+                            padding: 12,
+                            marginTop: 8,
+                            alignItems: "center",
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              fontWeight: "500",
+                              color: "#3b82f6",
+                            }}
+                          >
+                            {t("blocking.modals.showPopularOnly") || "← Show Popular Only"}
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                    </>
                   )}
                 </>
               )}

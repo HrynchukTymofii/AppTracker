@@ -113,6 +113,20 @@ export const BlockingProvider = ({ children }: { children: ReactNode }) => {
   const [activeTasks, setActiveTasks] = useState<VerificationTask[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Sync daily limits to native SharedPreferences (Android only)
+  const syncDailyLimitsToNative = useCallback((limits: DailyLimit[]) => {
+    if (Platform.OS !== 'android') return;
+    try {
+      const limitsMap: Record<string, number> = {};
+      for (const limit of limits) {
+        limitsMap[limit.packageName] = limit.limitMinutes;
+      }
+      AppBlocker.setDailyLimits(limitsMap);
+    } catch (error) {
+      console.error('Error syncing daily limits to native:', error);
+    }
+  }, []);
+
   // Load all data
   const refreshData = useCallback(async () => {
     try {
@@ -129,10 +143,13 @@ export const BlockingProvider = ({ children }: { children: ReactNode }) => {
       setFocusSession(session);
       setDailyLimits(limits);
       setActiveTasks(tasks);
+
+      // Sync daily limits to native for the blocking screen
+      syncDailyLimitsToNative(limits);
     } catch (error) {
       console.error('Error refreshing blocking data:', error);
     }
-  }, []);
+  }, [syncDailyLimitsToNative]);
 
   // Initialize on mount
   useEffect(() => {

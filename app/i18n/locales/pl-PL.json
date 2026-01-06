@@ -14,7 +14,8 @@
     "settings": "Ustawienia",
     "back": "Wstecz",
     "next": "Dalej",
-    "done": "Gotowe"
+    "done": "Gotowe",
+    "or": "lub"
   },
   "tabs": {
     "home": "Strona główna",
@@ -224,7 +225,26 @@
     "loading": "Ładowanie profilu...",
     "defaultAppLimit": "Domyślny Limit Aplikacji",
     "defaultAppLimitDesc": "Nowe aplikacje będą domyślnie używać tego limitu czasu",
-    "limitUpdated": "Domyślny limit zaktualizowany"
+    "limitUpdated": "Domyślny limit zaktualizowany",
+    "contactDescription": "Wyślij nam wiadomość, a wkrótce odpowiemy",
+    "writeMessage": "Napisz swoją wiadomość...",
+    "sendMessage": "Wyślij wiadomość",
+    "emailUs": "Napisz do nas",
+    "messageSent": "Wiadomość wysłana!",
+    "messageThankYou": "Wkrótce odpowiemy",
+    "messageError": "Nie udało się wysłać wiadomości",
+    "rateExperience": "Oceń swoje doświadczenie",
+    "rateDescription": "Jak oceniasz LockIn?",
+    "tapToRate": "Dotknij gwiazdkę, aby ocenić",
+    "thankYouRating": "Dziękujemy za ocenę!",
+    "tellUsMore": "Powiedz nam więcej",
+    "helpUsImprove": "Pomóż nam ulepszyć twoje doświadczenie",
+    "describeProblem": "Co możemy poprawić?",
+    "sendFeedback": "Wyślij opinię",
+    "changeRating": "Zmień ocenę",
+    "feedbackSent": "Opinia wysłana!",
+    "feedbackThanks": "Dziękujemy za pomoc w ulepszaniu",
+    "feedbackError": "Nie udało się wysłać opinii"
   },
   "achievements": {
     "title": "Osiągnięcia",

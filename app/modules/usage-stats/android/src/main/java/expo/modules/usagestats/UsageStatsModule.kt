@@ -321,8 +321,22 @@ class UsageStatsModule : Module() {
                         }
                     }
                 }
+
+                // If queryEvents returned no data (happens for days > ~10 days ago), use queryUsageStats as fallback
+                if (totalTime == 0L) {
+                    val usageStats = usageStatsManager.queryUsageStats(
+                        UsageStatsManager.INTERVAL_DAILY,
+                        dayStart.timeInMillis,
+                        actualEndTime
+                    )
+                    usageStats?.forEach { stats ->
+                        if (stats.totalTimeInForeground > 0 && isUserApp(stats.packageName, packageManager)) {
+                            totalTime += stats.totalTimeInForeground
+                        }
+                    }
+                }
             } catch (e: Exception) {
-                // Fallback to UsageStats
+                // Fallback to UsageStats on error
                 val usageStats = usageStatsManager.queryUsageStats(
                     UsageStatsManager.INTERVAL_DAILY,
                     dayStart.timeInMillis,
@@ -438,6 +452,20 @@ class UsageStatsModule : Module() {
                         val duration = actualEndTime - startTime
                         if (duration > 0 && duration < 24 * 60 * 60 * 1000) {
                             totalTime += duration
+                        }
+                    }
+                }
+
+                // If queryEvents returned no data (happens for days > ~10 days ago), use queryUsageStats as fallback
+                if (totalTime == 0L) {
+                    val usageStats = usageStatsManager.queryUsageStats(
+                        UsageStatsManager.INTERVAL_DAILY,
+                        dayStart.timeInMillis,
+                        actualEndTime
+                    )
+                    usageStats?.forEach { stats ->
+                        if (stats.totalTimeInForeground > 0 && isUserApp(stats.packageName, packageManager)) {
+                            totalTime += stats.totalTimeInForeground
                         }
                     }
                 }

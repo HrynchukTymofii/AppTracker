@@ -17,7 +17,10 @@ export const POPULAR_APP_KEYWORDS = [
   "pinterest",
 ];
 
-// Local app icons mapping
+// Fallback icon
+export const FALLBACK_ICON = require("@/assets/icons/fallback.png");
+
+// Local app icons mapping (used as fallback only)
 export const APP_ICONS: { [key: string]: any } = {
   instagram: require("@/assets/icons/instagram.png"),
   youtube: require("@/assets/icons/youtube.png"),
@@ -28,11 +31,13 @@ export const APP_ICONS: { [key: string]: any } = {
   pinterest: require("@/assets/icons/pinterest.png"),
   linkedin: require("@/assets/icons/linkedin.png"),
   twitter: require("@/assets/icons/x.png"),
-  x: require("@/assets/icons/x.png"),
+  netflix: require("@/assets/icons/netflix.png"),
+  threads: require("@/assets/icons/threads.jpg"),
 };
 
 // Get local icon for app based on package name or app name
-export const getLocalIcon = (packageName: string, appName: string): any | null => {
+// Returns fallback icon if no match found
+export const getLocalIcon = (packageName: string, appName: string): any => {
   const packageLower = packageName.toLowerCase();
   const nameLower = appName.toLowerCase();
 
@@ -41,7 +46,7 @@ export const getLocalIcon = (packageName: string, appName: string): any | null =
       return icon;
     }
   }
-  return null;
+  return FALLBACK_ICON;
 };
 
 // Helper function to get app icon emoji

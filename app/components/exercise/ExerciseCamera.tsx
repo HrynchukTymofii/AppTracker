@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { Camera, useCameraDevice, PhotoFile } from 'react-native-vision-camera';
 import { readAsStringAsync, deleteAsync } from 'expo-file-system/legacy';
 import Svg, { Circle, Line } from 'react-native-svg';
+import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import {
   initialize as initPoseDetection,
   detectPose,
@@ -44,6 +45,16 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
   cameraActive,
   hideStats = false,
 }) => {
+  // Keep screen awake during exercise/pose detection
+  useEffect(() => {
+    activateKeepAwakeAsync('exercise-camera').catch(() => {
+      // Ignore errors - keep awake is not critical
+    });
+    return () => {
+      deactivateKeepAwake('exercise-camera');
+    };
+  }, []);
+
   // Camera is active if cameraActive is true OR if isActive is true (for detection)
   const isCameraOn = cameraActive ?? isActive;
   const device = useCameraDevice('front');
@@ -256,6 +267,291 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
     return { isHolding: isHorizontal && isAligned, bodyAngle };
   };
 
+  // Detect jumping jacks position - arm and leg spread
+  const detectJumpingJacksPhase = (landmarks: PoseLandmark[]): 'up' | 'down' | 'unknown' => {
+    const leftShoulder = landmarks[11];
+    const rightShoulder = landmarks[12];
+    const leftWrist = landmarks[15];
+    const rightWrist = landmarks[16];
+    const leftHip = landmarks[23];
+    const rightHip = landmarks[24];
+    const leftAnkle = landmarks[27];
+    const rightAnkle = landmarks[28];
+
+    const minVisibility = 0.5;
+    const allVisible = (leftShoulder?.visibility ?? 0) >= minVisibility &&
+                       (rightShoulder?.visibility ?? 0) >= minVisibility &&
+                       (leftWrist?.visibility ?? 0) >= minVisibility &&
+                       (rightWrist?.visibility ?? 0) >= minVisibility &&
+                       (leftHip?.visibility ?? 0) >= minVisibility &&
+                       (rightHip?.visibility ?? 0) >= minVisibility &&
+                       (leftAnkle?.visibility ?? 0) >= minVisibility &&
+                       (rightAnkle?.visibility ?? 0) >= minVisibility;
+
+    if (!allVisible) return 'unknown';
+
+    // Calculate arm spread
+    const shoulderWidth = Math.sqrt(Math.pow(rightShoulder.x - leftShoulder.x, 2) + Math.pow(rightShoulder.y - leftShoulder.y, 2));
+    const wristSpread = Math.sqrt(Math.pow(rightWrist.x - leftWrist.x, 2) + Math.pow(rightWrist.y - leftWrist.y, 2));
+    const armRatio = wristSpread / shoulderWidth;
+
+    // Calculate leg spread
+    const hipWidth = Math.sqrt(Math.pow(rightHip.x - leftHip.x, 2) + Math.pow(rightHip.y - leftHip.y, 2));
+    const ankleSpread = Math.sqrt(Math.pow(rightAnkle.x - leftAnkle.x, 2) + Math.pow(rightAnkle.y - leftAnkle.y, 2));
+    const legRatio = ankleSpread / hipWidth;
+
+    const spreadScore = (armRatio + legRatio) / 2;
+
+    // Spread position (arms and legs wide)
+    if (spreadScore > 2.2) return 'down';
+    // Closed position (arms down, legs together)
+    if (spreadScore < 1.5) return 'up';
+    return 'unknown';
+  };
+
+  // Detect lunges position - front knee angle
+  const detectLungesPhase = (landmarks: PoseLandmark[]): 'up' | 'down' | 'unknown' => {
+    const leftHip = landmarks[23];
+    const rightHip = landmarks[24];
+    const leftKnee = landmarks[25];
+    const rightKnee = landmarks[26];
+    const leftAnkle = landmarks[27];
+    const rightAnkle = landmarks[28];
+
+    const minVisibility = 0.5;
+    const leftVisible = (leftHip?.visibility ?? 0) >= minVisibility &&
+                        (leftKnee?.visibility ?? 0) >= minVisibility &&
+                        (leftAnkle?.visibility ?? 0) >= minVisibility;
+    const rightVisible = (rightHip?.visibility ?? 0) >= minVisibility &&
+                         (rightKnee?.visibility ?? 0) >= minVisibility &&
+                         (rightAnkle?.visibility ?? 0) >= minVisibility;
+
+    if (!leftVisible && !rightVisible) return 'unknown';
+
+    // Find front leg (smaller knee angle)
+    let frontKneeAngle = 180;
+    if (leftVisible) {
+      frontKneeAngle = Math.min(frontKneeAngle, calculateAngle(leftHip, leftKnee, leftAnkle));
+    }
+    if (rightVisible) {
+      frontKneeAngle = Math.min(frontKneeAngle, calculateAngle(rightHip, rightKnee, rightAnkle));
+    }
+
+    if (frontKneeAngle < 110) return 'down';
+    if (frontKneeAngle > 155) return 'up';
+    return 'unknown';
+  };
+
+  // Detect crunches position - torso angle
+  const detectCrunchesPhase = (landmarks: PoseLandmark[]): 'up' | 'down' | 'unknown' => {
+    const leftShoulder = landmarks[11];
+    const rightShoulder = landmarks[12];
+    const leftHip = landmarks[23];
+    const rightHip = landmarks[24];
+    const leftKnee = landmarks[25];
+    const rightKnee = landmarks[26];
+
+    const minVisibility = 0.5;
+    const allVisible = (leftShoulder?.visibility ?? 0) >= minVisibility &&
+                       (rightShoulder?.visibility ?? 0) >= minVisibility &&
+                       (leftHip?.visibility ?? 0) >= minVisibility &&
+                       (rightHip?.visibility ?? 0) >= minVisibility &&
+                       (leftKnee?.visibility ?? 0) >= minVisibility &&
+                       (rightKnee?.visibility ?? 0) >= minVisibility;
+
+    if (!allVisible) return 'unknown';
+
+    const midShoulder = { x: (leftShoulder.x + rightShoulder.x) / 2, y: (leftShoulder.y + rightShoulder.y) / 2, visibility: 1, z: 0, type: 0 };
+    const midHip = { x: (leftHip.x + rightHip.x) / 2, y: (leftHip.y + rightHip.y) / 2, visibility: 1, z: 0, type: 0 };
+    const midKnee = { x: (leftKnee.x + rightKnee.x) / 2, y: (leftKnee.y + rightKnee.y) / 2, visibility: 1, z: 0, type: 0 };
+
+    const crunchAngle = calculateAngle(midShoulder, midHip, midKnee);
+
+    if (crunchAngle < 100) return 'up'; // Crunched up
+    if (crunchAngle > 140) return 'down'; // Lying flat
+    return 'unknown';
+  };
+
+  // Detect shoulder press position - arm angle overhead
+  const detectShoulderPressPhase = (landmarks: PoseLandmark[]): 'up' | 'down' | 'unknown' => {
+    const leftShoulder = landmarks[11];
+    const rightShoulder = landmarks[12];
+    const leftElbow = landmarks[13];
+    const rightElbow = landmarks[14];
+    const leftWrist = landmarks[15];
+    const rightWrist = landmarks[16];
+
+    const minVisibility = 0.5;
+    const leftVisible = (leftShoulder?.visibility ?? 0) >= minVisibility &&
+                        (leftElbow?.visibility ?? 0) >= minVisibility &&
+                        (leftWrist?.visibility ?? 0) >= minVisibility;
+    const rightVisible = (rightShoulder?.visibility ?? 0) >= minVisibility &&
+                         (rightElbow?.visibility ?? 0) >= minVisibility &&
+                         (rightWrist?.visibility ?? 0) >= minVisibility;
+
+    if (!leftVisible && !rightVisible) return 'unknown';
+
+    let totalAngle = 0;
+    let count = 0;
+    if (leftVisible) { totalAngle += calculateAngle(leftShoulder, leftElbow, leftWrist); count++; }
+    if (rightVisible) { totalAngle += calculateAngle(rightShoulder, rightElbow, rightWrist); count++; }
+    const avgAngle = totalAngle / count;
+
+    if (avgAngle > 160) return 'up'; // Arms extended overhead
+    if (avgAngle < 110) return 'down'; // Arms bent
+    return 'unknown';
+  };
+
+  // Detect leg raises position
+  const detectLegRaisesPhase = (landmarks: PoseLandmark[]): 'up' | 'down' | 'unknown' => {
+    const leftShoulder = landmarks[11];
+    const rightShoulder = landmarks[12];
+    const leftHip = landmarks[23];
+    const rightHip = landmarks[24];
+    const leftKnee = landmarks[25];
+    const rightKnee = landmarks[26];
+
+    const minVisibility = 0.5;
+    const allVisible = (leftShoulder?.visibility ?? 0) >= minVisibility &&
+                       (rightShoulder?.visibility ?? 0) >= minVisibility &&
+                       (leftHip?.visibility ?? 0) >= minVisibility &&
+                       (rightHip?.visibility ?? 0) >= minVisibility &&
+                       (leftKnee?.visibility ?? 0) >= minVisibility &&
+                       (rightKnee?.visibility ?? 0) >= minVisibility;
+
+    if (!allVisible) return 'unknown';
+
+    const midShoulder = { x: (leftShoulder.x + rightShoulder.x) / 2, y: (leftShoulder.y + rightShoulder.y) / 2, visibility: 1, z: 0, type: 0 };
+    const midHip = { x: (leftHip.x + rightHip.x) / 2, y: (leftHip.y + rightHip.y) / 2, visibility: 1, z: 0, type: 0 };
+    const midKnee = { x: (leftKnee.x + rightKnee.x) / 2, y: (leftKnee.y + rightKnee.y) / 2, visibility: 1, z: 0, type: 0 };
+
+    const legAngle = calculateAngle(midShoulder, midHip, midKnee);
+
+    if (legAngle < 110) return 'up'; // Legs raised
+    if (legAngle > 160) return 'down'; // Legs flat
+    return 'unknown';
+  };
+
+  // Detect high knees position - knee above hip
+  const detectHighKneesPhase = (landmarks: PoseLandmark[]): 'up' | 'down' | 'unknown' => {
+    const leftHip = landmarks[23];
+    const rightHip = landmarks[24];
+    const leftKnee = landmarks[25];
+    const rightKnee = landmarks[26];
+
+    const minVisibility = 0.5;
+    const leftVisible = (leftHip?.visibility ?? 0) >= minVisibility && (leftKnee?.visibility ?? 0) >= minVisibility;
+    const rightVisible = (rightHip?.visibility ?? 0) >= minVisibility && (rightKnee?.visibility ?? 0) >= minVisibility;
+
+    if (!leftVisible && !rightVisible) return 'unknown';
+
+    // Check if either knee is above hip level (y decreases going up)
+    let kneeRaised = false;
+    if (leftVisible && leftHip.y - leftKnee.y > 0.05) kneeRaised = true;
+    if (rightVisible && rightHip.y - rightKnee.y > 0.05) kneeRaised = true;
+
+    return kneeRaised ? 'up' : 'down';
+  };
+
+  // Detect pull-ups position - elbow angle
+  const detectPullUpsPhase = (landmarks: PoseLandmark[]): 'up' | 'down' | 'unknown' => {
+    const leftShoulder = landmarks[11];
+    const rightShoulder = landmarks[12];
+    const leftElbow = landmarks[13];
+    const rightElbow = landmarks[14];
+    const leftWrist = landmarks[15];
+    const rightWrist = landmarks[16];
+
+    const minVisibility = 0.5;
+    const leftVisible = (leftShoulder?.visibility ?? 0) >= minVisibility &&
+                        (leftElbow?.visibility ?? 0) >= minVisibility &&
+                        (leftWrist?.visibility ?? 0) >= minVisibility;
+    const rightVisible = (rightShoulder?.visibility ?? 0) >= minVisibility &&
+                         (rightElbow?.visibility ?? 0) >= minVisibility &&
+                         (rightWrist?.visibility ?? 0) >= minVisibility;
+
+    if (!leftVisible && !rightVisible) return 'unknown';
+
+    let totalAngle = 0;
+    let count = 0;
+    if (leftVisible) { totalAngle += calculateAngle(leftShoulder, leftElbow, leftWrist); count++; }
+    if (rightVisible) { totalAngle += calculateAngle(rightShoulder, rightElbow, rightWrist); count++; }
+    const avgAngle = totalAngle / count;
+
+    if (avgAngle < 90) return 'up'; // Pulled up
+    if (avgAngle > 150) return 'down'; // Hanging
+    return 'unknown';
+  };
+
+  // Detect wall sit position (hold exercise)
+  const detectWallSitPosition = (landmarks: PoseLandmark[]): { isHolding: boolean; angle: number } => {
+    const leftHip = landmarks[23];
+    const rightHip = landmarks[24];
+    const leftKnee = landmarks[25];
+    const rightKnee = landmarks[26];
+    const leftAnkle = landmarks[27];
+    const rightAnkle = landmarks[28];
+
+    const minVisibility = 0.5;
+    const leftVisible = (leftHip?.visibility ?? 0) >= minVisibility &&
+                        (leftKnee?.visibility ?? 0) >= minVisibility &&
+                        (leftAnkle?.visibility ?? 0) >= minVisibility;
+    const rightVisible = (rightHip?.visibility ?? 0) >= minVisibility &&
+                         (rightKnee?.visibility ?? 0) >= minVisibility &&
+                         (rightAnkle?.visibility ?? 0) >= minVisibility;
+
+    if (!leftVisible && !rightVisible) return { isHolding: false, angle: 0 };
+
+    let totalAngle = 0;
+    let count = 0;
+    if (leftVisible) { totalAngle += calculateAngle(leftHip, leftKnee, leftAnkle); count++; }
+    if (rightVisible) { totalAngle += calculateAngle(rightHip, rightKnee, rightAnkle); count++; }
+    const avgAngle = totalAngle / count;
+
+    // Wall sit: knees at ~90 degrees (70-120 range)
+    const isHolding = avgAngle >= 70 && avgAngle <= 120;
+    return { isHolding, angle: avgAngle };
+  };
+
+  // Detect side plank position (hold exercise)
+  const detectSidePlankPosition = (landmarks: PoseLandmark[]): { isHolding: boolean; angle: number } => {
+    const leftShoulder = landmarks[11];
+    const rightShoulder = landmarks[12];
+    const leftHip = landmarks[23];
+    const rightHip = landmarks[24];
+    const leftAnkle = landmarks[27];
+    const rightAnkle = landmarks[28];
+
+    const minVisibility = 0.5;
+    const allVisible = (leftShoulder?.visibility ?? 0) >= minVisibility &&
+                       (rightShoulder?.visibility ?? 0) >= minVisibility &&
+                       (leftHip?.visibility ?? 0) >= minVisibility &&
+                       (rightHip?.visibility ?? 0) >= minVisibility &&
+                       (leftAnkle?.visibility ?? 0) >= minVisibility &&
+                       (rightAnkle?.visibility ?? 0) >= minVisibility;
+
+    if (!allVisible) return { isHolding: false, angle: 0 };
+
+    const midShoulder = { x: (leftShoulder.x + rightShoulder.x) / 2, y: (leftShoulder.y + rightShoulder.y) / 2 };
+    const midHip = { x: (leftHip.x + rightHip.x) / 2, y: (leftHip.y + rightHip.y) / 2 };
+    const midAnkle = { x: (leftAnkle.x + rightAnkle.x) / 2, y: (leftAnkle.y + rightAnkle.y) / 2 };
+
+    // Check alignment
+    const shoulderAnkleDist = Math.sqrt(Math.pow(midAnkle.x - midShoulder.x, 2) + Math.pow(midAnkle.y - midShoulder.y, 2));
+    const shoulderHipDist = Math.sqrt(Math.pow(midHip.x - midShoulder.x, 2) + Math.pow(midHip.y - midShoulder.y, 2));
+    const hipAnkleDist = Math.sqrt(Math.pow(midAnkle.x - midHip.x, 2) + Math.pow(midAnkle.y - midHip.y, 2));
+    const alignmentRatio = (shoulderHipDist + hipAnkleDist) / shoulderAnkleDist;
+    const isAligned = alignmentRatio < 1.2;
+
+    // Body angle
+    const deltaY = midAnkle.y - midShoulder.y;
+    const deltaX = midAnkle.x - midShoulder.x;
+    const bodyAngle = Math.abs(Math.atan2(deltaY, deltaX) * 180 / Math.PI);
+
+    const isSidePosition = bodyAngle >= 20 && bodyAngle <= 160;
+    return { isHolding: isAligned && isSidePosition, angle: bodyAngle };
+  };
+
   // Request camera permission
   useEffect(() => {
     (async () => {
@@ -372,6 +668,130 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
           } else {
             setExercisePhase('up'); // Use 'up' to indicate not holding
             // Reset the last check time so we don't count time when not holding
+            lastPlankCheckTimeRef.current = null;
+            setDebugMessage(`${visibleCount} pts | Get in position`);
+          }
+        } else if (exerciseType === 'jumping-jacks') {
+          const phase = detectJumpingJacksPhase(result.landmarks);
+          setExercisePhase(phase);
+
+          if (phase === 'up' || phase === 'down') {
+            // Count rep when transitioning from spread (down) to closed (up)
+            if (lastValidPhaseRef.current === 'down' && phase === 'up') {
+              setRepCount(prev => prev + 1);
+            }
+            lastValidPhaseRef.current = phase;
+          }
+
+          setDebugMessage(`${visibleCount} pts | Phase: ${phase}`);
+        } else if (exerciseType === 'lunges') {
+          const phase = detectLungesPhase(result.landmarks);
+          setExercisePhase(phase);
+
+          if (phase === 'up' || phase === 'down') {
+            if (lastValidPhaseRef.current === 'down' && phase === 'up') {
+              setRepCount(prev => prev + 1);
+            }
+            lastValidPhaseRef.current = phase;
+          }
+
+          setDebugMessage(`${visibleCount} pts | Phase: ${phase}`);
+        } else if (exerciseType === 'crunches') {
+          const phase = detectCrunchesPhase(result.landmarks);
+          setExercisePhase(phase);
+
+          if (phase === 'up' || phase === 'down') {
+            // Count rep when going from up (crunched) back to down (lying)
+            if (lastValidPhaseRef.current === 'up' && phase === 'down') {
+              setRepCount(prev => prev + 1);
+            }
+            lastValidPhaseRef.current = phase;
+          }
+
+          setDebugMessage(`${visibleCount} pts | Phase: ${phase}`);
+        } else if (exerciseType === 'shoulder-press') {
+          const phase = detectShoulderPressPhase(result.landmarks);
+          setExercisePhase(phase);
+
+          if (phase === 'up' || phase === 'down') {
+            if (lastValidPhaseRef.current === 'down' && phase === 'up') {
+              setRepCount(prev => prev + 1);
+            }
+            lastValidPhaseRef.current = phase;
+          }
+
+          setDebugMessage(`${visibleCount} pts | Phase: ${phase}`);
+        } else if (exerciseType === 'leg-raises') {
+          const phase = detectLegRaisesPhase(result.landmarks);
+          setExercisePhase(phase);
+
+          if (phase === 'up' || phase === 'down') {
+            // Count rep when legs come back down
+            if (lastValidPhaseRef.current === 'up' && phase === 'down') {
+              setRepCount(prev => prev + 1);
+            }
+            lastValidPhaseRef.current = phase;
+          }
+
+          setDebugMessage(`${visibleCount} pts | Phase: ${phase}`);
+        } else if (exerciseType === 'high-knees') {
+          const phase = detectHighKneesPhase(result.landmarks);
+          setExercisePhase(phase);
+
+          if (phase === 'up' || phase === 'down') {
+            // Count each time knee goes up
+            if (lastValidPhaseRef.current === 'down' && phase === 'up') {
+              setRepCount(prev => prev + 1);
+            }
+            lastValidPhaseRef.current = phase;
+          }
+
+          setDebugMessage(`${visibleCount} pts | Phase: ${phase}`);
+        } else if (exerciseType === 'pull-ups') {
+          const phase = detectPullUpsPhase(result.landmarks);
+          setExercisePhase(phase);
+
+          if (phase === 'up' || phase === 'down') {
+            if (lastValidPhaseRef.current === 'down' && phase === 'up') {
+              setRepCount(prev => prev + 1);
+            }
+            lastValidPhaseRef.current = phase;
+          }
+
+          setDebugMessage(`${visibleCount} pts | Phase: ${phase}`);
+        } else if (exerciseType === 'wall-sit') {
+          const wallSitResult = detectWallSitPosition(result.landmarks);
+          const now = Date.now();
+
+          if (wallSitResult.isHolding) {
+            setExercisePhase('down');
+            if (lastPlankCheckTimeRef.current !== null) {
+              const deltaTime = (now - lastPlankCheckTimeRef.current) / 1000;
+              accumulatedPlankTimeRef.current += deltaTime;
+              setHoldTime(accumulatedPlankTimeRef.current);
+            }
+            lastPlankCheckTimeRef.current = now;
+            setDebugMessage(`${visibleCount} pts | Holding: ${accumulatedPlankTimeRef.current.toFixed(1)}s`);
+          } else {
+            setExercisePhase('up');
+            lastPlankCheckTimeRef.current = null;
+            setDebugMessage(`${visibleCount} pts | Get in position`);
+          }
+        } else if (exerciseType === 'side-plank') {
+          const sidePlankResult = detectSidePlankPosition(result.landmarks);
+          const now = Date.now();
+
+          if (sidePlankResult.isHolding) {
+            setExercisePhase('down');
+            if (lastPlankCheckTimeRef.current !== null) {
+              const deltaTime = (now - lastPlankCheckTimeRef.current) / 1000;
+              accumulatedPlankTimeRef.current += deltaTime;
+              setHoldTime(accumulatedPlankTimeRef.current);
+            }
+            lastPlankCheckTimeRef.current = now;
+            setDebugMessage(`${visibleCount} pts | Holding: ${accumulatedPlankTimeRef.current.toFixed(1)}s`);
+          } else {
+            setExercisePhase('up');
             lastPlankCheckTimeRef.current = null;
             setDebugMessage(`${visibleCount} pts | Get in position`);
           }
@@ -597,15 +1017,25 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
                 exercisePhase === 'down' && styles.statContainerDown,
               ]}>
                 <Text style={styles.statValue}>
-                  {exerciseType === 'plank' ? Math.floor(holdTime) : repCount}
+                  {(exerciseType === 'plank' || exerciseType === 'wall-sit' || exerciseType === 'side-plank')
+                    ? Math.floor(holdTime)
+                    : repCount}
                 </Text>
                 <Text style={styles.statLabel}>
                   {exerciseType === 'pushups' ? 'PUSH-UPS' :
-                   exerciseType === 'squats' ? 'SQUATS' : 'SECONDS'}
+                   exerciseType === 'squats' ? 'SQUATS' :
+                   exerciseType === 'jumping-jacks' ? 'JUMPING JACKS' :
+                   exerciseType === 'lunges' ? 'LUNGES' :
+                   exerciseType === 'crunches' ? 'CRUNCHES' :
+                   exerciseType === 'shoulder-press' ? 'PRESSES' :
+                   exerciseType === 'leg-raises' ? 'LEG RAISES' :
+                   exerciseType === 'high-knees' ? 'HIGH KNEES' :
+                   exerciseType === 'pull-ups' ? 'PULL-UPS' :
+                   'SECONDS'}
                 </Text>
                 {poseDetected && (
                   <Text style={styles.phaseText}>
-                    {exerciseType === 'plank'
+                    {(exerciseType === 'plank' || exerciseType === 'wall-sit' || exerciseType === 'side-plank')
                       ? (exercisePhase === 'down' ? '✓ HOLDING' : '⚠️ GET IN POSITION')
                       : (exercisePhase === 'down' ? '⬇️ DOWN' : exercisePhase === 'up' ? '⬆️ UP' : '...')}
                   </Text>

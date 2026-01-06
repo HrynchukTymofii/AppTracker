@@ -36,6 +36,7 @@ interface SpendTimeModalProps {
   dailyLimitMinutes: number;
   realUsedMinutes: number; // Actual usage from device stats
   isScheduleFreeTime: boolean;
+  forceCoachChat?: boolean; // Force showing coach chat (from native urgent access button)
   onClose: () => void;
   onSpend: (minutes: number) => void;
   onEarnTime: () => void;
@@ -49,6 +50,7 @@ export const SpendTimeModal = ({
   dailyLimitMinutes,
   realUsedMinutes,
   isScheduleFreeTime,
+  forceCoachChat,
   onClose,
   onSpend,
   onEarnTime,
@@ -71,9 +73,9 @@ export const SpendTimeModal = ({
   // Calculate health score (0-100, lower = more usage today)
   const healthScore = Math.max(0, Math.min(100, Math.round((1 - realUsedMinutes / Math.max(dailyLimitMinutes, 1)) * 100)));
 
-  // Initialize coach messages when limit is reached
+  // Initialize coach messages when limit is reached or forceCoachChat is true
   useEffect(() => {
-    if (visible && realUsedMinutes >= dailyLimitMinutes) {
+    if (visible && (realUsedMinutes >= dailyLimitMinutes || forceCoachChat)) {
       setCoachMessages([
         {
           id: '1',
@@ -87,7 +89,7 @@ export const SpendTimeModal = ({
         },
       ]);
     }
-  }, [visible, realUsedMinutes, dailyLimitMinutes, appName]);
+  }, [visible, realUsedMinutes, dailyLimitMinutes, appName, forceCoachChat]);
 
   // Auto scroll to bottom
   useEffect(() => {
@@ -361,8 +363,8 @@ export const SpendTimeModal = ({
     );
   }
 
-  // If TOTAL daily limit reached (all apps combined)
-  if (isTotalLimitReached) {
+  // If TOTAL daily limit reached (all apps combined) - but skip if forceCoachChat is true
+  if (isTotalLimitReached && !forceCoachChat) {
     return (
       <View
         style={{
@@ -501,8 +503,8 @@ export const SpendTimeModal = ({
     );
   }
 
-  // If individual app limit reached (based on REAL device usage) - Show Coach Chat
-  if (isLimitReached) {
+  // If individual app limit reached (based on REAL device usage) OR forceCoachChat - Show Coach Chat
+  if (isLimitReached || forceCoachChat) {
     return (
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}

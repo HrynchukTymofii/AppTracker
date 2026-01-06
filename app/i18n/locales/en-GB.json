@@ -14,7 +14,8 @@
     "settings": "Settings",
     "back": "Back",
     "next": "Next",
-    "done": "Done"
+    "done": "Done",
+    "or": "or"
   },
   "tabs": {
     "home": "Home",
@@ -224,7 +225,26 @@
     "loading": "Loading profile...",
     "defaultAppLimit": "Default App Limit",
     "defaultAppLimitDesc": "New apps will use this time limit by default",
-    "limitUpdated": "Default limit updated"
+    "limitUpdated": "Default limit updated",
+    "contactDescription": "Send us a message and we'll get back to you soon",
+    "writeMessage": "Write your message...",
+    "sendMessage": "Send Message",
+    "emailUs": "Email Us",
+    "messageSent": "Message sent!",
+    "messageThankYou": "We'll get back to you soon",
+    "messageError": "Failed to send message",
+    "rateExperience": "Rate Your Experience",
+    "rateDescription": "How would you rate LockIn?",
+    "tapToRate": "Tap a star to rate",
+    "thankYouRating": "Thank you for your rating!",
+    "tellUsMore": "Tell Us More",
+    "helpUsImprove": "Help us improve your experience",
+    "describeProblem": "What can we do better?",
+    "sendFeedback": "Send Feedback",
+    "changeRating": "Change rating",
+    "feedbackSent": "Feedback sent!",
+    "feedbackThanks": "Thank you for helping us improve",
+    "feedbackError": "Failed to send feedback"
   },
   "achievements": {
     "title": "Achievements",

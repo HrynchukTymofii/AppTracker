@@ -31,7 +31,9 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(node --check:*)",
       "Bash(node -c:*)",
-      "Bash(/usr/bin/env node:*)"
+      "Bash(/usr/bin/env node:*)",
+      "Bash(./android/gradlew.bat:*)",
+      "Bash(./gradlew.bat:*)"
     ]
   }
 }

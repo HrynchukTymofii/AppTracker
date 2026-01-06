@@ -14,7 +14,8 @@
     "settings": "설정",
     "back": "뒤로",
     "next": "다음",
-    "done": "완료"
+    "done": "완료",
+    "or": "또는"
   },
   "tabs": {
     "home": "홈",
@@ -224,7 +225,26 @@
     "loading": "프로필 로딩 중...",
     "defaultAppLimit": "기본 앱 제한",
     "defaultAppLimitDesc": "새 앱은 기본적으로 이 시간 제한을 사용합니다",
-    "limitUpdated": "기본 제한이 업데이트됨"
+    "limitUpdated": "기본 제한이 업데이트됨",
+    "contactDescription": "메시지를 보내주시면 곧 답변 드리겠습니다",
+    "writeMessage": "메시지를 작성하세요...",
+    "sendMessage": "메시지 보내기",
+    "emailUs": "이메일 보내기",
+    "messageSent": "메시지를 보냈습니다!",
+    "messageThankYou": "곧 답변 드리겠습니다",
+    "messageError": "메시지 전송 실패",
+    "rateExperience": "경험을 평가해 주세요",
+    "rateDescription": "LockIn을 어떻게 평가하시겠습니까?",
+    "tapToRate": "별을 탭하여 평가하세요",
+    "thankYouRating": "평가해 주셔서 감사합니다!",
+    "tellUsMore": "자세히 알려주세요",
+    "helpUsImprove": "경험 개선에 도움을 주세요",
+    "describeProblem": "무엇을 개선할 수 있을까요?",
+    "sendFeedback": "피드백 보내기",
+    "changeRating": "평가 변경",
+    "feedbackSent": "피드백을 보냈습니다!",
+    "feedbackThanks": "개선에 도움 주셔서 감사합니다",
+    "feedbackError": "피드백 전송 실패"
   },
   "achievements": {
     "title": "업적",

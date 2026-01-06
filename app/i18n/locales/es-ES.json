@@ -14,7 +14,8 @@
     "settings": "Ajustes",
     "back": "Atrás",
     "next": "Siguiente",
-    "done": "Hecho"
+    "done": "Hecho",
+    "or": "o"
   },
   "tabs": {
     "home": "Inicio",
@@ -224,7 +225,26 @@
     "loading": "Cargando perfil...",
     "defaultAppLimit": "Límite de App Predeterminado",
     "defaultAppLimitDesc": "Las nuevas apps usarán este límite de tiempo por defecto",
-    "limitUpdated": "Límite predeterminado actualizado"
+    "limitUpdated": "Límite predeterminado actualizado",
+    "contactDescription": "Envíanos un mensaje y te responderemos pronto",
+    "writeMessage": "Escribe tu mensaje...",
+    "sendMessage": "Enviar mensaje",
+    "emailUs": "Envíanos un correo",
+    "messageSent": "¡Mensaje enviado!",
+    "messageThankYou": "Te responderemos pronto",
+    "messageError": "Error al enviar el mensaje",
+    "rateExperience": "Califica tu experiencia",
+    "rateDescription": "¿Cómo calificarías LockIn?",
+    "tapToRate": "Toca una estrella para calificar",
+    "thankYouRating": "¡Gracias por tu calificación!",
+    "tellUsMore": "Cuéntanos más",
+    "helpUsImprove": "Ayúdanos a mejorar tu experiencia",
+    "describeProblem": "¿Qué podemos mejorar?",
+    "sendFeedback": "Enviar comentarios",
+    "changeRating": "Cambiar calificación",
+    "feedbackSent": "¡Comentarios enviados!",
+    "feedbackThanks": "Gracias por ayudarnos a mejorar",
+    "feedbackError": "Error al enviar comentarios"
   },
   "achievements": {
     "title": "Logros",

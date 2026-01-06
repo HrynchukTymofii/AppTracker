@@ -102,7 +102,8 @@ export const AppSelectionModal = ({
   const otherAppsCount = allInstalledApps.length - popularInstalledApps.length;
 
   const renderAppItem = (app: InstalledApp) => {
-    const localIcon = getLocalIcon(app.packageName, app.appName);
+    // Prioritize real app icon, fallback to local bundled icon
+    const fallbackIcon = getLocalIcon(app.packageName, app.appName);
 
     return (
       <TouchableOpacity
@@ -121,17 +122,7 @@ export const AppSelectionModal = ({
           marginBottom: 6,
         }}
       >
-        {localIcon ? (
-          <Image
-            source={localIcon}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 10,
-              marginRight: 12,
-            }}
-          />
-        ) : app.iconUrl ? (
+        {app.iconUrl ? (
           <Image
             source={{ uri: app.iconUrl }}
             style={{
@@ -142,21 +133,15 @@ export const AppSelectionModal = ({
             }}
           />
         ) : (
-          <View
+          <Image
+            source={fallbackIcon}
             style={{
               width: 40,
               height: 40,
               borderRadius: 10,
-              backgroundColor: isDark ? "#374151" : "#f3f4f6",
-              alignItems: "center",
-              justifyContent: "center",
               marginRight: 12,
             }}
-          >
-            <Text style={{ fontSize: 20 }}>
-              {getAppIcon(app.packageName, app.appName)}
-            </Text>
-          </View>
+          />
         )}
         <Text
           style={{
@@ -191,7 +176,7 @@ export const AppSelectionModal = ({
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,
             padding: 20,
-            paddingBottom: Math.max(20, insets.bottom),
+            paddingBottom: insets.bottom + 24,
             maxHeight: "85%",
             borderTopWidth: 1,
             borderLeftWidth: 1,

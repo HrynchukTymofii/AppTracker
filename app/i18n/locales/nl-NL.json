@@ -14,7 +14,8 @@
     "settings": "Instellingen",
     "back": "Terug",
     "next": "Volgende",
-    "done": "Klaar"
+    "done": "Klaar",
+    "or": "of"
   },
   "tabs": {
     "home": "Home",
@@ -224,7 +225,26 @@
     "loading": "Profiel laden...",
     "defaultAppLimit": "Standaard App-limiet",
     "defaultAppLimitDesc": "Nieuwe apps gebruiken standaard deze tijdslimiet",
-    "limitUpdated": "Standaardlimiet bijgewerkt"
+    "limitUpdated": "Standaardlimiet bijgewerkt",
+    "contactDescription": "Stuur ons een bericht en we nemen snel contact met je op",
+    "writeMessage": "Schrijf je bericht...",
+    "sendMessage": "Bericht verzenden",
+    "emailUs": "E-mail ons",
+    "messageSent": "Bericht verzonden!",
+    "messageThankYou": "We nemen snel contact met je op",
+    "messageError": "Verzenden mislukt",
+    "rateExperience": "Beoordeel je ervaring",
+    "rateDescription": "Hoe zou je LockIn beoordelen?",
+    "tapToRate": "Tik op een ster om te beoordelen",
+    "thankYouRating": "Bedankt voor je beoordeling!",
+    "tellUsMore": "Vertel ons meer",
+    "helpUsImprove": "Help ons je ervaring te verbeteren",
+    "describeProblem": "Wat kunnen we beter doen?",
+    "sendFeedback": "Feedback verzenden",
+    "changeRating": "Beoordeling wijzigen",
+    "feedbackSent": "Feedback verzonden!",
+    "feedbackThanks": "Bedankt dat je ons helpt verbeteren",
+    "feedbackError": "Feedback verzenden mislukt"
   },
   "achievements": {
     "title": "Behaalde Prestaties",

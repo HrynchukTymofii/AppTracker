@@ -28,6 +28,10 @@ interface AppBlockerModule extends NativeModule {
   goToHomeScreen?(): void;
   getPendingBlockedApp?(): Promise<{ packageName: string; appName: string; timestamp: number } | null>;
   clearPendingBlockedApp?(): void;
+  getNavigationFlags?(): Promise<{ navigateToLockin: boolean; showCoachChat: boolean; packageName: string | null; appName: string | null }>;
+  clearNavigationFlags?(): void;
+  setDailyLimits?(limitsJson: string): void;
+  setTotalDailyLimit?(minutes: number): void;
 
   // iOS-specific methods (Family Controls)
   requestAuthorization?(): Promise<boolean>;
@@ -174,6 +178,56 @@ export function clearPendingBlockedApp(): void {
   if (!AppBlocker || Platform.OS === 'ios') return;
   if (AppBlocker.clearPendingBlockedApp) {
     AppBlocker.clearPendingBlockedApp();
+  }
+}
+
+/**
+ * Get navigation flags set by native BlockInterstitialActivity (Android only)
+ * Used to navigate to LockIn tab or show coach chat
+ */
+export async function getNavigationFlags(): Promise<{
+  navigateToLockin: boolean;
+  showCoachChat: boolean;
+  packageName: string | null;
+  appName: string | null;
+} | null> {
+  if (!AppBlocker || Platform.OS === 'ios') return null;
+  if (AppBlocker.getNavigationFlags) {
+    return await AppBlocker.getNavigationFlags();
+  }
+  return null;
+}
+
+/**
+ * Clear navigation flags (Android only)
+ */
+export function clearNavigationFlags(): void {
+  if (!AppBlocker || Platform.OS === 'ios') return;
+  if (AppBlocker.clearNavigationFlags) {
+    AppBlocker.clearNavigationFlags();
+  }
+}
+
+/**
+ * Set daily limits for apps (Android only)
+ * Native reads this to determine if limit reached
+ * @param limits - Map of packageName -> limitMinutes
+ */
+export function setDailyLimits(limits: Record<string, number>): void {
+  if (!AppBlocker || Platform.OS === 'ios') return;
+  if (AppBlocker.setDailyLimits) {
+    AppBlocker.setDailyLimits(JSON.stringify(limits));
+  }
+}
+
+/**
+ * Set total daily limit (Android only)
+ * @param minutes - Total daily screen time limit in minutes
+ */
+export function setTotalDailyLimit(minutes: number): void {
+  if (!AppBlocker || Platform.OS === 'ios') return;
+  if (AppBlocker.setTotalDailyLimit) {
+    AppBlocker.setTotalDailyLimit(minutes);
   }
 }
 
@@ -393,6 +447,10 @@ export default {
   goToHomeScreen,
   getPendingBlockedApp,
   clearPendingBlockedApp,
+  getNavigationFlags,
+  clearNavigationFlags,
+  setDailyLimits,
+  setTotalDailyLimit,
 
   // Platform-aware
   setTempUnblock,

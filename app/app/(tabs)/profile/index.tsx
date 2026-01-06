@@ -3,10 +3,8 @@ import {
   View,
   Text,
   ScrollView,
-  Image,
   TouchableOpacity,
   Platform,
-  Linking,
   PanResponder,
   Animated,
   LayoutChangeEvent,
@@ -26,7 +24,6 @@ import {
   Timer,
   ShieldCheck,
   ChevronRight,
-  User,
   Sparkles,
   Flame,
   Target,
@@ -40,6 +37,7 @@ import * as SecureStore from "expo-secure-store";
 import * as StoreReview from "expo-store-review";
 import GraduationCap3DLoader from "@/components/ui/GraduationCapLoader";
 import { ContactDialog } from "@/components/modals/ContactDialog";
+import { RatingDrawer } from "@/components/modals/RatingDrawer";
 import { DefaultBlockedItemsModal } from "@/components/modals/DefaultBlockedItemsModal";
 import { getDefaultBlockedApps, getDefaultBlockedWebsites, getDefaultAppLimitMinutes, setDefaultAppLimitMinutes } from "@/lib/appBlocking";
 import { getAchievementStats } from "@/lib/achievementTracking";
@@ -65,7 +63,7 @@ interface SmoothSliderProps {
   maxValue: number;
   onValueChange: (value: number) => void;
   onSlidingComplete?: (value: number) => void;
-  gradientColors: string[];
+  gradientColors: readonly [string, string, ...string[]];
   isDark: boolean;
   minLabel: string;
   maxLabel: string;
@@ -231,6 +229,7 @@ export default function ProfileScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [contactOpen, setContactOpen] = useState(false);
+  const [ratingDrawerOpen, setRatingDrawerOpen] = useState(false);
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -373,33 +372,8 @@ export default function ProfileScreen() {
     });
   };
 
-  const handleRateUs = async () => {
-    try {
-      const isAvailable = await StoreReview.isAvailableAsync();
-
-      if (isAvailable) {
-        await StoreReview.requestReview();
-        return;
-      }
-
-      if (Platform.OS === "ios") {
-        const appStoreLink = "itms-apps://itunes.apple.com/app/6751187640";
-        const webLink = "https://apps.apple.com/app/id6751187640";
-        Linking.openURL(appStoreLink).catch(() => Linking.openURL(webLink));
-      } else if (Platform.OS === "android") {
-        const playStoreLink = "market://details?id=com.hrynchuk.pdrtests";
-        const webLink = "https://play.google.com/store/apps/details?id=com.hrynchuk.satprepapp";
-        Linking.openURL(playStoreLink).catch(() => Linking.openURL(webLink));
-      }
-    } catch (error) {
-      console.error("Rate app error:", error);
-      Toast.show({
-        type: "error",
-        text1: "Failed to open app rating",
-        position: "top",
-        visibilityTime: 1000,
-      });
-    }
+  const handleRateUs = () => {
+    setRatingDrawerOpen(true);
   };
 
   if (loading) {
@@ -513,7 +487,9 @@ export default function ProfileScreen() {
             marginTop: 16,
             marginBottom: 28,
             borderRadius: 24,
-            padding: 28,
+            paddingTop: 28,
+            paddingHorizontal: 28,
+            paddingBottom: 16,
             alignItems: "center",
             overflow: "hidden",
             backgroundColor: isDark ? "#0a0a0a" : "#ffffff",
@@ -542,56 +518,7 @@ export default function ProfileScreen() {
             }}
           />
 
-          {/* Avatar */}
-          <View
-            style={{
-              width: 96,
-              height: 96,
-              borderRadius: 32,
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: 20,
-              overflow: "hidden",
-              shadowColor: "#3b82f6",
-              shadowOffset: { width: 0, height: 12 },
-              shadowOpacity: 0.25,
-              shadowRadius: 24,
-              elevation: 8,
-            }}
-          >
-            <LinearGradient
-              colors={["#3b82f6", "#1d4ed8"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-              }}
-            />
-            {user.image ? (
-              <Image
-                source={{ uri: user.image }}
-                style={{
-                  width: 96,
-                  height: 96,
-                  borderRadius: 32,
-                }}
-              />
-            ) : answers["avatar"] ? (
-              <Text style={{ fontSize: 44 }}>{answers["avatar"]}</Text>
-            ) : (
-              <Text
-                style={{ color: "#ffffff", fontSize: 36, fontWeight: "700" }}
-              >
-                {initials}
-              </Text>
-            )}
-          </View>
-
-          {/* Name */}
+            {/* Name */}
           <Text
             style={{
               fontSize: 26,
@@ -621,18 +548,18 @@ export default function ProfileScreen() {
           <View
             style={{
               flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 20,
-              marginBottom: 20,
-              paddingHorizontal: 16,
+              alignItems: "stretch",
+              justifyContent: "space-between",
+              gap: 12,
+              marginBottom: 12,
+              width: "100%",
             }}
           >
             {/* Streak */}
             <View
               style={{
+                flex: 1,
                 alignItems: "center",
-                paddingHorizontal: 16,
                 paddingVertical: 12,
                 borderRadius: 16,
                 backgroundColor: isDark ? "rgba(251, 146, 60, 0.1)" : "rgba(251, 146, 60, 0.08)",
@@ -666,49 +593,11 @@ export default function ProfileScreen() {
               </Text>
             </View>
 
-            {/* Focus Sessions */}
-            <View
-              style={{
-                alignItems: "center",
-                paddingHorizontal: 16,
-                paddingVertical: 12,
-                borderRadius: 16,
-                backgroundColor: isDark ? "rgba(59, 130, 246, 0.1)" : "rgba(59, 130, 246, 0.08)",
-                borderWidth: 0.5,
-                borderColor: isDark ? "rgba(59, 130, 246, 0.2)" : "rgba(59, 130, 246, 0.15)",
-              }}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
-                <Zap size={18} color="#3b82f6" />
-                <Text
-                  style={{
-                    fontSize: 22,
-                    fontWeight: "800",
-                    color: "#3b82f6",
-                    marginLeft: 6,
-                  }}
-                >
-                  {achievementStats.focusSessionsCount}
-                </Text>
-              </View>
-              <Text
-                style={{
-                  fontSize: 11,
-                  fontWeight: "600",
-                  color: isDark ? "rgba(255,255,255,0.4)" : "#94a3b8",
-                  textTransform: "uppercase",
-                  letterSpacing: 0.5,
-                }}
-              >
-                {t('profile.sessions') || 'Sessions'}
-              </Text>
-            </View>
-
             {/* Tasks */}
             <View
               style={{
+                flex: 1,
                 alignItems: "center",
-                paddingHorizontal: 16,
                 paddingVertical: 12,
                 borderRadius: 16,
                 backgroundColor: isDark ? "rgba(16, 185, 129, 0.1)" : "rgba(16, 185, 129, 0.08)",
@@ -1347,6 +1236,12 @@ export default function ProfileScreen() {
           setDefaultAppsCount(apps.length);
           setDefaultWebsitesCount(websites.length);
         }}
+        isDark={isDark}
+      />
+
+      <RatingDrawer
+        isOpen={ratingDrawerOpen}
+        onClose={() => setRatingDrawerOpen(false)}
         isDark={isDark}
       />
       </SafeAreaView>
