@@ -171,7 +171,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="blocking/index"
         options={{
-          title: "Goals",
+          title: t('tabs.goals'),
           tabBarIcon: ({ color, focused }) => (
             <TabIcon Icon={Target} color={color} focused={focused} isDark={isDark} accentColor={accentColor} />
           ),

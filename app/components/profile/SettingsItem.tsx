@@ -26,19 +26,14 @@ export const SettingsItem = ({
       onPress={onPress}
       activeOpacity={0.7}
       style={{
-        backgroundColor: bgColor || (isDark ? "rgba(255, 255, 255, 0.08)" : "#ffffff"),
-        borderRadius: 16,
-        padding: 16,
+        backgroundColor: bgColor || (isDark ? "rgba(255, 255, 255, 0.03)" : "rgba(255, 255, 255, 0.7)"),
+        borderRadius: 18,
+        padding: 18,
         marginBottom: 10,
         flexDirection: "row",
         alignItems: "center",
-        borderWidth: 1,
-        borderColor: isDark ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.08)",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: isDark ? 0 : 0.04,
-        shadowRadius: 8,
-        elevation: 2,
+        borderWidth: 0.5,
+        borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
       }}
     >
       <View

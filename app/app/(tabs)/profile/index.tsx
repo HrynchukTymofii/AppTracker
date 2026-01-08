@@ -266,36 +266,36 @@ export default function ProfileScreen() {
   // Daily goal state
   const [dailyGoal, setDailyGoal] = useState(60);
 
-  useFocusEffect(
-    useCallback(() => {
-      if (!token) {
-        router.push({ pathname: "/login", params: { returnUrl: "/profile" } });
-        return;
-      }
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     if (!token) {
+  //       router.push({ pathname: "/login", params: { returnUrl: "/profile" } });
+  //       return;
+  //     }
 
-      const load = async () => {
-        try {
-          setLoading(true);
-          const res = await getUserData(token);
-          if (res.success) {
-            const mappedUser: UserType = {
-              ...res.user,
-              categories: res.user.league,
-            };
-            setUser(mappedUser);
-          } else {
-            setError(res.error || "Error loading data");
-          }
-        } catch {
-          setError("An unexpected error occurred");
-        } finally {
-          setLoading(false);
-        }
-      };
+  //     const load = async () => {
+  //       try {
+  //         setLoading(true);
+  //         const res = await getUserData(token);
+  //         if (res.success) {
+  //           const mappedUser: UserType = {
+  //             ...res.user,
+  //             categories: res.user.league,
+  //           };
+  //           setUser(mappedUser);
+  //         } else {
+  //           setError(res.error || "Error loading data");
+  //         }
+  //       } catch {
+  //         setError("An unexpected error occurred");
+  //       } finally {
+  //         setLoading(false);
+  //       }
+  //     };
 
-      load();
-    }, [token])
-  );
+  //     load();
+  //   }, [token])
+  // );
 
   useFocusEffect(
     useCallback(() => {
@@ -492,14 +492,9 @@ export default function ProfileScreen() {
             paddingBottom: 16,
             alignItems: "center",
             overflow: "hidden",
-            backgroundColor: isDark ? "#0a0a0a" : "#ffffff",
+            backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "rgba(255, 255, 255, 0.7)",
             borderWidth: 0.5,
             borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: isDark ? 0.2 : 0.06,
-            shadowRadius: 24,
-            elevation: 3,
           }}
         >
           <LinearGradient
@@ -739,16 +734,11 @@ export default function ProfileScreen() {
 
             <View
               style={{
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "rgba(255, 255, 255, 0.7)",
                 borderRadius: 20,
                 padding: 18,
                 borderWidth: 0.5,
                 borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: isDark ? 0 : 0.03,
-                shadowRadius: 12,
-                elevation: 2,
               }}
             >
               <View
@@ -810,23 +800,18 @@ export default function ProfileScreen() {
                     letterSpacing: -0.3,
                   }}
                 >
-                  Daily Goal
+                  {t('profile.dailyGoal')}
                 </Text>
               </View>
             </View>
 
             <View
               style={{
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "rgba(255, 255, 255, 0.7)",
                 borderRadius: 18,
                 padding: 18,
                 borderWidth: 0.5,
                 borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: isDark ? 0 : 0.03,
-                shadowRadius: 12,
-                elevation: 2,
               }}
             >
               <Text
@@ -836,7 +821,7 @@ export default function ProfileScreen() {
                   marginBottom: 18,
                 }}
               >
-                How much screen time do you want to earn per day?
+                {t('profile.dailyGoalQuestion')}
               </Text>
 
               {/* Current Value Display */}
@@ -872,15 +857,15 @@ export default function ProfileScreen() {
                   await SecureStore.setItemAsync("dailyGoal", val.toString());
                   Toast.show({
                     type: "success",
-                    text1: "Daily goal updated",
+                    text1: t('profile.dailyGoalUpdated'),
                     position: "top",
                     visibilityTime: 1500,
                   });
                 }}
                 gradientColors={['#10b981', '#059669']}
                 isDark={isDark}
-                minLabel="15 min"
-                maxLabel="3 hours"
+                minLabel={t('profile.minLabel')}
+                maxLabel={t('profile.maxLabel')}
               />
             </View>
           </View>
@@ -936,18 +921,13 @@ export default function ProfileScreen() {
               onPress={() => setShowBlockedItemsModal(true)}
               activeOpacity={0.7}
               style={{
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "rgba(255, 255, 255, 0.7)",
                 borderRadius: 18,
                 padding: 18,
                 flexDirection: "row",
                 alignItems: "center",
                 borderWidth: 0.5,
                 borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: isDark ? 0 : 0.03,
-                shadowRadius: 12,
-                elevation: 2,
               }}
             >
               <View
@@ -1053,16 +1033,11 @@ export default function ProfileScreen() {
 
             <View
               style={{
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "rgba(255, 255, 255, 0.7)",
                 borderRadius: 18,
                 padding: 18,
                 borderWidth: 0.5,
                 borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: isDark ? 0 : 0.03,
-                shadowRadius: 12,
-                elevation: 2,
               }}
             >
               <Text

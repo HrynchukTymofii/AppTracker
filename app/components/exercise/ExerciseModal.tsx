@@ -6,6 +6,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { BlurView } from "expo-blur";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
+import { useTranslation } from "react-i18next";
 import { useTheme } from "@/context/ThemeContext";
 import { useEarnedTime } from "@/context/EarnedTimeContext";
 import { useLockIn } from "@/context/LockInContext";
@@ -58,6 +59,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
   const { accentColor } = useTheme();
   const { earnTime, wallet } = useEarnedTime();
   const { addExerciseActivity } = useLockIn();
+  const { t } = useTranslation();
 
   const [step, setStep] = useState<ModalStep>('select');
   const [selectedExercise, setSelectedExercise] = useState<ExerciseType>('pushups');
@@ -231,7 +233,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
               marginLeft: 8,
             }}
           >
-            Current Balance
+            {t("lockin.currentBalance")}
           </Text>
         </View>
         <Text
@@ -241,7 +243,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
             color: "#3b82f6",
           }}
         >
-          {wallet.availableMinutes.toFixed(1)} min
+          {wallet.availableMinutes.toFixed(1)} {t("lockin.min")}
         </Text>
       </View>
 
@@ -256,7 +258,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
           letterSpacing: 1,
         }}
       >
-        Choose an Exercise
+        {t("lockin.chooseExercise")}
       </Text>
 
       {EXERCISES.map((type) => {
@@ -385,8 +387,8 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
             lineHeight: 20,
           }}
         >
-          <Text style={{ color: "#10b981", fontWeight: "600" }}>Earn screen time </Text>
-          by completing exercises. The more you do, the more time you earn!
+          <Text style={{ color: "#10b981", fontWeight: "600" }}>{t("lockin.earnScreenTimeInfo")} </Text>
+          {t("lockin.earnScreenTimeDesc")}
         </Text>
       </View>
     </ScrollView>
@@ -433,7 +435,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
           letterSpacing: 1,
         }}
       >
-        Instructions
+        {t("lockin.instructions")}
       </Text>
 
       {exerciseInfo.instructions.map((instruction, index) => (
@@ -497,7 +499,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
               marginLeft: 8,
             }}
           >
-            Rewards
+            {t("lockin.rewards")}
           </Text>
         </View>
         <Text
@@ -508,8 +510,8 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
           }}
         >
           {selectedExercise === 'plank'
-            ? `Earn ${rewards.minutesPerSecond} min per second. Minimum ${rewards.minimumSeconds}s to earn. 1.5x bonus for holding ${(rewards.minimumSeconds || 20) * 2}s+!`
-            : `Earn ${rewards.minutesPerRep} min per rep. Minimum ${rewards.minimumReps} reps to earn. 1.2x bonus for ${(rewards.minimumReps || 5) * 2}+ reps!`}
+            ? t("lockin.rewardPlankDesc", { rate: rewards.minutesPerSecond, min: rewards.minimumSeconds, bonus: "1.5x", bonusTime: (rewards.minimumSeconds || 20) * 2 })
+            : t("lockin.rewardRepsDesc", { rate: rewards.minutesPerRep, min: rewards.minimumReps, bonus: "1.2x", bonusReps: (rewards.minimumReps || 5) * 2 })}
         </Text>
       </View>
     </ScrollView>
@@ -562,7 +564,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
           textAlign: "center",
         }}
       >
-        {earnedMinutes > 0 ? "Great Work!" : "Try Again"}
+        {earnedMinutes > 0 ? t("lockin.greatWork") : t("lockin.tryAgain")}
       </Text>
 
       <Text
@@ -574,8 +576,8 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
         }}
       >
         {exerciseState.type === 'plank'
-          ? `You held for ${Math.floor(exerciseState.holdTime)} seconds`
-          : `You completed ${exerciseState.repCount} ${exerciseState.type}`}
+          ? t("lockin.holdDescription", { seconds: Math.floor(exerciseState.holdTime) })
+          : t("lockin.repsDescription", { count: exerciseState.repCount, exercise: exerciseState.type })}
       </Text>
 
       {earnedMinutes > 0 ? (
@@ -600,7 +602,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
               letterSpacing: 1,
             }}
           >
-            Time Earned
+            {t("lockin.timeEarned")}
           </Text>
           <Text
             style={{
@@ -619,7 +621,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
               fontWeight: "600",
             }}
           >
-            minutes
+            {t("lockin.minutes")}
           </Text>
         </View>
       ) : (
@@ -642,8 +644,8 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
             }}
           >
             {exerciseState.type === 'plank'
-              ? `You need to hold for at least ${DEFAULT_EXERCISE_REWARDS.plank.minimumSeconds}s to earn time.`
-              : `You need at least ${DEFAULT_EXERCISE_REWARDS[exerciseState.type].minimumReps} reps to earn time.`}
+              ? t("lockin.minimumPlankRequired", { seconds: DEFAULT_EXERCISE_REWARDS.plank.minimumSeconds })
+              : t("lockin.minimumRepsRequired", { count: DEFAULT_EXERCISE_REWARDS[exerciseState.type].minimumReps })}
           </Text>
         </View>
       )}
@@ -680,7 +682,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                 marginLeft: 10,
               }}
             >
-              Start Exercise
+              {t("lockin.startExercise")}
             </Text>
           </TouchableOpacity>
         );
@@ -713,7 +715,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                 marginLeft: 10,
               }}
             >
-              Start
+              {t("lockin.start")}
             </Text>
           </TouchableOpacity>
         );
@@ -741,7 +743,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                 marginLeft: 10,
               }}
             >
-              {earnedMinutes > 0 ? `Finish (+${earnedMinutes.toFixed(1)} min)` : "Finish Exercise"}
+              {earnedMinutes > 0 ? t("lockin.finishWithEarnings", { minutes: earnedMinutes.toFixed(1) }) : t("lockin.finishExercise")}
             </Text>
           </TouchableOpacity>
         );
@@ -769,7 +771,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                 marginLeft: 10,
               }}
             >
-              Done
+              {t("common.done")}
             </Text>
           </TouchableOpacity>
         );
@@ -846,7 +848,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                     color: isDark ? "#ffffff" : "#111827",
                   }}
                 >
-                  {step === 'select' ? 'Earn Time' : exerciseInfo.name}
+                  {step === 'select' ? t("lockin.earnTime") : exerciseInfo.name}
                 </Text>
                 <Text
                   style={{
@@ -856,14 +858,14 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                   }}
                 >
                   {step === 'select'
-                    ? 'Choose an exercise'
+                    ? t("lockin.selectStep")
                     : step === 'ready'
-                    ? 'Position camera, then tap Start'
+                    ? t("lockin.readyStep")
                     : step === 'exercise'
-                    ? 'Keep going!'
+                    ? t("lockin.exerciseStep")
                     : step === 'complete'
-                    ? 'Exercise complete'
-                    : 'Read the instructions'}
+                    ? t("lockin.completeStep")
+                    : t("lockin.instructionsStep")}
                 </Text>
               </View>
             </View>
@@ -955,7 +957,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                             textAlign: 'center',
                           }}
                         >
-                          Position your camera
+                          {t("lockin.positionCamera")}
                         </Text>
                         <Text
                           style={{
@@ -965,7 +967,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                             textAlign: 'center',
                           }}
                         >
-                          Make sure your full body is visible
+                          {t("lockin.fullBodyVisible")}
                         </Text>
                       </View>
                     </BlurView>
@@ -1042,7 +1044,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                           textAlign: 'center',
                         }}
                       >
-                        {earnedMinutes > 0 ? 'Great Work!' : 'Try Again'}
+                        {earnedMinutes > 0 ? t("lockin.greatWork") : t("lockin.tryAgain")}
                       </Text>
 
                       <Text
@@ -1054,8 +1056,8 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                         }}
                       >
                         {exerciseState.type === 'plank'
-                          ? `You held for ${Math.floor(exerciseState.holdTime)} seconds`
-                          : `You completed ${exerciseState.repCount} ${exerciseState.type}`}
+                          ? t("lockin.holdDescription", { seconds: Math.floor(exerciseState.holdTime) })
+                          : t("lockin.repsDescription", { count: exerciseState.repCount, exercise: exerciseState.type })}
                       </Text>
 
                       {/* Earned Time */}
@@ -1081,7 +1083,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                               letterSpacing: 1,
                             }}
                           >
-                            Time Earned
+                            {t("lockin.timeEarned")}
                           </Text>
                           <Text
                             style={{
@@ -1100,7 +1102,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                               fontWeight: '600',
                             }}
                           >
-                            minutes
+                            {t("lockin.minutes")}
                           </Text>
                         </View>
                       ) : (
@@ -1114,8 +1116,8 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                           }}
                         >
                           {exerciseState.type === 'plank'
-                            ? `Hold for at least ${DEFAULT_EXERCISE_REWARDS.plank.minimumSeconds}s to earn time`
-                            : `Do at least ${DEFAULT_EXERCISE_REWARDS[exerciseState.type].minimumReps} reps to earn time`}
+                            ? t("lockin.holdAtLeast", { seconds: DEFAULT_EXERCISE_REWARDS.plank.minimumSeconds })
+                            : t("lockin.doAtLeast", { count: DEFAULT_EXERCISE_REWARDS[exerciseState.type].minimumReps })}
                         </Text>
                       )}
                       </View>
@@ -1231,7 +1233,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                     color: isDark ? 'rgba(255,255,255,0.7)' : '#374151',
                   }}
                 >
-                  Watch Demo Video
+                  {t("lockin.watchDemoVideo")}
                 </Text>
                 <Text
                   style={{
@@ -1240,7 +1242,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                     color: isDark ? 'rgba(255,255,255,0.4)' : '#9ca3af',
                   }}
                 >
-                  Coming soon
+                  {t("lockin.comingSoon")}
                 </Text>
               </TouchableOpacity>
 
@@ -1255,7 +1257,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                   letterSpacing: 1,
                 }}
               >
-                How to do it
+                {t("lockin.howToDoIt")}
               </Text>
 
               {exerciseInfo.instructions.map((instruction, index) => (
@@ -1314,7 +1316,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                       marginLeft: 6,
                     }}
                   >
-                    Rewards
+                    {t("lockin.rewards")}
                   </Text>
                 </View>
                 <Text
@@ -1325,8 +1327,8 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                   }}
                 >
                   {selectedExercise === 'plank'
-                    ? `${rewards.minutesPerSecond} min per second. Min ${rewards.minimumSeconds}s to earn. 1.1x bonus at 30s!`
-                    : `${rewards.minutesPerRep} min per rep. Min ${rewards.minimumReps} reps to earn. 1.1x bonus at 20 reps!`}
+                    ? t("lockin.infoRewardPlank", { rate: rewards.minutesPerSecond, min: rewards.minimumSeconds, bonus: "1.1x", bonusTime: 30 })
+                    : t("lockin.infoRewardReps", { rate: rewards.minutesPerRep, min: rewards.minimumReps, bonus: "1.1x", bonusReps: 20 })}
                 </Text>
               </View>
 
@@ -1342,7 +1344,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                 }}
               >
                 <Text style={{ color: "#fff", fontSize: 16, fontWeight: "700" }}>
-                  Got it
+                  {t("lockin.gotIt")}
                 </Text>
               </TouchableOpacity>
             </ScrollView>
@@ -1401,7 +1403,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                 marginBottom: 12,
               }}
             >
-              Earn Screen Time
+              {t("lockin.earnScreenTimeModal")}
             </Text>
 
             {/* Description */}
@@ -1414,15 +1416,15 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                 marginBottom: 24,
               }}
             >
-              Complete exercises to earn minutes you can spend on your favorite apps. The more you exercise, the more time you earn!
+              {t("lockin.firstRunDescription")}
             </Text>
 
             {/* Features */}
             <View style={{ width: "100%", marginBottom: 24 }}>
               {[
-                { icon: "💪", text: "Push-ups, squats & planks" },
-                { icon: "📷", text: "AI tracks your form" },
-                { icon: "⏱️", text: "Earn 0.5-1 min per rep" },
+                { icon: "💪", text: t("lockin.featureBodyweight") },
+                { icon: "📷", text: t("lockin.featureAI") },
+                { icon: "⏱️", text: t("lockin.featureEarnings") },
               ].map((feature, index) => (
                 <View
                   key={index}
@@ -1480,7 +1482,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                 }}
               >
                 <Text style={{ color: "#fff", fontSize: 17, fontWeight: "700" }}>
-                  Let's Get Started!
+                  {t("lockin.letsGetStarted")}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>

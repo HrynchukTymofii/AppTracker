@@ -1,0 +1,17 @@
+/* Shield Configuration Localization - Japanese */
+
+/* Fallback names */
+"shield.fallback.app" = "このアプリ";
+"shield.fallback.website" = "このウェブサイト";
+
+/* App blocked shield */
+"shield.app.title" = "%@はブロックされています";
+"shield.app.subtitle" = "集中しましょう！このアプリは現在LockInによってブロックされています。";
+
+/* Website blocked shield */
+"shield.website.title" = "%@はブロックされています";
+"shield.website.subtitle" = "集中しましょう！このウェブサイトは現在LockInによってブロックされています。";
+
+/* Buttons */
+"shield.button.unlock" = "5分間ブロック解除";
+"shield.button.close" = "閉じる";

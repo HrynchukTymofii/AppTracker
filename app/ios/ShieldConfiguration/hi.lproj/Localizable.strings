@@ -1,0 +1,17 @@
+/* Shield Configuration Localization - Hindi */
+
+/* Fallback names */
+"shield.fallback.app" = "यह ऐप";
+"shield.fallback.website" = "यह वेबसाइट";
+
+/* App blocked shield */
+"shield.app.title" = "%@ ब्लॉक है";
+"shield.app.subtitle" = "ध्यान केंद्रित रखें! यह ऐप वर्तमान में LockIn द्वारा ब्लॉक है।";
+
+/* Website blocked shield */
+"shield.website.title" = "%@ ब्लॉक है";
+"shield.website.subtitle" = "ध्यान केंद्रित रखें! यह वेबसाइट वर्तमान में LockIn द्वारा ब्लॉक है।";
+
+/* Buttons */
+"shield.button.unlock" = "5 मिनट के लिए अनब्लॉक करें";
+"shield.button.close" = "बंद करें";

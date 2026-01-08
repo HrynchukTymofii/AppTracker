@@ -1,0 +1,17 @@
+/* Shield Configuration Localization - Arabic */
+
+/* Fallback names */
+"shield.fallback.app" = "هذا التطبيق";
+"shield.fallback.website" = "هذا الموقع";
+
+/* App blocked shield */
+"shield.app.title" = "%@ محظور";
+"shield.app.subtitle" = "ابقَ مركزًا! هذا التطبيق محظور حاليًا بواسطة LockIn.";
+
+/* Website blocked shield */
+"shield.website.title" = "%@ محظور";
+"shield.website.subtitle" = "ابقَ مركزًا! هذا الموقع محظور حاليًا بواسطة LockIn.";
+
+/* Buttons */
+"shield.button.unlock" = "إلغاء الحظر لمدة 5 دقائق";
+"shield.button.close" = "إغلاق";

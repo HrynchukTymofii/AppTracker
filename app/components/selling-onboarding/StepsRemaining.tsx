@@ -9,6 +9,7 @@ import {
   AppState,
   Dimensions,
   Platform,
+  Animated,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -104,7 +105,17 @@ export const Step9OverlayPermission = ({
     if (Platform.OS === 'ios') return;
     const subscription = AppState.addEventListener('change', async (state) => {
       if (state === 'active' && isChecking) {
-        const granted = await hasOverlayPermission();
+        // Add delay and retry logic - Android needs time to propagate permission changes
+        const checkWithRetry = async (retries: number, delay: number): Promise<boolean> => {
+          for (let i = 0; i < retries; i++) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+            const granted = await hasOverlayPermission();
+            if (granted) return true;
+          }
+          return false;
+        };
+
+        const granted = await checkWithRetry(5, 500); // Check 5 times with 500ms delay
         setHasPermission(granted);
         setIsChecking(false);
       }
@@ -305,7 +316,17 @@ export const Step10AccessibilityPermission = ({
     if (Platform.OS === 'ios') return;
     const subscription = AppState.addEventListener('change', async (state) => {
       if (state === 'active' && isChecking) {
-        const granted = await isAccessibilityServiceEnabled();
+        // Add delay and retry logic - Android needs time to propagate permission changes
+        const checkWithRetry = async (retries: number, delay: number): Promise<boolean> => {
+          for (let i = 0; i < retries; i++) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+            const granted = await isAccessibilityServiceEnabled();
+            if (granted) return true;
+          }
+          return false;
+        };
+
+        const granted = await checkWithRetry(5, 500); // Check 5 times with 500ms delay
         setHasPermission(granted);
         setIsChecking(false);
         if (granted) {
@@ -760,8 +781,254 @@ export const Step11UsageData = ({
 };
 
 // ============================================
-// SCREEN 12: Improvement Projection
+// SCREEN 12: Improvement Projection - Premium Apple-like Design
 // ============================================
+
+// Diverging Curves Chart - smooth waves that cross twice
+const DivergingCurvesChart = ({
+  isDark,
+  colors,
+}: {
+  isDark: boolean;
+  colors: any;
+}) => {
+  const animProgress = React.useRef(new Animated.Value(0)).current;
+  const chartWidth = Dimensions.get('window').width - 48;
+  const chartHeight = 260;
+
+  React.useEffect(() => {
+    Animated.timing(animProgress, {
+      toValue: 1,
+      duration: 2000,
+      useNativeDriver: false,
+    }).start();
+  }, []);
+
+  const endX = chartWidth - 20;
+  const startY = chartHeight * 0.5;
+  const withLockInEndY = chartHeight * 0.12;
+  const withoutEndY = chartHeight * 0.88;
+  const amp = 30;
+  const segments = 50;
+
+  // White: symmetrical to red but with smaller amplitude in first half
+  const withLockInPoints: { x: number; y: number }[] = [];
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments;
+    const x = t * endX;
+    // Amplitude: small in first half, normal in second half
+    const ampMod = t < 0.5 ? 0.3 + t * 0.4 : 0.5 + (t - 0.5) * 1;
+    const wave = -Math.sin(t * Math.PI * 2.5) * amp * ampMod * (1 - t * 0.5);
+    const trend = startY - (startY - withLockInEndY) * Math.pow(t, 0.9);
+    withLockInPoints.push({ x, y: trend + wave });
+  }
+
+  // Red: DOWN first → up → cross → down → cross → DOWN (ends low)
+  // In screen coords: DOWN = positive Y, so we need +sin to go DOWN first
+  const withoutPoints: { x: number; y: number }[] = [];
+  for (let i = 0; i <= segments; i++) {
+    const t = i / segments;
+    const x = t * endX;
+    const wave = Math.sin(t * Math.PI * 2.5) * amp * (1 - t * 0.6);
+    const trend = startY + (withoutEndY - startY) * Math.pow(t, 0.9);
+    withoutPoints.push({ x, y: trend + wave });
+  }
+
+  const animatedClipWidth = animProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, chartWidth],
+  });
+
+  const lastWithPoint = withLockInPoints[withLockInPoints.length - 1];
+  const lastWithoutPoint = withoutPoints[withoutPoints.length - 1];
+
+  return (
+    <View style={{ height: chartHeight, width: chartWidth, alignSelf: 'center' }}>
+      {/* Dashed grid lines */}
+      {[0.15, 0.40, 0.65, 0.88].map((ratio, i) => (
+        <View
+          key={`grid-${i}`}
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: chartHeight * ratio,
+            height: 1,
+            flexDirection: 'row',
+          }}
+        >
+          {Array.from({ length: 40 }).map((_, d) => (
+            <View
+              key={d}
+              style={{
+                width: 5,
+                height: 1,
+                backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
+                marginRight: 5,
+              }}
+            />
+          ))}
+        </View>
+      ))}
+
+      {/* Red gradient fill UNDER the red curve */}
+      <Animated.View style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: animatedClipWidth,
+        height: chartHeight,
+        overflow: 'hidden'
+      }}>
+        {withoutPoints.map((point, i) => {
+          if (i === segments) return null;
+          const next = withoutPoints[i + 1];
+          const w = (next.x - point.x) + 1;
+          const h = chartHeight - point.y;
+          return (
+            <LinearGradient
+              key={`fill-${i}`}
+              colors={['rgba(239, 68, 68, 0.4)', 'rgba(239, 68, 68, 0)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={{
+                position: 'absolute',
+                left: point.x,
+                top: point.y,
+                width: w,
+                height: h,
+              }}
+            />
+          );
+        })}
+      </Animated.View>
+
+      {/* Curves */}
+      <Animated.View style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: animatedClipWidth,
+        height: chartHeight,
+        overflow: 'hidden'
+      }}>
+        {/* White line */}
+        {withLockInPoints.map((point, i) => {
+          if (i === segments) return null;
+          const next = withLockInPoints[i + 1];
+          const dx = next.x - point.x;
+          const dy = next.y - point.y;
+          const len = Math.sqrt(dx * dx + dy * dy);
+          const ang = Math.atan2(dy, dx) * (180 / Math.PI);
+          return (
+            <View
+              key={`w-${i}`}
+              style={{
+                position: 'absolute',
+                left: point.x,
+                top: point.y - 1.5,
+                width: len + 1,
+                height: 3,
+                backgroundColor: isDark ? '#FFFFFF' : colors.textPrimary,
+                transform: [{ rotate: `${ang}deg` }],
+                transformOrigin: 'left center',
+              }}
+            />
+          );
+        })}
+
+        {/* Red line */}
+        {withoutPoints.map((point, i) => {
+          if (i === segments) return null;
+          const next = withoutPoints[i + 1];
+          const dx = next.x - point.x;
+          const dy = next.y - point.y;
+          const len = Math.sqrt(dx * dx + dy * dy);
+          const ang = Math.atan2(dy, dx) * (180 / Math.PI);
+          return (
+            <View
+              key={`wo-${i}`}
+              style={{
+                position: 'absolute',
+                left: point.x,
+                top: point.y - 1.5,
+                width: len + 1,
+                height: 3,
+                backgroundColor: COLORS.error,
+                transform: [{ rotate: `${ang}deg` }],
+                transformOrigin: 'left center',
+              }}
+            />
+          );
+        })}
+
+        {/* End dots */}
+        <View style={{
+          position: 'absolute',
+          left: lastWithPoint.x - 6,
+          top: lastWithPoint.y - 6,
+          width: 12,
+          height: 12,
+          borderRadius: 6,
+          backgroundColor: isDark ? '#FFFFFF' : colors.textPrimary,
+        }} />
+        <View style={{
+          position: 'absolute',
+          left: lastWithoutPoint.x - 6,
+          top: lastWithoutPoint.y - 6,
+          width: 12,
+          height: 12,
+          borderRadius: 6,
+          backgroundColor: COLORS.error,
+        }} />
+      </Animated.View>
+
+      {/* Labels */}
+      <Text style={{
+        position: 'absolute',
+        left: lastWithPoint.x - 40,
+        top: lastWithPoint.y - 26,
+        fontSize: 11,
+        fontWeight: '600',
+        color: isDark ? '#FFFFFF' : colors.textPrimary,
+      }}>
+        With LockIn
+      </Text>
+      <Text style={{
+        position: 'absolute',
+        left: lastWithoutPoint.x - 50,
+        top: lastWithoutPoint.y + 14,
+        fontSize: 11,
+        fontWeight: '600',
+        color: COLORS.error,
+      }}>
+        Without LockIn
+      </Text>
+
+      {/* Day labels */}
+      <Text style={{
+        position: 'absolute',
+        left: 0,
+        bottom: 0,
+        fontSize: 13,
+        fontWeight: '500',
+        color: colors.textTertiary,
+      }}>
+        Day 1
+      </Text>
+      <Text style={{
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+        fontSize: 13,
+        fontWeight: '500',
+        color: colors.textTertiary,
+      }}>
+        Day 14
+      </Text>
+    </View>
+  );
+};
 
 export const Step12Projection = ({
   userAnswers,
@@ -771,252 +1038,74 @@ export const Step12Projection = ({
   onContinue: () => void;
 }) => {
   const { colors, isDark } = useOnboardingTheme();
-  const [weeklyData, setWeeklyData] = useState<{ day: string; current: number; projected: number }[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   const hours = userAnswers.realDailyHours ?? userAnswers.dailyHours;
-  const reductionPercent = hours < 3.5 ? 30 : 50;
-  const savedHoursDaily = (hours * reductionPercent) / 100;
-  const savedHoursWeekly = Math.round(savedHoursDaily * 7);
-  const savedYears = Math.round((savedHoursDaily * 365 * 50) / (24 * 365));
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const realData = await getDailyUsageForWeekTracking(0);
-        if (realData && realData.length > 0) {
-          // Use real data and calculate projected reduction
-          setWeeklyData(realData.map(d => ({
-            day: d.day,
-            current: d.hours,
-            projected: d.hours * (1 - reductionPercent / 100),
-          })));
-        } else {
-          // Fallback to estimated data
-          const newHours = hours - savedHoursDaily;
-          setWeeklyData([
-            { day: 'Sun', current: hours * 0.9, projected: newHours * 0.9 },
-            { day: 'Mon', current: hours * 1.0, projected: newHours * 1.0 },
-            { day: 'Tue', current: hours * 0.85, projected: newHours * 0.85 },
-            { day: 'Wed', current: hours * 1.1, projected: newHours * 1.1 },
-            { day: 'Thu', current: hours * 1.15, projected: newHours * 1.15 },
-            { day: 'Fri', current: hours * 1.2, projected: newHours * 1.2 },
-            { day: 'Sat', current: hours * 1.0, projected: newHours * 1.0 },
-          ]);
-        }
-      } catch (e) {
-        const newHours = hours - savedHoursDaily;
-        setWeeklyData([
-          { day: 'Sun', current: hours * 0.9, projected: newHours * 0.9 },
-          { day: 'Mon', current: hours * 1.0, projected: newHours * 1.0 },
-          { day: 'Tue', current: hours * 0.85, projected: newHours * 0.85 },
-          { day: 'Wed', current: hours * 1.1, projected: newHours * 1.1 },
-          { day: 'Thu', current: hours * 1.15, projected: newHours * 1.15 },
-          { day: 'Fri', current: hours * 1.2, projected: newHours * 1.2 },
-          { day: 'Sat', current: hours * 1.0, projected: newHours * 1.0 },
-        ]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const maxHours = weeklyData.length > 0 ? Math.max(...weeklyData.map(d => d.current)) : 1;
-  const totalCurrentHours = weeklyData.reduce((sum, d) => sum + d.current, 0);
-  const totalProjectedHours = weeklyData.reduce((sum, d) => sum + d.projected, 0);
-
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}>
-        <AnimatedOrb size={100} level={4} />
-        <Text style={{ fontSize: 18, fontWeight: '600', color: colors.textPrimary, marginTop: 24 }}>
-          Calculating your potential...
-        </Text>
-      </View>
-    );
-  }
+  const savedHoursWeekly = Math.round(hours * 0.5 * 7);
 
   return (
-    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 40, paddingTop: 20 }}>
-      {/* Header with Green Orb */}
+    <View style={{ flex: 1, paddingHorizontal: 24 }}>
+      {/* Header */}
       <FadeInView delay={0}>
-        <View style={{ alignItems: 'center', marginBottom: 20 }}>
-          <AnimatedOrb size={80} level={4} />
-        </View>
         <Text style={{
-          fontSize: 28,
+          fontSize: 32,
           fontWeight: '800',
           color: colors.textPrimary,
-          textAlign: 'center',
-          marginBottom: 8,
-          letterSpacing: -0.5,
-        }}>
-          Your Potential
-        </Text>
-        <Text style={{
-          fontSize: 15,
-          color: colors.textSecondary,
-          textAlign: 'center',
-          marginBottom: 24,
-        }}>
-          See how much time you could save
-        </Text>
-      </FadeInView>
-
-      {/* Reduction Badge */}
-      <FadeInView delay={100}>
-        <View style={{
-          backgroundColor: 'rgba(16, 185, 129, 0.12)',
-          borderRadius: 16,
-          padding: 16,
-          marginBottom: 20,
-          alignItems: 'center',
-          borderWidth: 1,
-          borderColor: 'rgba(16, 185, 129, 0.2)',
-        }}>
-          <Text style={{
-            fontSize: 18,
-            fontWeight: '700',
-            color: COLORS.success,
-            textAlign: 'center',
-          }}>
-            Reduce screen time by {reductionPercent}%
-          </Text>
-        </View>
-      </FadeInView>
-
-      {/* Comparison Chart */}
-      <FadeInView delay={200}>
-        <Text style={{
-          fontSize: 14,
-          fontWeight: '700',
-          color: colors.textSecondary,
           marginBottom: 12,
-          textTransform: 'uppercase',
-          letterSpacing: 0.5,
+          marginTop: 20,
+          lineHeight: 40,
         }}>
-          Weekly Projection
+          LockIn rewires your brain for{'\n'}long-term focus.
         </Text>
-        <View style={{
-          backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : '#ffffff',
-          borderRadius: 16,
-          padding: 20,
-          marginBottom: 20,
-          borderWidth: 0.5,
-          borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
-        }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', height: 120 }}>
-            {weeklyData.map((day, index) => {
-              const currentHeight = Math.max((day.current / maxHours) * 100, 4);
-              const projectedHeight = Math.max((day.projected / maxHours) * 100, 4);
-              return (
-                <View key={index} style={{ alignItems: 'center', flex: 1 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'flex-end', height: 90, gap: 2 }}>
-                    <View style={{
-                      width: 12,
-                      height: currentHeight,
-                      backgroundColor: COLORS.error,
-                      borderRadius: 6,
-                      opacity: 0.5,
-                    }} />
-                    <LinearGradient
-                      colors={GRADIENT_COLORS.success}
-                      style={{
-                        width: 12,
-                        height: projectedHeight,
-                        borderRadius: 6,
-                      }}
-                    />
-                  </View>
-                  <Text style={{
-                    fontSize: 11,
-                    fontWeight: '500',
-                    color: colors.textTertiary,
-                    marginTop: 10,
-                  }}>
-                    {day.day}
-                  </Text>
-                </View>
-              );
-            })}
-          </View>
-
-          {/* Legend */}
-          <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 28, marginTop: 20, paddingTop: 16, borderTopWidth: 0.5, borderTopColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: COLORS.error, opacity: 0.5, marginRight: 8 }} />
-              <Text style={{ fontSize: 13, color: colors.textSecondary }}>Current ({Math.round(totalCurrentHours)}h)</Text>
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <LinearGradient colors={GRADIENT_COLORS.success} style={{ width: 10, height: 10, borderRadius: 5, marginRight: 8 }} />
-              <Text style={{ fontSize: 13, color: colors.textSecondary }}>With LockIn ({Math.round(totalProjectedHours)}h)</Text>
-            </View>
-          </View>
-        </View>
-      </FadeInView>
-
-      {/* Stats Cards */}
-      <FadeInView delay={300}>
-        <View style={{ flexDirection: 'row', gap: 12, marginBottom: 24 }}>
-          <View style={{
-            flex: 1,
-            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-            borderRadius: 16,
-            padding: 20,
-            alignItems: 'center',
-            borderWidth: 0.5,
-            borderColor: 'rgba(16, 185, 129, 0.2)',
-          }}>
-            <Text style={{ fontSize: 36, fontWeight: '800', color: COLORS.success }}>
-              +{savedHoursWeekly}h
-            </Text>
-            <Text style={{ fontSize: 13, color: colors.textSecondary, marginTop: 4 }}>
-              Free time/week
-            </Text>
-          </View>
-          <View style={{
-            flex: 1,
-            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-            borderRadius: 16,
-            padding: 20,
-            alignItems: 'center',
-            borderWidth: 0.5,
-            borderColor: 'rgba(16, 185, 129, 0.2)',
-          }}>
-            <Text style={{ fontSize: 36, fontWeight: '800', color: COLORS.success }}>
-              +{savedYears}y
-            </Text>
-            <Text style={{ fontSize: 13, color: colors.textSecondary, marginTop: 4 }}>
-              Life reclaimed
-            </Text>
-          </View>
-        </View>
-      </FadeInView>
-
-      {/* Motivational Text */}
-      <FadeInView delay={400}>
         <Text style={{
-          fontSize: 16,
+          fontSize: 17,
           color: colors.textSecondary,
-          textAlign: 'center',
-          marginBottom: 28,
-          lineHeight: 24,
+          marginBottom: 40,
         }}>
-          Accomplish your goals faster, be more productive and fulfilled
+          LockIn users regain {savedHoursWeekly}+ hours of focus every week.
         </Text>
       </FadeInView>
+
+      {/* Chart */}
+      <FadeInView delay={200}>
+        <DivergingCurvesChart isDark={isDark} colors={colors} />
+      </FadeInView>
+
+      {/* Spacer */}
+      <View style={{ flex: 1 }} />
 
       {/* Continue Button */}
-      <FadeInView delay={500}>
-        <GradientButton
+      <FadeInView delay={400}>
+        <TouchableOpacity
           onPress={onContinue}
-          title="Continue"
-          colors={GRADIENT_COLORS.success}
-          style={{ marginBottom: 8 }}
-        />
+          activeOpacity={0.8}
+          style={{ marginBottom: 100 }}
+        >
+          <View style={{
+            backgroundColor: isDark ? '#FFFFFF' : '#000000',
+            borderRadius: 16,
+            paddingVertical: 18,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <Text style={{
+              fontSize: 18,
+              fontWeight: '600',
+              color: isDark ? '#000000' : '#FFFFFF',
+              marginRight: 8,
+            }}>
+              Continue
+            </Text>
+            <Text style={{
+              fontSize: 18,
+              color: isDark ? '#000000' : '#FFFFFF',
+            }}>
+              {'>'}
+            </Text>
+          </View>
+        </TouchableOpacity>
       </FadeInView>
-    </ScrollView>
+    </View>
   );
 };
 

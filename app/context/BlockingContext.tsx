@@ -78,7 +78,7 @@ interface BlockingContextType {
   cancelFocus: () => Promise<void>;
 
   // Daily limit actions
-  setAppDailyLimit: (packageName: string, appName: string, minutes: number) => Promise<void>;
+  setAppDailyLimit: (packageName: string, appName: string, minutes: number, iconUrl?: string) => Promise<void>;
   removeAppDailyLimit: (packageName: string) => Promise<void>;
   getDefaultLimit: () => Promise<number>;
   setDefaultLimit: (minutes: number) => Promise<void>;
@@ -280,8 +280,8 @@ export const BlockingProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Daily limit actions
-  const setAppDailyLimit = async (packageName: string, appName: string, minutes: number) => {
-    await setDailyLimit(packageName, appName, minutes);
+  const setAppDailyLimit = async (packageName: string, appName: string, minutes: number, iconUrl?: string) => {
+    await setDailyLimit(packageName, appName, minutes, iconUrl);
     await refreshData();
   };
 

@@ -49,20 +49,20 @@ export default function SettingsScreen() {
   const currentLanguageFlag = currentLanguageData?.flag || '🇺🇸';
 
   const themeOptions: {
-    label: string;
+    labelKey: string;
     value: "light" | "dark" | "system";
     icon: typeof Sun;
   }[] = [
-    { label: "System Default", value: "system", icon: Smartphone },
-    { label: "Light", value: "light", icon: Sun },
-    { label: "Dark", value: "dark", icon: Moon },
+    { labelKey: "settings.themeSystem", value: "system", icon: Smartphone },
+    { labelKey: "settings.themeLight", value: "light", icon: Sun },
+    { labelKey: "settings.themeDark", value: "dark", icon: Moon },
   ];
 
   const handleLogout = () => {
     setToken(null);
     setUser(null);
     router.replace("/");
-    showSuccessToast("Account deleted");
+    showSuccessToast(t("settings.accountDeleted"));
   };
 
   const handleSave = async () => {
@@ -74,7 +74,7 @@ export default function SettingsScreen() {
     if (result.success) {
       if (user) setUser({ ...user });
       router.back();
-      showSuccessToast("Profile updated");
+      showSuccessToast(t("settings.profileUpdated"));
     } else {
       showErrorToast(t("common.error"), result.error);
     }
@@ -162,7 +162,7 @@ export default function SettingsScreen() {
                 letterSpacing: -0.3,
               }}
             >
-              Accent Color
+              {t("settings.accentColor")}
             </Text>
           </View>
 
@@ -274,7 +274,7 @@ export default function SettingsScreen() {
                 letterSpacing: -0.3,
               }}
             >
-              Appearance
+              {t("settings.appearance")}
             </Text>
           </View>
 
@@ -338,7 +338,7 @@ export default function SettingsScreen() {
                     fontWeight: isSelected ? "700" : "500",
                     color: isSelected ? accentColor.primary : (isDark ? "#ffffff" : "#0f172a"),
                   }}>
-                    {option.label}
+                    {t(option.labelKey)}
                   </Text>
                   {isSelected && (
                     <View
@@ -475,7 +475,7 @@ export default function SettingsScreen() {
                 letterSpacing: -0.3,
               }}
             >
-              Change Password
+              {t("settings.changePassword")}
             </Text>
           </View>
 
@@ -495,7 +495,7 @@ export default function SettingsScreen() {
             <TextInput
               value={password}
               onChangeText={setPassword}
-              placeholder="Enter new password"
+              placeholder={t("settings.newPasswordPlaceholder")}
               secureTextEntry
               style={{
                 color: isDark ? "#ffffff" : "#0f172a",
@@ -552,7 +552,7 @@ export default function SettingsScreen() {
             letterSpacing: 0.5,
             textTransform: "uppercase",
           }}>
-            Danger Zone
+            {t("settings.dangerZone")}
           </Text>
           <TouchableOpacity
             onPress={() => setShowDeleteModal(true)}
@@ -580,7 +580,7 @@ export default function SettingsScreen() {
               }}
             />
             <Text style={{ color: "#ef4444", fontWeight: "700", fontSize: 16 }}>
-              {t('common.delete')} Account
+              {t("settings.deleteAccount")}
             </Text>
           </TouchableOpacity>
         </View>
@@ -627,7 +627,7 @@ export default function SettingsScreen() {
                 letterSpacing: -0.3,
               }}
             >
-              Delete Account
+              {t("settings.deleteAccountTitle")}
             </Text>
             <Text style={{
               fontSize: 15,
@@ -635,14 +635,14 @@ export default function SettingsScreen() {
               color: isDark ? "rgba(255,255,255,0.7)" : "#64748b",
               lineHeight: 22,
             }}>
-              This action is irreversible. Type{" "}
-              <Text style={{ fontWeight: "700", color: isDark ? "#ffffff" : "#0f172a" }}>Delete</Text> to confirm:
+              {t("settings.deleteAccountWarning")}{" "}
+              <Text style={{ fontWeight: "700", color: isDark ? "#ffffff" : "#0f172a" }}>{t("settings.deleteAccountConfirm")}</Text> {t("settings.toConfirm")}
             </Text>
 
             <TextInput
               value={confirmText}
               onChangeText={setConfirmText}
-              placeholder="Type Delete"
+              placeholder={t("settings.typeDelete")}
               style={{
                 backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f8fafc",
                 color: isDark ? "#ffffff" : "#0f172a",
@@ -673,14 +673,14 @@ export default function SettingsScreen() {
                 }}
               >
                 <Text style={{ color: isDark ? "#ffffff" : "#0f172a", fontWeight: "600", fontSize: 15 }}>
-                  Cancel
+                  {t("common.cancel")}
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 onPress={async () => {
                   if (confirmText !== "Delete") {
-                    showErrorToast(t("common.error"), "Type 'Delete' to confirm.");
+                    showErrorToast(t("common.error"), t("settings.typeDeleteToConfirm"));
                     return;
                   }
                   if (!token) {
@@ -709,7 +709,7 @@ export default function SettingsScreen() {
                 }}
               >
                 <Text style={{ color: "#ffffff", fontWeight: "700", fontSize: 15 }}>
-                  {isDeleting ? "Deleting..." : "Delete"}
+                  {isDeleting ? t("settings.deleting") : t("settings.deleteAccountConfirm")}
                 </Text>
               </TouchableOpacity>
             </View>

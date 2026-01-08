@@ -32,7 +32,7 @@ import { ConfirmationModal } from "@/components/modals/ConfirmationModal";
 import { TimeLimitModal } from "@/components/modals/TimeLimitModal";
 import * as UsageStats from "@/modules/usage-stats";
 import { ThemedBackground } from "@/components/ui/ThemedBackground";
-import { getWeekUsage, formatDate, getWeekDateRange } from "@/lib/usageDatabase";
+import { getWeekUsage, formatDate, getWeekDateRange, saveDailyUsage } from "@/lib/usageDatabase";
 import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "react-native-svg";
 
 // Import extracted components
@@ -140,6 +140,7 @@ export default function BlockingPage() {
   const [editingLimit, setEditingLimit] = useState<DailyLimit | null>(null);
   const [accessibilityEnabled, setAccessibilityEnabled] = useState(false);
   const [overlayEnabled, setOverlayEnabled] = useState(false);
+  const [usageStatsEnabled, setUsageStatsEnabled] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [scheduleToDelete, setScheduleToDelete] = useState<string | null>(null);
   const [showLimitDeleteConfirm, setShowLimitDeleteConfirm] = useState(false);
@@ -170,7 +171,10 @@ export default function BlockingPage() {
     }
   }, [params.openLimits]);
 
-  // Refresh installed apps cache in background
+  // In-memory cache for installed apps (to avoid repeated native calls)
+  const installedAppsRef = React.useRef<{ packageName: string; appName: string; iconUrl?: string }[] | null>(null);
+
+  // Refresh installed apps cache in background (NO icons in AsyncStorage - they're too large)
   const refreshAppsCache = useCallback(async () => {
     try {
       const cacheTime = await AsyncStorage.getItem(APPS_CACHE_TIME_KEY);
@@ -179,6 +183,13 @@ export default function BlockingPage() {
 
       if (!isCacheFresh) {
         const apps = await UsageStats.getInstalledApps();
+        // Store in memory (with icons) for quick lookup
+        installedAppsRef.current = apps.map((app) => ({
+          packageName: app.packageName,
+          appName: app.appName,
+          iconUrl: app.iconUrl,
+        }));
+        // Only store names in AsyncStorage (no icons - they're too large)
         const cacheData = apps.map((app) => ({
           packageName: app.packageName,
           appName: app.appName,
@@ -191,27 +202,45 @@ export default function BlockingPage() {
     }
   }, []);
 
+  // Look up app icon from memory cache or fetch it fresh
+  const getAppIcon = useCallback(async (packageName: string): Promise<string | undefined> => {
+    try {
+      // Check in-memory cache first
+      if (installedAppsRef.current) {
+        const app = installedAppsRef.current.find(a => a.packageName === packageName);
+        if (app?.iconUrl) return app.iconUrl;
+      }
+      // Fetch from native module
+      const apps = await UsageStats.getInstalledApps();
+      installedAppsRef.current = apps; // Update memory cache
+      const app = apps.find(a => a.packageName === packageName);
+      return app?.iconUrl;
+    } catch (error) {
+      console.error("Error getting app icon:", error);
+      return undefined;
+    }
+  }, []);
+
   // Fetch real usage stats from device
   const fetchUsageStats = useCallback(async () => {
     try {
       // Get blocked app package names
       const blockedPackages = dailyLimits.map(l => l.packageName);
 
-      if (blockedPackages.length === 0) {
-        setTodayUsage(0);
-        setWeeklyUsage([0, 0, 0, 0, 0, 0, 0]);
-        setAppUsageMap({});
-        return;
-      }
-
-      // Get today's usage for blocked apps only
+      // Get today's usage
       const todayStats = await UsageStats.getTodayUsageStats();
+      let todayTotalScreenTime = 0;
+
       if (todayStats.hasPermission && todayStats.apps) {
-        // Build per-app usage map
+        // Build per-app usage map for blocked apps
         const usageMap: Record<string, number> = {};
         let totalBlockedUsage = 0;
 
         todayStats.apps.forEach(app => {
+          // Track total screen time for saving
+          todayTotalScreenTime += app.timeInForeground;
+
+          // Track blocked apps usage for goal tracking
           if (blockedPackages.includes(app.packageName)) {
             const minutes = Math.round(app.timeInForeground / (1000 * 60));
             usageMap[app.packageName] = minutes;
@@ -220,17 +249,37 @@ export default function BlockingPage() {
         });
 
         setAppUsageMap(usageMap);
-        setTodayUsage(Math.round(totalBlockedUsage / (1000 * 60)));
+        setTodayUsage(blockedPackages.length > 0 ? Math.round(totalBlockedUsage / (1000 * 60)) : 0);
+
+        // Save today's data to database for persistence (wrapped in try-catch to not break the flow)
+        try {
+          const todayDate = formatDate(new Date());
+          await saveDailyUsage(
+            todayDate,
+            todayTotalScreenTime,
+            todayStats.pickups || 0,
+            50, // default health score
+            1,  // default orb level
+            todayStats.apps
+          );
+        } catch (dbError) {
+          console.warn('Failed to save daily usage to database:', dbError);
+        }
       }
 
-      // Get weekly usage - fetch last 7 days
+      // Get weekly usage - fetch last 7 days (TOTAL screen time for bar chart)
       const weekData: number[] = [];
       const today = new Date();
 
-      // Also try to get data from local database as fallback
-      const { startDate, endDate } = getWeekDateRange(0);
-      const dbWeekData = await getWeekUsage(startDate, endDate);
-      const dbDataMap = new Map(dbWeekData.map(d => [d.date, d]));
+      // Get data from local database as fallback (wrapped in try-catch for safety)
+      let dbDataMap = new Map<string, any>();
+      try {
+        const { startDate, endDate } = getWeekDateRange(0);
+        const dbWeekData = await getWeekUsage(startDate, endDate);
+        dbDataMap = new Map(dbWeekData.map(d => [d.date, d]));
+      } catch (dbError) {
+        console.warn('Failed to read week usage from database:', dbError);
+      }
 
       for (let i = 6; i >= 0; i--) {
         const dayStart = new Date(today);
@@ -243,12 +292,12 @@ export default function BlockingPage() {
 
         const dayStats = await UsageStats.getUsageStats(dayStart.getTime(), dayEnd.getTime());
         if (dayStats.hasPermission && dayStats.apps) {
-          const blockedDayUsage = dayStats.apps
-            .filter(app => blockedPackages.includes(app.packageName))
+          // Use TOTAL screen time for the weekly bar chart (all apps)
+          const totalDayUsage = dayStats.apps
             .reduce((sum, app) => sum + app.timeInForeground, 0);
 
-          if (blockedDayUsage > 0) {
-            weekData.push(Math.round(blockedDayUsage / (1000 * 60))); // minutes
+          if (totalDayUsage > 0) {
+            weekData.push(Math.round(totalDayUsage / (1000 * 60))); // minutes
           } else {
             // Try database fallback for this day
             const dbDay = dbDataMap.get(dateStr);
@@ -273,6 +322,47 @@ export default function BlockingPage() {
       console.error('Error fetching usage stats:', error);
     }
   }, [dailyLimits]);
+
+  // One-time cleanup: Clear old bloated cache (icons were stored in AsyncStorage causing SQLITE_FULL)
+  useEffect(() => {
+    const cleanupOldCache = async () => {
+      try {
+        // Force clear the old cache to remove bloated icon data
+        await AsyncStorage.removeItem(APPS_CACHE_KEY);
+        await AsyncStorage.removeItem(APPS_CACHE_TIME_KEY);
+      } catch (error) {
+        // Ignore errors - storage might already be corrupted
+      }
+    };
+    cleanupOldCache();
+  }, []);
+
+  // Populate icons for existing daily limits that don't have them
+  useEffect(() => {
+    const populateMissingIcons = async () => {
+      if (dailyLimits.length === 0) return;
+
+      const limitsNeedingIcons = dailyLimits.filter(l => !l.iconUrl);
+      if (limitsNeedingIcons.length === 0) return;
+
+      try {
+        // Fetch all installed apps to get icons
+        const apps = await UsageStats.getInstalledApps();
+        installedAppsRef.current = apps;
+
+        // Update limits with icons
+        for (const limit of limitsNeedingIcons) {
+          const app = apps.find(a => a.packageName === limit.packageName);
+          if (app?.iconUrl) {
+            await setAppDailyLimit(limit.packageName, limit.appName, limit.limitMinutes, app.iconUrl);
+          }
+        }
+      } catch (error) {
+        console.error("Error populating icons:", error);
+      }
+    };
+    populateMissingIcons();
+  }, [dailyLimits.length]);
 
   // Refresh data when screen comes into focus
   useFocusEffect(
@@ -309,12 +399,14 @@ export default function BlockingPage() {
   }, []);
 
   const checkPermissions = async () => {
-    const [accessibility, overlay] = await Promise.all([
+    const [accessibility, overlay, usageStats] = await Promise.all([
       isAccessibilityServiceEnabled(),
       hasOverlayPermission(),
+      UsageStats.hasUsageStatsPermission(),
     ]);
     setAccessibilityEnabled(accessibility);
     setOverlayEnabled(overlay);
+    setUsageStatsEnabled(usageStats);
   };
 
   // Handle schedule creation/edit and refresh
@@ -373,7 +465,7 @@ export default function BlockingPage() {
               letterSpacing: -0.5,
             }}
           >
-            Goals
+            {t("blocking.pageTitle")}
           </Text>
           <Text
             style={{
@@ -382,7 +474,7 @@ export default function BlockingPage() {
               marginTop: 4,
             }}
           >
-            Set your daily screen time limits
+            {t("blocking.pageSubtitle")}
           </Text>
         </View>
 
@@ -391,8 +483,10 @@ export default function BlockingPage() {
           <PermissionBanner
             accessibilityEnabled={accessibilityEnabled}
             overlayEnabled={overlayEnabled}
+            usageStatsEnabled={usageStatsEnabled}
             onAccessibilityPress={openAccessibilitySettings}
             onOverlayPress={openOverlaySettings}
+            onUsageStatsPress={UsageStats.openUsageStatsSettings}
           />
         )}
 
@@ -400,16 +494,11 @@ export default function BlockingPage() {
         <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
           <View
             style={{
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#ffffff",
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "rgba(255, 255, 255, 0.7)",
               borderRadius: 24,
               padding: 20,
-              borderWidth: 1,
-              borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.05)",
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: isDark ? 0 : 0.06,
-              shadowRadius: 12,
-              elevation: 3,
+              borderWidth: 0.5,
+              borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
             }}
           >
             {/* Header Row */}
@@ -432,7 +521,7 @@ export default function BlockingPage() {
                     marginBottom: 4,
                   }}
                 >
-                  TODAY'S PROGRESS
+                  {t("blocking.todaysProgress")}
                 </Text>
                 <TouchableOpacity
                   onPress={() => setShowTotalLimitOptions(!showTotalLimitOptions)}
@@ -455,7 +544,7 @@ export default function BlockingPage() {
                         color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
                       }}
                     >
-                      {" "}goal
+                      {" "}{t("blocking.goal")}
                     </Text>
                   </Text>
                 </TouchableOpacity>
@@ -473,16 +562,16 @@ export default function BlockingPage() {
                       ? `${Math.floor(totalDailyLimit / 60)}h`
                       : `${totalDailyLimit}m`;
 
-                    const message = `📱 My Screen Time Today\n\n` +
-                      `🎯 Goal: ${goalFormatted}\n` +
-                      `⏱️ Used: ${usedFormatted}\n` +
-                      `✅ Remaining: ${remainingFormatted}\n` +
-                      `📊 Progress: ${usagePercent}%\n\n` +
-                      `Taking control of my screen time with LockIn! 💪`;
+                    const message = `${t("blocking.share.header")}\n\n` +
+                      `${t("blocking.share.goal", { time: goalFormatted })}\n` +
+                      `${t("blocking.share.used", { time: usedFormatted })}\n` +
+                      `${t("blocking.share.remaining", { time: remainingFormatted })}\n` +
+                      `${t("blocking.share.progress", { percent: usagePercent })}\n\n` +
+                      t("blocking.share.footer");
 
                     await Share.share({
                       message,
-                      title: "My Screen Time Progress",
+                      title: t("blocking.share.title"),
                     });
                   } catch (error) {
                     console.error('Error sharing:', error);
@@ -541,7 +630,7 @@ export default function BlockingPage() {
                       fontWeight: "500",
                     }}
                   >
-                    left
+                    {t("blocking.timeLeft")}
                   </Text>
                 </View>
               </View>
@@ -555,12 +644,11 @@ export default function BlockingPage() {
                     marginBottom: 12,
                   }}
                 >
-                  This Week
+                  {t("stats.thisWeek")}
                 </Text>
                 <View style={{ flexDirection: "row", alignItems: "flex-end", gap: 6 }}>
                   {(() => {
                     const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-                    const today = new Date().getDay();
                     // Get day labels for last 7 days ending with today
                     const orderedDays = [];
                     for (let i = 6; i >= 0; i--) {
@@ -569,12 +657,13 @@ export default function BlockingPage() {
                       orderedDays.push(days[d.getDay()]);
                     }
 
-                    // weeklyUsage is already in order [6 days ago, ..., today]
-                    const maxUsage = Math.max(...weeklyUsage, totalDailyLimit);
+                    // weeklyUsage contains total screen time for all apps
+                    // Calculate max for scaling - use actual usage values
+                    const maxUsage = Math.max(...weeklyUsage, 1); // At least 1 to avoid division by 0
 
                     return orderedDays.map((day, idx) => {
                       const usage = weeklyUsage[idx] || 0;
-                      const heightPercent = maxUsage > 0 ? (usage / maxUsage) * 100 : 0;
+                      const heightPercent = usage > 0 ? (usage / maxUsage) * 100 : 0;
                       const isToday = idx === 6;
 
                       return (
@@ -589,7 +678,7 @@ export default function BlockingPage() {
                             <View
                               style={{
                                 width: "100%",
-                                height: Math.max(heightPercent * 0.5, 4),
+                                height: Math.max(heightPercent * 0.5, usage > 0 ? 6 : 4),
                                 backgroundColor: isToday
                                   ? "#10b981"
                                   : isDark
@@ -646,7 +735,7 @@ export default function BlockingPage() {
                     marginTop: 2,
                   }}
                 >
-                  Used
+                  {t("blocking.used")}
                 </Text>
               </View>
 
@@ -678,7 +767,7 @@ export default function BlockingPage() {
                     marginTop: 2,
                   }}
                 >
-                  Remaining
+                  {t("blocking.remaining")}
                 </Text>
               </View>
 
@@ -708,7 +797,7 @@ export default function BlockingPage() {
                     marginTop: 2,
                   }}
                 >
-                  Of goal
+                  {t("blocking.ofGoal")}
                 </Text>
               </View>
             </View>
@@ -724,7 +813,7 @@ export default function BlockingPage() {
                     marginBottom: 12,
                   }}
                 >
-                  Set daily goal:
+                  {t("blocking.setDailyGoal")}
                 </Text>
                 <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
                   {[30, 60, 90, 120, 180, 240].map((mins) => {
@@ -786,7 +875,7 @@ export default function BlockingPage() {
                     flex: 1,
                   }}
                 >
-                  Daily limit reached! All apps are blocked.
+                  {t("blocking.limitReachedWarning")}
                 </Text>
               </View>
             )}
@@ -851,17 +940,12 @@ export default function BlockingPage() {
               style={{
                 backgroundColor: isDark
                   ? "rgba(255, 255, 255, 0.03)"
-                  : "#ffffff",
+                  : "rgba(255, 255, 255, 0.7)",
                 borderRadius: 20,
                 padding: 32,
                 alignItems: "center",
                 borderWidth: 0.5,
                 borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: isDark ? 0 : 0.03,
-                shadowRadius: 12,
-                elevation: 2,
               }}
             >
               <View
@@ -968,17 +1052,12 @@ export default function BlockingPage() {
                 alignItems: "center",
                 backgroundColor: isDark
                   ? "rgba(255, 255, 255, 0.05)"
-                  : "#ffffff",
+                  : "rgba(255, 255, 255, 0.7)",
                 paddingHorizontal: 14,
                 paddingVertical: 10,
                 borderRadius: 12,
                 borderWidth: 0.5,
-                borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.06)",
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: isDark ? 0 : 0.03,
-                shadowRadius: 6,
-                elevation: 1,
+                borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.04)",
               }}
             >
               <Plus size={16} color={isDark ? "#ffffff" : "#0f172a"} strokeWidth={2} />
@@ -1000,17 +1079,12 @@ export default function BlockingPage() {
               style={{
                 backgroundColor: isDark
                   ? "rgba(255, 255, 255, 0.03)"
-                  : "#ffffff",
+                  : "rgba(255, 255, 255, 0.7)",
                 borderRadius: 20,
                 padding: 32,
                 alignItems: "center",
                 borderWidth: 0.5,
                 borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: isDark ? 0 : 0.03,
-                shadowRadius: 12,
-                elevation: 2,
               }}
             >
               <View
@@ -1131,7 +1205,9 @@ export default function BlockingPage() {
           for (const packageName of pendingNewApps) {
             const appInfo = POPULAR_APPS.find((a) => a.packageName === packageName);
             const appName = appInfo?.appName || packageName.split(".").pop() || packageName;
-            await setAppDailyLimit(packageName, appName, totalMinutes);
+            // Look up icon from installed apps cache
+            const iconUrl = await getAppIcon(packageName);
+            await setAppDailyLimit(packageName, appName, totalMinutes, iconUrl);
           }
           setShowNewAppsLimitModal(false);
           setPendingNewApps([]);

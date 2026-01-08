@@ -5,6 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { X, Zap, Target, Camera, Dumbbell } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import { useTheme } from "@/context/ThemeContext";
+import { useTranslation } from "react-i18next";
 import { ExerciseType } from "@/lib/poseUtils";
 import { getFavorites } from "@/lib/exerciseFavorites";
 import { getExerciseDisplayInfo, EXERCISE_COLORS } from "@/lib/exerciseIcons";
@@ -130,28 +131,20 @@ const MenuItem: React.FC<MenuItemProps> = ({
 // Default exercises to show if no favorites
 const DEFAULT_EXERCISES: ExerciseType[] = ['pushups', 'squats', 'plank'];
 
-// Helper to create exercise menu item
-const createExerciseMenuItem = (type: ExerciseType, index: number, totalExercises: number) => {
-  const info = getExerciseDisplayInfo(type);
-  const colors = EXERCISE_COLORS[type];
-
-  // Calculate positions based on index (from top of menu)
-  const baseBottom = 220; // Base position for bottom item
-  const spacing = 65; // Space between items
-  const exerciseIndex = totalExercises - 1 - index; // Reverse for stacking
-  const bottomPosition = baseBottom + (exerciseIndex + 2) * spacing; // +2 for Photo Task and Focus Mode
-  const translateYStart = 40 + (exerciseIndex + 2) * 60;
-
-  return {
-    title: `${info?.emoji || ''} ${info?.label || type}`,
-    subtitle: info?.description || '',
-    gradientColors: [colors[0], colors[0], colors[1]] as const,
-    shadowColor: colors[0],
-    icon: <Dumbbell size={24} color="#ffffff" />,
-    route: `/(tabs)/lockin?exercise=${type}`,
-    bottomPosition,
-    translateYStart,
-  };
+// Map exercise type (kebab-case) to translation key (camelCase)
+const exerciseTypeToTranslationKey: Record<ExerciseType, string> = {
+  'pushups': 'pushups',
+  'squats': 'squats',
+  'plank': 'plank',
+  'jumping-jacks': 'jumpingJacks',
+  'lunges': 'lunges',
+  'crunches': 'crunches',
+  'shoulder-press': 'shoulderPress',
+  'leg-raises': 'legRaises',
+  'high-knees': 'highKnees',
+  'pull-ups': 'pullUps',
+  'wall-sit': 'wallSit',
+  'side-plank': 'sidePlank',
 };
 
 export const QuickActionMenu: React.FC<QuickActionMenuProps> = ({
@@ -162,6 +155,7 @@ export const QuickActionMenu: React.FC<QuickActionMenuProps> = ({
 }) => {
   const router = useRouter();
   const { accentColor } = useTheme();
+  const { t } = useTranslation();
   const [favorites, setFavorites] = useState<ExerciseType[]>([]);
 
   // Load favorites on mount and when menu opens
@@ -172,6 +166,31 @@ export const QuickActionMenu: React.FC<QuickActionMenuProps> = ({
   const handleMenuItemPress = (route: string) => {
     onToggle();
     setTimeout(() => router.push(route as any), 300);
+  };
+
+  // Helper to create exercise menu item with translations
+  const createExerciseMenuItem = (type: ExerciseType, index: number, totalExercises: number) => {
+    const info = getExerciseDisplayInfo(type);
+    const colors = EXERCISE_COLORS[type];
+    const translationKey = exerciseTypeToTranslationKey[type];
+
+    // Calculate positions based on index (from top of menu)
+    const baseBottom = 220; // Base position for bottom item
+    const spacing = 65; // Space between items
+    const exerciseIndex = totalExercises - 1 - index; // Reverse for stacking
+    const bottomPosition = baseBottom + (exerciseIndex + 2) * spacing; // +2 for Photo Task and Focus Mode
+    const translateYStart = 40 + (exerciseIndex + 2) * 60;
+
+    return {
+      title: `${info?.emoji || ''} ${t(`exercise.${translationKey}.name`)}`,
+      subtitle: t(`exercise.${translationKey}.description`),
+      gradientColors: [colors[0], colors[0], colors[1]] as const,
+      shadowColor: colors[0],
+      icon: <Dumbbell size={24} color="#ffffff" />,
+      route: `/(tabs)/lockin?exercise=${type}`,
+      bottomPosition,
+      translateYStart,
+    };
   };
 
   // Use favorites if available, otherwise use defaults
@@ -185,8 +204,8 @@ export const QuickActionMenu: React.FC<QuickActionMenuProps> = ({
   // Static items (Photo Task and Focus Mode) - always at bottom
   const staticItems = [
     {
-      title: "📸 Photo Task",
-      subtitle: "Before/after photos • 1.5x bonus",
+      title: t("home.quickActions.photoTask"),
+      subtitle: t("home.quickActions.photoTaskDesc"),
       gradientColors: ["#60a5fa", "#3b82f6", "#2563eb"] as const,
       shadowColor: "#3b82f6",
       icon: <Camera size={24} color="#ffffff" />,
@@ -195,8 +214,8 @@ export const QuickActionMenu: React.FC<QuickActionMenuProps> = ({
       translateYStart: 100,
     },
     {
-      title: "🎯 Focus Mode",
-      subtitle: "LockIn to earn screen time",
+      title: t("home.quickActions.focusMode"),
+      subtitle: t("home.quickActions.focusModeDesc"),
       gradientColors: ["#fbbf24", "#f59e0b", "#d97706"] as const,
       shadowColor: "#f59e0b",
       icon: <Target size={24} color="#ffffff" />,

@@ -45,50 +45,76 @@ try {
   console.warn('UsageStats native module not available:', e);
 }
 
+// Default empty result for error cases
+const EMPTY_RESULT: UsageStatsResult = { hasPermission: false, apps: [], totalScreenTime: 0, pickups: 0 };
+
 export async function hasUsageStatsPermission(): Promise<boolean> {
   if (!UsageStats) return false;
-  return UsageStats.hasUsageStatsPermission();
+  try {
+    return await UsageStats.hasUsageStatsPermission();
+  } catch (error) {
+    console.error('Error checking usage stats permission:', error);
+    return false;
+  }
 }
 
 export function openUsageStatsSettings(): void {
-  if (UsageStats) {
+  if (!UsageStats) return;
+  try {
     UsageStats.openUsageStatsSettings();
+  } catch (error) {
+    console.error('Error opening usage stats settings:', error);
   }
 }
 
 export async function getUsageStats(startTime: number, endTime: number): Promise<UsageStatsResult> {
-  if (!UsageStats) {
-    return { hasPermission: false, apps: [], totalScreenTime: 0, pickups: 0 };
+  if (!UsageStats) return EMPTY_RESULT;
+  try {
+    return await UsageStats.getUsageStats(startTime, endTime);
+  } catch (error) {
+    console.error('Error getting usage stats:', error);
+    return EMPTY_RESULT;
   }
-  return UsageStats.getUsageStats(startTime, endTime);
 }
 
 export async function getTodayUsageStats(): Promise<UsageStatsResult> {
-  if (!UsageStats) {
-    return { hasPermission: false, apps: [], totalScreenTime: 0, pickups: 0 };
+  if (!UsageStats) return EMPTY_RESULT;
+  try {
+    return await UsageStats.getTodayUsageStats();
+  } catch (error) {
+    console.error('Error getting today usage stats:', error);
+    return EMPTY_RESULT;
   }
-  return UsageStats.getTodayUsageStats();
 }
 
 export async function getWeekUsageStats(weekOffset: number): Promise<UsageStatsResult> {
-  if (!UsageStats) {
-    return { hasPermission: false, apps: [], totalScreenTime: 0, pickups: 0 };
+  if (!UsageStats) return EMPTY_RESULT;
+  try {
+    return await UsageStats.getWeekUsageStats(weekOffset);
+  } catch (error) {
+    console.error('Error getting week usage stats:', error);
+    return EMPTY_RESULT;
   }
-  return UsageStats.getWeekUsageStats(weekOffset);
 }
 
 export async function getDailyUsageForWeek(weekOffset: number): Promise<DailyUsage[]> {
-  if (!UsageStats) {
+  if (!UsageStats) return [];
+  try {
+    return await UsageStats.getDailyUsageForWeek(weekOffset);
+  } catch (error) {
+    console.error('Error getting daily usage for week:', error);
     return [];
   }
-  return UsageStats.getDailyUsageForWeek(weekOffset);
 }
 
 export async function getInstalledApps(): Promise<InstalledApp[]> {
-  if (!UsageStats) {
+  if (!UsageStats) return [];
+  try {
+    return await UsageStats.getInstalledApps();
+  } catch (error) {
+    console.error('Error getting installed apps:', error);
     return [];
   }
-  return UsageStats.getInstalledApps();
 }
 
 export default {

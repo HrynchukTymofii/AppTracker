@@ -15,24 +15,40 @@
     "back": "Indietro",
     "next": "Avanti",
     "done": "Fatto",
-    "or": "o"
+    "or": "o",
+    "of": "di",
+    "getStarted": "Inizia"
+  },
+  "helpCarousel": {
+    "streak": "Serie",
+    "today": "Oggi",
+    "vsAvg": "vs Media",
+    "schedule": "Programma",
+    "week": "Settimana {{number}}"
   },
   "tabs": {
     "home": "Home",
     "blocking": "Blocco",
+    "goals": "Obiettivi",
     "detox": "Detox",
     "stats": "Statistiche",
     "profile": "Profilo",
-    "community": "Comunità",
-    "schedule": "Orario"
+    "community": "Comunita",
+    "schedule": "Orario",
+    "lockin": "LockIn"
   },
   "home": {
     "title": "LockIn",
     "health": "SALUTE",
     "appUsageToday": "Utilizzo App Oggi",
     "loadingApps": "Caricamento app...",
-    "focusModeActive": "Modalità Focus Attiva",
+    "focusModeActive": "Modalita Focus Attiva",
     "appsBlocked": "app bloccate",
+    "streak": "Serie",
+    "today": "Oggi",
+    "vsAverage": "vs media",
+    "upcomingSchedules": "In arrivo",
+    "createSchedule": "Crea una Pianificazione",
     "quickMenu": {
       "stats": "Statistiche",
       "statsDesc": "Visualizza statistiche di utilizzo dettagliate",
@@ -41,7 +57,15 @@
       "detox": "Detox",
       "detoxDesc": "Avvia timer detox telefono",
       "calendar": "Calendario",
-      "calendarDesc": "Pianifica le tue attività"
+      "calendarDesc": "Pianifica le tue attivita",
+      "newSchedule": "Nuova Pianificazione",
+      "newScheduleDesc": "Crea una pianificazione di blocco"
+    },
+    "quickActions": {
+      "photoTask": "Attivita Foto",
+      "photoTaskDesc": "Foto prima/dopo - bonus 1.5x",
+      "focusMode": "Modalita Focus",
+      "focusModeDesc": "LockIn per guadagnare tempo schermo"
     }
   },
   "stats": {
@@ -81,23 +105,39 @@
     },
     "dayNamesFull": {
       "sunday": "Domenica",
-      "monday": "Lunedì",
-      "tuesday": "Martedì",
-      "wednesday": "Mercoledì",
-      "thursday": "Giovedì",
-      "friday": "Venerdì",
+      "monday": "Lunedi",
+      "tuesday": "Martedi",
+      "wednesday": "Mercoledi",
+      "thursday": "Giovedi",
+      "friday": "Venerdi",
       "saturday": "Sabato"
     },
     "noUsageData": "Ancora nessun dato di utilizzo",
     "healthScore": "Punteggio di Salute",
     "screenTime": "Tempo Schermo",
-    "topApps": "Top 3 App"
+    "topApps": "Top 3 App",
+    "vsLastWeek": "vs Settimana Scorsa",
+    "lessScreenTime": "meno tempo schermo",
+    "moreScreenTime": "piu tempo schermo",
+    "difference": "differenza",
+    "shareProgress": "Condividi Progressi",
+    "weeklyReport": "Report Settimanale"
   },
   "blocking": {
     "title": "Blocco",
+    "pageTitle": "Obiettivi",
+    "pageSubtitle": "Imposta i tuoi limiti giornalieri di tempo schermo",
+    "todaysProgress": "PROGRESSO DI OGGI",
+    "goal": "obiettivo",
+    "timeLeft": "rimanente",
+    "used": "Usato",
+    "remaining": "Rimanente",
+    "ofGoal": "Dell'obiettivo",
+    "setDailyGoal": "Imposta obiettivo giornaliero:",
+    "limitReachedWarning": "Limite giornaliero raggiunto! Tutte le app sono bloccate.",
     "setupRequired": "Configurazione Richiesta",
     "permissionsDesc": "Il blocco app richiede permessi speciali. Abilita:",
-    "accessibilityService": "1. Servizio di Accessibilità",
+    "accessibilityService": "1. Servizio di Accessibilita",
     "displayOverOtherApps": "2. Visualizzazione Sopra Altre App",
     "quickActions": "Azioni Rapide",
     "startFocus": "Avvia Focus",
@@ -109,9 +149,9 @@
     "noAppsBlocked": "Nessuna app bloccata.",
     "addAppsHint": "Aggiungi app per iniziare il blocco.",
     "focusSessionActive": "Sessione Focus Attiva",
-    "taskRequiredToUnlock": "Attività richiesta per sbloccare",
+    "taskRequiredToUnlock": "Attivita richiesta per sbloccare",
     "timeRemaining": "rimanente",
-    "completeTaskUnlock": "Completa Attività e Sblocca",
+    "completeTaskUnlock": "Completa Attivita e Sblocca",
     "endSession": "Termina Sessione",
     "calendarView": "Vista Calendario",
     "everyday": "Ogni giorno",
@@ -126,7 +166,7 @@
       "eveningWinddown": "Relax Serale",
       "studySession": "Sessione di Studio",
       "familyTime": "Tempo in Famiglia",
-      "sleepMode": "Modalità Sonno"
+      "sleepMode": "Modalita Sonno"
     },
     "activeToday": "attivi oggi",
     "scheduledForDay": "per questo giorno",
@@ -137,9 +177,13 @@
       "manual": "Bloccato manualmente",
       "scheduled": "Blocco pianificato",
       "focus": "Sessione focus",
-      "task": "Attività richiesta",
+      "task": "Attivita richiesta",
       "dailyLimit": "Limite giornaliero"
     },
+    "apps": "app",
+    "sites": "siti",
+    "appsBlocked": "App Bloccate",
+    "activeDays": "Giorni Attivi",
     "modals": {
       "selectApps": "Seleziona App da Bloccare",
       "confirmSelection": "Conferma Selezione ({{count}})",
@@ -149,22 +193,26 @@
       "scheduleName": "NOME PIANIFICAZIONE",
       "scheduleNamePlaceholder": "es. Orario di Lavoro",
       "appsToBlock": "APP DA BLOCCARE",
+      "websitesToBlock": "SITI DA BLOCCARE",
       "selectAppsPlaceholder": "Seleziona app...",
       "appsSelected": "{{count}} app selezionate",
+      "apps": "App",
+      "websites": "Siti Web",
+      "selectWebsites": "Seleziona Siti da Bloccare",
       "startTime": "ORA INIZIO",
       "endTime": "ORA FINE",
       "repeatOn": "RIPETI IL",
       "saveSchedule": "Salva Pianificazione",
       "startFocusSession": "Avvia Sessione Focus",
       "durationMinutes": "DURATA (MINUTI)",
-      "requireTaskCompletion": "Richiedi Completamento Attività",
-      "unlockAfterTask": "Sblocca solo dopo aver completato un'attività reale",
-      "selectTask": "SELEZIONA ATTIVITÀ",
-      "describeTask": "Descrivi la tua attività...",
+      "requireTaskCompletion": "Richiedi Completamento Attivita",
+      "unlockAfterTask": "Sblocca solo dopo aver completato un'attivita reale",
+      "selectTask": "SELEZIONA ATTIVITA",
+      "describeTask": "Descrivi la tua attivita...",
       "takeBeforePhoto": "SCATTA FOTO \"PRIMA\"",
       "tapToTakePhoto": "Tocca per scattare foto",
       "startFocusDuration": "Avvia Focus ({{duration}} minuti)",
-      "openAIApiKey": "CHIAVE API OPENAI (per verifica attività)",
+      "openAIApiKey": "CHIAVE API OPENAI (per verifica attivita)",
       "apiKeySaved": "Chiave API salvata",
       "saveSettings": "Salva Impostazioni",
       "loadingApps": "Caricamento app...",
@@ -172,20 +220,20 @@
       "deselectAll": "Deseleziona Tutto",
       "popularApps": "App Popolari",
       "moreApps": "Altre App ({{count}})",
-      "showPopularOnly": "← Mostra Solo Popolari"
+      "showPopularOnly": "Mostra Solo Popolari"
     },
     "alerts": {
       "enterScheduleName": "Inserisci un nome per la pianificazione",
       "selectAtLeastOneApp": "Seleziona almeno un'app",
       "selectAtLeastOneDay": "Seleziona almeno un giorno",
       "selectAtLeastOneAppToBlock": "Seleziona almeno un'app da bloccare",
-      "takeBeforePhoto": "Scatta una foto \"prima\" per la verifica dell'attività",
+      "takeBeforePhoto": "Scatta una foto \"prima\" per la verifica dell'attivita",
       "deleteSchedule": "Elimina Pianificazione",
       "deleteScheduleConfirm": "Sei sicuro di voler eliminare questa pianificazione?",
-      "taskVerified": "Attività Verificata!",
-      "taskVerifiedDesc": "La tua attività è stata verificata con successo.\n\nAffidabilità: {{confidence}}%\n\n{{explanation}}",
-      "taskNotVerified": "Attività Non Verificata",
-      "taskNotVerifiedDesc": "L'attività non sembra essere completata.\n\n{{explanation}}\n\nCompleta l'attività e riprova.",
+      "taskVerified": "Attivita Verificata!",
+      "taskVerifiedDesc": "La tua attivita e stata verificata con successo.\n\nAffidabilita: {{confidence}}%\n\n{{explanation}}",
+      "taskNotVerified": "Attivita Non Verificata",
+      "taskNotVerifiedDesc": "L'attivita non sembra essere completata.\n\n{{explanation}}\n\nCompleta l'attivita e riprova.",
       "apiKeySavedSuccess": "Chiave API salvata con successo",
       "removeLimit": "Rimuovi Limite",
       "removeLimitConfirm": "Sei sicuro di voler rimuovere il limite giornaliero per questa app?"
@@ -206,48 +254,316 @@
       "hours": "Ore",
       "minutes": "Minuti",
       "dailyLimit": "Limite Giornaliero"
+    },
+    "share": {
+      "title": "Il mio tempo di schermo",
+      "header": "📱 Il mio tempo di schermo oggi",
+      "goal": "🎯 Obiettivo: {{time}}",
+      "used": "⏱️ Usato: {{time}}",
+      "remaining": "✅ Rimanente: {{time}}",
+      "progress": "📊 Progresso: {{percent}}%",
+      "footer": "Sto controllando il mio tempo di schermo con LockIn! 💪"
     }
   },
   "detox": {
     "title": "Detox"
   },
+  "progress": {
+    "todaysProgress": "Progresso di Oggi",
+    "goal": "Obiettivo",
+    "earned": "Guadagnato",
+    "spent": "Speso",
+    "balance": "Saldo",
+    "earn": "Guadagna",
+    "thisWeek": "Questa Settimana"
+  },
+  "lockin": {
+    "title": "LockIn",
+    "readyToEarnTime": "Pronto a Guadagnare Tempo?",
+    "lockInToEarn": "LockIn per guadagnare tempo schermo",
+    "giveUp": "Arrendersi?",
+    "giveUpMessage": "Perderai la tua serie se ti arrendi. Sei sicuro?",
+    "giveUpConfirm": "Arrendersi",
+    "keepGoing": "Continua",
+    "available": "Disponibile",
+    "minutes": "minuti",
+    "min": "min",
+    "today": "Oggi",
+    "earnedSpent": "guadagnato / speso",
+    "thisWeek": "Questa settimana:",
+    "earned": "guadagnato",
+    "spent": "speso",
+    "photoTask": "Attivita Foto",
+    "photoTaskDesc": "Verifica il tuo focus con foto prima/dopo",
+    "favorites": "Preferiti",
+    "doubleTapRemove": "(doppio tap per rimuovere)",
+    "allExercises": "Tutti gli Esercizi",
+    "earnWithExercise": "Guadagna con Esercizio",
+    "doubleTapFavorite": "(doppio tap per preferito)",
+    "history": "Cronologia",
+    "seeAll": "Vedi tutto",
+    "noSessions": "Nessuna sessione ancora",
+    "startFirst": "Inizia un LockIn per vedere la cronologia",
+    "recentActivities": "Attivita Recenti",
+    "focusSession": "Sessione Focus",
+    "yesterday": "Ieri",
+    "daysAgo": "{{count}} giorni fa",
+    "hoursAgo": "{{count}}h fa",
+    "minutesAgo": "{{count}}m fa",
+    "justNow": "Proprio ora",
+    "lockedIn": "IN BLOCCO",
+    "remaining": "rimanente",
+    "currentTask": "Attivita Corrente",
+    "before": "Prima",
+    "after": "Dopo",
+    "tapWhenDone": "Tocca quando finito",
+    "appsBlocked": "app bloccate",
+    "earnPoints": "Guadagna {{points}} punti al completamento",
+    "completeWithPhoto": "Ho Finito - Verifica con Foto",
+    "completeSession": "Completa Sessione",
+    "giveUpLoseStreak": "Arrendersi (Perdi serie)",
+    "currentBalance": "Saldo Attuale",
+    "chooseExercise": "Scegli un Esercizio",
+    "earnScreenTimeInfo": "Guadagna tempo schermo",
+    "earnScreenTimeDesc": "completando esercizi. Piu fai, piu tempo guadagni!",
+    "instructions": "Istruzioni",
+    "rewards": "Ricompense",
+    "greatWork": "Ottimo Lavoro!",
+    "tryAgain": "Riprova",
+    "startExercise": "Inizia Esercizio",
+    "start": "Inizia",
+    "finishWithEarnings": "Finisci (+{{minutes}} min)",
+    "finishExercise": "Finisci Esercizio",
+    "done": "Fatto",
+    "earnTime": "Guadagna Tempo",
+    "selectStep": "Scegli un esercizio",
+    "readyStep": "Posiziona la fotocamera, poi tocca Inizia",
+    "exerciseStep": "Continua cosi!",
+    "completeStep": "Esercizio completato",
+    "instructionsStep": "Leggi le istruzioni",
+    "positionCamera": "Posiziona la fotocamera",
+    "fullBodyVisible": "Assicurati che tutto il corpo sia visibile",
+    "howToDoIt": "Come si fa",
+    "gotIt": "Ho capito",
+    "earnScreenTimeModal": "Guadagna Tempo Schermo",
+    "firstRunDescription": "Completa esercizi per guadagnare minuti da spendere sulle tue app preferite. Piu ti alleni, piu tempo guadagni!",
+    "featureBodyweight": "Flessioni, squat e plank",
+    "featureAI": "L'IA monitora la tua forma",
+    "featureEarnings": "Guadagna 0.5-1 min per ripetizione",
+    "letsGetStarted": "Iniziamo!",
+    "seconds": "SECONDI",
+    "reps": "ripetizioni",
+    "rep": "ripetizione",
+    "hours": "h",
+    "timeEarned": "Tempo guadagnato",
+    "watchDemoVideo": "Guarda video demo",
+    "comingSoon": "Prossimamente",
+    "holdDescription": "Hai tenuto {{seconds}} secondi",
+    "repsDescription": "Hai completato {{count}} {{exercise}}",
+    "rewardPlankDesc": "Guadagna {{rate}} min per secondo. Minimo {{min}}s per guadagnare. Bonus {{bonus}} per tenere {{bonusTime}}s+!",
+    "rewardRepsDesc": "Guadagna {{rate}} min per rip. Minimo {{min}} rip per guadagnare. Bonus {{bonus}} per {{bonusReps}}+ rip!",
+    "minimumPlankRequired": "Devi tenere almeno {{seconds}}s per guadagnare tempo.",
+    "minimumRepsRequired": "Hai bisogno di almeno {{count}} rip per guadagnare tempo.",
+    "holdAtLeast": "Tieni almeno {{seconds}}s per guadagnare tempo",
+    "doAtLeast": "Fai almeno {{count}} rip per guadagnare tempo",
+    "infoRewardPlank": "{{rate}} min per secondo. Min {{min}}s per guadagnare. Bonus {{bonus}} a {{bonusTime}}s!",
+    "infoRewardReps": "{{rate}} min per rip. Min {{min}} rip per guadagnare. Bonus {{bonus}} a {{bonusReps}} rip!"
+  },
+  "exercise": {
+    "pushups": {
+      "name": "Flessioni",
+      "description": "Guadagna 0.5 min per ripetizione (min 3 rip)",
+      "instructions": [
+        "Posiziona il telefono per vedere tutto il corpo di lato",
+        "Mettiti in posizione di flessione con le braccia estese",
+        "Abbassa il petto verso il pavimento",
+        "Spingi verso l'alto per completare una ripetizione",
+        "Bonus 1.1x dopo 20 ripetizioni!"
+      ]
+    },
+    "squats": {
+      "name": "Squat",
+      "description": "Guadagna 0.5 min per ripetizione (min 3 rip)",
+      "instructions": [
+        "Posiziona il telefono per vedere tutto il corpo di lato",
+        "Stai in piedi con i piedi alla larghezza delle spalle",
+        "Accovacciati fino a che le cosce sono parallele al pavimento",
+        "Rialzati per completare una ripetizione",
+        "Bonus 1.1x dopo 20 ripetizioni!"
+      ]
+    },
+    "plank": {
+      "name": "Plank",
+      "description": "Guadagna 0.1 min per secondo (min 10s)",
+      "instructions": [
+        "Posiziona il telefono per vedere tutto il corpo di lato",
+        "Mettiti in posizione plank con il corpo dritto",
+        "Mantieni la posizione il piu a lungo possibile",
+        "Tieni i fianchi allineati - non abbassarli o alzarli",
+        "Bonus 1.1x dopo 30 secondi!"
+      ]
+    },
+    "jumpingJacks": {
+      "name": "Jumping Jack",
+      "description": "Guadagna 0.3 min per ripetizione (min 5 rip)",
+      "instructions": [
+        "Posiziona il telefono per vedere tutto il corpo",
+        "Stai in piedi con i piedi uniti, braccia ai lati",
+        "Salta allargando le gambe e alzando le braccia",
+        "Salta tornando alla posizione iniziale",
+        "Bonus 1.1x dopo 30 ripetizioni!"
+      ]
+    },
+    "lunges": {
+      "name": "Affondi",
+      "description": "Guadagna 0.5 min per ripetizione (min 3 rip)",
+      "instructions": [
+        "Posiziona il telefono per vedere tutto il corpo di lato",
+        "Stai dritto con i piedi alla larghezza dei fianchi",
+        "Fai un passo avanti e abbassati fino a 90 gradi",
+        "Spingi indietro alla posizione eretta",
+        "Bonus 1.1x dopo 15 ripetizioni!"
+      ]
+    },
+    "crunches": {
+      "name": "Crunch",
+      "description": "Guadagna 0.4 min per ripetizione (min 5 rip)",
+      "instructions": [
+        "Posiziona il telefono per vedere tutto il corpo di lato",
+        "Sdraiati sulla schiena con le ginocchia piegate",
+        "Solleva le spalle verso le ginocchia",
+        "Torna giu con controllo",
+        "Bonus 1.1x dopo 20 ripetizioni!"
+      ]
+    },
+    "shoulderPress": {
+      "name": "Shoulder Press",
+      "description": "Guadagna 0.5 min per ripetizione (min 3 rip)",
+      "instructions": [
+        "Posiziona il telefono per vedere la parte superiore del corpo",
+        "Tieni i pesi all'altezza delle spalle",
+        "Spingi le braccia dritte verso l'alto",
+        "Abbassa di nuovo all'altezza delle spalle",
+        "Bonus 1.1x dopo 15 ripetizioni!"
+      ]
+    },
+    "legRaises": {
+      "name": "Sollevamento Gambe",
+      "description": "Guadagna 0.4 min per ripetizione (min 5 rip)",
+      "instructions": [
+        "Posiziona il telefono per vedere tutto il corpo di lato",
+        "Sdraiati sulla schiena con le gambe dritte",
+        "Solleva le gambe verso il soffitto",
+        "Abbassa le gambe con controllo",
+        "Bonus 1.1x dopo 15 ripetizioni!"
+      ]
+    },
+    "highKnees": {
+      "name": "Ginocchia Alte",
+      "description": "Guadagna 0.2 min per ripetizione (min 10 rip)",
+      "instructions": [
+        "Posiziona il telefono per vedere tutto il corpo",
+        "Stai dritto, pronto a correre sul posto",
+        "Porta le ginocchia sopra il livello dei fianchi",
+        "Alterna le gambe rapidamente",
+        "Bonus 1.1x dopo 40 ripetizioni!"
+      ]
+    },
+    "pullUps": {
+      "name": "Trazioni",
+      "description": "Guadagna 0.8 min per ripetizione (min 2 rip)",
+      "instructions": [
+        "Posiziona il telefono per vedere il corpo di lato",
+        "Appenditi alla sbarra con le braccia estese",
+        "Tirati su fino a che il mento supera la sbarra",
+        "Scendi con controllo",
+        "Bonus 1.15x dopo 10 ripetizioni!"
+      ]
+    },
+    "wallSit": {
+      "name": "Wall Sit",
+      "description": "Guadagna 0.15 min per secondo (min 10s)",
+      "instructions": [
+        "Posiziona il telefono per vedere tutto il corpo di lato",
+        "Appoggiati al muro con i piedi alla larghezza delle spalle",
+        "Scendi fino a che le ginocchia sono a 90 gradi",
+        "Mantieni la posizione - cosce parallele al pavimento",
+        "Bonus 1.1x dopo 45 secondi!"
+      ]
+    },
+    "sidePlank": {
+      "name": "Plank Laterale",
+      "description": "Guadagna 0.12 min per secondo (min 10s)",
+      "instructions": [
+        "Posiziona il telefono per vedere tutto il corpo di fronte",
+        "Sdraiati su un fianco, appoggiati sul gomito",
+        "Solleva i fianchi da terra",
+        "Mantieni il corpo in linea retta",
+        "Bonus 1.1x dopo 30 secondi!"
+      ]
+    }
+  },
+  "exerciseCamera": {
+    "cameraPermissionRequired": "Permesso fotocamera richiesto",
+    "noCameraDevice": "Nessuna fotocamera trovata",
+    "holding": "MANTENENDO",
+    "getInPosition": "METTITI IN POSIZIONE",
+    "down": "GIU",
+    "up": "SU"
+  },
   "profile": {
     "title": "Profilo",
     "proMember": "Membro PRO",
-    "achievements": "Risultati",
-    "viewAll": "Visualizza Tutto",
+    "achievements": "Obiettivi",
+    "viewAll": "Vedi Tutto",
     "quickActions": "Azioni Rapide",
     "editProfile": "Modifica Profilo",
     "contactUs": "Contattaci",
     "rateUs": "Valutaci",
     "logOut": "Esci",
-    "errorLoading": "Errore nel caricamento del profilo",
+    "errorLoading": "Errore caricamento profilo",
     "loading": "Caricamento profilo...",
+    "blockedItems": "App e Siti Bloccati",
+    "defaultBlockedItems": "Elementi Bloccati Predefiniti",
+    "apps": "app",
+    "websites": "siti",
+    "blockedItemsDesc": "Questi sono preselezionati quando crei nuovi orari",
+    "editBlockedItems": "Modifica Elementi Bloccati",
+    "dailyGoal": "Obiettivo Giornaliero",
+    "dailyGoalQuestion": "Quanto tempo schermo vuoi guadagnare al giorno?",
+    "dailyGoalUpdated": "Obiettivo giornaliero aggiornato",
+    "minLabel": "15 min",
+    "maxLabel": "3 ore",
     "defaultAppLimit": "Limite App Predefinito",
-    "defaultAppLimitDesc": "Le nuove app useranno questo limite di tempo per impostazione predefinita",
+    "defaultAppLimitDesc": "Le nuove app useranno questo limite di tempo per default",
     "limitUpdated": "Limite predefinito aggiornato",
+    "minLimitLabel": "1 min",
+    "maxLimitLabel": "2 ore",
+    "streak": "Serie",
+    "sessions": "Sessioni",
+    "tasks": "Compiti",
     "contactDescription": "Inviaci un messaggio e ti risponderemo presto",
     "writeMessage": "Scrivi il tuo messaggio...",
-    "sendMessage": "Invia messaggio",
-    "emailUs": "Inviaci un'email",
+    "sendMessage": "Invia Messaggio",
+    "emailUs": "Inviaci un'Email",
     "messageSent": "Messaggio inviato!",
     "messageThankYou": "Ti risponderemo presto",
     "messageError": "Invio messaggio fallito",
-    "rateExperience": "Valuta la tua esperienza",
+    "rateExperience": "Valuta la tua Esperienza",
     "rateDescription": "Come valuteresti LockIn?",
     "tapToRate": "Tocca una stella per valutare",
     "thankYouRating": "Grazie per la tua valutazione!",
-    "tellUsMore": "Dicci di più",
+    "tellUsMore": "Dicci di Piu",
     "helpUsImprove": "Aiutaci a migliorare la tua esperienza",
     "describeProblem": "Cosa possiamo migliorare?",
-    "sendFeedback": "Invia feedback",
+    "sendFeedback": "Invia Feedback",
     "changeRating": "Cambia valutazione",
     "feedbackSent": "Feedback inviato!",
     "feedbackThanks": "Grazie per aiutarci a migliorare",
     "feedbackError": "Invio feedback fallito"
   },
   "achievements": {
-    "title": "Risultati",
+    "title": "Obiettivi",
     "unlocked": "Sbloccato",
     "locked": "Bloccato",
     "unlockedCount": "{{count}} di {{total}} sbloccati",
@@ -261,23 +577,23 @@
         "description": "Completa la prima sessione di focus"
       },
       "taskMaster": {
-        "title": "Maestro di Attività",
-        "description": "Completa una verifica di attività"
+        "title": "Maestro dei Compiti",
+        "description": "Completa una verifica di compito"
       },
       "earlyBird": {
         "title": "Mattiniero",
-        "description": "Inizia focus prima delle 8 AM"
+        "description": "Inizia il focus prima delle 8"
       },
       "nightOwl": {
         "title": "Nottambulo",
-        "description": "Usa il blocco dopo le 22:00"
+        "description": "Usa il blocco dopo le 22"
       },
       "discipline": {
         "title": "Disciplina",
         "description": "Serie di blocco di 7 giorni"
       },
       "ironWill": {
-        "title": "Volontà di Ferro",
+        "title": "Volonta di Ferro",
         "description": "Completa 10 sessioni di focus"
       },
       "zenMaster": {
@@ -285,24 +601,24 @@
         "description": "Completa 50 sessioni di focus"
       },
       "schedulePro": {
-        "title": "Pro della Pianificazione",
-        "description": "Crea la tua prima pianificazione"
+        "title": "Professionista degli Orari",
+        "description": "Crea il tuo primo orario"
       },
       "timeKeeper": {
         "title": "Custode del Tempo",
-        "description": "Crea 5 pianificazioni"
+        "description": "Crea 5 orari"
       },
       "digitalDetox": {
-        "title": "Disintossicazione Digitale",
+        "title": "Detox Digitale",
         "description": "Blocca le app per 24 ore"
       },
       "weekendWarrior": {
-        "title": "Guerriero del Fine Settimana",
-        "description": "Usa il blocco nei fine settimana"
+        "title": "Guerriero del Weekend",
+        "description": "Usa il blocco nel weekend"
       },
       "minimalist": {
         "title": "Minimalista",
-        "description": "Blocca 10+ app contemporaneamente"
+        "description": "Blocca 10+ app insieme"
       },
       "focusLegend": {
         "title": "Leggenda del Focus",
@@ -313,27 +629,27 @@
         "description": "Sessione di focus di 4 ore"
       },
       "consistencyKing": {
-        "title": "Re della Coerenza",
+        "title": "Re della Costanza",
         "description": "Serie di blocco di 30 giorni"
       },
       "healthChampion": {
-        "title": "Campione di Salute",
-        "description": "Raggiungi un punteggio di salute 90+"
+        "title": "Campione della Salute",
+        "description": "Raggiungi punteggio salute 90+"
       },
       "screenTimeSavior": {
-        "title": "Salvatore del Tempo Schermo",
-        "description": "Riduci il tempo dello schermo del 50%"
+        "title": "Salvatore dello Schermo",
+        "description": "Riduci il tempo schermo del 50%"
       },
       "morningRoutine": {
         "title": "Routine Mattutina",
-        "description": "Blocca app 3 mattine"
+        "description": "Blocca le app per 3 mattine"
       },
       "productivityBeast": {
-        "title": "Bestia della Produttività",
-        "description": "Completa 5 verifiche di attività"
+        "title": "Bestia della Produttivita",
+        "description": "Completa 5 verifiche di compiti"
       },
       "appBlockerPro": {
-        "title": "Pro dei Blocchi App",
+        "title": "Bloccatore Pro",
         "description": "Blocca 20+ app diverse"
       },
       "focusFlow": {
@@ -342,11 +658,11 @@
       },
       "digitalWellbeing": {
         "title": "Benessere Digitale",
-        "description": "Punteggio di salute 80+ per una settimana"
+        "description": "Punteggio 80+ per una settimana"
       },
       "selfControl": {
         "title": "Autocontrollo",
-        "description": "Resisti a sbloccare 10 volte"
+        "description": "Resisti allo sblocco 10 volte"
       }
     }
   },
@@ -356,28 +672,556 @@
     "systemDefault": "Predefinito del Sistema",
     "currentLanguage": "Lingua Attuale"
   },
+  "payment": {
+    "title": "Prendi il Controllo\ndel Tuo Tempo Schermo",
+    "subtitle": "Unisciti a migliaia di persone che hanno recuperato la concentrazione e ridotto il tempo schermo del 50%+",
+    "usersLove": "10.000+ utenti amano LockIn",
+    "features": {
+      "unlimitedBlocking": "Blocco illimitato di app e siti web",
+      "advancedScheduling": "Pianificazione avanzata e limiti di tempo",
+      "focusSessions": "Sessioni di concentrazione con verifica attività",
+      "prioritySupport": "Supporto prioritario e funzionalità anticipate",
+      "detailedAnalytics": "Analisi dettagliate dell'utilizzo e insight"
+    },
+    "reviews": {
+      "review1": "Finalmente ho superato la dipendenza dal telefono!",
+      "review1Author": "Sarah M.",
+      "review2": "Il mio tempo schermo è diminuito di 3 ore/giorno",
+      "review2Author": "James K.",
+      "review3": "La migliore app per la concentrazione che abbia mai usato",
+      "review3Author": "Emily R."
+    },
+    "trial": {
+      "notSure": "Non sei sicuro? Prova 3 giorni gratis",
+      "cancelAnytime": "Annulla in qualsiasi momento durante la prova",
+      "afterTrial": "Dopo la prova gratuita di 3 giorni, "
+    },
+    "plans": {
+      "choosePlan": "Scegli il Tuo Piano",
+      "loading": "Caricamento piani...",
+      "save": "RISPARMIA {{percent}}%",
+      "annual": "Annuale",
+      "monthly": "Mensile",
+      "billedAnnually": "/mese fatturato annualmente"
+    },
+    "cta": {
+      "startTrial": "Inizia Prova di 3 Giorni",
+      "subscribeNow": "Abbonati Ora",
+      "restorePurchases": "Ripristina Acquisti"
+    },
+    "legal": {
+      "paymentCharged": "Il pagamento verrà addebitato sul tuo account {{store}}. Gli abbonamenti si rinnovano automaticamente salvo disdetta 24 ore prima della scadenza.",
+      "termsOfService": "Termini di Servizio",
+      "privacyPolicy": "Informativa sulla Privacy",
+      "cancelIn": "Annulla in {{store}}"
+    },
+    "toast": {
+      "welcomePro": "Benvenuto in LockIn PRO!",
+      "welcomeProDesc": "Il tuo percorso di concentrazione inizia ora",
+      "purchaseFailed": "Acquisto fallito. Riprova.",
+      "purchasesRestored": "Acquisti ripristinati",
+      "purchasesRestoredDesc": "Il tuo accesso PRO è stato ripristinato",
+      "noPurchases": "Nessun acquisto trovato",
+      "noPurchasesDesc": "Nessun abbonamento precedente rilevato",
+      "restoreFailed": "Ripristino fallito",
+      "restoreFailedDesc": "Riprova più tardi"
+    }
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "accentColor": "Colore Accento",
+    "appearance": "Aspetto",
+    "themeSystem": "Sistema",
+    "themeLight": "Chiaro",
+    "themeDark": "Scuro",
+    "changePassword": "Cambia Password",
+    "newPasswordPlaceholder": "Nuova password",
+    "dangerZone": "Zona Pericolosa",
+    "deleteAccount": "Elimina Account",
+    "deleteAccountTitle": "Elimina Account",
+    "deleteAccountWarning": "Questa azione e irreversibile. Digita",
+    "deleteAccountConfirm": "Delete",
+    "toConfirm": "per confermare:",
+    "typeDelete": "Digita Delete",
+    "deleting": "Eliminando...",
+    "accountDeleted": "Account eliminato",
+    "profileUpdated": "Profilo aggiornato",
+    "typeDeleteToConfirm": "Digita 'Delete' per confermare.",
+    "premium": "Premium",
+    "manageSubscription": "Gestisci Abbonamento",
+    "earnedTime": "Tempo Guadagnato",
+    "earnedTimeDesc": "Permette di guadagnare tempo extra nelle app completando esercizi",
+    "notifications": "Notifiche",
+    "notificationsDesc": "Ricevi promemoria giornalieri e notifiche motivazionali",
+    "general": "Generale",
+    "language": "Lingua",
+    "contactUs": "Contattaci",
+    "privacyPolicy": "Informativa sulla Privacy",
+    "termsOfService": "Termini di Servizio",
+    "about": "Informazioni",
+    "version": "Versione {{version}}"
+  },
+  "auth": {
+    "welcomeToLockIn": "Benvenuto su LockIn",
+    "takeControl": "Prendi il controllo del tuo tempo schermo",
+    "continueWithGoogle": "Continua con Google",
+    "continueWithApple": "Continua con Apple",
+    "continueWithEmail": "Continua con Email",
+    "getStarted": "Inizia",
+    "alreadyHaveAccount": "Ho gia un account",
+    "privacyPolicy": "Informativa sulla Privacy",
+    "termsOfService": "Termini di Servizio",
+    "welcomeBack": "Bentornato",
+    "createAccount": "Crea Account",
+    "focusGoalsWaiting": "I tuoi obiettivi di focus ti aspettano",
+    "startControlScreenTime": "Inizia a controllare il tuo tempo schermo",
+    "email": "Email",
+    "emailPlaceholder": "tua@email.it",
+    "password": "Password",
+    "passwordPlaceholder": "Inserisci la tua password",
+    "agreeToTerms": "Accetto i ",
+    "termsConditions": "Termini e Condizioni",
+    "signIn": "Accedi",
+    "signUp": "Registrati",
+    "orContinueWith": "o continua con",
+    "dontHaveAccount": "Non hai un account? ",
+    "alreadyHaveAccountQuestion": "Hai gia un account? ",
+    "loginSuccessful": "Accesso riuscito",
+    "signUpSuccessful": "Registrazione riuscita",
+    "registrationSuccessful": "Registrazione riuscita",
+    "welcomeBack2": "Bentornato!",
+    "welcomeToLockIn2": "Benvenuto su LockIn!",
+    "authenticationFailed": "Autenticazione fallita",
+    "googleAuthInProgress": "Autenticazione Google in corso",
+    "googlePlayUnavailable": "Google Play non disponibile",
+    "googleAuthFailed": "Autenticazione Google fallita",
+    "termsRequired": "Accetta i Termini e Condizioni",
+    "invalidEmail": "Email non valida",
+    "invalidEmailDesc": "Inserisci un indirizzo email valido",
+    "invalidPassword": "Password non valida",
+    "invalidPasswordDesc": "La password deve avere almeno 4 caratteri",
+    "registrationFailed": "Registrazione fallita",
+    "userNotFound": "Utente non trovato",
+    "userNotFoundDesc": "Verifica la tua email o registrati prima",
+    "loginFailed": "Accesso fallito",
+    "authenticationError": "Errore di autenticazione",
+    "pleaseTryAgain": "Per favore riprova",
+    "welcome": "Benvenuto!",
+    "authenticationSuccessful": "Autenticazione riuscita"
+  },
+  "rateApp": {
+    "rateOurApp": "Valuta la Nostra App!",
+    "chooseRating": "Scegli una valutazione",
+    "pleaseSelectRating": "Per favore seleziona una valutazione",
+    "rate": "Valuta",
+    "later": "Piu Tardi",
+    "couldNotOpenAppStore": "Impossibile aprire l'App Store",
+    "couldNotOpenPlayStore": "Impossibile aprire Google Play",
+    "tellUsImprove": "Dicci cosa possiamo migliorare",
+    "yourFeedbackPlaceholder": "Il tuo feedback...",
+    "submit": "Invia",
+    "pleaseWriteFeedback": "Per favore scrivi il tuo feedback",
+    "thankYouFeedback": "Grazie per il tuo feedback!",
+    "failedSendFeedback": "Invio fallito. Riprova."
+  },
   "community": {
-    "title": "Leaderboard",
-    "addFriends": "+ Add Friends",
-    "membersCount_one": "{{count}} Friend",
-    "membersCount_other": "{{count}} Friends",
-    "groupDescription": "See your friends Screen Time. Resets daily at midnight.",
-    "defaultGroupName": "The Focused Few",
-    "noGroupTitle": "Join a Group",
-    "noGroupDesc": "Connect with friends and compete to reduce screen time together.",
-    "createGroup": "Create Group",
-    "createGroupDesc": "Create a new group and invite your friends to join.",
-    "createGroupBtn": "Create a Group",
-    "joinGroupBtn": "Join with Code",
-    "joinGroup": "Join Group",
-    "enterInviteCode": "Enter the 6-character invite code",
-    "join": "Join",
-    "invalidCode": "Invalid invite code. Please try again.",
-    "shareMessage": "Join my group on LockIn! Use code: {{code}}",
+    "title": "Classifica",
+    "addFriends": "+ Aggiungi Amici",
+    "membersCount_one": "{{count}} Amico",
+    "membersCount_other": "{{count}} Amici",
+    "groupDescription": "Vedi il tempo schermo dei tuoi amici. Si resetta a mezzanotte.",
+    "defaultGroupName": "I Concentrati",
+    "noGroupTitle": "Unisciti a un Gruppo",
+    "noGroupDesc": "Connettiti con gli amici e compete per ridurre il tempo schermo.",
+    "createGroup": "Crea Gruppo",
+    "createGroupDesc": "Crea un nuovo gruppo e invita i tuoi amici.",
+    "createGroupBtn": "Crea un Gruppo",
+    "joinGroupBtn": "Unisciti con Codice",
+    "joinGroup": "Unisciti al Gruppo",
+    "enterInviteCode": "Inserisci il codice invito a 6 caratteri",
+    "join": "Unisciti",
+    "invalidCode": "Codice non valido. Riprova.",
+    "shareMessage": "Unisciti al mio gruppo \"{{groupName}}\" su LockIn! Usa il codice: {{code}}",
     "tabs": {
-      "screenTime": "Screen Time",
-      "streak": "Streak",
-      "focusHours": "Focus Hours"
+      "screenTime": "Tempo Schermo",
+      "streak": "Serie",
+      "focusHours": "Ore Focus"
+    }
+  },
+  "intention": {
+    "greeting": "Ciao! Perche hai bisogno di {{appName}}?",
+    "errorFallback": "Non sono riuscito a elaborare. Procedi, ma fai attenzione al tempo.",
+    "tip1": "Sii specifico su cosa devi fare",
+    "tip2": "Menziona se e urgente",
+    "tip3": "Di' quanto tempo ti serve",
+    "whyApp": "Perche {{appName}}?",
+    "blockedByLockIn": "Bloccato da LockIn",
+    "lockInCoach": "Coach LockIn",
+    "minGranted": "{{count}} min concessi",
+    "tipsTitle": "Consigli per accesso rapido",
+    "inputPlaceholder": "Dimmi perche hai bisogno di questa app...",
+    "leaveApp": "Lascia {{appName}}",
+    "header": "Imposta la tua intenzione",
+    "placeholder": "Sto aprendo questa app perche...",
+    "continueButton": "Continua su {{appName}}",
+    "coach": "Coach",
+    "timeGranted": "{{minutes}} minuti concessi"
+  },
+  "spend": {
+    "coachLimitReached": "Ciao! Hai raggiunto il limite di {{minutes}} minuti per {{appName}} oggi. Il tuo obiettivo funziona!",
+    "coachBlockedUntilTomorrow": "L'app e bloccata fino a domani. Se e urgente, dimmi!",
+    "coachError": "Non sono riuscito a elaborare. Riprova!",
+    "freeTimeActive": "Tempo Libero Attivo",
+    "freeTimeDesc": "Sei in un periodo libero. Usa l'app senza spendere tempo!",
+    "minRemainingToday": "{{count}} min rimanenti oggi",
+    "openApp": "Apri {{appName}}",
+    "totalLimitReached": "Limite Giornaliero Raggiunto",
+    "usedAllScreenTime": "Hai usato tutto il tuo tempo schermo oggi",
+    "allAppsBlockedExplanation": "Tutte le app sono bloccate perche hai raggiunto il tuo obiettivo giornaliero di tempo schermo.",
+    "totalRemaining": "Rimanente: {{count}} min",
+    "goBack": "Indietro",
+    "dailyLimitReached": "Limite Raggiunto",
+    "usedOfLimit": "{{used}}m di {{limit}}m usati",
+    "blockedUntilTomorrow": "Bloccato fino a domani",
+    "coach": "Coach",
+    "coachTyping": "Coach sta scrivendo...",
+    "chatPlaceholder": "Di' al coach di cosa hai bisogno...",
+    "appBlocked": "{{appName}} e Bloccato",
+    "earnToUnlock": "Guadagna tempo per sbloccare",
+    "minutesAvailable": "minuti disponibili",
+    "completeExercises": "Completa esercizi\nper guadagnare tempo",
+    "earnTimeNow": "Guadagna Tempo Ora",
+    "readyToUse": "Pronto a usare il tempo guadagnato?",
+    "timeTrackedAutomatically": "Il tempo viene tracciato automaticamente\ne dedotto dal tuo saldo",
+    "coachNoLimit": "Ciao! Hai passato un po' di tempo su {{appName}} oggi. Ti stai divertendo? Quando vuoi fare una pausa, sono qui!",
+    "coachFreeTimeReminder": "Promemoria: Sei in modalita Tempo Libero! Goditi il tempo su {{appName}}.",
+    "coachNotBlockedNoLimit": "Ciao! {{appName}} non e nella tua lista di blocco. Puoi usarla liberamente, ma ricorda di fare pause!",
+    "coachNotBlocked": "Ciao! {{appName}} non e nella tua lista di blocco. Puoi usarla liberamente!",
+    "limitReached": "Limite di Tempo Raggiunto",
+    "limitReachedDesc": "Hai raggiunto il tuo limite giornaliero per {{appName}}",
+    "freeTimeActiveDesc": "Goditi un utilizzo illimitato fino alla fine del Tempo Libero.",
+    "noLimitSet": "Nessun Limite Impostato",
+    "noLimitSetDesc": "Non hai un limite impostato per {{appName}}",
+    "notBlocked": "App Non Bloccata",
+    "notBlockedDesc": "{{appName}} non e nella tua lista di blocco",
+    "earnTime": "Guadagna Tempo",
+    "earnTimeDesc": "Guadagna +{{minutes}} min facendo un esercizio",
+    "useFreeTime": "Usa Tempo Libero",
+    "useFreeTimeDesc": "Usa un pass tempo libero",
+    "freeTimePasses": "{{count}} pass rimasti oggi",
+    "buyPremium": "Acquista Premium",
+    "buyPremiumDesc": "Sblocca pass tempo libero illimitati",
+    "cancelFreeTime": "Annulla Tempo Libero"
+  },
+  "onboarding": {
+    "welcome": {
+      "hello": "Ciao!",
+      "welcomeTo": "Benvenuto su",
+      "helpWithTime": "Siamo pronti ad aiutarti a",
+      "takingControl": "prendere il controllo del tuo tempo",
+      "letsStart": "Iniziamo"
+    },
+    "age": {
+      "title": "Quanti anni hai?",
+      "subtitle": "Ci aiuta a personalizzare la tua esperienza",
+      "under18": "Meno di 18",
+      "range1824": "18-24",
+      "range2530": "25-30",
+      "range3140": "31-40",
+      "range4150": "41-50",
+      "range51plus": "51+"
+    },
+    "hours": {
+      "title": "Tempo schermo giornaliero?",
+      "subtitle": "Sii onesto - non giudichiamo",
+      "range12": "1-2 ore",
+      "range24": "2-4 ore",
+      "range46": "4-6 ore",
+      "range68": "6-8 ore",
+      "range8plus": "8+ ore"
+    },
+    "newsIntro": {
+      "title": "Abbiamo brutte notizie\ne buone notizie",
+      "subtitle": "Lasciaci mostrarti qualcosa di importante sul tuo tempo schermo...",
+      "showMe": "Mostrami"
+    },
+    "badNews": {
+      "badge": "LE BRUTTE NOTIZIE",
+      "atHoursPerDay": "Con {{hours}} ore al giorno, passerai",
+      "days": "giorni",
+      "lookingAtPhone": "guardando il telefono",
+      "thisYear": "QUEST'ANNO",
+      "thatsApproximately": "Sono circa",
+      "years": "anni",
+      "ofYourLife": "della tua vita",
+      "explanation": "Si, hai letto bene. Passi la maggior parte del tuo tempo libero guardando il telefono quando potresti raggiungere i tuoi obiettivi e vivere la vita che desideri.",
+      "whatsGoodNews": "Quali sono le buone notizie?"
+    },
+    "goodNews": {
+      "badge": "LE BUONE NOTIZIE",
+      "canHelpGetBack": "LockIn puo aiutarti a recuperare",
+      "ofYourLife": "della tua vita",
+      "turnInto": "E trasformarli nelle cose che hai sempre voluto raggiungere.",
+      "moreTime": "Piu tempo per i tuoi obiettivi, le tue passioni e le persone che ami.",
+      "letsGetStarted": "Iniziamo"
+    },
+    "firstStep": {
+      "title": "Facciamo il primo passo",
+      "subtitle": "LockIn si collegera al tuo tempo schermo per darti un",
+      "focusReport": "report di focus personalizzato",
+      "seeUsage": "Vedi i tuoi dati di utilizzo reali",
+      "getRecommendations": "Ottieni raccomandazioni personalizzate",
+      "trackProgress": "Monitora i tuoi progressi nel tempo",
+      "imReady": "Sono Pronto"
+    },
+    "screenTimePermission": {
+      "title": "Consenti a LockIn di Monitorare il Tempo Schermo",
+      "secureInfo": "Il 100% delle info e sicuro e rimane sul tuo telefono",
+      "permissionGranted": "Permesso concesso!",
+      "howToEnable": "Come abilitare:",
+      "step1": "Trova \"LockIn\" nella lista delle app",
+      "step2": "Attiva \"Consenti accesso utilizzo\"",
+      "continue": "Continua",
+      "checking": "Verifica...",
+      "learnMore": "Scopri di piu",
+      "whyNeedTitle": "Perche Ne Abbiamo Bisogno",
+      "trackUsage": "Traccia il Tuo Utilizzo",
+      "trackUsageDesc": "Vedi quali app usi di piu e per quanto tempo",
+      "monitorProgress": "Monitora i Progressi",
+      "monitorProgressDesc": "Segui il tuo percorso di benessere digitale",
+      "personalizedInsights": "Analisi Personalizzate",
+      "personalizedInsightsDesc": "Ricevi raccomandazioni basate sulle tue abitudini",
+      "smartAlerts": "Avvisi Intelligenti",
+      "smartAlertsDesc": "Saprai quando stai passando troppo tempo su un'app"
+    },
+    "commitment": {
+      "title": "Fai un Impegno",
+      "committed": "Impegnato!",
+      "subtitle": "Tieni premuto per impegnarti a controllare il tuo tempo schermo",
+      "completedSubtitle": "Hai fatto il primo passo per cambiare la tua vita",
+      "keepHolding": "Continua a tenere premuto...",
+      "holdOrb": "Tieni premuto l'orb per 3 secondi",
+      "letsSetUp": "Configuriamo la tua app!"
+    },
+    "apps": {
+      "title": "Seleziona le App da Bloccare",
+      "subtitle": "Queste app saranno bloccate finche non guadagni tempo",
+      "selectApps": "Seleziona App",
+      "changeSelection": "Cambia Selezione",
+      "appsSelected": "{{count}} app selezionate",
+      "categoriesIncluded": "{{count}} categorie incluse"
+    },
+    "websites": {
+      "title": "Blocca Siti Web",
+      "subtitle": "Opzionale: Blocca siti web distraenti nei browser",
+      "addCustom": "Aggiungi sito personalizzato",
+      "customWebsites": "Siti personalizzati:",
+      "websitesSelected": "{{count}} sito selezionato",
+      "websitesSelectedPlural": "{{count}} siti selezionati"
+    },
+    "goal": {
+      "title": "Imposta il Tuo Obiettivo Giornaliero",
+      "subtitle": "Quanto tempo schermo vuoi per app?",
+      "lightUsage": "Uso leggero",
+      "moderate": "Moderato",
+      "balanced": "Equilibrato",
+      "flexible": "Flessibile",
+      "canChange": "Puoi cambiarlo in qualsiasi momento nelle impostazioni",
+      "min30": "30 min",
+      "hour1": "1 ora",
+      "hours2": "2 ore",
+      "hours3": "3 ore"
+    },
+    "complete": {
+      "title": "Tutto Pronto!",
+      "subtitle": "Le app selezionate sono ora bloccate.\nGuadagna tempo con gli esercizi per usarle!",
+      "appsBlocked": "App bloccate",
+      "websitesBlocked": "Siti bloccati",
+      "dailyLimitPerApp": "Limite giornaliero per app",
+      "getStarted": "Inizia",
+      "continue": "Continua",
+      "skip": "Salta",
+      "startUsingApp": "Inizia a Usare l'App"
+    }
+  },
+  "helpContent": {
+    "home": {
+      "welcome": {
+        "title": "Benvenuto in LockIn",
+        "description": "Il tuo compagno personale per costruire abitudini digitali piu sane. Ti aiuteremo a rimanere concentrato e a sfruttare al meglio il tuo tempo schermo."
+      },
+      "orb": {
+        "title": "Il Tuo Orbe della Salute",
+        "description": "Questo orbe riflette il tuo benessere digitale. Brilla verde quando stai bene e passa a colori piu caldi quando potrebbe essere il momento di una pausa."
+      },
+      "stats": {
+        "title": "Traccia i Tuoi Progressi",
+        "description": "Tieni d'occhio la tua serie, il tempo schermo giornaliero e come ti confronti con la media settimanale. Piccoli miglioramenti portano a grandi cambiamenti."
+      },
+      "quickActions": {
+        "title": "Azioni Rapide",
+        "description": "Tocca il pulsante fulmine in basso a destra per accesso istantaneo a funzioni di blocco, orari e modalita focus. Tutto cio di cui hai bisogno, a un tocco."
+      },
+      "schedules": {
+        "title": "Orari Intelligenti",
+        "description": "Crea orari di blocco automatici per lavoro, studio o riposo. Imposta una volta e lascia che l'app faccia il resto."
+      },
+      "appUsage": {
+        "title": "Informazioni App",
+        "description": "Vedi quali app usano la maggior parte del tuo tempo. Capire le tue abitudini e il primo passo per migliorarle."
+      },
+      "ready": {
+        "title": "Sei Pronto!",
+        "description": "Inizia bloccando alcune app che ti distraggono e osserva il tuo focus migliorare. Siamo qui per supportarti in questo viaggio."
+      }
+    },
+    "blocking": {
+      "intro": {
+        "title": "Controlli di Blocco",
+        "description": "Questo e il tuo centro di comando per gestire le distrazioni. Blocca app, imposta orari e definisci limiti giornalieri da un unico posto."
+      },
+      "focusSession": {
+        "title": "Sessioni Focus",
+        "description": "Hai bisogno di concentrarti ora? Avvia una sessione focus per bloccare le app distraenti per una durata impostata. Puoi anche richiedere di completare un'attivita prima di sbloccare."
+      },
+      "schedules": {
+        "title": "Blocco Programmato",
+        "description": "Imposta orari ricorrenti per quando devi rimanere concentrato. Perfetto per ore di lavoro, sessioni di studio o prima di dormire."
+      },
+      "appLimits": {
+        "title": "Limiti Giornalieri App",
+        "description": "Non sei pronto a bloccare completamente un'app? Imposta invece un limite di tempo giornaliero. Una volta raggiunto, l'app viene bloccata per il resto della giornata."
+      }
+    },
+    "stats": {
+      "intro": {
+        "title": "Il Tuo Report Settimanale",
+        "description": "Ottieni un quadro completo delle tue abitudini di tempo schermo. Traccia ore totali, medie giornaliere e identifica pattern nel tuo utilizzo."
+      },
+      "weeklyView": {
+        "title": "Settimana per Settimana",
+        "description": "Scorri a sinistra e destra per confrontare settimane diverse. Vedi i tuoi progressi nel tempo e celebra i tuoi miglioramenti."
+      },
+      "calendar": {
+        "title": "Calendario Utilizzo",
+        "description": "La mappa termica del calendario mostra il tuo utilizzo giornaliero a colpo d'occhio. Colori piu scuri indicano piu tempo schermo."
+      },
+      "appBreakdown": {
+        "title": "Dettaglio App",
+        "description": "Vedi esattamente quali app occupano il tuo tempo. Usa queste informazioni per prendere decisioni informate su cosa limitare."
+      }
+    },
+    "detox": {
+      "intro": {
+        "title": "Detox Digitale",
+        "description": "A volte hai bisogno di una pausa completa dal telefono. Avvia una sessione detox per bloccare tutte le app distraenti e riconnetterti con il mondo intorno a te."
+      },
+      "timer": {
+        "title": "Imposta la Durata",
+        "description": "Scegli per quanto tempo vuoi stare senza telefono. Inizia con sessioni piu brevi e aumenta gradualmente mentre costruisci l'abitudine."
+      },
+      "unlock": {
+        "title": "Resta Impegnato",
+        "description": "Una volta avviata una sessione detox, funziona fino al completamento. Questo ti aiuta a rimanere impegnato verso il tuo obiettivo senza tentazioni."
+      }
+    },
+    "profile": {
+      "intro": {
+        "title": "Il Tuo Profilo",
+        "description": "Gestisci il tuo account, visualizza i traguardi e personalizza le impostazioni. Tutto su di te in un unico posto."
+      },
+      "achievements": {
+        "title": "Traguardi",
+        "description": "Sblocca badge mentre costruisci abitudini migliori. Ogni traguardo rappresenta una pietra miliare nel tuo percorso di benessere digitale."
+      },
+      "defaultBlocks": {
+        "title": "Impostazioni Predefinite",
+        "description": "Imposta le tue app bloccate e i limiti di tempo predefiniti. Questi saranno preselezionati quando crei nuovi orari, facendoti risparmiare tempo."
+      }
+    }
+  },
+  "loader": {
+    "loading": "Caricamento...",
+    "phrases": [
+      "Il tuo viaggio verso il benessere digitale inizia ora",
+      "Ogni momento di concentrazione conta",
+      "Costruire abitudini migliori, un passo alla volta",
+      "Resta concentrato, resta presente",
+      "Riprendi il controllo del tuo tempo",
+      "Progresso, non perfezione",
+      "I piccoli passi portano a grandi cambiamenti",
+      "Sei più forte delle tue distrazioni",
+      "Fai contare oggi",
+      "La concentrazione è il tuo superpotere",
+      "Liberati dalle catene digitali",
+      "Il te stesso del futuro ti ringrazierà",
+      "La disciplina è libertà",
+      "Domina il telefono, domina la vita",
+      "Vivi il momento presente",
+      "Meno schermo, più vita vera",
+      "La tua attenzione è preziosa",
+      "Investi in te stesso oggi",
+      "Crea spazio per ciò che conta",
+      "La consapevolezza inizia con l'attenzione"
+    ]
+  },
+  "verifiedLockIn": {
+    "title": "LockIn Verificato",
+    "durations": {
+      "30m": "30m",
+      "1h": "1h",
+      "1.5h": "1,5h",
+      "2h": "2h"
+    },
+    "presetTasks": {
+      "cleanRoom": "Pulire la stanza",
+      "completeHomework": "Completare i compiti",
+      "workoutRoutine": "Allenamento",
+      "cookMeal": "Cucinare un pasto",
+      "readPages": "Leggere 10 pagine",
+      "writePlan": "Scrivere un piano"
+    },
+    "step1": {
+      "whatAccomplish": "Cosa realizzerai?",
+      "describeTask": "Descrivi il tuo compito...",
+      "orChoosePreset": "Oppure scegli un preset"
+    },
+    "step2": {
+      "takeBeforePhoto": "Scatta una foto \"Prima\"",
+      "showCurrentState": "Mostra lo stato attuale del tuo compito.\nQuesto dimostra che hai fatto un vero lavoro!",
+      "tapToTakePhoto": "Tocca per scattare",
+      "tips": "Suggerimenti:",
+      "tipsContent": "Mostra chiaramente il disordine/compito. Una buona illuminazione aiuta. Questa sarà confrontata con la foto \"dopo\"!"
+    },
+    "step3": {
+      "beforePhotoReady": "Foto prima pronta",
+      "taskSelected": "Compito selezionato",
+      "focusDuration": "Durata concentrazione",
+      "appsToBlock": "App da bloccare",
+      "appsWillBeBlocked": "{{count}} app saranno bloccate"
+    },
+    "buttons": {
+      "continue": "Continua",
+      "lockInNow": "Inizia LockIn",
+      "completeToUnlock": "Completa il compito + scatta foto \"dopo\" per sbloccare"
+    }
+  },
+  "focusMode": {
+    "title": "Modalità Focus",
+    "subtitle": "Blocca le distrazioni e resta concentrato",
+    "startSession": "Inizia sessione Focus",
+    "endSession": "Termina sessione Focus",
+    "duration": "Durata",
+    "minutes": "{{count}} minuti",
+    "whyTitle": "Perché la Modalità Focus?",
+    "whyDescription": "Blocca le app che distraggono e resta produttivo. Le sessioni di focus ti aiutano a concentrarti su ciò che conta.",
+    "settings": {
+      "title": "Impostazioni Focus",
+      "durationLabel": "Durata",
+      "appsToBlock": "App da bloccare",
+      "selectApps": "Seleziona le app da bloccare",
+      "appsSelected": "{{count}} app selezionate",
+      "save": "Salva impostazioni"
     }
   }
 }

@@ -184,8 +184,8 @@ export const AchievementBadge = ({
               achievement.unlocked
                 ? "#ffffff"
                 : isDark
-                  ? "#4a4a4a"
-                  : "#9ca3af"
+                ? "#4a4a4a"
+                : "#9ca3af"
             }
             strokeWidth={2}
           />

@@ -20,6 +20,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/context/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -56,6 +57,7 @@ export const SpendTimeModal = ({
   onEarnTime,
   onUrgentAccess,
 }: SpendTimeModalProps) => {
+  const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const { wallet, getTotalRemainingLimit } = useEarnedTime();
@@ -80,16 +82,16 @@ export const SpendTimeModal = ({
         {
           id: '1',
           type: 'coach',
-          text: `Hey! You've reached your ${dailyLimitMinutes} minute limit for ${appName} today. That's your goal working! 🎯`,
+          text: t("spend.coachLimitReached", { minutes: dailyLimitMinutes, appName }),
         },
         {
           id: '2',
           type: 'coach',
-          text: `The app is blocked until tomorrow. If you have something urgent, just tell me what you need!`,
+          text: t("spend.coachBlockedUntilTomorrow"),
         },
       ]);
     }
-  }, [visible, realUsedMinutes, dailyLimitMinutes, appName, forceCoachChat]);
+  }, [visible, realUsedMinutes, dailyLimitMinutes, appName, forceCoachChat, t]);
 
   // Auto scroll to bottom
   useEffect(() => {
@@ -152,7 +154,7 @@ export const SpendTimeModal = ({
         {
           id: (Date.now() + 1).toString(),
           type: 'coach',
-          text: "Sorry, I couldn't process that. Please try again!",
+          text: t("spend.coachError"),
         },
       ]);
       setIsTyping(false);
@@ -289,7 +291,7 @@ export const SpendTimeModal = ({
                 marginBottom: 8,
               }}
             >
-              Free Time Active
+              {t("spend.freeTimeActive")}
             </Text>
 
             <Text
@@ -300,7 +302,7 @@ export const SpendTimeModal = ({
                 lineHeight: 20,
               }}
             >
-              You're in a scheduled free period. Use the app without spending earned time!
+              {t("spend.freeTimeDesc")}
             </Text>
 
             <View
@@ -323,7 +325,7 @@ export const SpendTimeModal = ({
                   fontWeight: '600',
                 }}
               >
-                {realRemainingLimit} min remaining today
+                {t("spend.minRemainingToday", { count: realRemainingLimit })}
               </Text>
             </View>
           </View>
@@ -355,7 +357,7 @@ export const SpendTimeModal = ({
                 marginLeft: 10,
               }}
             >
-              Open {appName}
+              {t("spend.openApp", { appName })}
             </Text>
           </TouchableOpacity>
         </View>
@@ -420,7 +422,7 @@ export const SpendTimeModal = ({
               textAlign: 'center',
             }}
           >
-            Total Daily Limit Reached
+            {t("spend.totalLimitReached")}
           </Text>
 
           <Text
@@ -431,7 +433,7 @@ export const SpendTimeModal = ({
               marginTop: 8,
             }}
           >
-            You've used all your screen time for today
+            {t("spend.usedAllScreenTime")}
           </Text>
         </View>
 
@@ -455,7 +457,7 @@ export const SpendTimeModal = ({
                 marginBottom: 16,
               }}
             >
-              All apps are blocked because you've reached your total daily screen time goal. This helps you maintain healthy habits.
+              {t("spend.allAppsBlockedExplanation")}
             </Text>
 
             <View
@@ -473,7 +475,7 @@ export const SpendTimeModal = ({
                   fontWeight: '600',
                 }}
               >
-                Total remaining: {totalRemaining} min
+                {t("spend.totalRemaining", { count: totalRemaining })}
               </Text>
             </View>
           </View>
@@ -495,7 +497,7 @@ export const SpendTimeModal = ({
                 color: isDark ? '#ffffff' : '#374151',
               }}
             >
-              Go Back
+              {t("spend.goBack")}
             </Text>
           </TouchableOpacity>
         </View>
@@ -547,7 +549,7 @@ export const SpendTimeModal = ({
                     color: '#ef4444',
                   }}
                 >
-                  Daily Limit Reached
+                  {t("spend.dailyLimitReached")}
                 </Text>
                 <Text
                   style={{
@@ -556,7 +558,7 @@ export const SpendTimeModal = ({
                     marginTop: 2,
                   }}
                 >
-                  {realUsedMinutes}m used of {dailyLimitMinutes}m limit
+                  {t("spend.usedOfLimit", { used: realUsedMinutes, limit: dailyLimitMinutes })}
                 </Text>
               </View>
             </View>
@@ -637,7 +639,7 @@ export const SpendTimeModal = ({
                   marginTop: 2,
                 }}
               >
-                Blocked until tomorrow
+                {t("spend.blockedUntilTomorrow")}
               </Text>
             </View>
           </View>
@@ -674,7 +676,7 @@ export const SpendTimeModal = ({
                       fontWeight: '500',
                     }}
                   >
-                    Coach
+                    {t("spend.coach")}
                   </Text>
                 </View>
               )}
@@ -739,7 +741,7 @@ export const SpendTimeModal = ({
                     fontSize: 14,
                   }}
                 >
-                  Coach is typing...
+                  {t("spend.coachTyping")}
                 </Text>
               </View>
             </View>
@@ -760,7 +762,7 @@ export const SpendTimeModal = ({
             <TextInput
               value={chatInput}
               onChangeText={setChatInput}
-              placeholder="Tell coach what you need..."
+              placeholder={t("spend.chatPlaceholder")}
               placeholderTextColor={isDark ? '#6b7280' : '#9ca3af'}
               style={{
                 flex: 1,
@@ -927,7 +929,7 @@ export const SpendTimeModal = ({
                 letterSpacing: -0.5,
               }}
             >
-              {appName} is Blocked
+              {t("spend.appBlocked", { appName })}
             </Text>
 
             <Text
@@ -938,7 +940,7 @@ export const SpendTimeModal = ({
                 marginTop: 6,
               }}
             >
-              Earn time to unlock this app
+              {t("spend.earnToUnlock")}
             </Text>
           </View>
 
@@ -1007,7 +1009,7 @@ export const SpendTimeModal = ({
                       marginTop: 4,
                     }}
                   >
-                    minutes available
+                    {t("spend.minutesAvailable")}
                   </Text>
 
                   <View
@@ -1030,7 +1032,7 @@ export const SpendTimeModal = ({
                       lineHeight: 18,
                     }}
                   >
-                    Complete exercises to{'\n'}earn screen time
+                    {t("spend.completeExercises")}
                   </Text>
                 </View>
               </BlurView>
@@ -1071,7 +1073,7 @@ export const SpendTimeModal = ({
                     letterSpacing: -0.3,
                   }}
                 >
-                  Earn Time Now
+                  {t("spend.earnTimeNow")}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -1098,7 +1100,7 @@ export const SpendTimeModal = ({
                   fontWeight: '600',
                 }}
               >
-                Go Back
+                {t("spend.goBack")}
               </Text>
             </TouchableOpacity>
           </View>
@@ -1228,7 +1230,7 @@ export const SpendTimeModal = ({
               marginTop: 6,
             }}
           >
-            Ready to use your earned time?
+            {t("spend.readyToUse")}
           </Text>
         </View>
 
@@ -1298,7 +1300,7 @@ export const SpendTimeModal = ({
                     marginTop: 4,
                   }}
                 >
-                  minutes available
+                  {t("spend.minutesAvailable")}
                 </Text>
 
                 {/* Subtle divider */}
@@ -1322,7 +1324,7 @@ export const SpendTimeModal = ({
                     lineHeight: 18,
                   }}
                 >
-                  Time will be tracked automatically{'\n'}and deducted from your balance
+                  {t("spend.timeTrackedAutomatically")}
                 </Text>
               </View>
             </BlurView>
@@ -1363,7 +1365,7 @@ export const SpendTimeModal = ({
                   letterSpacing: -0.3,
                 }}
               >
-                Open {appName}
+                {t("spend.openApp", { appName })}
               </Text>
             </LinearGradient>
           </TouchableOpacity>
@@ -1390,7 +1392,7 @@ export const SpendTimeModal = ({
                 fontWeight: '600',
               }}
             >
-              Go Back
+              {t("spend.goBack")}
             </Text>
           </TouchableOpacity>
         </View>

@@ -23,7 +23,7 @@ import { useBlocking } from "@/context/BlockingContext";
 import { getAchievementStats } from "@/lib/achievementTracking";
 import AnimatedOrb from "@/components/AnimatedOrb";
 import { HelpCarousel } from "@/components/modals/HelpCarousel";
-import { homeHelpCards } from "@/lib/helpContent";
+import { getHelpCards } from "@/lib/helpContent";
 import { ThemedBackground } from "@/components/ui/ThemedBackground";
 import { TodaysProgress } from "@/components/TodaysProgress";
 import {
@@ -357,7 +357,7 @@ export default function HomeScreen() {
         {/* Help Carousel Modal */}
         <HelpCarousel
           visible={showHelpCarousel}
-          cards={homeHelpCards}
+          cards={getHelpCards('home', t)}
           onClose={() => setShowHelpCarousel(false)}
         />
       </SafeAreaView>

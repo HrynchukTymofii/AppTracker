@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useLockIn } from "@/context/LockInContext";
+import { useTranslation } from "react-i18next";
 import { useEarnedTime } from "@/context/EarnedTimeContext";
 import {
   HeroSection,
@@ -21,6 +22,7 @@ export default function LockInScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const router = useRouter();
+  const { t } = useTranslation();
   const params = useLocalSearchParams<{
     exercise?: string;
     openVerified?: string;
@@ -107,10 +109,10 @@ export default function LockInScreen() {
           {/* Give Up Confirmation Modal */}
           <ConfirmationModal
             visible={showGiveUpConfirm}
-            title="Give Up?"
-            message="You'll lose your current streak if you give up now. Are you sure?"
-            confirmText="Give Up"
-            cancelText="Keep Going"
+            title={t("lockin.giveUp")}
+            message={t("lockin.giveUpMessage")}
+            confirmText={t("lockin.giveUpConfirm")}
+            cancelText={t("lockin.keepGoing")}
             type="danger"
             onConfirm={handleConfirmGiveUp}
             onCancel={() => setShowGiveUpConfirm(false)}

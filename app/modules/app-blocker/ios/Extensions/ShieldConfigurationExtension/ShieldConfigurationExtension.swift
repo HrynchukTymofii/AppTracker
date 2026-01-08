@@ -6,6 +6,17 @@ import UIKit
 /// Provides custom UI for the blocking screen shown when user tries to open a blocked app.
 class ShieldConfigurationExtension: ShieldConfigurationDataSource {
 
+    // MARK: - Localization Helpers
+
+    private func localizedString(_ key: String, comment: String = "") -> String {
+        return NSLocalizedString(key, bundle: Bundle(for: type(of: self)), comment: comment)
+    }
+
+    private func localizedStringWithFormat(_ format: String, _ arguments: CVarArg...) -> String {
+        let localizedFormat = localizedString(format)
+        return String(format: localizedFormat, arguments: arguments)
+    }
+
     // MARK: - Shield Configuration for Applications
 
     override func configuration(shielding application: Application) -> ShieldConfiguration {
@@ -15,20 +26,20 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             backgroundColor: UIColor.black,
             icon: createIcon(),
             title: ShieldConfiguration.Label(
-                text: "App Blocked",
+                text: localizedString("shield.app.title.simple", comment: "App blocked title"),
                 color: .white
             ),
             subtitle: ShieldConfiguration.Label(
-                text: "This app is currently blocked.\nStay focused on what matters!",
+                text: localizedString("shield.app.subtitle.focus", comment: "App blocked subtitle"),
                 color: UIColor.lightGray
             ),
             primaryButtonLabel: ShieldConfiguration.Label(
-                text: "Unlock for 15 min",
+                text: localizedString("shield.button.unlock.15", comment: "Unlock for 15 min button"),
                 color: .white
             ),
             primaryButtonBackgroundColor: UIColor.systemBlue,
             secondaryButtonLabel: ShieldConfiguration.Label(
-                text: "Close",
+                text: localizedString("shield.button.close", comment: "Close button"),
                 color: UIColor.lightGray
             )
         )
@@ -37,26 +48,27 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     // MARK: - Shield Configuration for Application Categories
 
     override func configuration(shielding application: Application, in category: ActivityCategory) -> ShieldConfiguration {
+        let categoryName = category.localizedDisplayName ?? localizedString("shield.fallback.category", comment: "Fallback category name")
         // Custom blocking screen for app categories
         return ShieldConfiguration(
             backgroundBlurStyle: .systemThickMaterialDark,
             backgroundColor: UIColor.black,
             icon: createIcon(),
             title: ShieldConfiguration.Label(
-                text: "\(category.localizedDisplayName ?? "Category") Blocked",
+                text: localizedStringWithFormat("shield.category.title", categoryName),
                 color: .white
             ),
             subtitle: ShieldConfiguration.Label(
-                text: "Apps in this category are blocked.\nFocus on your goals!",
+                text: localizedString("shield.category.subtitle", comment: "Category blocked subtitle"),
                 color: UIColor.lightGray
             ),
             primaryButtonLabel: ShieldConfiguration.Label(
-                text: "Unlock for 15 min",
+                text: localizedString("shield.button.unlock.15", comment: "Unlock for 15 min button"),
                 color: .white
             ),
             primaryButtonBackgroundColor: UIColor.systemBlue,
             secondaryButtonLabel: ShieldConfiguration.Label(
-                text: "Close",
+                text: localizedString("shield.button.close", comment: "Close button"),
                 color: UIColor.lightGray
             )
         )
@@ -65,26 +77,27 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     // MARK: - Shield Configuration for Web Domains
 
     override func configuration(shielding webDomain: WebDomain) -> ShieldConfiguration {
+        let domainName = webDomain.domain ?? localizedString("shield.fallback.website", comment: "Fallback website name")
         // Custom blocking screen for websites
         return ShieldConfiguration(
             backgroundBlurStyle: .systemThickMaterialDark,
             backgroundColor: UIColor.black,
             icon: createIcon(),
             title: ShieldConfiguration.Label(
-                text: "Website Blocked",
+                text: localizedString("shield.website.title.simple", comment: "Website blocked title"),
                 color: .white
             ),
             subtitle: ShieldConfiguration.Label(
-                text: "\(webDomain.domain ?? "This website") is blocked.\nStay on track!",
+                text: localizedStringWithFormat("shield.website.subtitle.domain", domainName),
                 color: UIColor.lightGray
             ),
             primaryButtonLabel: ShieldConfiguration.Label(
-                text: "Unlock for 15 min",
+                text: localizedString("shield.button.unlock.15", comment: "Unlock for 15 min button"),
                 color: .white
             ),
             primaryButtonBackgroundColor: UIColor.systemBlue,
             secondaryButtonLabel: ShieldConfiguration.Label(
-                text: "Close",
+                text: localizedString("shield.button.close", comment: "Close button"),
                 color: UIColor.lightGray
             )
         )
@@ -98,20 +111,20 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             backgroundColor: UIColor.black,
             icon: createIcon(),
             title: ShieldConfiguration.Label(
-                text: "Website Category Blocked",
+                text: localizedString("shield.website.category.title", comment: "Website category blocked title"),
                 color: .white
             ),
             subtitle: ShieldConfiguration.Label(
-                text: "Websites in this category are blocked.\nKeep focusing!",
+                text: localizedString("shield.website.category.subtitle", comment: "Website category blocked subtitle"),
                 color: UIColor.lightGray
             ),
             primaryButtonLabel: ShieldConfiguration.Label(
-                text: "Unlock for 15 min",
+                text: localizedString("shield.button.unlock.15", comment: "Unlock for 15 min button"),
                 color: .white
             ),
             primaryButtonBackgroundColor: UIColor.systemBlue,
             secondaryButtonLabel: ShieldConfiguration.Label(
-                text: "Close",
+                text: localizedString("shield.button.close", comment: "Close button"),
                 color: UIColor.lightGray
             )
         )

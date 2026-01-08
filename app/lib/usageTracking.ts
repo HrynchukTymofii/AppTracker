@@ -266,7 +266,7 @@ export const getWeekUsageStatsWithOffset = async (weekOffset: number): Promise<U
         const appsMap = new Map<string, any>();
 
         dbData.forEach(row => {
-          totalScreenTime += row.screen_time || 0;
+          totalScreenTime += row.total_screen_time || 0;
           totalPickups += row.pickups || 0;
 
           // Aggregate app data
@@ -352,7 +352,7 @@ export const getDailyUsageForWeek = async (weekOffset: number = 0): Promise<{ da
         // Create a map of date -> hours from database
         const dateHoursMap = new Map<string, number>();
         dbData.forEach(row => {
-          const hours = row.screen_time / (1000 * 60 * 60); // Convert ms to hours
+          const hours = row.total_screen_time / (1000 * 60 * 60); // Convert ms to hours
           dateHoursMap.set(row.date, hours);
         });
 

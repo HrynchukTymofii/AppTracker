@@ -6,19 +6,24 @@ import { useTranslation } from "react-i18next";
 interface PermissionBannerProps {
   accessibilityEnabled: boolean;
   overlayEnabled: boolean;
+  usageStatsEnabled: boolean;
   onAccessibilityPress: () => void;
   onOverlayPress: () => void;
+  onUsageStatsPress: () => void;
 }
 
 export const PermissionBanner = ({
   accessibilityEnabled,
   overlayEnabled,
+  usageStatsEnabled,
   onAccessibilityPress,
   onOverlayPress,
+  onUsageStatsPress,
 }: PermissionBannerProps) => {
   const { t } = useTranslation();
 
-  if (accessibilityEnabled && overlayEnabled) {
+  // Only show if at least one permission is missing
+  if (accessibilityEnabled && overlayEnabled && usageStatsEnabled) {
     return null;
   }
 
@@ -54,6 +59,26 @@ export const PermissionBanner = ({
       <Text style={{ color: "#78350f", marginBottom: 16 }}>
         {t("blocking.permissionsDesc")}
       </Text>
+
+      {!usageStatsEnabled && (
+        <TouchableOpacity
+          onPress={onUsageStatsPress}
+          style={{
+            backgroundColor: "rgba(120, 53, 15, 0.2)",
+            padding: 12,
+            borderRadius: 8,
+            marginBottom: 8,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text style={{ color: "#78350f", fontWeight: "600" }}>
+            {t("blocking.usageDataAccess") || "Usage Data Access"}
+          </Text>
+          <ChevronRight size={20} color="#78350f" />
+        </TouchableOpacity>
+      )}
 
       {!accessibilityEnabled && (
         <TouchableOpacity

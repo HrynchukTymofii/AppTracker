@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 import { Clock, Check, X, Camera, ChevronRight, History, Dumbbell } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { LockInSession } from "@/context/LockInContext";
+import { useTranslation } from "react-i18next";
 
 interface SessionHistoryProps {
   sessions: LockInSession[];
@@ -19,25 +20,26 @@ const formatDuration = (minutes: number): string => {
   return `${minutes}m`;
 };
 
-const formatTimeAgo = (timestamp: number): string => {
-  const now = Date.now();
-  const diff = now - timestamp;
-  const minutes = Math.floor(diff / 60000);
-  const hours = Math.floor(diff / 3600000);
-  const days = Math.floor(diff / 86400000);
-
-  if (days > 0) return days === 1 ? "Yesterday" : `${days} days ago`;
-  if (hours > 0) return `${hours}h ago`;
-  if (minutes > 0) return `${minutes}m ago`;
-  return "Just now";
-};
-
 export const SessionHistory: React.FC<SessionHistoryProps> = ({
   sessions,
   isDark,
   onSeeAll,
 }) => {
+  const { t } = useTranslation();
   const recentSessions = sessions.slice(0, 5);
+
+  const formatTimeAgo = (timestamp: number): string => {
+    const now = Date.now();
+    const diff = now - timestamp;
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+
+    if (days > 0) return days === 1 ? t("lockin.yesterday") : t("lockin.daysAgo", { count: days });
+    if (hours > 0) return t("lockin.hoursAgo", { count: hours });
+    if (minutes > 0) return t("lockin.minutesAgo", { count: minutes });
+    return t("lockin.justNow");
+  };
 
   const getStatusColor = (status: string, type?: string) => {
     if (type === "exercise") {
@@ -90,7 +92,7 @@ export const SessionHistory: React.FC<SessionHistoryProps> = ({
               marginLeft: 8,
             }}
           >
-            Recent Activities
+            {t("lockin.recentActivities")}
           </Text>
         </View>
         {sessions.length > 5 && (
@@ -109,7 +111,7 @@ export const SessionHistory: React.FC<SessionHistoryProps> = ({
                 color: "#3b82f6",
               }}
             >
-              See all
+              {t("lockin.seeAll")}
             </Text>
             <ChevronRight size={16} color="#3b82f6" />
           </TouchableOpacity>
@@ -174,7 +176,7 @@ export const SessionHistory: React.FC<SessionHistoryProps> = ({
                 }}
                 numberOfLines={1}
               >
-                {session.taskDescription || "Focus Session"}
+                {session.taskDescription || t("lockin.focusSession")}
               </Text>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Clock size={12} color={isDark ? "#6b7280" : "#9ca3af"} />
@@ -278,7 +280,7 @@ export const SessionHistory: React.FC<SessionHistoryProps> = ({
               marginBottom: 4,
             }}
           >
-            No sessions yet
+            {t("lockin.noSessions")}
           </Text>
           <Text
             style={{
@@ -287,7 +289,7 @@ export const SessionHistory: React.FC<SessionHistoryProps> = ({
               textAlign: "center",
             }}
           >
-            Start a LockIn to see your history
+            {t("lockin.startFirst")}
           </Text>
         </View>
       )}

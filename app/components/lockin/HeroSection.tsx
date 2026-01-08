@@ -1,12 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import { View, Text, Animated, Easing } from "react-native";
 import { Crosshair } from "lucide-react-native";
+import { useTranslation } from "react-i18next";
 
 interface HeroSectionProps {
   isDark: boolean;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ isDark }) => {
+  const { t } = useTranslation();
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const ringScale1 = useRef(new Animated.Value(0.8)).current;
@@ -172,7 +174,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ isDark }) => {
           letterSpacing: -0.5,
         }}
       >
-        Ready to Earn Time?
+        {t("lockin.readyToEarnTime")}
       </Text>
 
       {/* Subtitle */}
@@ -184,7 +186,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ isDark }) => {
           textAlign: "center",
         }}
       >
-        LockIn to earn screen time
+        {t("lockin.lockInToEarn")}
       </Text>
     </View>
   );

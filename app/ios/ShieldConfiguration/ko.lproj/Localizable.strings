@@ -1,0 +1,17 @@
+/* Shield Configuration Localization - Korean */
+
+/* Fallback names */
+"shield.fallback.app" = "이 앱";
+"shield.fallback.website" = "이 웹사이트";
+
+/* App blocked shield */
+"shield.app.title" = "%@이(가) 차단됨";
+"shield.app.subtitle" = "집중하세요! 이 앱은 현재 LockIn에 의해 차단되어 있습니다.";
+
+/* Website blocked shield */
+"shield.website.title" = "%@이(가) 차단됨";
+"shield.website.subtitle" = "집중하세요! 이 웹사이트는 현재 LockIn에 의해 차단되어 있습니다.";
+
+/* Buttons */
+"shield.button.unlock" = "5분간 차단 해제";
+"shield.button.close" = "닫기";

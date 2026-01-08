@@ -9,6 +9,7 @@ import {
   AppState,
   Dimensions,
   Platform,
+  Animated,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {
@@ -73,7 +74,7 @@ export const Step1Welcome = ({
 }: {
   onContinue: () => void;
 }) => {
-  const { colors } = useOnboardingTheme();
+  const { colors, isDark } = useOnboardingTheme();
 
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, paddingBottom: 40 }}>
@@ -85,12 +86,12 @@ export const Step1Welcome = ({
 
       <FadeInView delay={100}>
         <Text style={{
-          fontSize: 40,
+          fontSize: 44,
           fontWeight: '800',
           color: colors.textPrimary,
           textAlign: 'center',
           marginBottom: 16,
-          letterSpacing: -1,
+          letterSpacing: -1.5,
         }}>
           Hello!
         </Text>
@@ -98,30 +99,32 @@ export const Step1Welcome = ({
 
       <FadeInView delay={200}>
         <Text style={{
-          fontSize: 22,
+          fontSize: 24,
           color: colors.textSecondary,
           textAlign: 'center',
-          marginBottom: 12,
-          lineHeight: 30,
-          fontWeight: '500',
+          marginBottom: 16,
+          lineHeight: 32,
+          fontWeight: '600',
         }}>
-          Welcome to LockIn
+          Welcome to{' '}
+          <Text style={{ color: COLORS.gradientPurple }}>LockIn</Text>
         </Text>
       </FadeInView>
 
       <FadeInView delay={300}>
-        <Text style={{
-          fontSize: 17,
-          color: colors.textTertiary,
-          textAlign: 'center',
-          marginBottom: 56,
-          lineHeight: 26,
-        }}>
-          We're ready to help you with{'\n'}
-          <Text style={{ fontWeight: '600', color: colors.textPrimary }}>
-            taking control of your time
+        <GlassCard variant="gradient" style={{ marginBottom: 48, padding: 24 }}>
+          <Text style={{
+            fontSize: 17,
+            color: colors.textSecondary,
+            textAlign: 'center',
+            lineHeight: 26,
+          }}>
+            We're ready to help you with{'\n'}
+            <Text style={{ fontWeight: '700', color: colors.textPrimary }}>
+              taking control of your time
+            </Text>
           </Text>
-        </Text>
+        </GlassCard>
       </FadeInView>
 
       <FadeInView delay={400}>
@@ -588,7 +591,13 @@ export const Step7FirstStep = ({
 }: {
   onContinue: () => void;
 }) => {
-  const { colors } = useOnboardingTheme();
+  const { colors, isDark } = useOnboardingTheme();
+
+  const features = [
+    { icon: '📊', text: 'See your real usage data' },
+    { icon: '🎯', text: 'Get personalized recommendations' },
+    { icon: '📈', text: 'Track your progress over time' },
+  ];
 
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, paddingBottom: 40 }}>
@@ -616,7 +625,7 @@ export const Step7FirstStep = ({
           fontSize: 17,
           color: colors.textSecondary,
           textAlign: 'center',
-          marginBottom: 40,
+          marginBottom: 32,
           lineHeight: 26,
         }}>
           LockIn will connect to your screen time to give you a{' '}
@@ -627,36 +636,57 @@ export const Step7FirstStep = ({
       </FadeInView>
 
       <FadeInView delay={300}>
-        <View style={{ marginBottom: 40, paddingHorizontal: 8 }}>
-          {[
-            'See your real usage data',
-            'Get personalized recommendations',
-            'Track your progress over time',
-          ].map((text, index) => (
-            <View key={index} style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              paddingVertical: 14,
-            }}>
+        <GlassCard variant="gradient" style={{ marginBottom: 40, padding: 0 }}>
+          {features.map((item, index) => (
+            <View
+              key={index}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingVertical: 16,
+                paddingHorizontal: 20,
+                borderBottomWidth: index < features.length - 1 ? 1 : 0,
+                borderBottomColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
+              }}
+            >
               <View style={{
-                width: 6,
-                height: 6,
-                borderRadius: 3,
-                backgroundColor: '#10b981',
+                width: 40,
+                height: 40,
+                borderRadius: 12,
+                backgroundColor: isDark ? 'rgba(16, 185, 129, 0.15)' : 'rgba(16, 185, 129, 0.1)',
+                alignItems: 'center',
+                justifyContent: 'center',
                 marginRight: 14,
-              }} />
-              <Text style={{ fontSize: 16, color: colors.textPrimary, fontWeight: '500' }}>
-                {text}
+              }}>
+                <Text style={{ fontSize: 20 }}>{item.icon}</Text>
+              </View>
+              <Text style={{
+                fontSize: 16,
+                color: colors.textPrimary,
+                fontWeight: '500',
+                flex: 1,
+              }}>
+                {item.text}
               </Text>
+              <View style={{
+                width: 20,
+                height: 20,
+                borderRadius: 10,
+                backgroundColor: COLORS.success,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                <Check size={12} color="#FFFFFF" strokeWidth={3} />
+              </View>
             </View>
           ))}
-        </View>
+        </GlassCard>
       </FadeInView>
 
       <FadeInView delay={400}>
         <GradientButton
           onPress={onContinue}
-          title="Continue"
+          title="I'm Ready"
           colors={GRADIENT_COLORS.success}
         />
       </FadeInView>
@@ -721,7 +751,17 @@ export const Step8ScreenTimePermission = ({
     if (Platform.OS === 'ios') return;
     const subscription = AppState.addEventListener('change', async (state) => {
       if (state === 'active' && isChecking) {
-        const granted = await hasUsageStatsPermission();
+        // Add delay and retry logic - Android needs time to propagate permission changes
+        const checkWithRetry = async (retries: number, delay: number): Promise<boolean> => {
+          for (let i = 0; i < retries; i++) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+            const granted = await hasUsageStatsPermission();
+            if (granted) return true;
+          }
+          return false;
+        };
+
+        const granted = await checkWithRetry(5, 500); // Check 5 times with 500ms delay
         if (granted) {
           setHasPermission(true);
           await fetchRealData();
@@ -852,6 +892,478 @@ export const Step8ScreenTimePermission = ({
         </>
       )}
     </ScrollView>
+  );
+};
+
+// ============================================
+// COMMITMENT STEP - Press and Hold with Wild Animations
+// ============================================
+
+// Flying emoji component
+const FlyingEmoji = ({
+  emoji,
+  startX,
+  startY,
+  endX,
+  endY,
+  delay,
+  duration,
+  isActive,
+}: {
+  emoji: string;
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+  delay: number;
+  duration: number;
+  isActive: boolean;
+}) => {
+  const translateX = React.useRef(new Animated.Value(startX)).current;
+  const translateY = React.useRef(new Animated.Value(startY)).current;
+  const scale = React.useRef(new Animated.Value(0)).current;
+  const rotate = React.useRef(new Animated.Value(0)).current;
+  const opacity = React.useRef(new Animated.Value(0)).current;
+
+  React.useEffect(() => {
+    if (isActive) {
+      // Reset positions
+      translateX.setValue(startX);
+      translateY.setValue(startY);
+      scale.setValue(0);
+      rotate.setValue(0);
+      opacity.setValue(0);
+
+      // Start animation after delay
+      const timeout = setTimeout(() => {
+        Animated.parallel([
+          Animated.timing(translateX, {
+            toValue: endX,
+            duration,
+            useNativeDriver: true,
+          }),
+          Animated.timing(translateY, {
+            toValue: endY,
+            duration,
+            useNativeDriver: true,
+          }),
+          Animated.sequence([
+            Animated.timing(scale, {
+              toValue: 1.5,
+              duration: duration * 0.3,
+              useNativeDriver: true,
+            }),
+            Animated.timing(scale, {
+              toValue: 1,
+              duration: duration * 0.7,
+              useNativeDriver: true,
+            }),
+          ]),
+          Animated.timing(rotate, {
+            toValue: 1,
+            duration,
+            useNativeDriver: true,
+          }),
+          Animated.sequence([
+            Animated.timing(opacity, {
+              toValue: 1,
+              duration: duration * 0.2,
+              useNativeDriver: true,
+            }),
+            Animated.timing(opacity, {
+              toValue: 1,
+              duration: duration * 0.6,
+              useNativeDriver: true,
+            }),
+            Animated.timing(opacity, {
+              toValue: 0,
+              duration: duration * 0.2,
+              useNativeDriver: true,
+            }),
+          ]),
+        ]).start();
+      }, delay);
+
+      return () => clearTimeout(timeout);
+    } else {
+      opacity.setValue(0);
+    }
+  }, [isActive]);
+
+  const spin = rotate.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
+  return (
+    <Animated.View
+      style={{
+        position: 'absolute',
+        opacity,
+        transform: [
+          { translateX },
+          { translateY },
+          { scale },
+          { rotate: spin },
+        ],
+      }}
+    >
+      <Text style={{ fontSize: 36 }}>{emoji}</Text>
+    </Animated.View>
+  );
+};
+
+export const StepCommitment = ({
+  onComplete,
+}: {
+  onComplete: () => void;
+}) => {
+  const { colors, isDark } = useOnboardingTheme();
+  const [isHolding, setIsHolding] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [completed, setCompleted] = useState(false);
+
+  const holdDuration = 3000; // 3 seconds
+  const progressRef = React.useRef<NodeJS.Timeout | null>(null);
+  const startTimeRef = React.useRef<number>(0);
+
+  // Page-wide animations
+  const pageScale = React.useRef(new Animated.Value(1)).current;
+  const pageRotate = React.useRef(new Animated.Value(0)).current;
+  const orbScale = React.useRef(new Animated.Value(1)).current;
+  const orbGlow = React.useRef(new Animated.Value(0)).current;
+  const textScale = React.useRef(new Animated.Value(1)).current;
+  const shakeX = React.useRef(new Animated.Value(0)).current;
+
+  // Emojis configuration - flying from corners
+  const emojis = [
+    { emoji: '🎯', startX: -200, startY: -300, endX: 0, endY: 0, delay: 0 },
+    { emoji: '💪', startX: 200, startY: -300, endX: 0, endY: 0, delay: 200 },
+    { emoji: '🔥', startX: -200, startY: 300, endX: 0, endY: 0, delay: 400 },
+    { emoji: '⚡', startX: 200, startY: 300, endX: 0, endY: 0, delay: 600 },
+    { emoji: '🚀', startX: 0, startY: -400, endX: 0, endY: 0, delay: 800 },
+    { emoji: '✨', startX: -300, startY: 0, endX: 0, endY: 0, delay: 1000 },
+    { emoji: '🏆', startX: 300, startY: 0, endX: 0, endY: 0, delay: 1200 },
+    { emoji: '💎', startX: 0, startY: 400, endX: 0, endY: 0, delay: 1400 },
+    { emoji: '🌟', startX: -250, startY: -200, endX: 0, endY: 0, delay: 1600 },
+    { emoji: '🎉', startX: 250, startY: -200, endX: 0, endY: 0, delay: 1800 },
+    { emoji: '💫', startX: -250, startY: 200, endX: 0, endY: 0, delay: 2000 },
+    { emoji: '🌈', startX: 250, startY: 200, endX: 0, endY: 0, delay: 2200 },
+  ];
+
+  // Animation effects while holding
+  React.useEffect(() => {
+    if (isHolding && !completed) {
+      // Page zoom in effect
+      Animated.timing(pageScale, {
+        toValue: 1.05,
+        duration: holdDuration,
+        useNativeDriver: true,
+      }).start();
+
+      // Orb growing effect
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(orbScale, {
+            toValue: 1.4,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+          Animated.timing(orbScale, {
+            toValue: 1.1,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+
+      // Orb glow intensity
+      Animated.timing(orbGlow, {
+        toValue: 1,
+        duration: holdDuration,
+        useNativeDriver: true,
+      }).start();
+
+      // Text pumping
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(textScale, {
+            toValue: 1.1,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+          Animated.timing(textScale, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+
+      // Subtle shake
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(shakeX, {
+            toValue: 3,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shakeX, {
+            toValue: -3,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shakeX, {
+            toValue: 0,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    } else if (!completed) {
+      // Reset animations
+      Animated.parallel([
+        Animated.spring(pageScale, { toValue: 1, useNativeDriver: true }),
+        Animated.spring(orbScale, { toValue: 1, useNativeDriver: true }),
+        Animated.timing(orbGlow, { toValue: 0, duration: 300, useNativeDriver: true }),
+        Animated.spring(textScale, { toValue: 1, useNativeDriver: true }),
+        Animated.timing(shakeX, { toValue: 0, duration: 100, useNativeDriver: true }),
+      ]).start();
+    }
+  }, [isHolding, completed]);
+
+  // Completion celebration
+  React.useEffect(() => {
+    if (completed) {
+      // Big burst effect
+      Animated.sequence([
+        Animated.timing(pageScale, {
+          toValue: 1.15,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.spring(pageScale, {
+          toValue: 1,
+          tension: 100,
+          friction: 5,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      Animated.sequence([
+        Animated.timing(orbScale, {
+          toValue: 2,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.spring(orbScale, {
+          toValue: 1.2,
+          tension: 50,
+          friction: 5,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+  }, [completed]);
+
+  const handlePressIn = () => {
+    if (completed) return;
+    setIsHolding(true);
+    startTimeRef.current = Date.now();
+
+    progressRef.current = setInterval(() => {
+      const elapsed = Date.now() - startTimeRef.current;
+      const newProgress = Math.min(elapsed / holdDuration, 1);
+      setProgress(newProgress);
+
+      if (newProgress >= 1) {
+        if (progressRef.current) {
+          clearInterval(progressRef.current);
+        }
+        setCompleted(true);
+        setIsHolding(false);
+
+        setTimeout(() => {
+          onComplete();
+        }, 1500);
+      }
+    }, 30);
+  };
+
+  const handlePressOut = () => {
+    if (completed) return;
+    setIsHolding(false);
+    if (progressRef.current) {
+      clearInterval(progressRef.current);
+    }
+    setProgress(0);
+  };
+
+  const pageRotation = pageRotate.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '2deg'],
+  });
+
+  return (
+    <Animated.View
+      style={{
+        flex: 1,
+        transform: [
+          { scale: pageScale },
+          { translateX: shakeX },
+        ],
+      }}
+    >
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24, paddingBottom: 40 }}>
+        {/* Flying emojis layer */}
+        <View style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
+        }}>
+          {emojis.map((item, index) => (
+            <FlyingEmoji
+              key={index}
+              emoji={item.emoji}
+              startX={item.startX}
+              startY={item.startY}
+              endX={item.endX}
+              endY={item.endY}
+              delay={item.delay}
+              duration={800}
+              isActive={isHolding || completed}
+            />
+          ))}
+        </View>
+
+        {/* Title */}
+        <FadeInView delay={0}>
+          <Animated.View style={{ transform: [{ scale: textScale }] }}>
+            <Text style={{
+              fontSize: 36,
+              fontWeight: '800',
+              color: colors.textPrimary,
+              textAlign: 'center',
+              marginBottom: 12,
+              letterSpacing: -1,
+            }}>
+              {completed ? '🎉 Committed!' : 'Make a Commitment'}
+            </Text>
+          </Animated.View>
+        </FadeInView>
+
+        <FadeInView delay={100}>
+          <Text style={{
+            fontSize: 17,
+            color: colors.textSecondary,
+            textAlign: 'center',
+            marginBottom: 48,
+            lineHeight: 26,
+            paddingHorizontal: 20,
+          }}>
+            {completed
+              ? "You've taken the first step to change your life"
+              : 'Press and hold to commit to taking control of your screen time'}
+          </Text>
+        </FadeInView>
+
+        {/* Main interactive area with Orb */}
+        <FadeInView delay={200}>
+          <TouchableOpacity
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            activeOpacity={1}
+            disabled={completed}
+            style={{ alignItems: 'center', justifyContent: 'center' }}
+          >
+            {/* Glow effect behind orb */}
+            <Animated.View
+              style={{
+                position: 'absolute',
+                width: 250,
+                height: 250,
+                borderRadius: 125,
+                backgroundColor: isDark ? 'rgba(139, 92, 246, 0.3)' : 'rgba(139, 92, 246, 0.2)',
+                opacity: orbGlow,
+                transform: [{ scale: orbScale }],
+              }}
+            />
+            <Animated.View
+              style={{
+                position: 'absolute',
+                width: 300,
+                height: 300,
+                borderRadius: 150,
+                backgroundColor: isDark ? 'rgba(6, 182, 212, 0.2)' : 'rgba(6, 182, 212, 0.15)',
+                opacity: orbGlow,
+                transform: [{ scale: Animated.multiply(orbScale, 1.2) }],
+              }}
+            />
+
+            {/* Animated Orb */}
+            <Animated.View style={{ transform: [{ scale: orbScale }] }}>
+              <AnimatedOrb size={completed ? 200 : 180} level={completed ? 5 : isHolding ? 4 : 3} />
+            </Animated.View>
+
+            {/* Progress indicator */}
+            {isHolding && !completed && (
+              <View style={{
+                position: 'absolute',
+                bottom: -40,
+                alignItems: 'center',
+              }}>
+                <Text style={{
+                  fontSize: 48,
+                  fontWeight: '800',
+                  color: COLORS.gradientPurple,
+                }}>
+                  {Math.round(progress * 100)}%
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </FadeInView>
+
+        {/* Status text */}
+        <View style={{ marginTop: 60 }}>
+          <Animated.View style={{ transform: [{ scale: textScale }] }}>
+            <Text style={{
+              fontSize: 18,
+              color: completed ? COLORS.success : isHolding ? COLORS.gradientPurple : colors.textTertiary,
+              fontWeight: '700',
+              textAlign: 'center',
+            }}>
+              {completed
+                ? "Let's set up your app! 🚀"
+                : isHolding
+                ? '✨ Keep holding... ✨'
+                : '👆 Hold the orb for 3 seconds'}
+            </Text>
+          </Animated.View>
+        </View>
+
+        {/* Celebration emojis at completion */}
+        {completed && (
+          <View style={{
+            position: 'absolute',
+            bottom: 100,
+            flexDirection: 'row',
+            gap: 20,
+          }}>
+            {['🎊', '🥳', '🎉', '✨', '💪'].map((emoji, i) => (
+              <FadeInView key={i} delay={i * 100}>
+                <Text style={{ fontSize: 32 }}>{emoji}</Text>
+              </FadeInView>
+            ))}
+          </View>
+        )}
+      </View>
+    </Animated.View>
   );
 };
 

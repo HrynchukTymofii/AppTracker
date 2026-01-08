@@ -33,6 +33,7 @@ import {
 } from "lucide-react-native";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useTheme } from "@/context/ThemeContext";
+import { useTranslation } from "react-i18next";
 import AnimatedOrb from "@/components/AnimatedOrb";
 
 const { width } = Dimensions.get("window");
@@ -44,6 +45,7 @@ export default function PaywallScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const { accentColor } = useTheme();
+  const { t } = useTranslation();
 
   const [packages, setPackages] = useState<{
     monthly: PurchasesPackage | null;
@@ -158,8 +160,8 @@ export default function PaywallScreen() {
           if (user) setUser({ ...user, isPro: true });
           Toast.show({
             type: "success",
-            text1: "Welcome to LockIn PRO!",
-            text2: "Your focus journey starts now",
+            text1: t("payment.toast.welcomePro"),
+            text2: t("payment.toast.welcomeProDesc"),
             position: "top",
             visibilityTime: 3000,
           });
@@ -178,7 +180,7 @@ export default function PaywallScreen() {
       if (!e.userCancelled)
         Toast.show({
           type: "error",
-          text1: "Purchase failed. Please try again.",
+          text1: t("payment.toast.purchaseFailed"),
           position: "top",
           visibilityTime: 3000,
         });
@@ -209,8 +211,8 @@ export default function PaywallScreen() {
 
           Toast.show({
             type: "success",
-            text1: "Purchases restored",
-            text2: "Your PRO access has been restored",
+            text1: t("payment.toast.purchasesRestored"),
+            text2: t("payment.toast.purchasesRestoredDesc"),
             position: "top",
           });
 
@@ -219,8 +221,8 @@ export default function PaywallScreen() {
       } else {
         Toast.show({
           type: "info",
-          text1: "No purchases found",
-          text2: "No previous subscriptions were detected",
+          text1: t("payment.toast.noPurchases"),
+          text2: t("payment.toast.noPurchasesDesc"),
           position: "top",
         });
       }
@@ -228,8 +230,8 @@ export default function PaywallScreen() {
       console.error("Restore error:", e);
       Toast.show({
         type: "error",
-        text1: "Restore failed",
-        text2: "Please try again later",
+        text1: t("payment.toast.restoreFailed"),
+        text2: t("payment.toast.restoreFailedDesc"),
         position: "top",
       });
     } finally {
@@ -238,17 +240,17 @@ export default function PaywallScreen() {
   };
 
   const features = [
-    { icon: Shield, text: "Unlimited app & website blocking" },
-    { icon: Clock, text: "Advanced scheduling & time limits" },
-    { icon: Target, text: "Focus sessions with task verification" },
-    { icon: Zap, text: "Priority support & early features" },
-    { icon: TrendingDown, text: "Detailed usage analytics & insights" },
+    { icon: Shield, text: t("payment.features.unlimitedBlocking") },
+    { icon: Clock, text: t("payment.features.advancedScheduling") },
+    { icon: Target, text: t("payment.features.focusSessions") },
+    { icon: Zap, text: t("payment.features.prioritySupport") },
+    { icon: TrendingDown, text: t("payment.features.detailedAnalytics") },
   ];
 
   const socialProof = [
-    { rating: 5, text: "Finally broke my phone addiction!", author: "Sarah M." },
-    { rating: 5, text: "My screen time dropped 3 hours/day", author: "James K." },
-    { rating: 5, text: "Best focus app I've ever used", author: "Emily R." },
+    { rating: 5, text: t("payment.reviews.review1"), author: t("payment.reviews.review1Author") },
+    { rating: 5, text: t("payment.reviews.review2"), author: t("payment.reviews.review2Author") },
+    { rating: 5, text: t("payment.reviews.review3"), author: t("payment.reviews.review3Author") },
   ];
 
   // Calculate savings
@@ -349,7 +351,7 @@ export default function PaywallScreen() {
               lineHeight: 42,
             }}
           >
-            Take Control of{"\n"}Your Screen Time
+            {t("payment.title")}
           </Text>
           <Text
             style={{
@@ -358,7 +360,7 @@ export default function PaywallScreen() {
               lineHeight: 24,
             }}
           >
-            Join thousands who've reclaimed their focus and reduced screen time by 50%+
+            {t("payment.subtitle")}
           </Text>
         </View>
 
@@ -379,7 +381,7 @@ export default function PaywallScreen() {
                 color: isDark ? "#ffffff" : "#0f172a",
               }}
             >
-              10,000+ users love LockIn
+              {t("payment.usersLove")}
             </Text>
           </View>
 
@@ -497,7 +499,7 @@ export default function PaywallScreen() {
                     color: isDark ? "#ffffff" : "#0f172a",
                   }}
                 >
-                  Not sure? Try 3 days free
+                  {t("payment.trial.notSure")}
                 </Text>
               </View>
               <Text
@@ -506,7 +508,7 @@ export default function PaywallScreen() {
                   color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
                 }}
               >
-                Cancel anytime during trial, no charge
+                {t("payment.trial.cancelAnytime")}
               </Text>
             </View>
 
@@ -548,7 +550,7 @@ export default function PaywallScreen() {
               marginBottom: 16,
             }}
           >
-            Choose Your Plan
+            {t("payment.plans.choosePlan")}
           </Text>
 
           {!packages.yearly && !packages.monthly ? (
@@ -561,7 +563,7 @@ export default function PaywallScreen() {
                   color: isDark ? "#9ca3af" : "#6b7280",
                 }}
               >
-                Loading plans...
+                {t("payment.plans.loading")}
               </Text>
             </View>
           ) : (
@@ -607,7 +609,7 @@ export default function PaywallScreen() {
                     }}
                   />
                   <Text style={{ fontSize: 11, fontWeight: "800", color: "#ffffff" }}>
-                    SAVE {savingsPercent}%
+                    {t("payment.plans.save", { percent: savingsPercent })}
                   </Text>
                 </View>
 
@@ -638,7 +640,7 @@ export default function PaywallScreen() {
                         marginBottom: 4,
                       }}
                     >
-                      Annual
+                      {t("payment.plans.annual")}
                     </Text>
                     {packages.yearly && packages.monthly && (
                       <Text
@@ -650,7 +652,7 @@ export default function PaywallScreen() {
                         {new Intl.NumberFormat(undefined, {
                           style: "currency",
                           currency: packages.yearly.product.currencyCode,
-                        }).format(packages.yearly.product.price / 12)}/mo billed annually
+                        }).format(packages.yearly.product.price / 12)}{t("payment.plans.billedAnnually")}
                       </Text>
                     )}
                   </View>
@@ -710,7 +712,7 @@ export default function PaywallScreen() {
                           color: isDark ? "#ffffff" : "#0f172a",
                         }}
                       >
-                        Monthly
+                        {t("payment.plans.monthly")}
                       </Text>
                     </View>
 
@@ -742,10 +744,9 @@ export default function PaywallScreen() {
             }}
           >
             {wantsTrial
-              ? "After your 3-day free trial, "
+              ? t("payment.trial.afterTrial")
               : ""}
-            Payment will be charged to your {Platform.OS === "ios" ? "Apple ID" : "Google Play"} account.
-            Subscriptions auto-renew unless canceled 24 hours before the period ends.
+            {t("payment.legal.paymentCharged", { store: Platform.OS === "ios" ? "Apple ID" : "Google Play" })}
           </Text>
 
           <View style={{ flexDirection: "row", marginBottom: 16 }}>
@@ -753,7 +754,7 @@ export default function PaywallScreen() {
               onPress={() => Linking.openURL("https://www.fibipals.com/creator/apps/lockIn/terms-of-service")}
             >
               <Text style={{ fontSize: 12, color: accentColor.primary, fontWeight: "500" }}>
-                Terms of Service
+                {t("payment.legal.termsOfService")}
               </Text>
             </TouchableOpacity>
             <Text style={{ fontSize: 12, marginHorizontal: 8, color: isDark ? "#6b7280" : "#9ca3af" }}>
@@ -763,7 +764,7 @@ export default function PaywallScreen() {
               onPress={() => Linking.openURL("https://www.fibipals.com/creator/apps/lockIn/privacy-policy")}
             >
               <Text style={{ fontSize: 12, color: accentColor.primary, fontWeight: "500" }}>
-                Privacy Policy
+                {t("payment.legal.privacyPolicy")}
               </Text>
             </TouchableOpacity>
           </View>
@@ -777,7 +778,7 @@ export default function PaywallScreen() {
                 textDecorationLine: "underline",
               }}
             >
-              Restore Purchases
+              {t("payment.cta.restorePurchases")}
             </Text>
           </TouchableOpacity>
         </View>
@@ -825,7 +826,7 @@ export default function PaywallScreen() {
               <ActivityIndicator color="#ffffff" />
             ) : (
               <Text style={{ fontSize: 18, fontWeight: "800", color: "#ffffff" }}>
-                {wantsTrial ? "Start 3-Day Free Trial" : "Subscribe Now"}
+                {wantsTrial ? t("payment.cta.startTrial") : t("payment.cta.subscribeNow")}
               </Text>
             )}
           </LinearGradient>
@@ -842,7 +843,7 @@ export default function PaywallScreen() {
           {wantsTrial
             ? `Then ${selectedPlan === "yearly" ? packages.yearly?.product.priceString + "/year" : packages.monthly?.product.priceString + "/month"}`
             : `${selectedPlan === "yearly" ? packages.yearly?.product.priceString + "/year" : packages.monthly?.product.priceString + "/month"}`}
-          {" "}• Cancel in {Platform.OS === "ios" ? "App Store" : "Google Play"}
+          {" "}• {t("payment.legal.cancelIn", { store: Platform.OS === "ios" ? "App Store" : "Google Play" })}
         </Text>
       </View>
     </View>

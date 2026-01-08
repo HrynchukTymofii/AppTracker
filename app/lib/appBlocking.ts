@@ -65,6 +65,7 @@ export interface DailyLimit {
   limitMinutes: number;
   usedMinutes: number;
   lastResetDate: string; // YYYY-MM-DD
+  iconUrl?: string; // Base64 icon from device or URL
 }
 
 // Popular apps list with package names (Android) and bundle IDs (iOS)
@@ -555,7 +556,8 @@ export const getDailyLimits = async (): Promise<DailyLimit[]> => {
 export const setDailyLimit = async (
   packageName: string,
   appName: string,
-  limitMinutes: number
+  limitMinutes: number,
+  iconUrl?: string
 ): Promise<void> => {
   try {
     const limits = await getDailyLimits();
@@ -569,10 +571,16 @@ export const setDailyLimit = async (
       limitMinutes,
       usedMinutes: 0,
       lastResetDate: today,
+      iconUrl,
     };
 
     if (existingIndex >= 0) {
-      limits[existingIndex] = { ...limits[existingIndex], limitMinutes };
+      // Preserve existing iconUrl if not provided
+      limits[existingIndex] = {
+        ...limits[existingIndex],
+        limitMinutes,
+        iconUrl: iconUrl || limits[existingIndex].iconUrl,
+      };
     } else {
       limits.push(newLimit);
     }

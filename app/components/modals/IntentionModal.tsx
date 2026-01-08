@@ -15,6 +15,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { analyzeIntentionChat } from '@/lib/openai';
 import { getLocalIcon } from '@/lib/appIcons';
 import { Image } from 'expo-image';
+import { useTranslation } from 'react-i18next';
 
 interface IntentionModalProps {
   visible: boolean;
@@ -41,6 +42,7 @@ export const IntentionModal = ({
   onClose,
   onAllow,
 }: IntentionModalProps) => {
+  const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const scrollViewRef = useRef<ScrollView>(null);
@@ -59,13 +61,13 @@ export const IntentionModal = ({
       setMessages([
         {
           id: '1',
-          text: `Hey! What brings you to ${appName} right now? 🤔`,
+          text: t("intention.greeting", { appName }),
           sender: 'coach',
         },
       ]);
       setShowTips(true);
     }
-  }, [visible, appName]);
+  }, [visible, appName, t]);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -142,7 +144,7 @@ export const IntentionModal = ({
           ...filtered,
           {
             id: (Date.now() + 2).toString(),
-            text: "Hmm, I couldn't process that. Go ahead, but try to be mindful of your time.",
+            text: t("intention.errorFallback"),
             sender: 'coach',
             allowMinutes: 2,
           },
@@ -170,9 +172,9 @@ export const IntentionModal = ({
   };
 
   const tips = [
-    { icon: Lightbulb, text: 'Be specific about what you need to do', color: '#f59e0b' },
-    { icon: Target, text: 'Mention if it\'s urgent or can wait', color: '#10b981' },
-    { icon: Clock, text: 'Say how long you actually need', color: '#8b5cf6' },
+    { icon: Lightbulb, textKey: 'intention.tip1', color: '#f59e0b' },
+    { icon: Target, textKey: 'intention.tip2', color: '#10b981' },
+    { icon: Clock, textKey: 'intention.tip3', color: '#8b5cf6' },
   ];
 
   if (!visible) return null;
@@ -226,7 +228,7 @@ export const IntentionModal = ({
                 }}
                 numberOfLines={1}
               >
-                Why {appName}?
+                {t("intention.whyApp", { appName })}
               </Text>
               <Text
                 style={{
@@ -236,7 +238,7 @@ export const IntentionModal = ({
                   marginTop: 2,
                 }}
               >
-                Blocked by LockIn
+                {t("intention.blockedByLockIn")}
               </Text>
             </View>
           </View>
@@ -298,7 +300,7 @@ export const IntentionModal = ({
                     fontWeight: '500',
                   }}
                 >
-                  LockIn Coach
+                  {t("intention.lockInCoach")}
                 </Text>
               </View>
             )}
@@ -362,7 +364,7 @@ export const IntentionModal = ({
               >
                 <Clock size={12} color="#10b981" />
                 <Text style={{ fontSize: 12, color: '#10b981', fontWeight: '600', marginLeft: 4 }}>
-                  {message.allowMinutes} min granted
+                  {t("intention.minGranted", { count: message.allowMinutes })}
                 </Text>
               </View>
             )}
@@ -389,7 +391,7 @@ export const IntentionModal = ({
                 marginBottom: 12,
               }}
             >
-              💡 Tips for quick access
+              {t("intention.tipsTitle")}
             </Text>
             {tips.map((tip, index) => {
               const Icon = tip.icon;
@@ -410,7 +412,7 @@ export const IntentionModal = ({
                       flex: 1,
                     }}
                   >
-                    {tip.text}
+                    {t(tip.textKey)}
                   </Text>
                 </View>
               );
@@ -442,7 +444,7 @@ export const IntentionModal = ({
               color: isDark ? '#ffffff' : '#111827',
               maxHeight: 100,
             }}
-            placeholder="Tell me why you need this app..."
+            placeholder={t("intention.inputPlaceholder")}
             placeholderTextColor={isDark ? '#6b7280' : '#9ca3af'}
             value={inputText}
             onChangeText={setInputText}
@@ -498,7 +500,7 @@ export const IntentionModal = ({
               fontWeight: '500',
             }}
           >
-            Leave {appName}
+            {t("intention.leaveApp", { appName })}
           </Text>
         </TouchableOpacity>
       </View>

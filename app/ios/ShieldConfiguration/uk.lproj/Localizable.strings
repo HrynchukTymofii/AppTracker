@@ -1,0 +1,17 @@
+/* Shield Configuration Localization - Ukrainian */
+
+/* Fallback names */
+"shield.fallback.app" = "Цей додаток";
+"shield.fallback.website" = "Цей вебсайт";
+
+/* App blocked shield */
+"shield.app.title" = "%@ заблоковано";
+"shield.app.subtitle" = "Залишайтеся зосередженими! Цей додаток наразі заблоковано LockIn.";
+
+/* Website blocked shield */
+"shield.website.title" = "%@ заблоковано";
+"shield.website.subtitle" = "Залишайтеся зосередженими! Цей вебсайт наразі заблоковано LockIn.";
+
+/* Buttons */
+"shield.button.unlock" = "Розблокувати на 5 хвилин";
+"shield.button.close" = "Закрити";

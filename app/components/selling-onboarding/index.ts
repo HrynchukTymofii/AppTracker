@@ -14,7 +14,18 @@ export {
 export type { GradientTuple, ThemeColors, OnboardingTheme } from "./designSystem";
 
 // Animated Components
-export { AnimatedCounter, FadeInView, GlowingBorder } from "./AnimatedComponents";
+export {
+  AnimatedCounter,
+  FadeInView,
+  GlowingBorder,
+  ScaleInView,
+  SlideInView,
+  TypewriterText,
+  StaggeredChildren,
+  PulseView,
+  ShimmerView,
+  RotatingBorder,
+} from "./AnimatedComponents";
 
 // UI Components
 export {
@@ -45,7 +56,7 @@ export {
   PaywallModal,
 } from "./Modals";
 
-// Steps 1-8
+// Steps 1-8 + Commitment
 export {
   Step1Welcome,
   Step2Age,
@@ -54,6 +65,7 @@ export {
   Step5BadNews,
   Step6GoodNews,
   Step7FirstStep,
+  StepCommitment,
   Step8ScreenTimePermission,
 } from "./Steps";
 

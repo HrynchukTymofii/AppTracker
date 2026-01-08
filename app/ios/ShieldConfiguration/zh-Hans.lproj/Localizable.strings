@@ -1,0 +1,17 @@
+/* Shield Configuration Localization - Simplified Chinese */
+
+/* Fallback names */
+"shield.fallback.app" = "此应用";
+"shield.fallback.website" = "此网站";
+
+/* App blocked shield */
+"shield.app.title" = "%@已被屏蔽";
+"shield.app.subtitle" = "保持专注！此应用目前已被LockIn屏蔽。";
+
+/* Website blocked shield */
+"shield.website.title" = "%@已被屏蔽";
+"shield.website.subtitle" = "保持专注！此网站目前已被LockIn屏蔽。";
+
+/* Buttons */
+"shield.button.unlock" = "解锁5分钟";
+"shield.button.close" = "关闭";

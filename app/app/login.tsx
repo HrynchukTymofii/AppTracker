@@ -17,6 +17,7 @@ import { useSearchParams } from "expo-router/build/hooks";
 import { LinearGradient } from "expo-linear-gradient";
 import Toast from "react-native-toast-message";
 import * as SecureStore from "expo-secure-store";
+import { useTranslation } from "react-i18next";
 import {
   GoogleSignin,
   isErrorWithCode,
@@ -53,6 +54,7 @@ export default function AuthScreen() {
   const { setToken, setUser } = useAuth();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   const returnUrl = params.get("returnUrl");
   const safeReturnUrl =
@@ -128,8 +130,8 @@ export default function AuthScreen() {
 
             Toast.show({
               type: "success",
-              text1: mode === "login" ? "Login successful" : "Sign up successful",
-              text2: mode === "login" ? "Welcome back!" : "Welcome to LockIn!",
+              text1: mode === "login" ? t("auth.loginSuccessful") : t("auth.signUpSuccessful"),
+              text2: mode === "login" ? t("auth.welcomeBack2") : t("auth.welcomeToLockIn2"),
               position: "top",
               visibilityTime: 700,
             });
@@ -143,8 +145,8 @@ export default function AuthScreen() {
           } else {
             Toast.show({
               type: "error",
-              text1: "Authentication failed",
-              text2: data.error || "Unknown error",
+              text1: t("auth.authenticationFailed"),
+              text2: data.error || t("common.error"),
               position: "top",
             });
           }
@@ -154,19 +156,19 @@ export default function AuthScreen() {
       if (isErrorWithCode(err)) {
         switch (err.code) {
           case statusCodes.IN_PROGRESS:
-            Toast.show({ type: "info", text1: "Google authentication in progress" });
+            Toast.show({ type: "info", text1: t("auth.googleAuthInProgress") });
             break;
           case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
             Toast.show({
               type: "info",
-              text1: "Google Play Services unavailable",
+              text1: t("auth.googlePlayUnavailable"),
             });
             break;
           default:
             Toast.show({
               type: "error",
-              text1: "Google authentication failed",
-              text2: err.message || "Error",
+              text1: t("auth.googleAuthFailed"),
+              text2: err.message || t("common.error"),
             });
         }
       }
@@ -182,8 +184,8 @@ export default function AuthScreen() {
     if (mode === "register" && !agreeToTerms) {
       Toast.show({
         type: "error",
-        text1: "Terms & Conditions",
-        text2: "Please agree to the Terms & Conditions",
+        text1: t("auth.termsConditions"),
+        text2: t("auth.termsRequired"),
       });
       return;
     }
@@ -194,8 +196,8 @@ export default function AuthScreen() {
     if (!emailRegex.test(email)) {
       Toast.show({
         type: "error",
-        text1: "Invalid email",
-        text2: "Please enter a valid email address",
+        text1: t("auth.invalidEmail"),
+        text2: t("auth.invalidEmailDesc"),
       });
       setLoading(false);
       return;
@@ -204,8 +206,8 @@ export default function AuthScreen() {
     if (password.length < 4) {
       Toast.show({
         type: "error",
-        text1: "Invalid password",
-        text2: "Password must be at least 4 characters",
+        text1: t("auth.invalidPassword"),
+        text2: t("auth.invalidPasswordDesc"),
       });
       setLoading(false);
       return;
@@ -227,7 +229,7 @@ export default function AuthScreen() {
           const errText = await registerRes.text();
           Toast.show({
             type: "error",
-            text1: "Registration failed",
+            text1: t("auth.registrationFailed"),
             text2: errText,
           });
           setLoading(false);
@@ -252,13 +254,13 @@ export default function AuthScreen() {
         if (errText === "User not found") {
           Toast.show({
             type: "error",
-            text1: "User not found",
-            text2: "Please check your email or register first",
+            text1: t("auth.userNotFound"),
+            text2: t("auth.userNotFoundDesc"),
           });
         } else {
           Toast.show({
             type: "error",
-            text1: mode === "login" ? "Login failed" : "Authentication failed",
+            text1: mode === "login" ? t("auth.loginFailed") : t("auth.authenticationFailed"),
             text2: errText,
           });
         }
@@ -285,8 +287,8 @@ export default function AuthScreen() {
 
         Toast.show({
           type: "success",
-          text1: mode === "login" ? "Login successful" : "Registration successful",
-          text2: mode === "login" ? "Welcome back!" : "Welcome to LockIn!",
+          text1: mode === "login" ? t("auth.loginSuccessful") : t("auth.registrationSuccessful"),
+          text2: mode === "login" ? t("auth.welcomeBack2") : t("auth.welcomeToLockIn2"),
           position: "top",
           visibilityTime: 700,
         });
@@ -301,15 +303,15 @@ export default function AuthScreen() {
       } else {
         Toast.show({
           type: "error",
-          text1: "Authentication error",
-          text2: "Please try again",
+          text1: t("auth.authenticationError"),
+          text2: t("auth.pleaseTryAgain"),
         });
       }
     } catch (err: any) {
       Toast.show({
         type: "error",
-        text1: "Error",
-        text2: err.message || "Something went wrong",
+        text1: t("common.error"),
+        text2: err.message || t("auth.pleaseTryAgain"),
       });
     } finally {
       setLoading(false);
@@ -371,7 +373,7 @@ export default function AuthScreen() {
                 letterSpacing: -0.5,
               }}
             >
-              {mode === "login" ? "Welcome Back" : "Create Account"}
+              {mode === "login" ? t("auth.welcomeBack") : t("auth.createAccount")}
             </Text>
             <Text
               style={{
@@ -381,8 +383,8 @@ export default function AuthScreen() {
               }}
             >
               {mode === "login"
-                ? "Your focus goals are waiting for you"
-                : "Start taking control of your screen time"}
+                ? t("auth.focusGoalsWaiting")
+                : t("auth.startControlScreenTime")}
             </Text>
           </View>
 
@@ -398,7 +400,7 @@ export default function AuthScreen() {
                   marginBottom: 8,
                 }}
               >
-                Email
+                {t("auth.email")}
               </Text>
               <View
                 style={{
@@ -425,7 +427,7 @@ export default function AuthScreen() {
                     color: isDark ? "#ffffff" : "#0f172a",
                     fontSize: 16,
                   }}
-                  placeholder="your@email.com"
+                  placeholder={t("auth.emailPlaceholder")}
                   placeholderTextColor={isDark ? "rgba(255,255,255,0.3)" : "#94a3b8"}
                   value={email}
                   onChangeText={setEmail}
@@ -446,7 +448,7 @@ export default function AuthScreen() {
                   marginBottom: 8,
                 }}
               >
-                Password
+                {t("auth.password")}
               </Text>
               <View
                 style={{
@@ -473,7 +475,7 @@ export default function AuthScreen() {
                     color: isDark ? "#ffffff" : "#0f172a",
                     fontSize: 16,
                   }}
-                  placeholder="Enter your password"
+                  placeholder={t("auth.passwordPlaceholder")}
                   placeholderTextColor={isDark ? "rgba(255,255,255,0.3)" : "#94a3b8"}
                   secureTextEntry={!showPassword}
                   value={password}
@@ -542,12 +544,12 @@ export default function AuthScreen() {
                     lineHeight: 20,
                   }}
                 >
-                  I agree to LockIn{" "}
+                  {t("auth.agreeToTerms")}
                   <Text
                     style={{ color: isDark ? "#ffffff" : "#0f172a", fontWeight: "600" }}
                     onPress={() => Linking.openURL("https://www.fibipals.com/creator/apps/lockIn/terms-of-service")}
                   >
-                    Terms & Conditions
+                    {t("auth.termsConditions")}
                   </Text>
                 </Text>
               </TouchableOpacity>
@@ -595,7 +597,7 @@ export default function AuthScreen() {
                     letterSpacing: 0.3,
                   }}
                 >
-                  {mode === "login" ? "Sign In" : "Create Account"}
+                  {mode === "login" ? t("auth.signIn") : t("auth.createAccount")}
                 </Text>
               )}
             </TouchableOpacity>
@@ -622,7 +624,7 @@ export default function AuthScreen() {
                   fontSize: 13,
                 }}
               >
-                or continue with
+                {t("auth.orContinueWith")}
               </Text>
               <View
                 style={{
@@ -720,8 +722,8 @@ export default function AuthScreen() {
             >
               <Text style={{ color: isDark ? "rgba(255,255,255,0.5)" : "#64748b", fontSize: 15 }}>
                 {mode === "login"
-                  ? "Don't have an account? "
-                  : "Already have an account? "}
+                  ? t("auth.dontHaveAccount")
+                  : t("auth.alreadyHaveAccountQuestion")}
               </Text>
               <TouchableOpacity
                 onPress={() => setMode(mode === "login" ? "register" : "login")}
@@ -734,7 +736,7 @@ export default function AuthScreen() {
                     fontSize: 15,
                   }}
                 >
-                  {mode === "login" ? "Sign up" : "Sign in"}
+                  {mode === "login" ? t("auth.signUp") : t("auth.signIn")}
                 </Text>
               </TouchableOpacity>
             </View>

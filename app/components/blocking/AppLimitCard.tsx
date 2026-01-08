@@ -34,22 +34,32 @@ export const AppLimitCard = ({
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: isDark
-          ? "rgba(255, 255, 255, 0.05)"
-          : "#ffffff",
+          ? "rgba(255, 255, 255, 0.03)"
+          : "rgba(255, 255, 255, 0.7)",
         borderRadius: 16,
         padding: 14,
         marginBottom: 10,
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderColor: isExceeded
           ? "rgba(239, 68, 68, 0.3)"
           : isDark
             ? "rgba(255, 255, 255, 0.08)"
-            : "rgba(0, 0, 0, 0.05)",
+            : "rgba(0, 0, 0, 0.04)",
       }}
     >
       {/* App Icon with Blocked Overlay */}
       <View style={{ position: "relative", marginRight: 12 }}>
-        {localIcon ? (
+        {limit.iconUrl ? (
+          <Image
+            source={{ uri: limit.iconUrl }}
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              opacity: isExceeded ? 0.4 : 1,
+            }}
+          />
+        ) : localIcon ? (
           <Image
             source={localIcon}
             style={{

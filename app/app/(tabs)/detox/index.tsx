@@ -133,7 +133,7 @@ export default function DetoxScreen() {
                 letterSpacing: -0.5,
               }}
             >
-              Focus Mode
+              {t('focusMode.title')}
             </Text>
             <Text
               style={{
@@ -142,7 +142,7 @@ export default function DetoxScreen() {
                 marginTop: 4,
               }}
             >
-              Block distractions and stay focused
+              {t('focusMode.subtitle')}
             </Text>
           </View>
 
@@ -200,7 +200,7 @@ export default function DetoxScreen() {
                       color: '#ffffff',
                     }}
                   >
-                    End Focus Session
+                    {t('focusMode.endSession')}
                   </Text>
                 </LinearGradient>
               </TouchableOpacity>
@@ -244,7 +244,7 @@ export default function DetoxScreen() {
                       color: '#ffffff',
                     }}
                   >
-                    Start Focus Session
+                    {t('focusMode.startSession')}
                   </Text>
                 </LinearGradient>
               </TouchableOpacity>
@@ -298,7 +298,7 @@ export default function DetoxScreen() {
                     color: isDark ? "#ffffff" : "#0f172a",
                   }}
                 >
-                  Duration
+                  {t('focusMode.duration')}
                 </Text>
                 <Text
                   style={{
@@ -307,7 +307,7 @@ export default function DetoxScreen() {
                     marginTop: 2,
                   }}
                 >
-                  {detoxDuration} minutes
+                  {t('focusMode.minutes', { count: detoxDuration })}
                 </Text>
               </View>
               <ChevronRight size={20} color={isDark ? "rgba(255,255,255,0.3)" : "#94a3b8"} />
@@ -333,7 +333,7 @@ export default function DetoxScreen() {
                   marginBottom: 8,
                 }}
               >
-                Why Focus Mode?
+                {t('focusMode.whyTitle')}
               </Text>
               <Text
                 style={{
@@ -342,7 +342,7 @@ export default function DetoxScreen() {
                   lineHeight: 20,
                 }}
               >
-                Block distracting apps and stay productive. Focus sessions help you concentrate on what matters most.
+                {t('focusMode.whyDescription')}
               </Text>
             </View>
           </View>

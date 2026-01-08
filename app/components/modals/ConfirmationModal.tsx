@@ -8,6 +8,7 @@ import {
 import { AlertTriangle, Trash2, X, Info } from "lucide-react-native";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 
 interface ConfirmationModalProps {
   visible: boolean;
@@ -24,13 +25,18 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   visible,
   title,
   message,
-  confirmText = "Confirm",
-  cancelText = "Cancel",
+  confirmText,
+  cancelText,
   onConfirm,
   onCancel,
   type = "danger",
 }) => {
+  const { t } = useTranslation();
   const colorScheme = useColorScheme();
+
+  // Use translated defaults if not provided
+  const finalConfirmText = confirmText ?? t("common.confirm");
+  const finalCancelText = cancelText ?? t("common.cancel");
   const isDark = colorScheme === "dark";
   const insets = useSafeAreaInsets();
 
@@ -210,7 +216,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                   color: colors.confirmText,
                 }}
               >
-                {confirmText}
+                {finalConfirmText}
               </Text>
             </TouchableOpacity>
 
@@ -233,7 +239,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                   color: isDark ? "#ffffff" : "#374151",
                 }}
               >
-                {cancelText}
+                {finalCancelText}
               </Text>
             </TouchableOpacity>
           </View>

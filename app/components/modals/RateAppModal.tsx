@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Linking, Platform, TextInput } from "reac
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Modal from "react-native-modal";
 import Toast from "react-native-toast-message";
+import { useTranslation } from "react-i18next";
 
 import { useAuth } from "@/context/AuthContext";
 import { sendMessage } from "@/lib/api/user";
@@ -19,6 +20,7 @@ export default function RateApp({ userPoints }: RateAppProps) {
   const [feedbackVisible, setFeedbackVisible] = useState(false);
   const [feedbackText, setFeedbackText] = useState("");
   const { token } = useAuth();
+  const { t } = useTranslation();
 
   // ✅ Show modal only once when user reaches 400 points and hasn't rated yet
   useEffect(() => {
@@ -57,7 +59,7 @@ export default function RateApp({ userPoints }: RateAppProps) {
   // ⭐ Main action
   const handleRateApp = async () => {
     if (selectedStars === 0) {
-      showToast("info", "Будь ласка, оберіть кількість зірок ⭐");
+      showToast("info", t("rateApp.pleaseSelectRating"));
       return;
     }
 
@@ -70,7 +72,7 @@ export default function RateApp({ userPoints }: RateAppProps) {
 
         Linking.openURL(appStoreLink).catch(() => {
           Linking.openURL(webLink).catch(() => {
-            showToast("error", "Не вдалося відкрити App Store");
+            showToast("error", t("rateApp.couldNotOpenAppStore"));
           });
         });
       } else {
@@ -79,7 +81,7 @@ export default function RateApp({ userPoints }: RateAppProps) {
 
         Linking.openURL(playStoreLink).catch(() => {
           Linking.openURL(webLink).catch(() => {
-            showToast("error", "Не вдалося відкрити Google Play");
+            showToast("error", t("rateApp.couldNotOpenPlayStore"));
           });
         });
       }
@@ -93,16 +95,16 @@ export default function RateApp({ userPoints }: RateAppProps) {
   // ✉️ Send feedback
   const handleSendFeedback = async () => {
     if (!feedbackText.trim()) {
-      showToast("info", "Будь ласка, напишіть ваш відгук");
+      showToast("info", t("rateApp.pleaseWriteFeedback"));
       return;
     }
 
     const success = await sendMessage(token!, "app_feedback", feedbackText);
     if (success) {
-      showToast("success", "Дякуємо за ваш відгук!");
+      showToast("success", t("rateApp.thankYouFeedback"));
       await handleRated();
     } else {
-      showToast("error", "Не вдалося надіслати відгук. Спробуйте ще раз.");
+      showToast("error", t("rateApp.failedSendFeedback"));
     }
   };
 
@@ -112,10 +114,10 @@ export default function RateApp({ userPoints }: RateAppProps) {
       <Modal isVisible={showModal} onBackdropPress={handleLater}>
         <View className="bg-white dark:bg-stone-900 rounded-lg p-6 items-center">
           <Text className="text-2xl font-bold text-center mb-4 text-green-600 dark:text-green-500">
-            Оцініть наш застосунок!
+            {t("rateApp.rateOurApp")}
           </Text>
           <Text className="text-center mb-3 text-green-600 dark:text-green-500">
-            Оберіть рейтинг ⭐
+            {t("rateApp.chooseRating")}
           </Text>
 
           {/* Stars */}
@@ -138,11 +140,11 @@ export default function RateApp({ userPoints }: RateAppProps) {
           {/* Buttons */}
           <View className="flex-row gap-x-6">
             <TouchableOpacity onPress={handleRateApp} className="bg-green-600 px-8 py-3 rounded-lg">
-              <Text className="text-white font-semibold text-lg">Оцінити</Text>
+              <Text className="text-white font-semibold text-lg">{t("rateApp.rate")}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={handleLater} className="bg-gray-300 px-8 py-3 rounded-lg">
-              <Text className="font-semibold text-lg">Пізніше</Text>
+              <Text className="font-semibold text-lg">{t("rateApp.later")}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -152,19 +154,19 @@ export default function RateApp({ userPoints }: RateAppProps) {
       <Modal isVisible={feedbackVisible} onBackdropPress={() => setFeedbackVisible(false)}>
         <View className="bg-white dark:bg-stone-900 rounded-lg p-6">
           <Text className="text-xl font-bold text-center mb-4 text-green-600 dark:text-green-500">
-            Напишіть, що нам варто покращити 🥹
+            {t("rateApp.tellUsImprove")}
           </Text>
           <TextInput
             multiline
             value={feedbackText}
             onChangeText={setFeedbackText}
-            placeholder="Ваш відгук..."
+            placeholder={t("rateApp.yourFeedbackPlaceholder")}
             className="border border-gray-300 dark:border-gray-700 rounded-lg p-3 mb-4 text-gray-700 dark:text-gray-200"
             style={{ minHeight: 100, textAlignVertical: "top" }}
           />
           <View className="flex-row justify-center gap-x-4">
             <TouchableOpacity onPress={handleSendFeedback} className="bg-green-600 px-6 py-2 rounded-lg">
-              <Text className="text-white font-semibold">Надіслати</Text>
+              <Text className="text-white font-semibold">{t("rateApp.submit")}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
@@ -173,7 +175,7 @@ export default function RateApp({ userPoints }: RateAppProps) {
               }}
               className="bg-gray-300 px-6 py-2 rounded-lg"
             >
-              <Text className="font-semibold">Скасувати</Text>
+              <Text className="font-semibold">{t("common.cancel")}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -251,7 +253,7 @@ export default function RateApp({ userPoints }: RateAppProps) {
 //   // ⭐ Main action
 //   const handleRateApp = async () => {
 //     if (selectedStars === 0) {
-//       showToast("info", "Будь ласка, оберіть кількість зірок ⭐");
+//       showToast("info", t("rateApp.pleaseSelectRating"));
 //       return;
 //     }
 
@@ -275,16 +277,16 @@ export default function RateApp({ userPoints }: RateAppProps) {
 //   // ✉️ Send feedback
 //   const handleSendFeedback = async () => {
 //     if (!feedbackText.trim()) {
-//       showToast("info", "Будь ласка, напишіть ваш відгук");
+//       showToast("info", t("rateApp.pleaseWriteFeedback"));
 //       return;
 //     }
 
 //     const success = await sendMessage(token!, "app_feedback", feedbackText);
 //     if (success) {
-//       showToast("success", "Дякуємо за ваш відгук!");
+//       showToast("success", t("rateApp.thankYouFeedback"));
 //       await handleRated();
 //     } else {
-//       showToast("error", "Не вдалося надіслати відгук. Спробуйте ще раз.");
+//       showToast("error", t("rateApp.failedSendFeedback"));
 //     }
 //   };
 

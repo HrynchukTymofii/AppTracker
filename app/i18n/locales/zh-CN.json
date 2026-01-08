@@ -15,16 +15,27 @@
     "back": "返回",
     "next": "下一步",
     "done": "完成",
-    "or": "或"
+    "or": "或",
+    "of": "/",
+    "getStarted": "开始"
+  },
+  "helpCarousel": {
+    "streak": "连续",
+    "today": "今天",
+    "vsAvg": "vs 平均",
+    "schedule": "日程",
+    "week": "第{{number}}周"
   },
   "tabs": {
     "home": "首页",
     "blocking": "应用锁定",
+    "goals": "目标",
     "detox": "数字排毒",
     "stats": "统计",
-    "profile": "个人",
     "community": "社区",
-    "schedule": "日程"
+    "profile": "个人",
+    "schedule": "日程",
+    "lockin": "LockIn"
   },
   "home": {
     "title": "LockIn",
@@ -33,6 +44,11 @@
     "loadingApps": "正在加载应用...",
     "focusModeActive": "专注模式已激活",
     "appsBlocked": "个应用已锁定",
+    "streak": "连续天数",
+    "today": "今天",
+    "vsAverage": "相比平均",
+    "upcomingSchedules": "即将到来",
+    "createSchedule": "创建日程",
     "quickMenu": {
       "stats": "统计",
       "statsDesc": "查看详细使用统计",
@@ -41,7 +57,15 @@
       "detox": "数字排毒",
       "detoxDesc": "开始手机排毒计时器",
       "calendar": "日历",
-      "calendarDesc": "安排您的任务"
+      "calendarDesc": "安排您的任务",
+      "newSchedule": "新建日程",
+      "newScheduleDesc": "创建锁定日程"
+    },
+    "quickActions": {
+      "photoTask": "📸 照片任务",
+      "photoTaskDesc": "前后对比照片 • 1.5倍奖励",
+      "focusMode": "🎯 专注模式",
+      "focusModeDesc": "通过LockIn赚取屏幕时间"
     }
   },
   "stats": {
@@ -91,10 +115,26 @@
     "noUsageData": "暂无使用数据",
     "healthScore": "健康评分",
     "screenTime": "屏幕时间",
-    "topApps": "前3个应用"
+    "topApps": "前3个应用",
+    "vsLastWeek": "相比上周",
+    "lessScreenTime": "更少屏幕时间",
+    "moreScreenTime": "更多屏幕时间",
+    "difference": "差异",
+    "shareProgress": "分享进度",
+    "weeklyReport": "每周报告"
   },
   "blocking": {
     "title": "应用锁定",
+    "pageTitle": "目标",
+    "pageSubtitle": "设置每日屏幕时间限制",
+    "todaysProgress": "今日进度",
+    "goal": "目标",
+    "timeLeft": "剩余",
+    "used": "已用",
+    "remaining": "剩余",
+    "ofGoal": "目标的",
+    "setDailyGoal": "设置每日目标：",
+    "limitReachedWarning": "已达每日限制！所有应用已被锁定。",
     "setupRequired": "需要设置",
     "permissionsDesc": "应用锁定需要特殊权限才能工作。请启用：",
     "accessibilityService": "1. 无障碍服务",
@@ -140,6 +180,10 @@
       "task": "需要完成任务",
       "dailyLimit": "每日限制"
     },
+    "apps": "应用",
+    "sites": "网站",
+    "appsBlocked": "已锁定的应用",
+    "activeDays": "活跃天数",
     "modals": {
       "selectApps": "选择要锁定的应用",
       "confirmSelection": "确认选择 ({{count}})",
@@ -149,8 +193,12 @@
       "scheduleName": "计划名称",
       "scheduleNamePlaceholder": "例如：工作时间",
       "appsToBlock": "要锁定的应用",
+      "websitesToBlock": "要锁定的网站",
       "selectAppsPlaceholder": "选择应用...",
       "appsSelected": "已选择{{count}}个应用",
+      "apps": "应用",
+      "websites": "网站",
+      "selectWebsites": "选择要锁定的网站",
       "startTime": "开始时间",
       "endTime": "结束时间",
       "repeatOn": "重复日期",
@@ -206,37 +254,305 @@
       "hours": "小时",
       "minutes": "分钟",
       "dailyLimit": "每日限制"
+    },
+    "share": {
+      "title": "我的屏幕时间进度",
+      "header": "📱 今日屏幕时间",
+      "goal": "🎯 目标: {{time}}",
+      "used": "⏱️ 已用: {{time}}",
+      "remaining": "✅ 剩余: {{time}}",
+      "progress": "📊 进度: {{percent}}%",
+      "footer": "使用LockIn控制我的屏幕时间！💪"
     }
   },
   "detox": {
     "title": "数字排毒"
   },
+  "progress": {
+    "todaysProgress": "今日进度",
+    "goal": "目标",
+    "earned": "已获得",
+    "spent": "已使用",
+    "balance": "余额",
+    "earn": "赚取",
+    "thisWeek": "本周"
+  },
+  "lockin": {
+    "title": "LockIn",
+    "readyToEarnTime": "准备赚取时间？",
+    "lockInToEarn": "通过LockIn赚取屏幕时间",
+    "giveUp": "放弃？",
+    "giveUpMessage": "现在放弃将失去当前连续记录。确定要放弃吗？",
+    "giveUpConfirm": "放弃",
+    "keepGoing": "继续坚持",
+    "available": "可用",
+    "minutes": "分钟",
+    "min": "分钟",
+    "today": "今天",
+    "earnedSpent": "已赚取 / 已使用",
+    "thisWeek": "本周：",
+    "earned": "已赚取",
+    "spent": "已使用",
+    "photoTask": "照片任务",
+    "photoTaskDesc": "用前后对比照片验证专注",
+    "favorites": "收藏",
+    "doubleTapRemove": "（双击移除）",
+    "allExercises": "所有运动",
+    "earnWithExercise": "通过运动赚取",
+    "doubleTapFavorite": "（双击收藏）",
+    "history": "历史",
+    "seeAll": "查看全部",
+    "noSessions": "暂无记录",
+    "startFirst": "开始LockIn查看历史记录",
+    "recentActivities": "最近活动",
+    "focusSession": "专注时段",
+    "yesterday": "昨天",
+    "daysAgo": "{{count}}天前",
+    "hoursAgo": "{{count}}小时前",
+    "minutesAgo": "{{count}}分钟前",
+    "justNow": "刚刚",
+    "lockedIn": "专注中",
+    "remaining": "剩余",
+    "currentTask": "当前任务",
+    "before": "之前",
+    "after": "之后",
+    "tapWhenDone": "完成后点击",
+    "appsBlocked": "个应用已锁定",
+    "earnPoints": "完成可获得{{points}}积分",
+    "completeWithPhoto": "完成 - 拍照验证",
+    "completeSession": "完成时段",
+    "giveUpLoseStreak": "放弃（失去连续记录）",
+    "currentBalance": "当前余额",
+    "chooseExercise": "选择运动",
+    "earnScreenTimeInfo": "赚取屏幕时间",
+    "earnScreenTimeDesc": "通过完成运动赚取屏幕时间。做得越多，赚得越多！",
+    "instructions": "说明",
+    "rewards": "奖励",
+    "greatWork": "干得好！",
+    "tryAgain": "再试一次",
+    "startExercise": "开始运动",
+    "start": "开始",
+    "finishWithEarnings": "完成 (+{{minutes}}分钟)",
+    "finishExercise": "完成运动",
+    "done": "完成",
+    "earnTime": "赚取时间",
+    "selectStep": "选择运动",
+    "readyStep": "调整摄像头位置，然后点击开始",
+    "exerciseStep": "继续加油！",
+    "completeStep": "运动完成",
+    "instructionsStep": "阅读说明",
+    "positionCamera": "调整摄像头位置",
+    "fullBodyVisible": "确保全身可见",
+    "howToDoIt": "如何进行",
+    "gotIt": "明白了",
+    "earnScreenTimeModal": "赚取屏幕时间",
+    "firstRunDescription": "完成运动赚取分钟数，用于解锁喜爱的应用。运动越多，时间越多！",
+    "featureBodyweight": "俯卧撑、深蹲和平板支撑",
+    "featureAI": "AI追踪您的动作",
+    "featureEarnings": "每次动作赚取0.5-1分钟",
+    "letsGetStarted": "开始吧！",
+    "seconds": "秒",
+    "reps": "次",
+    "rep": "次",
+    "hours": "小时",
+    "timeEarned": "获得时间",
+    "watchDemoVideo": "观看演示视频",
+    "comingSoon": "即将推出",
+    "holdDescription": "你保持了{{seconds}}秒",
+    "repsDescription": "你完成了{{count}}次{{exercise}}",
+    "rewardPlankDesc": "每秒赚取{{rate}}分钟。最低{{min}}秒可赚取。保持{{bonusTime}}秒以上获得{{bonus}}奖励！",
+    "rewardRepsDesc": "每次赚取{{rate}}分钟。最低{{min}}次可赚取。{{bonusReps}}次以上获得{{bonus}}奖励！",
+    "minimumPlankRequired": "你需要保持至少{{seconds}}秒才能赚取时间。",
+    "minimumRepsRequired": "你需要至少{{count}}次才能赚取时间。",
+    "holdAtLeast": "保持至少{{seconds}}秒才能赚取时间",
+    "doAtLeast": "至少做{{count}}次才能赚取时间",
+    "infoRewardPlank": "每秒{{rate}}分钟。最低{{min}}秒可赚取。{{bonusTime}}秒获得{{bonus}}奖励！",
+    "infoRewardReps": "每次{{rate}}分钟。最低{{min}}次可赚取。{{bonusReps}}次获得{{bonus}}奖励！"
+  },
+  "exercise": {
+    "pushups": {
+      "name": "俯卧撑",
+      "description": "每次赚取0.5分钟（至少3次）",
+      "instructions": [
+        "将手机放置在侧面，确保能看到全身",
+        "双臂伸直，进入俯卧撑姿势",
+        "胸部向下贴近地面",
+        "向上推起完成一次",
+        "20次后获得1.1倍奖励！"
+      ]
+    },
+    "squats": {
+      "name": "深蹲",
+      "description": "每次赚取0.5分钟（至少3次）",
+      "instructions": [
+        "将手机放置在侧面，确保能看到全身",
+        "双脚与肩同宽站立",
+        "下蹲至大腿与地面平行",
+        "站起完成一次",
+        "20次后获得1.1倍奖励！"
+      ]
+    },
+    "plank": {
+      "name": "平板支撑",
+      "description": "每秒赚取0.1分钟（至少10秒）",
+      "instructions": [
+        "将手机放置在侧面，确保能看到全身",
+        "进入平板支撑姿势，保持身体挺直",
+        "尽可能长时间保持姿势",
+        "保持臀部水平，不要下沉或抬起",
+        "30秒后获得1.1倍奖励！"
+      ]
+    },
+    "jumpingJacks": {
+      "name": "开合跳",
+      "description": "每次赚取0.3分钟（至少5次）",
+      "instructions": [
+        "将手机放置好，确保能看到全身",
+        "双脚并拢站立，双臂放在身体两侧",
+        "跳起同时分开双腿并举起双臂",
+        "跳回起始姿势",
+        "30次后获得1.1倍奖励！"
+      ]
+    },
+    "lunges": {
+      "name": "弓步蹲",
+      "description": "每次赚取0.5分钟（至少3次）",
+      "instructions": [
+        "将手机放置在侧面，确保能看到全身",
+        "双脚与臀同宽站立",
+        "向前迈步并下蹲至前膝呈90度",
+        "推回站立姿势",
+        "15次后获得1.1倍奖励！"
+      ]
+    },
+    "crunches": {
+      "name": "卷腹",
+      "description": "每次赚取0.4分钟（至少5次）",
+      "instructions": [
+        "将手机放置在侧面，确保能看到全身",
+        "仰卧，膝盖弯曲",
+        "将肩膀向膝盖方向卷起",
+        "有控制地放下",
+        "20次后获得1.1倍奖励！"
+      ]
+    },
+    "shoulderPress": {
+      "name": "肩推",
+      "description": "每次赚取0.5分钟（至少3次）",
+      "instructions": [
+        "将手机放置好，确保能看到上半身",
+        "将重物举至肩高",
+        "将手臂向上推至头顶",
+        "放下至肩高",
+        "15次后获得1.1倍奖励！"
+      ]
+    },
+    "legRaises": {
+      "name": "仰卧抬腿",
+      "description": "每次赚取0.4分钟（至少5次）",
+      "instructions": [
+        "将手机放置在侧面，确保能看到全身",
+        "仰卧，双腿伸直",
+        "将双腿向上抬向天花板",
+        "有控制地放下双腿",
+        "15次后获得1.1倍奖励！"
+      ]
+    },
+    "highKnees": {
+      "name": "高抬腿",
+      "description": "每次赚取0.2分钟（至少10次）",
+      "instructions": [
+        "将手机放置好，确保能看到全身",
+        "站直，准备原地跑步",
+        "将膝盖抬至臀部以上",
+        "快速交替双腿",
+        "40次后获得1.1倍奖励！"
+      ]
+    },
+    "pullUps": {
+      "name": "引体向上",
+      "description": "每次赚取0.8分钟（至少2次）",
+      "instructions": [
+        "将手机放置在侧面，确保能看到身体",
+        "双臂伸直悬挂在横杆上",
+        "向上拉起直到下巴超过横杆",
+        "有控制地放下",
+        "10次后获得1.15倍奖励！"
+      ]
+    },
+    "wallSit": {
+      "name": "靠墙静蹲",
+      "description": "每秒赚取0.15分钟（至少10秒）",
+      "instructions": [
+        "将手机放置在侧面，确保能看到全身",
+        "背靠墙壁，双脚与肩同宽",
+        "向下滑动直到膝盖呈90度",
+        "保持姿势，大腿与地面平行",
+        "45秒后获得1.1倍奖励！"
+      ]
+    },
+    "sidePlank": {
+      "name": "侧平板支撑",
+      "description": "每秒赚取0.12分钟（至少10秒）",
+      "instructions": [
+        "将手机放置在正面，确保能看到全身",
+        "侧卧，用肘部支撑身体",
+        "将臀部抬离地面",
+        "保持身体成一条直线",
+        "30秒后获得1.1倍奖励！"
+      ]
+    }
+  },
+  "exerciseCamera": {
+    "cameraPermissionRequired": "需要相机权限",
+    "noCameraDevice": "未找到相机设备",
+    "holding": "保持中",
+    "getInPosition": "准备姿势",
+    "down": "下",
+    "up": "上"
+  },
   "profile": {
-    "title": "个人",
+    "title": "个人资料",
     "proMember": "PRO会员",
     "achievements": "成就",
     "viewAll": "查看全部",
     "quickActions": "快捷操作",
-    "editProfile": "编辑个人资料",
+    "editProfile": "编辑资料",
     "contactUs": "联系我们",
-    "rateUs": "评分",
-    "logOut": "登出",
-    "errorLoading": "加载个人资料时出错",
+    "rateUs": "给我们评分",
+    "logOut": "退出登录",
+    "errorLoading": "加载个人资料出错",
     "loading": "正在加载个人资料...",
+    "blockedItems": "已屏蔽的应用和网站",
+    "defaultBlockedItems": "默认屏蔽项目",
+    "apps": "应用",
+    "websites": "网站",
+    "blockedItemsDesc": "创建新时间表时会预先选择这些项目",
+    "editBlockedItems": "编辑屏蔽项目",
+    "dailyGoal": "每日目标",
+    "dailyGoalQuestion": "您每天想赚取多少屏幕时间？",
+    "dailyGoalUpdated": "每日目标已更新",
+    "minLabel": "15分钟",
+    "maxLabel": "3小时",
     "defaultAppLimit": "默认应用限制",
     "defaultAppLimitDesc": "新应用将默认使用此时间限制",
     "limitUpdated": "默认限制已更新",
-    "contactDescription": "发送消息给我们，我们会尽快回复",
+    "minLimitLabel": "1分钟",
+    "maxLimitLabel": "2小时",
+    "streak": "连续天数",
+    "sessions": "会话",
+    "tasks": "任务",
+    "contactDescription": "给我们发消息，我们会尽快回复",
     "writeMessage": "写下您的消息...",
     "sendMessage": "发送消息",
     "emailUs": "发送邮件",
     "messageSent": "消息已发送！",
     "messageThankYou": "我们会尽快回复",
-    "messageError": "发送消息失败",
+    "messageError": "消息发送失败",
     "rateExperience": "评价您的体验",
-    "rateDescription": "您如何评价 LockIn？",
+    "rateDescription": "您如何评价LockIn？",
     "tapToRate": "点击星星评分",
-    "thankYouRating": "感谢您的评价！",
+    "thankYouRating": "感谢您的评分！",
     "tellUsMore": "告诉我们更多",
     "helpUsImprove": "帮助我们改善您的体验",
     "describeProblem": "我们可以改进什么？",
@@ -244,49 +560,49 @@
     "changeRating": "更改评分",
     "feedbackSent": "反馈已发送！",
     "feedbackThanks": "感谢您帮助我们改进",
-    "feedbackError": "发送反馈失败"
+    "feedbackError": "反馈发送失败"
   },
   "achievements": {
     "title": "成就",
     "unlocked": "已解锁",
-    "locked": "已锁定",
-    "unlockedCount": "{{count}} 个中解锁了 {{total}} 个",
+    "locked": "未解锁",
+    "unlockedCount": "已解锁{{count}}/{{total}}",
     "list": {
       "firstBlock": {
         "title": "第一次",
-        "description": "锁定你的第一个应用"
+        "description": "屏蔽你的第一个应用"
       },
       "focusBeginner": {
         "title": "专注新手",
-        "description": "完成第一个专注会话"
+        "description": "完成第一次专注会话"
       },
       "taskMaster": {
         "title": "任务大师",
-        "description": "完成一次任务验证"
+        "description": "完成任务验证"
       },
       "earlyBird": {
         "title": "早起鸟",
-        "description": "在上午8点前开始专注"
+        "description": "8点前开始专注"
       },
       "nightOwl": {
         "title": "夜猫子",
-        "description": "在晚上10点后使用锁定"
+        "description": "22点后使用屏蔽"
       },
       "discipline": {
         "title": "纪律",
-        "description": "7天锁定连胜"
+        "description": "连续7天屏蔽"
       },
       "ironWill": {
-        "title": "铁的意志",
-        "description": "完成10个专注会话"
+        "title": "钢铁意志",
+        "description": "完成10次专注会话"
       },
       "zenMaster": {
-        "title": "禅宗高手",
-        "description": "完成50个专注会话"
+        "title": "禅宗大师",
+        "description": "完成50次专注会话"
       },
       "schedulePro": {
-        "title": "日程大师",
-        "description": "创建你的第一个日程"
+        "title": "日程专家",
+        "description": "创建第一个日程"
       },
       "timeKeeper": {
         "title": "时间守护者",
@@ -294,15 +610,15 @@
       },
       "digitalDetox": {
         "title": "数字排毒",
-        "description": "锁定应用24小时"
+        "description": "屏蔽应用24小时"
       },
       "weekendWarrior": {
         "title": "周末战士",
-        "description": "在周末使用锁定"
+        "description": "周末使用屏蔽"
       },
       "minimalist": {
         "title": "极简主义者",
-        "description": "一次性锁定10+个应用"
+        "description": "同时屏蔽10+应用"
       },
       "focusLegend": {
         "title": "专注传奇",
@@ -313,40 +629,40 @@
         "description": "4小时专注会话"
       },
       "consistencyKing": {
-        "title": "一致性之王",
-        "description": "30天锁定连胜"
+        "title": "坚持之王",
+        "description": "连续30天屏蔽"
       },
       "healthChampion": {
         "title": "健康冠军",
-        "description": "达到90+健康评分"
+        "description": "达到90+健康分数"
       },
       "screenTimeSavior": {
-        "title": "屏幕时间拯救者",
-        "description": "减少50%的屏幕时间"
+        "title": "屏幕时间救星",
+        "description": "减少50%屏幕时间"
       },
       "morningRoutine": {
-        "title": "晨间例程",
-        "description": "连续3个上午锁定应用"
+        "title": "晨间习惯",
+        "description": "3个早晨屏蔽应用"
       },
       "productivityBeast": {
         "title": "生产力野兽",
         "description": "完成5次任务验证"
       },
       "appBlockerPro": {
-        "title": "应用锁定专家",
-        "description": "锁定20+个不同的应用"
+        "title": "屏蔽专家",
+        "description": "屏蔽20+不同应用"
       },
       "focusFlow": {
         "title": "专注流",
-        "description": "一天内3个专注会话"
+        "description": "一天3次专注会话"
       },
       "digitalWellbeing": {
         "title": "数字健康",
-        "description": "一周内健康评分80+"
+        "description": "一周80+分数"
       },
       "selfControl": {
         "title": "自我控制",
-        "description": "抵抗10次解锁诱惑"
+        "description": "抵制解锁10次"
       }
     }
   },
@@ -356,28 +672,556 @@
     "systemDefault": "系统默认",
     "currentLanguage": "当前语言"
   },
+  "payment": {
+    "title": "掌控你的\n屏幕时间",
+    "subtitle": "加入数千名已恢复专注力并将屏幕时间减少50%以上的用户",
+    "usersLove": "超过10,000名用户喜爱LockIn",
+    "features": {
+      "unlimitedBlocking": "无限制应用和网站屏蔽",
+      "advancedScheduling": "高级日程安排和时间限制",
+      "focusSessions": "带任务验证的专注时段",
+      "prioritySupport": "优先支持和抢先体验功能",
+      "detailedAnalytics": "详细的使用分析和洞察"
+    },
+    "reviews": {
+      "review1": "终于戒掉了手机瘾！",
+      "review1Author": "Sarah M.",
+      "review2": "我的屏幕时间每天减少了3小时",
+      "review2Author": "James K.",
+      "review3": "我用过最好的专注应用",
+      "review3Author": "Emily R."
+    },
+    "trial": {
+      "notSure": "不确定？免费试用3天",
+      "cancelAnytime": "试用期内随时取消",
+      "afterTrial": "3天免费试用后，"
+    },
+    "plans": {
+      "choosePlan": "选择您的计划",
+      "loading": "加载计划中...",
+      "save": "节省{{percent}}%",
+      "annual": "年度",
+      "monthly": "月度",
+      "billedAnnually": "/月（按年计费）"
+    },
+    "cta": {
+      "startTrial": "开始3天免费试用",
+      "subscribeNow": "立即订阅",
+      "restorePurchases": "恢复购买"
+    },
+    "legal": {
+      "paymentCharged": "付款将从您的{{store}}账户扣除。除非在到期前24小时取消，否则订阅将自动续订。",
+      "termsOfService": "服务条款",
+      "privacyPolicy": "隐私政策",
+      "cancelIn": "在{{store}}中取消"
+    },
+    "toast": {
+      "welcomePro": "欢迎加入LockIn PRO！",
+      "welcomeProDesc": "您的专注之旅现在开始",
+      "purchaseFailed": "购买失败，请重试。",
+      "purchasesRestored": "购买已恢复",
+      "purchasesRestoredDesc": "您的PRO权限已恢复",
+      "noPurchases": "未找到购买记录",
+      "noPurchasesDesc": "未检测到之前的订阅",
+      "restoreFailed": "恢复失败",
+      "restoreFailedDesc": "请稍后重试"
+    }
+  },
+  "settings": {
+    "title": "设置",
+    "accentColor": "主题色",
+    "appearance": "外观",
+    "themeSystem": "跟随系统",
+    "themeLight": "浅色",
+    "themeDark": "深色",
+    "changePassword": "更改密码",
+    "newPasswordPlaceholder": "输入新密码",
+    "dangerZone": "危险区域",
+    "deleteAccount": "删除账户",
+    "deleteAccountTitle": "删除账户",
+    "deleteAccountWarning": "此操作不可撤销。请输入",
+    "deleteAccountConfirm": "删除",
+    "toConfirm": "以确认：",
+    "typeDelete": "输入\"删除\"",
+    "deleting": "正在删除...",
+    "accountDeleted": "账户已删除",
+    "profileUpdated": "个人资料已更新",
+    "typeDeleteToConfirm": "请输入\"删除\"以确认。",
+    "premium": "高级版",
+    "manageSubscription": "管理订阅",
+    "earnedTime": "获得的时间",
+    "earnedTimeDesc": "完成锻炼以获得应用额外使用时间",
+    "notifications": "通知",
+    "notificationsDesc": "接收每日提醒和激励通知",
+    "general": "通用",
+    "language": "语言",
+    "contactUs": "联系我们",
+    "privacyPolicy": "隐私政策",
+    "termsOfService": "服务条款",
+    "about": "关于",
+    "version": "版本 {{version}}"
+  },
+  "auth": {
+    "welcomeToLockIn": "欢迎来到LockIn",
+    "takeControl": "掌控你的屏幕时间",
+    "continueWithGoogle": "使用Google继续",
+    "continueWithApple": "使用Apple继续",
+    "continueWithEmail": "使用邮箱继续",
+    "getStarted": "开始",
+    "alreadyHaveAccount": "已有账户",
+    "privacyPolicy": "隐私政策",
+    "termsOfService": "服务条款",
+    "welcomeBack": "欢迎回来",
+    "createAccount": "创建账户",
+    "focusGoalsWaiting": "你的专注目标在等你",
+    "startControlScreenTime": "开始控制你的屏幕时间",
+    "email": "邮箱",
+    "emailPlaceholder": "your@email.com",
+    "password": "密码",
+    "passwordPlaceholder": "输入密码",
+    "agreeToTerms": "我同意LockIn的",
+    "termsConditions": "条款和条件",
+    "signIn": "登录",
+    "signUp": "注册",
+    "orContinueWith": "或继续使用",
+    "dontHaveAccount": "没有账户？ ",
+    "alreadyHaveAccountQuestion": "已有账户？ ",
+    "loginSuccessful": "登录成功",
+    "signUpSuccessful": "注册成功",
+    "registrationSuccessful": "注册成功",
+    "welcomeBack2": "欢迎回来！",
+    "welcomeToLockIn2": "欢迎来到LockIn！",
+    "authenticationFailed": "认证失败",
+    "googleAuthInProgress": "Google认证进行中",
+    "googlePlayUnavailable": "Google Play不可用",
+    "googleAuthFailed": "Google认证失败",
+    "termsRequired": "请同意条款和条件",
+    "invalidEmail": "无效邮箱",
+    "invalidEmailDesc": "请输入有效的邮箱地址",
+    "invalidPassword": "无效密码",
+    "invalidPasswordDesc": "密码至少需要4个字符",
+    "registrationFailed": "注册失败",
+    "userNotFound": "用户未找到",
+    "userNotFoundDesc": "请检查邮箱或先注册",
+    "loginFailed": "登录失败",
+    "authenticationError": "认证错误",
+    "pleaseTryAgain": "请重试",
+    "welcome": "欢迎！",
+    "authenticationSuccessful": "认证成功"
+  },
+  "rateApp": {
+    "rateOurApp": "给我们的应用评分！",
+    "chooseRating": "选择评分 ⭐",
+    "pleaseSelectRating": "请选择评分 ⭐",
+    "rate": "评分",
+    "later": "稍后",
+    "couldNotOpenAppStore": "无法打开App Store",
+    "couldNotOpenPlayStore": "无法打开Google Play",
+    "tellUsImprove": "告诉我们可以改进什么 🥹",
+    "yourFeedbackPlaceholder": "您的反馈...",
+    "submit": "提交",
+    "pleaseWriteFeedback": "请写下您的反馈",
+    "thankYouFeedback": "感谢您的反馈！",
+    "failedSendFeedback": "发送失败。请重试。"
+  },
   "community": {
-    "title": "Leaderboard",
-    "addFriends": "+ Add Friends",
-    "membersCount_one": "{{count}} Friend",
-    "membersCount_other": "{{count}} Friends",
-    "groupDescription": "See your friends Screen Time. Resets daily at midnight.",
-    "defaultGroupName": "The Focused Few",
-    "noGroupTitle": "Join a Group",
-    "noGroupDesc": "Connect with friends and compete to reduce screen time together.",
-    "createGroup": "Create Group",
-    "createGroupDesc": "Create a new group and invite your friends to join.",
-    "createGroupBtn": "Create a Group",
-    "joinGroupBtn": "Join with Code",
-    "joinGroup": "Join Group",
-    "enterInviteCode": "Enter the 6-character invite code",
-    "join": "Join",
-    "invalidCode": "Invalid invite code. Please try again.",
-    "shareMessage": "Join my group on LockIn! Use code: {{code}}",
+    "title": "排行榜",
+    "addFriends": "+ 添加好友",
+    "membersCount_one": "{{count}}位好友",
+    "membersCount_other": "{{count}}位好友",
+    "groupDescription": "查看好友的屏幕使用时间。每天午夜重置。",
+    "defaultGroupName": "专注小组",
+    "noGroupTitle": "加入小组",
+    "noGroupDesc": "与好友联系，一起减少屏幕时间。",
+    "createGroup": "创建小组",
+    "createGroupDesc": "创建新小组并邀请好友加入。",
+    "createGroupBtn": "创建小组",
+    "joinGroupBtn": "用代码加入",
+    "joinGroup": "加入小组",
+    "enterInviteCode": "输入6位邀请码",
+    "join": "加入",
+    "invalidCode": "邀请码无效，请重试。",
+    "shareMessage": "加入我的小组\"{{groupName}}\"，使用LockIn！代码：{{code}}",
     "tabs": {
-      "screenTime": "Screen Time",
-      "streak": "Streak",
-      "focusHours": "Focus Hours"
+      "screenTime": "屏幕时间",
+      "streak": "连续天数",
+      "focusHours": "专注时长"
+    }
+  },
+  "intention": {
+    "greeting": "嗨！是什么让你打开{{appName}}的？🤔",
+    "errorFallback": "嗯，我无法处理。你可以继续，但请注意时间。",
+    "tip1": "具体说明你需要做什么",
+    "tip2": "提及这是否紧急或可以等待",
+    "tip3": "说明你实际需要多长时间",
+    "whyApp": "为什么要用{{appName}}？",
+    "blockedByLockIn": "被LockIn屏蔽",
+    "lockInCoach": "LockIn教练",
+    "minGranted": "已授予{{count}}分钟",
+    "tipsTitle": "💡 快速访问提示",
+    "inputPlaceholder": "告诉我你为什么需要这个应用...",
+    "leaveApp": "离开{{appName}}",
+    "header": "设定你的目的",
+    "placeholder": "我打开这个应用是因为...",
+    "continueButton": "继续使用 {{appName}}",
+    "coach": "教练",
+    "timeGranted": "已获得 {{minutes}} 分钟"
+  },
+  "spend": {
+    "coachLimitReached": "嗨！你今天{{appName}}的{{minutes}}分钟限制已用完。这是你的目标在起作用！🎯",
+    "coachBlockedUntilTomorrow": "该应用在明天之前被锁定。如果有紧急事项，告诉我你需要什么！",
+    "coachError": "抱歉，我无法处理。请重试！",
+    "freeTimeActive": "自由时间生效中",
+    "freeTimeDesc": "你正处于计划的自由时段。无需消耗已赚取的时间即可使用应用！",
+    "minRemainingToday": "今天剩余{{count}}分钟",
+    "openApp": "打开{{appName}}",
+    "totalLimitReached": "已达总每日限制",
+    "usedAllScreenTime": "你今天的屏幕时间已全部用完",
+    "allAppsBlockedExplanation": "所有应用都被锁定，因为你已达到每日总屏幕时间目标。这有助于你保持健康习惯。",
+    "totalRemaining": "剩余总计：{{count}}分钟",
+    "goBack": "返回",
+    "dailyLimitReached": "已达每日限制",
+    "usedOfLimit": "已使用{{used}}分钟，限制{{limit}}分钟",
+    "blockedUntilTomorrow": "锁定至明天",
+    "coach": "教练",
+    "coachTyping": "教练正在输入...",
+    "chatPlaceholder": "告诉教练你需要什么...",
+    "appBlocked": "{{appName}}已被锁定",
+    "earnToUnlock": "赚取时间以解锁此应用",
+    "minutesAvailable": "分钟可用",
+    "completeExercises": "完成运动以\n赚取屏幕时间",
+    "earnTimeNow": "立即赚取时间",
+    "readyToUse": "准备好使用已赚取的时间了吗？",
+    "timeTrackedAutomatically": "时间将自动追踪\n并从余额中扣除",
+    "coachNoLimit": "嗨！你今天在 {{appName}} 上花了一些时间。玩得开心吗？想休息的时候，我在这里！",
+    "coachFreeTimeReminder": "提醒：你正在自由时间模式！尽情享受 {{appName}} 吧。",
+    "coachNotBlockedNoLimit": "嗨！{{appName}} 不在你的屏蔽列表中。你可以自由使用，但记得休息！",
+    "coachNotBlocked": "嗨！{{appName}} 不在你的屏蔽列表中。你可以自由使用！",
+    "limitReached": "已达时间限制",
+    "limitReachedDesc": "你已达到 {{appName}} 的每日限制",
+    "freeTimeActiveDesc": "在自由时间结束前享受无限使用。",
+    "noLimitSet": "未设置限制",
+    "noLimitSetDesc": "你没有为 {{appName}} 设置限制",
+    "notBlocked": "应用未被屏蔽",
+    "notBlockedDesc": "{{appName}} 不在你的屏蔽列表中",
+    "earnTime": "获取时间",
+    "earnTimeDesc": "通过锻炼获得 +{{minutes}} 分钟",
+    "useFreeTime": "使用自由时间",
+    "useFreeTimeDesc": "使用一次自由时间通行证",
+    "freeTimePasses": "今天剩余 {{count}} 次通行证",
+    "buyPremium": "购买高级版",
+    "buyPremiumDesc": "解锁无限自由时间通行证",
+    "cancelFreeTime": "取消自由时间"
+  },
+  "onboarding": {
+    "welcome": {
+      "hello": "你好！",
+      "welcomeTo": "欢迎来到",
+      "helpWithTime": "我们准备好帮助你",
+      "takingControl": "掌控你的时间",
+      "letsStart": "开始吧"
+    },
+    "age": {
+      "title": "你多大了？",
+      "subtitle": "这有助于我们个性化你的体验",
+      "under18": "18岁以下",
+      "range1824": "18-24岁",
+      "range2530": "25-30岁",
+      "range3140": "31-40岁",
+      "range4150": "41-50岁",
+      "range51plus": "51岁以上"
+    },
+    "hours": {
+      "title": "每日屏幕时间？",
+      "subtitle": "请诚实回答——我们不会评判",
+      "range12": "1-2小时",
+      "range24": "2-4小时",
+      "range46": "4-6小时",
+      "range68": "6-8小时",
+      "range8plus": "8小时以上"
+    },
+    "newsIntro": {
+      "title": "我们有坏消息\n也有好消息",
+      "subtitle": "让我们向你展示关于屏幕时间的重要信息...",
+      "showMe": "让我看看"
+    },
+    "badNews": {
+      "badge": "坏消息",
+      "atHoursPerDay": "按每天{{hours}}小时计算，你将花费",
+      "days": "天",
+      "lookingAtPhone": "看手机",
+      "thisYear": "今年",
+      "thatsApproximately": "大约相当于",
+      "years": "年",
+      "ofYourLife": "的生命",
+      "explanation": "是的，你没看错。你把大部分空闲时间都花在看手机上，而你本可以实现目标，过上想要的生活。",
+      "whatsGoodNews": "好消息是什么？"
+    },
+    "goodNews": {
+      "badge": "好消息",
+      "canHelpGetBack": "LockIn可以帮你找回",
+      "ofYourLife": "的生命",
+      "turnInto": "并把它们变成你一直想要实现的事情。",
+      "moreTime": "更多时间用于你的目标、你的热情和你爱的人。",
+      "letsGetStarted": "开始吧"
+    },
+    "firstStep": {
+      "title": "让我们迈出第一步",
+      "subtitle": "LockIn将连接你的屏幕时间，为你提供",
+      "focusReport": "个性化专注报告",
+      "seeUsage": "查看你的真实使用数据",
+      "getRecommendations": "获取个性化建议",
+      "trackProgress": "追踪你的进度",
+      "imReady": "我准备好了"
+    },
+    "screenTimePermission": {
+      "title": "允许LockIn监控屏幕时间",
+      "secureInfo": "100%信息安全，保留在你的手机上",
+      "permissionGranted": "权限已授予！",
+      "howToEnable": "如何启用：",
+      "step1": "在应用列表中找到\"LockIn\"",
+      "step2": "开启\"允许使用情况访问\"",
+      "continue": "继续",
+      "checking": "检查中...",
+      "learnMore": "了解更多",
+      "whyNeedTitle": "为什么需要此权限",
+      "trackUsage": "追踪你的使用情况",
+      "trackUsageDesc": "查看你最常使用哪些应用以及使用多长时间",
+      "monitorProgress": "监控进度",
+      "monitorProgressDesc": "追踪你的数字健康之旅",
+      "personalizedInsights": "个性化洞察",
+      "personalizedInsightsDesc": "根据你的习惯获取建议",
+      "smartAlerts": "智能提醒",
+      "smartAlertsDesc": "当你在某个应用上花费太多时间时收到通知"
+    },
+    "commitment": {
+      "title": "做出承诺",
+      "committed": "已承诺！",
+      "subtitle": "长按承诺掌控你的屏幕时间",
+      "completedSubtitle": "你已经迈出了改变生活的第一步",
+      "keepHolding": "继续按住...",
+      "holdOrb": "按住能量球3秒",
+      "letsSetUp": "让我们设置你的应用！"
+    },
+    "apps": {
+      "title": "选择要锁定的应用",
+      "subtitle": "这些应用将被锁定，直到你赚取时间",
+      "selectApps": "选择应用",
+      "changeSelection": "更改选择",
+      "appsSelected": "已选择{{count}}个应用",
+      "categoriesIncluded": "包含{{count}}个类别"
+    },
+    "websites": {
+      "title": "屏蔽网站",
+      "subtitle": "可选：在浏览器中屏蔽令人分心的网站",
+      "addCustom": "添加自定义网站",
+      "customWebsites": "自定义网站：",
+      "websitesSelected": "已选择{{count}}个网站",
+      "websitesSelectedPlural": "已选择{{count}}个网站"
+    },
+    "goal": {
+      "title": "设置每日目标",
+      "subtitle": "你希望每个应用有多少屏幕时间？",
+      "lightUsage": "轻度使用",
+      "moderate": "适度",
+      "balanced": "平衡",
+      "flexible": "灵活",
+      "canChange": "你可以随时在设置中更改",
+      "min30": "30分钟",
+      "hour1": "1小时",
+      "hours2": "2小时",
+      "hours3": "3小时"
+    },
+    "complete": {
+      "title": "全部设置完成！",
+      "subtitle": "你选择的应用现已被锁定。\n通过运动赚取时间来使用它们！",
+      "appsBlocked": "已锁定的应用",
+      "websitesBlocked": "已屏蔽的网站",
+      "dailyLimitPerApp": "每个应用的每日限制",
+      "getStarted": "开始使用",
+      "continue": "继续",
+      "skip": "跳过",
+      "startUsingApp": "开始使用应用"
+    }
+  },
+  "helpContent": {
+    "home": {
+      "welcome": {
+        "title": "欢迎使用LockIn",
+        "description": "您的个人伴侣，帮助建立更健康的数字习惯。我们将帮助您保持专注，充分利用屏幕时间。"
+      },
+      "orb": {
+        "title": "健康球",
+        "description": "这个球反映您的数字健康状态。状态良好时发绿光，需要休息时变为暖色。"
+      },
+      "stats": {
+        "title": "追踪进度",
+        "description": "关注您的连续记录、每日屏幕时间，以及与周平均的比较。小改进积累成大变化。"
+      },
+      "quickActions": {
+        "title": "快速操作",
+        "description": "点击右下角的闪电按钮，即时访问屏蔽功能、时间表和专注模式。所需一切，一触即达。"
+      },
+      "schedules": {
+        "title": "智能时间表",
+        "description": "创建工作、学习或休息时间的自动屏蔽时间表。设置一次，让应用处理其余事项。"
+      },
+      "appUsage": {
+        "title": "应用洞察",
+        "description": "查看哪些应用占用您最多时间。了解您的习惯是改进的第一步。"
+      },
+      "ready": {
+        "title": "准备就绪！",
+        "description": "首先屏蔽几个令人分心的应用，看看您的专注力如何提升。我们在这里支持您的旅程。"
+      }
+    },
+    "blocking": {
+      "intro": {
+        "title": "屏蔽控制",
+        "description": "这是您管理干扰的指挥中心。屏蔽应用、设置时间表、定义每日限制，一切尽在一处。"
+      },
+      "focusSession": {
+        "title": "专注会话",
+        "description": "现在需要集中注意力？启动专注会话，在设定时间内屏蔽令人分心的应用。您甚至可以要求在解锁前完成任务。"
+      },
+      "schedules": {
+        "title": "定时屏蔽",
+        "description": "设置需要保持专注时段的重复时间表。非常适合工作时间、学习时段或睡前。"
+      },
+      "appLimits": {
+        "title": "每日应用限制",
+        "description": "还没准备好完全屏蔽应用？改为设置每日时间限制。达到限制后，应用将在当天剩余时间内被屏蔽。"
+      }
+    },
+    "stats": {
+      "intro": {
+        "title": "每周报告",
+        "description": "全面了解您的屏幕时间习惯。追踪总时长、日均使用，识别使用模式。"
+      },
+      "weeklyView": {
+        "title": "逐周对比",
+        "description": "左右滑动比较不同周的数据。查看随时间的进展，庆祝您的进步。"
+      },
+      "calendar": {
+        "title": "使用日历",
+        "description": "日历热图一目了然地显示您的每日使用情况。颜色越深表示屏幕时间越多。"
+      },
+      "appBreakdown": {
+        "title": "应用明细",
+        "description": "准确查看哪些应用占用您的时间。利用这些洞察做出明智的限制决策。"
+      }
+    },
+    "detox": {
+      "intro": {
+        "title": "数字排毒",
+        "description": "有时您需要完全远离手机。启动排毒会话，屏蔽所有令人分心的应用，重新与周围世界连接。"
+      },
+      "timer": {
+        "title": "设置时长",
+        "description": "选择想要不使用手机的时间。从较短的会话开始，在养成习惯的过程中逐渐增加。"
+      },
+      "unlock": {
+        "title": "保持承诺",
+        "description": "一旦启动排毒会话，它将运行至完成。这帮助您在没有诱惑的情况下坚持目标。"
+      }
+    },
+    "profile": {
+      "intro": {
+        "title": "您的档案",
+        "description": "管理账户、查看成就、自定义设置。关于您的一切，尽在一处。"
+      },
+      "achievements": {
+        "title": "成就",
+        "description": "在养成更好习惯的过程中解锁徽章。每个成就代表您数字健康之旅中的一个里程碑。"
+      },
+      "defaultBlocks": {
+        "title": "默认设置",
+        "description": "设置默认屏蔽应用和时间限制。创建新时间表时将预先选择这些设置，节省您的时间。"
+      }
+    }
+  },
+  "loader": {
+    "loading": "加载中...",
+    "phrases": [
+      "你的数字健康之旅从现在开始",
+      "每一刻的专注都很重要",
+      "一步一步培养更好的习惯",
+      "保持专注，活在当下",
+      "夺回你的时间，夺回你的生活",
+      "进步比完美更重要",
+      "小步骤带来大改变",
+      "你比你的干扰更强大",
+      "让今天变得有意义",
+      "专注是你的超能力",
+      "挣脱数字枷锁",
+      "未来的你会感谢现在的自己",
+      "自律即自由",
+      "掌控手机，掌控人生",
+      "活在当下",
+      "少刷屏，多生活",
+      "你的注意力很宝贵",
+      "今天就投资自己",
+      "为重要的事情腾出空间",
+      "正念始于觉察"
+    ]
+  },
+  "verifiedLockIn": {
+    "title": "验证锁定",
+    "durations": {
+      "30m": "30分钟",
+      "1h": "1小时",
+      "1.5h": "1.5小时",
+      "2h": "2小时"
+    },
+    "presetTasks": {
+      "cleanRoom": "打扫房间",
+      "completeHomework": "完成作业",
+      "workoutRoutine": "健身锻炼",
+      "cookMeal": "做一顿饭",
+      "readPages": "阅读10页",
+      "writePlan": "写计划"
+    },
+    "step1": {
+      "whatAccomplish": "你要完成什么？",
+      "describeTask": "描述你的任务...",
+      "orChoosePreset": "或选择一个模板"
+    },
+    "step2": {
+      "takeBeforePhoto": "拍一张「之前」的照片",
+      "showCurrentState": "展示任务的当前状态。\n这证明你做了实际的工作！",
+      "tapToTakePhoto": "点击拍照",
+      "tips": "提示：",
+      "tipsContent": "清楚地展示杂乱/任务。良好的光线有帮助。这将与你的「之后」照片进行比较！"
+    },
+    "step3": {
+      "beforePhotoReady": "之前照片已准备好",
+      "taskSelected": "任务已选择",
+      "focusDuration": "专注时长",
+      "appsToBlock": "要屏蔽的应用",
+      "appsWillBeBlocked": "将屏蔽{{count}}个应用"
+    },
+    "buttons": {
+      "continue": "继续",
+      "lockInNow": "开始锁定",
+      "completeToUnlock": "完成任务 + 拍「之后」照片解锁"
+    }
+  },
+  "focusMode": {
+    "title": "专注模式",
+    "subtitle": "屏蔽干扰，保持专注",
+    "startSession": "开始专注",
+    "endSession": "结束专注",
+    "duration": "时长",
+    "minutes": "{{count}} 分钟",
+    "whyTitle": "为什么要专注模式？",
+    "whyDescription": "屏蔽分散注意力的应用，保持高效。专注时段帮助你集中精力做重要的事。",
+    "settings": {
+      "title": "专注设置",
+      "durationLabel": "时长",
+      "appsToBlock": "要屏蔽的应用",
+      "selectApps": "选择要屏蔽的应用",
+      "appsSelected": "已选择 {{count}} 个应用",
+      "save": "保存设置"
     }
   }
 }

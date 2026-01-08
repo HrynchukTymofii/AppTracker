@@ -6,6 +6,23 @@ import { useEarnedTime } from "@/context/EarnedTimeContext";
 import { ExerciseType } from "@/lib/poseUtils";
 import { getFavorites, toggleFavorite, MAX_EXERCISE_FAVORITES } from "@/lib/exerciseFavorites";
 import { EXERCISE_DISPLAY_INFO, ExerciseDisplayInfo } from "@/lib/exerciseIcons";
+import { useTranslation } from "react-i18next";
+
+// Map exercise type (kebab-case) to translation key (camelCase)
+const exerciseTypeToTranslationKey: Record<ExerciseType, string> = {
+  'pushups': 'pushups',
+  'squats': 'squats',
+  'plank': 'plank',
+  'jumping-jacks': 'jumpingJacks',
+  'lunges': 'lunges',
+  'crunches': 'crunches',
+  'shoulder-press': 'shoulderPress',
+  'leg-raises': 'legRaises',
+  'high-knees': 'highKnees',
+  'pull-ups': 'pullUps',
+  'wall-sit': 'wallSit',
+  'side-plank': 'sidePlank',
+};
 
 interface EarnTimeSectionProps {
   isDark: boolean;
@@ -18,6 +35,7 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
   onStartExercise,
   onVerifiedStart,
 }) => {
+  const { t } = useTranslation();
   const { wallet, getTodayEarned, getTodaySpent, getWeekStats } = useEarnedTime();
   const [favorites, setFavorites] = useState<ExerciseType[]>([]);
   const lastTapRef = useRef<{ type: ExerciseType | null; time: number }>({ type: null, time: 0 });
@@ -122,7 +140,7 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
             letterSpacing: -0.3,
           }}
         >
-          {exercise.label}
+          {t(`exercise.${exerciseTypeToTranslationKey[exercise.type]}.name`)}
         </Text>
         <Text
           style={{
@@ -131,7 +149,7 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
             marginTop: 2,
           }}
         >
-          {exercise.description}
+          {t(`exercise.${exerciseTypeToTranslationKey[exercise.type]}.description`)}
         </Text>
       </View>
 
@@ -178,7 +196,7 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
                 letterSpacing: 0.5,
               }}
             >
-              Available
+              {t("lockin.available")}
             </Text>
             <Text
               style={{
@@ -197,7 +215,7 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
                 fontWeight: "500",
               }}
             >
-              minutes
+              {t("lockin.minutes")}
             </Text>
           </View>
 
@@ -221,7 +239,7 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
                 letterSpacing: 0.5,
               }}
             >
-              Today
+              {t("lockin.today")}
             </Text>
             <View style={{ flexDirection: "row", alignItems: "baseline", marginTop: 4 }}>
               <Text
@@ -260,7 +278,7 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
                 fontWeight: "500",
               }}
             >
-              earned / spent
+              {t("lockin.earnedSpent")}
             </Text>
           </View>
         </View>
@@ -285,11 +303,11 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
                 marginLeft: 6,
               }}
             >
-              This week:{" "}
+              {t("lockin.thisWeek")}{" "}
               <Text style={{ color: "#10b981", fontWeight: "600" }}>
-                +{weekStats.earned.toFixed(0)} min
+                +{weekStats.earned.toFixed(0)} {t("lockin.min")}
               </Text>{" "}
-              earned
+              {t("lockin.earned")}
             </Text>
           </View>
           <Text
@@ -299,9 +317,9 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
             }}
           >
             <Text style={{ color: "#ef4444", fontWeight: "600" }}>
-              -{weekStats.spent.toFixed(0)} min
+              -{weekStats.spent.toFixed(0)} {t("lockin.min")}
             </Text>{" "}
-            spent
+            {t("lockin.spent")}
           </Text>
         </View>
       </View>
@@ -361,7 +379,7 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
               letterSpacing: -0.3,
             }}
           >
-            Photo Task
+            {t("lockin.photoTask")}
           </Text>
           <Text
             style={{
@@ -370,7 +388,7 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
               marginTop: 2,
             }}
           >
-            Verify your focus with before/after photos
+            {t("lockin.photoTaskDesc")}
           </Text>
         </View>
 
@@ -390,7 +408,7 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
                 marginLeft: 8,
               }}
             >
-              Favorites
+              {t("lockin.favorites")}
             </Text>
             <Text
               style={{
@@ -399,7 +417,7 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
                 marginLeft: 8,
               }}
             >
-              (double-tap to remove)
+              {t("lockin.doubleTapRemove")}
             </Text>
           </View>
           {favoriteExercises.map((exercise) => renderExerciseCard(exercise, true))}
@@ -415,7 +433,7 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
             color: isDark ? "#ffffff" : "#111827",
           }}
         >
-          {favoriteExercises.length > 0 ? "All Exercises" : "Earn with Exercise"}
+          {favoriteExercises.length > 0 ? t("lockin.allExercises") : t("lockin.earnWithExercise")}
         </Text>
         {favoriteExercises.length < MAX_EXERCISE_FAVORITES && (
           <Text
@@ -425,7 +443,7 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
               marginLeft: 8,
             }}
           >
-            (double-tap to favorite)
+            {t("lockin.doubleTapFavorite")}
           </Text>
         )}
       </View>

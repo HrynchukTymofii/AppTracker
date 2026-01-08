@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { Clock, Dumbbell, ChevronRight, Target, TrendingUp, Wallet } from 'lucide-react-native';
 import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from 'react-native-svg';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from 'react-i18next';
 import { useEarnedTime } from '@/context/EarnedTimeContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useRouter } from 'expo-router';
@@ -17,10 +18,12 @@ const WeeklyChart = ({
   data,
   isDark,
   accentColor,
+  t,
 }: {
   data: { day: string; earned: number; spent: number; isToday: boolean }[];
   isDark: boolean;
   accentColor: string;
+  t: (key: string) => string;
 }) => {
   // Find the max value for scaling - max bar will be full height
   const maxValue = Math.max(...data.map(d => Math.max(d.earned, d.spent)), 1);
@@ -34,11 +37,11 @@ const WeeklyChart = ({
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 14, gap: 20 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
           <View style={{ width: 10, height: 10, borderRadius: 3, backgroundColor: '#10b981' }} />
-          <Text style={{ fontSize: 11, fontWeight: '600', color: isDark ? '#9ca3af' : '#6b7280' }}>Earned</Text>
+          <Text style={{ fontSize: 11, fontWeight: '600', color: isDark ? '#9ca3af' : '#6b7280' }}>{t("progress.earned")}</Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
           <View style={{ width: 10, height: 10, borderRadius: 3, backgroundColor: accentColor }} />
-          <Text style={{ fontSize: 11, fontWeight: '600', color: isDark ? '#9ca3af' : '#6b7280' }}>Spent</Text>
+          <Text style={{ fontSize: 11, fontWeight: '600', color: isDark ? '#9ca3af' : '#6b7280' }}>{t("progress.spent")}</Text>
         </View>
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', height: chartHeight }}>
@@ -145,6 +148,7 @@ const CircularProgress = ({
 };
 
 export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
+  const { t } = useTranslation();
   const router = useRouter();
   const { wallet, getTodayEarned, getTodaySpent, getWeeklyDailyStats } = useEarnedTime();
   const { accentColor } = useTheme();
@@ -254,7 +258,7 @@ export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
                     color: isDark ? '#ffffff' : '#111827',
                   }}
                 >
-                  Today's Progress
+                  {t("progress.todaysProgress")}
                 </Text>
                 <Text
                   style={{
@@ -263,7 +267,7 @@ export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
                     marginTop: 1,
                   }}
                 >
-                  Goal: {formatMinutes(dailyGoal)}
+                  {t("progress.goal")}: {formatMinutes(dailyGoal)}
                 </Text>
               </View>
             </View>
@@ -280,7 +284,7 @@ export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
               }}
             >
               <TrendingUp size={14} color={accentColor.primary} strokeWidth={2.5} />
-              <Text style={{ fontSize: 12, fontWeight: '700', color: accentColor.primary, marginLeft: 4 }}>Earn</Text>
+              <Text style={{ fontSize: 12, fontWeight: '700', color: accentColor.primary, marginLeft: 4 }}>{t("progress.earn")}</Text>
             </TouchableOpacity>
           </View>
 
@@ -308,7 +312,7 @@ export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
                   textTransform: 'uppercase',
                 }}
               >
-                SPENT
+                {t("progress.spent")}
               </Text>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Clock size={14} color={accentColor.primary} style={{ marginRight: 4 }} />
@@ -340,7 +344,7 @@ export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
                   textTransform: 'uppercase',
                 }}
               >
-                EARNED
+                {t("progress.earned")}
               </Text>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Dumbbell size={14} color="#10b981" style={{ marginRight: 4 }} />
@@ -372,7 +376,7 @@ export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
                   textTransform: 'uppercase',
                 }}
               >
-                BALANCE
+                {t("progress.balance")}
               </Text>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Wallet size={14} color="#8b5cf6" style={{ marginRight: 4 }} />
@@ -394,9 +398,9 @@ export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
             }}
           >
             <Text style={{ fontSize: 12, fontWeight: '700', color: isDark ? '#ffffff' : '#111827', marginBottom: 4 }}>
-              This Week
+              {t("progress.thisWeek")}
             </Text>
-            <WeeklyChart data={weeklyData} isDark={isDark} accentColor={accentColor.primary} />
+            <WeeklyChart data={weeklyData} isDark={isDark} accentColor={accentColor.primary} t={t} />
           </View>
         </View>
       </View>

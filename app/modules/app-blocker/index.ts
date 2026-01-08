@@ -58,29 +58,48 @@ try {
 
 export async function isAccessibilityServiceEnabled(): Promise<boolean> {
   if (!AppBlocker) return false;
-  return AppBlocker.isAccessibilityServiceEnabled();
+  try {
+    return await AppBlocker.isAccessibilityServiceEnabled();
+  } catch (error) {
+    console.error('Error checking accessibility service:', error);
+    return false;
+  }
 }
 
 export function openAccessibilitySettings(): void {
-  if (AppBlocker) {
+  if (!AppBlocker) return;
+  try {
     AppBlocker.openAccessibilitySettings();
+  } catch (error) {
+    console.error('Error opening accessibility settings:', error);
   }
 }
 
 export async function hasOverlayPermission(): Promise<boolean> {
   if (!AppBlocker) return false;
-  return AppBlocker.hasOverlayPermission();
+  try {
+    return await AppBlocker.hasOverlayPermission();
+  } catch (error) {
+    console.error('Error checking overlay permission:', error);
+    return false;
+  }
 }
 
 export function openOverlaySettings(): void {
-  if (AppBlocker) {
+  if (!AppBlocker) return;
+  try {
     AppBlocker.openOverlaySettings();
+  } catch (error) {
+    console.error('Error opening overlay settings:', error);
   }
 }
 
 export function showBlockInterstitial(packageName: string, appName: string): void {
-  if (AppBlocker) {
+  if (!AppBlocker) return;
+  try {
     AppBlocker.showBlockInterstitial(packageName, appName);
+  } catch (error) {
+    console.error('Error showing block interstitial:', error);
   }
 }
 
@@ -88,15 +107,25 @@ export function showBlockInterstitial(packageName: string, appName: string): voi
 
 export async function hasNotificationAccess(): Promise<boolean> {
   if (!AppBlocker || Platform.OS !== 'android') return true; // iOS handles differently
-  if (AppBlocker.hasNotificationAccess) {
-    return AppBlocker.hasNotificationAccess();
+  try {
+    if (AppBlocker.hasNotificationAccess) {
+      return await AppBlocker.hasNotificationAccess();
+    }
+    return false;
+  } catch (error) {
+    console.error('Error checking notification access:', error);
+    return false;
   }
-  return false;
 }
 
 export function openNotificationSettings(): void {
-  if (AppBlocker && Platform.OS === 'android' && AppBlocker.openNotificationSettings) {
-    AppBlocker.openNotificationSettings();
+  if (!AppBlocker || Platform.OS !== 'android') return;
+  try {
+    if (AppBlocker.openNotificationSettings) {
+      AppBlocker.openNotificationSettings();
+    }
+  } catch (error) {
+    console.error('Error opening notification settings:', error);
   }
 }
 
@@ -109,53 +138,84 @@ export function setBlockedApps(apps: string[]): void {
     return;
   }
 
-  if (AppBlocker.setBlockedApps) {
-    AppBlocker.setBlockedApps(apps);
+  try {
+    if (AppBlocker.setBlockedApps) {
+      AppBlocker.setBlockedApps(apps);
+    }
+  } catch (error) {
+    console.error('Error setting blocked apps:', error);
   }
 }
 
 export function getBlockedApps(): string[] {
   if (!AppBlocker || Platform.OS === 'ios') return [];
-  if (AppBlocker.getBlockedApps) {
-    return AppBlocker.getBlockedApps();
+  try {
+    if (AppBlocker.getBlockedApps) {
+      return AppBlocker.getBlockedApps();
+    }
+    return [];
+  } catch (error) {
+    console.error('Error getting blocked apps:', error);
+    return [];
   }
-  return [];
 }
 
 export function setBlockedWebsites(websites: string[]): void {
   if (!AppBlocker || Platform.OS === 'ios') return; // Not supported on iOS
-  if (AppBlocker.setBlockedWebsites) {
-    AppBlocker.setBlockedWebsites(websites);
+  try {
+    if (AppBlocker.setBlockedWebsites) {
+      AppBlocker.setBlockedWebsites(websites);
+    }
+  } catch (error) {
+    console.error('Error setting blocked websites:', error);
   }
 }
 
 export function getBlockedWebsites(): string[] {
   if (!AppBlocker || Platform.OS === 'ios') return [];
-  if (AppBlocker.getBlockedWebsites) {
-    return AppBlocker.getBlockedWebsites();
+  try {
+    if (AppBlocker.getBlockedWebsites) {
+      return AppBlocker.getBlockedWebsites();
+    }
+    return [];
+  } catch (error) {
+    console.error('Error getting blocked websites:', error);
+    return [];
   }
-  return [];
 }
 
 export function setTempUnblockWebsite(website: string, minutes: number): void {
   if (!AppBlocker || Platform.OS === 'ios') return; // Not supported on iOS
-  if (AppBlocker.setTempUnblockWebsite) {
-    AppBlocker.setTempUnblockWebsite(website, minutes);
+  try {
+    if (AppBlocker.setTempUnblockWebsite) {
+      AppBlocker.setTempUnblockWebsite(website, minutes);
+    }
+  } catch (error) {
+    console.error('Error setting temp unblock website:', error);
   }
 }
 
 export function launchApp(packageName: string): boolean {
   if (!AppBlocker || Platform.OS === 'ios') return false;
-  if (AppBlocker.launchApp) {
-    return AppBlocker.launchApp(packageName);
+  try {
+    if (AppBlocker.launchApp) {
+      return AppBlocker.launchApp(packageName);
+    }
+    return false;
+  } catch (error) {
+    console.error('Error launching app:', error);
+    return false;
   }
-  return false;
 }
 
 export function goToHomeScreen(): void {
   if (!AppBlocker || Platform.OS === 'ios') return;
-  if (AppBlocker.goToHomeScreen) {
-    AppBlocker.goToHomeScreen();
+  try {
+    if (AppBlocker.goToHomeScreen) {
+      AppBlocker.goToHomeScreen();
+    }
+  } catch (error) {
+    console.error('Error going to home screen:', error);
   }
 }
 
@@ -165,10 +225,15 @@ export function goToHomeScreen(): void {
  */
 export async function getPendingBlockedApp(): Promise<{ packageName: string; appName: string; timestamp: number } | null> {
   if (!AppBlocker || Platform.OS === 'ios') return null;
-  if (AppBlocker.getPendingBlockedApp) {
-    return await AppBlocker.getPendingBlockedApp();
+  try {
+    if (AppBlocker.getPendingBlockedApp) {
+      return await AppBlocker.getPendingBlockedApp();
+    }
+    return null;
+  } catch (error) {
+    console.error('Error getting pending blocked app:', error);
+    return null;
   }
-  return null;
 }
 
 /**
@@ -176,8 +241,12 @@ export async function getPendingBlockedApp(): Promise<{ packageName: string; app
  */
 export function clearPendingBlockedApp(): void {
   if (!AppBlocker || Platform.OS === 'ios') return;
-  if (AppBlocker.clearPendingBlockedApp) {
-    AppBlocker.clearPendingBlockedApp();
+  try {
+    if (AppBlocker.clearPendingBlockedApp) {
+      AppBlocker.clearPendingBlockedApp();
+    }
+  } catch (error) {
+    console.error('Error clearing pending blocked app:', error);
   }
 }
 
@@ -192,10 +261,15 @@ export async function getNavigationFlags(): Promise<{
   appName: string | null;
 } | null> {
   if (!AppBlocker || Platform.OS === 'ios') return null;
-  if (AppBlocker.getNavigationFlags) {
-    return await AppBlocker.getNavigationFlags();
+  try {
+    if (AppBlocker.getNavigationFlags) {
+      return await AppBlocker.getNavigationFlags();
+    }
+    return null;
+  } catch (error) {
+    console.error('Error getting navigation flags:', error);
+    return null;
   }
-  return null;
 }
 
 /**
@@ -203,8 +277,12 @@ export async function getNavigationFlags(): Promise<{
  */
 export function clearNavigationFlags(): void {
   if (!AppBlocker || Platform.OS === 'ios') return;
-  if (AppBlocker.clearNavigationFlags) {
-    AppBlocker.clearNavigationFlags();
+  try {
+    if (AppBlocker.clearNavigationFlags) {
+      AppBlocker.clearNavigationFlags();
+    }
+  } catch (error) {
+    console.error('Error clearing navigation flags:', error);
   }
 }
 
@@ -215,8 +293,12 @@ export function clearNavigationFlags(): void {
  */
 export function setDailyLimits(limits: Record<string, number>): void {
   if (!AppBlocker || Platform.OS === 'ios') return;
-  if (AppBlocker.setDailyLimits) {
-    AppBlocker.setDailyLimits(JSON.stringify(limits));
+  try {
+    if (AppBlocker.setDailyLimits) {
+      AppBlocker.setDailyLimits(JSON.stringify(limits));
+    }
+  } catch (error) {
+    console.error('Error setting daily limits:', error);
   }
 }
 
@@ -226,8 +308,12 @@ export function setDailyLimits(limits: Record<string, number>): void {
  */
 export function setTotalDailyLimit(minutes: number): void {
   if (!AppBlocker || Platform.OS === 'ios') return;
-  if (AppBlocker.setTotalDailyLimit) {
-    AppBlocker.setTotalDailyLimit(minutes);
+  try {
+    if (AppBlocker.setTotalDailyLimit) {
+      AppBlocker.setTotalDailyLimit(minutes);
+    }
+  } catch (error) {
+    console.error('Error setting total daily limit:', error);
   }
 }
 
@@ -241,17 +327,21 @@ export function setTotalDailyLimit(minutes: number): void {
 export function setTempUnblock(packageNameOrMinutes: string | number, minutes?: number): void {
   if (!AppBlocker) return;
 
-  if (Platform.OS === 'ios') {
-    // iOS: setTempUnblock(minutes) - affects all blocked apps
-    const mins = typeof packageNameOrMinutes === 'number' ? packageNameOrMinutes : minutes || 15;
-    if (AppBlocker.setTempUnblock) {
-      (AppBlocker as any).setTempUnblock(mins);
+  try {
+    if (Platform.OS === 'ios') {
+      // iOS: setTempUnblock(minutes) - affects all blocked apps
+      const mins = typeof packageNameOrMinutes === 'number' ? packageNameOrMinutes : minutes || 15;
+      if (AppBlocker.setTempUnblock) {
+        (AppBlocker as any).setTempUnblock(mins);
+      }
+    } else {
+      // Android: setTempUnblock(packageName, minutes)
+      if (AppBlocker.setTempUnblock && typeof packageNameOrMinutes === 'string' && minutes) {
+        AppBlocker.setTempUnblock(packageNameOrMinutes, minutes);
+      }
     }
-  } else {
-    // Android: setTempUnblock(packageName, minutes)
-    if (AppBlocker.setTempUnblock && typeof packageNameOrMinutes === 'string' && minutes) {
-      AppBlocker.setTempUnblock(packageNameOrMinutes, minutes);
-    }
+  } catch (error) {
+    console.error('Error setting temp unblock:', error);
   }
 }
 
@@ -262,17 +352,22 @@ export function setTempUnblock(packageNameOrMinutes: string | number, minutes?: 
 export async function isTempUnblocked(packageName?: string): Promise<boolean> {
   if (!AppBlocker) return false;
 
-  if (Platform.OS === 'ios') {
-    // iOS: global temp unblock state
-    if ((AppBlocker as any).isTempUnblocked) {
-      return (AppBlocker as any).isTempUnblocked();
+  try {
+    if (Platform.OS === 'ios') {
+      // iOS: global temp unblock state
+      if ((AppBlocker as any).isTempUnblocked) {
+        return (AppBlocker as any).isTempUnblocked();
+      }
+      return false;
+    } else {
+      // Android: per-app temp unblock
+      if (AppBlocker.isTempUnblocked && packageName) {
+        return await AppBlocker.isTempUnblocked(packageName);
+      }
+      return false;
     }
-    return false;
-  } else {
-    // Android: per-app temp unblock
-    if (AppBlocker.isTempUnblocked && packageName) {
-      return AppBlocker.isTempUnblocked(packageName);
-    }
+  } catch (error) {
+    console.error('Error checking temp unblock status:', error);
     return false;
   }
 }
@@ -304,10 +399,15 @@ export function isAuthorized(): boolean {
   if (!AppBlocker || Platform.OS !== 'ios') {
     return false;
   }
-  if (AppBlocker.isAuthorized) {
-    return AppBlocker.isAuthorized();
+  try {
+    if (AppBlocker.isAuthorized) {
+      return AppBlocker.isAuthorized();
+    }
+    return false;
+  } catch (error) {
+    console.error('Error checking authorization:', error);
+    return false;
   }
-  return false;
 }
 
 /**
@@ -337,8 +437,12 @@ export async function showAppPicker(): Promise<AppPickerResult | null> {
  */
 export function applyBlocking(): void {
   if (!AppBlocker || Platform.OS !== 'ios') return;
-  if (AppBlocker.applyBlocking) {
-    AppBlocker.applyBlocking();
+  try {
+    if (AppBlocker.applyBlocking) {
+      AppBlocker.applyBlocking();
+    }
+  } catch (error) {
+    console.error('Error applying blocking:', error);
   }
 }
 
@@ -347,8 +451,12 @@ export function applyBlocking(): void {
  */
 export function clearBlocking(): void {
   if (!AppBlocker || Platform.OS !== 'ios') return;
-  if (AppBlocker.clearBlocking) {
-    AppBlocker.clearBlocking();
+  try {
+    if (AppBlocker.clearBlocking) {
+      AppBlocker.clearBlocking();
+    }
+  } catch (error) {
+    console.error('Error clearing blocking:', error);
   }
 }
 
@@ -359,14 +467,24 @@ export async function getBlockedAppsCount(): Promise<number> {
   if (!AppBlocker || Platform.OS !== 'ios') {
     // On Android, get from getBlockedApps()
     if (Platform.OS === 'android' && AppBlocker?.getBlockedApps) {
-      return AppBlocker.getBlockedApps().length;
+      try {
+        return AppBlocker.getBlockedApps().length;
+      } catch (error) {
+        console.error('Error getting blocked apps count:', error);
+        return 0;
+      }
     }
     return 0;
   }
-  if (AppBlocker.getBlockedAppsCount) {
-    return await AppBlocker.getBlockedAppsCount();
+  try {
+    if (AppBlocker.getBlockedAppsCount) {
+      return await AppBlocker.getBlockedAppsCount();
+    }
+    return 0;
+  } catch (error) {
+    console.error('Error getting blocked apps count:', error);
+    return 0;
   }
-  return 0;
 }
 
 /**
@@ -376,14 +494,24 @@ export async function hasBlockedApps(): Promise<boolean> {
   if (!AppBlocker || Platform.OS !== 'ios') {
     // On Android, check from getBlockedApps()
     if (Platform.OS === 'android' && AppBlocker?.getBlockedApps) {
-      return AppBlocker.getBlockedApps().length > 0;
+      try {
+        return AppBlocker.getBlockedApps().length > 0;
+      } catch (error) {
+        console.error('Error checking blocked apps:', error);
+        return false;
+      }
     }
     return false;
   }
-  if (AppBlocker.hasBlockedApps) {
-    return await AppBlocker.hasBlockedApps();
+  try {
+    if (AppBlocker.hasBlockedApps) {
+      return await AppBlocker.hasBlockedApps();
+    }
+    return false;
+  } catch (error) {
+    console.error('Error checking blocked apps:', error);
+    return false;
   }
-  return false;
 }
 
 /**
@@ -400,8 +528,12 @@ export function scheduleBlocking(
   endMinute: number
 ): void {
   if (!AppBlocker || Platform.OS !== 'ios') return;
-  if (AppBlocker.scheduleBlocking) {
-    AppBlocker.scheduleBlocking(startHour, startMinute, endHour, endMinute);
+  try {
+    if (AppBlocker.scheduleBlocking) {
+      AppBlocker.scheduleBlocking(startHour, startMinute, endHour, endMinute);
+    }
+  } catch (error) {
+    console.error('Error scheduling blocking:', error);
   }
 }
 
@@ -410,8 +542,12 @@ export function scheduleBlocking(
  */
 export function stopScheduledBlocking(): void {
   if (!AppBlocker || Platform.OS !== 'ios') return;
-  if (AppBlocker.stopScheduledBlocking) {
-    AppBlocker.stopScheduledBlocking();
+  try {
+    if (AppBlocker.stopScheduledBlocking) {
+      AppBlocker.stopScheduledBlocking();
+    }
+  } catch (error) {
+    console.error('Error stopping scheduled blocking:', error);
   }
 }
 
@@ -420,8 +556,12 @@ export function stopScheduledBlocking(): void {
  */
 export function endTempUnblock(): void {
   if (!AppBlocker || Platform.OS !== 'ios') return;
-  if (AppBlocker.endTempUnblock) {
-    AppBlocker.endTempUnblock();
+  try {
+    if (AppBlocker.endTempUnblock) {
+      AppBlocker.endTempUnblock();
+    }
+  } catch (error) {
+    console.error('Error ending temp unblock:', error);
   }
 }
 

@@ -76,6 +76,13 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
     createExerciseState(exerciseType)
   );
 
+  // Interpolation refs for smooth skeleton display (refs to avoid stale closures)
+  const prevLandmarksRef = useRef<PoseLandmark[] | null>(null);
+  const targetLandmarksRef = useRef<PoseLandmark[] | null>(null);
+  const [interpolatedLandmarks, setInterpolatedLandmarks] = useState<PoseLandmark[] | null>(null);
+  const detectionTimeRef = useRef<number>(Date.now());
+  const DISPLAY_INTERVAL = 50; // 20 FPS for smooth skeleton display
+
   // Test skeleton for debugging - shows a static skeleton to verify SVG works
   const TEST_SKELETON: PoseLandmark[] = [
     { x: 0.5, y: 0.15, z: 0, visibility: 1, type: 0 },   // nose
@@ -120,9 +127,19 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
   const accumulatedPlankTimeRef = useRef(0);
   const [holdTime, setHoldTime] = useState(0);
 
-  // Body-only connections (excludes face landmarks 0-10)
+  // Body-only connections (excludes face landmarks 0-10, fingers 17-22, and toes 29-32)
   // Face landmarks: 0=nose, 1-6=eyes, 7-8=ears, 9-10=mouth
-  const BODY_CONNECTIONS = POSE_CONNECTIONS.filter(([start, end]) => start >= 11 && end >= 11);
+  // Fingers: 17-22 (pinky, index, thumb on each hand)
+  // Toes: 29-32 (heel, foot index on each foot)
+  const BODY_CONNECTIONS = POSE_CONNECTIONS.filter(([start, end]) => {
+    // Must be body landmarks (>= 11)
+    if (start < 11 || end < 11) return false;
+    // Exclude fingers (17-22)
+    if ((start >= 17 && start <= 22) || (end >= 17 && end <= 22)) return false;
+    // Exclude toes (29-32)
+    if (start >= 29 || end >= 29) return false;
+    return true;
+  });
 
   // Calculate angle between three points (in degrees)
   const calculateAngle = (a: PoseLandmark, b: PoseLandmark, c: PoseLandmark): number => {
@@ -302,10 +319,10 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
 
     const spreadScore = (armRatio + legRatio) / 2;
 
-    // Spread position (arms and legs wide)
-    if (spreadScore > 2.2) return 'down';
+    // Spread position (arms and legs wide) - lowered threshold for faster detection
+    if (spreadScore > 1.8) return 'down';
     // Closed position (arms down, legs together)
-    if (spreadScore < 1.5) return 'up';
+    if (spreadScore < 1.4) return 'up';
     return 'unknown';
   };
 
@@ -589,9 +606,9 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
     try {
       setDebugMessage('Taking snapshot...');
 
-      // Take a snapshot from the camera
+      // Take a snapshot from the camera (lower quality = faster processing)
       const photo: PhotoFile = await cameraRef.current.takeSnapshot({
-        quality: 50,
+        quality: 25,
       });
 
       setDebugMessage('Reading image...');
@@ -619,6 +636,11 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
       // Update state
       setPoseDetected(result.detected);
       if (result.detected && result.landmarks.length > 0) {
+        // Store for interpolation (move current to previous, set new target)
+        prevLandmarksRef.current = targetLandmarksRef.current;
+        targetLandmarksRef.current = result.landmarks;
+        detectionTimeRef.current = Date.now();
+
         setLandmarks(result.landmarks);
         const visibleCount = result.landmarks.filter(l => (l?.visibility ?? 0) > 0.5).length;
 
@@ -842,6 +864,57 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
     };
   }, [isActive, isInitialized, hasPermission, device, processFrame]);
 
+  // Predictive display loop - shows landmarks with forward prediction based on velocity
+  // This reduces perceived latency by predicting where the body will be
+  useEffect(() => {
+    if (!isActive) {
+      setInterpolatedLandmarks(null);
+      return;
+    }
+
+    const displayInterval = setInterval(() => {
+      const prev = prevLandmarksRef.current;
+      const target = targetLandmarksRef.current;
+
+      if (!target) {
+        setInterpolatedLandmarks(prev);
+        return;
+      }
+
+      if (!prev) {
+        setInterpolatedLandmarks(target);
+        return;
+      }
+
+      // Calculate time since last detection
+      const elapsed = Date.now() - detectionTimeRef.current;
+
+      // Predict forward based on velocity to compensate for detection latency
+      // Assume ~200ms detection latency, so predict ahead by elapsed time
+      const predictionFactor = Math.min(elapsed / 200, 1.5); // Predict up to 1.5x movement ahead
+
+      const predicted = target.map((targetLandmark, i) => {
+        const prevLandmark = prev[i];
+        if (!prevLandmark || !targetLandmark) return targetLandmark;
+
+        // Calculate velocity (movement between last two detections)
+        const velocityX = targetLandmark.x - prevLandmark.x;
+        const velocityY = targetLandmark.y - prevLandmark.y;
+
+        // Predict ahead from target position
+        return {
+          ...targetLandmark,
+          x: targetLandmark.x + velocityX * predictionFactor,
+          y: targetLandmark.y + velocityY * predictionFactor,
+        };
+      });
+
+      setInterpolatedLandmarks(predicted);
+    }, DISPLAY_INTERVAL);
+
+    return () => clearInterval(displayInterval);
+  }, [isActive]);
+
   const exerciseInfo = getExerciseInfo(exerciseType);
 
   // Store callback in ref to avoid dependency issues
@@ -865,8 +938,8 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
 
   const earnedMinutes = calculateEarnedMinutes(exerciseState);
 
-  // Use detected landmarks or test skeleton for display
-  const displayLandmarks = landmarks || TEST_SKELETON;
+  // Use interpolated landmarks for smooth display, fall back to detected or test skeleton
+  const displayLandmarks = interpolatedLandmarks || landmarks || TEST_SKELETON;
   const showSkeleton = true; // Always show skeleton (test or real)
 
   // Calculate aspect ratio adjustment
@@ -929,7 +1002,7 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
     });
   };
 
-  // Render landmark points (body only, no face - skip indices 0-10)
+  // Render landmark points (body only - skip face 0-10, fingers 17-22, toes 29+)
   const renderLandmarks = () => {
     if (!displayLandmarks) return null;
 
@@ -938,13 +1011,17 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
     return displayLandmarks.map((landmark, index) => {
       // Skip face landmarks (0-10)
       if (index <= 10) return null;
+      // Skip fingers (17-22)
+      if (index >= 17 && index <= 22) return null;
+      // Skip toes (29-32)
+      if (index >= 29) return null;
       if (!landmark || (landmark.visibility ?? 0) < 0.5) return null;
 
       // Color based on body part
       let color = '#10b981'; // default green
-      if (index <= 22) color = '#f59e0b'; // arms/shoulders - orange
-      else if (index <= 24) color = '#ec4899'; // hips - pink
-      else color = '#8b5cf6'; // legs - purple
+      if (index <= 16) color = '#f59e0b'; // arms/shoulders (11-16) - orange
+      else if (index <= 24) color = '#ec4899'; // hips (23-24) - pink
+      else color = '#8b5cf6'; // legs (25-28) - purple
 
       return (
         <Circle

@@ -1,0 +1,17 @@
+/* Shield Configuration Localization - French */
+
+/* Fallback names */
+"shield.fallback.app" = "Cette application";
+"shield.fallback.website" = "Ce site web";
+
+/* App blocked shield */
+"shield.app.title" = "%@ est bloquée";
+"shield.app.subtitle" = "Restez concentré ! Cette application est actuellement bloquée par LockIn.";
+
+/* Website blocked shield */
+"shield.website.title" = "%@ est bloqué";
+"shield.website.subtitle" = "Restez concentré ! Ce site web est actuellement bloqué par LockIn.";
+
+/* Buttons */
+"shield.button.unlock" = "Débloquer pour 5 minutes";
+"shield.button.close" = "Fermer";

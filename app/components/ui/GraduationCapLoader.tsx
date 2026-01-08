@@ -1,34 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { View, Text } from "react-native";
 import { useColorScheme } from "@/hooks/useColorScheme";
-
-const motivatingPhrases = [
-  "Your journey to digital wellness starts now",
-  "Every moment of focus counts",
-  "Building better habits, one step at a time",
-  "Stay focused, stay present",
-  "Reclaim your time, reclaim your life",
-  "Progress over perfection",
-  "Small steps lead to big changes",
-  "You're stronger than your distractions",
-  "Make today count",
-  "Focus is your superpower",
-  "Break free from digital chains",
-  "Your future self will thank you",
-  "Discipline equals freedom",
-  "Master your phone, master your life",
-  "Be present in the moment",
-  "Less screen time, more real time",
-  "Your attention is valuable",
-  "Invest in yourself today",
-  "Create space for what matters",
-  "Mindfulness begins with awareness"
-];
+import { useTranslation } from "react-i18next";
 
 export default function GraduationCap3DLoader() {
+  const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
-  const [phrase] = useState(() => motivatingPhrases[Math.floor(Math.random() * motivatingPhrases.length)]);
+
+  const phrase = useMemo(() => {
+    const phrases = t("loader.phrases", { returnObjects: true }) as string[];
+    return phrases[Math.floor(Math.random() * phrases.length)];
+  }, [t]);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -93,7 +76,7 @@ export default function GraduationCap3DLoader() {
           fontWeight: "500",
         }}
       >
-        Loading...
+        {t("loader.loading")}
       </Text>
     </View>
   );

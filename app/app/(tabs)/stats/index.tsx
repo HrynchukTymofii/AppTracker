@@ -86,65 +86,56 @@ export default function StatsScreen() {
   const [appsUsage, setAppsUsage] = useState<any[]>([]);
   const [weekDates, setWeekDates] = useState<any[]>([]);
 
-  // Initialize database and backfill historical data (full month)
+  // Initialize database (non-blocking - backfill runs in background)
   useEffect(() => {
     const initDatabase = async () => {
-      await initUsageDatabase();
-
-      // Backfill the current month's data into the database
       try {
-        // Get current month daily data
-        const monthDailyData = await getDailyUsageForMonth(0);
-        const weekStats = await getWeekUsageStatsWithOffset(0);
-
-        // Save each day from the month
-        for (const dayData of monthDailyData) {
-          if (dayData && dayData.hours > 0) {
-            const healthScore = calculateHealthScore(
-              dayData.hours * 60 * 60 * 1000,
-              dayData.pickups
-            );
-            const orbLevel = getOrbLevel(healthScore);
-
-            await saveDailyUsage(
-              dayData.date,
-              dayData.hours * 60 * 60 * 1000,
-              dayData.pickups,
-              healthScore,
-              orbLevel,
-              weekStats.apps
-            );
-          }
-        }
-
-        // Also fetch previous month for comprehensive history
-        const prevMonthData = await getDailyUsageForMonth(-1);
-        for (const dayData of prevMonthData) {
-          if (dayData && dayData.hours > 0) {
-            const healthScore = calculateHealthScore(
-              dayData.hours * 60 * 60 * 1000,
-              dayData.pickups
-            );
-            const orbLevel = getOrbLevel(healthScore);
-
-            await saveDailyUsage(
-              dayData.date,
-              dayData.hours * 60 * 60 * 1000,
-              dayData.pickups,
-              healthScore,
-              orbLevel,
-              []
-            );
-          }
-        }
-
-        console.log("Database backfilled with month data");
+        await initUsageDatabase();
       } catch (error) {
-        console.error("Error backfilling database:", error);
+        console.error("Error initializing database:", error);
       }
     };
 
     initDatabase();
+
+    // Backfill runs in background after a short delay - doesn't block UI
+    const backfillTimeout = setTimeout(() => {
+      const backfillData = async () => {
+        try {
+          // Get current month daily data
+          const monthDailyData = await getDailyUsageForMonth(0);
+          const weekStats = await getWeekUsageStatsWithOffset(0);
+
+          // Save each day from the month (in background)
+          for (const dayData of monthDailyData) {
+            if (dayData && dayData.hours > 0) {
+              const healthScore = calculateHealthScore(
+                dayData.hours * 60 * 60 * 1000,
+                dayData.pickups
+              );
+              const orbLevel = getOrbLevel(healthScore);
+
+              await saveDailyUsage(
+                dayData.date,
+                dayData.hours * 60 * 60 * 1000,
+                dayData.pickups,
+                healthScore,
+                orbLevel,
+                weekStats.apps
+              );
+            }
+          }
+          console.log("Database backfilled with month data");
+        } catch (error) {
+          console.error("Error backfilling database:", error);
+          // Don't throw - backfill failure shouldn't crash the app
+        }
+      };
+
+      backfillData();
+    }, 2000); // Wait 2 seconds before starting backfill to let UI load first
+
+    return () => clearTimeout(backfillTimeout);
   }, []);
 
   // Load calendar data when calendar view is shown or weekOffset changes

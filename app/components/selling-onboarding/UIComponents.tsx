@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, GRADIENT_COLORS, GradientTuple, useOnboardingTheme } from './designSystem';
 
 // ============================================
-// GLASS CARD COMPONENT
+// GLASS CARD COMPONENT - Enhanced with gradient border
 // ============================================
 
 export const GlassCard = ({
@@ -12,32 +12,77 @@ export const GlassCard = ({
   style,
   variant = 'default',
   noPadding = false,
+  gradientBorder = false,
 }: {
   children: React.ReactNode;
   style?: any;
   variant?: 'default' | 'light' | 'heavy' | 'gradient';
   noPadding?: boolean;
+  gradientBorder?: boolean;
 }) => {
-  const { colors } = useOnboardingTheme();
-  const bgColor = variant === 'light' ? colors.glassLight :
-                  variant === 'heavy' ? colors.glassHeavy :
-                  colors.glassMedium;
+  const { colors, isDark } = useOnboardingTheme();
 
-  return (
+  const getBgColor = () => {
+    if (variant === 'gradient') {
+      return isDark ? 'rgba(139, 92, 246, 0.08)' : 'rgba(139, 92, 246, 0.05)';
+    }
+    if (variant === 'light') return colors.glassLight;
+    if (variant === 'heavy') return colors.glassHeavy;
+    return colors.glassMedium;
+  };
+
+  const cardContent = (
     <View style={[
       {
-        backgroundColor: bgColor,
-        borderRadius: 20,
-        borderWidth: 1,
+        backgroundColor: getBgColor(),
+        borderRadius: gradientBorder ? 18 : 20,
+        borderWidth: gradientBorder ? 0 : 1,
         borderColor: colors.glassBorder,
         padding: noPadding ? 0 : 20,
         overflow: 'hidden',
       },
       style,
     ]}>
+      {/* Inner gradient overlay for depth */}
+      {variant === 'gradient' && (
+        <LinearGradient
+          colors={isDark
+            ? ['rgba(139, 92, 246, 0.1)', 'rgba(6, 182, 212, 0.05)', 'transparent']
+            : ['rgba(139, 92, 246, 0.08)', 'rgba(6, 182, 212, 0.03)', 'transparent']
+          }
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            borderRadius: gradientBorder ? 18 : 20,
+          }}
+        />
+      )}
       {children}
     </View>
   );
+
+  if (gradientBorder) {
+    return (
+      <LinearGradient
+        colors={['rgba(139, 92, 246, 0.5)', 'rgba(6, 182, 212, 0.5)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{
+          borderRadius: 20,
+          padding: 1,
+        }}
+      >
+        {cardContent}
+      </LinearGradient>
+    );
+  }
+
+  return cardContent;
 };
 
 // ============================================

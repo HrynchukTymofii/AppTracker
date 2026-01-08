@@ -1,0 +1,17 @@
+/* Shield Configuration Localization - Dutch */
+
+/* Fallback names */
+"shield.fallback.app" = "Deze app";
+"shield.fallback.website" = "Deze website";
+
+/* App blocked shield */
+"shield.app.title" = "%@ is geblokkeerd";
+"shield.app.subtitle" = "Blijf gefocust! Deze app wordt momenteel geblokkeerd door LockIn.";
+
+/* Website blocked shield */
+"shield.website.title" = "%@ is geblokkeerd";
+"shield.website.subtitle" = "Blijf gefocust! Deze website wordt momenteel geblokkeerd door LockIn.";
+
+/* Buttons */
+"shield.button.unlock" = "Deblokkeer voor 5 minuten";
+"shield.button.close" = "Sluiten";

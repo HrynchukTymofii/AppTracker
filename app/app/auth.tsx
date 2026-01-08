@@ -16,6 +16,7 @@ import { useSearchParams } from "expo-router/build/hooks";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import Toast from "react-native-toast-message";
 import * as SecureStore from "expo-secure-store";
+import { useTranslation } from "react-i18next";
 import {
   GoogleSignin,
   isErrorWithCode,
@@ -45,6 +46,7 @@ export default function AuthLandingScreen() {
   const { setToken, setUser } = useAuth();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { t } = useTranslation();
 
   const returnUrl = params.get("returnUrl");
   const safeReturnUrl =
@@ -80,8 +82,8 @@ export default function AuthLandingScreen() {
             }
             Toast.show({
               type: "success",
-              text1: "Welcome!",
-              text2: "Authentication successful",
+              text1: t("auth.welcome"),
+              text2: t("auth.authenticationSuccessful"),
               position: "top",
               visibilityTime: 700,
             });
@@ -89,8 +91,8 @@ export default function AuthLandingScreen() {
           } else {
             Toast.show({
               type: "error",
-              text1: "Authentication failed",
-              text2: data.error || "Unknown error",
+              text1: t("auth.authenticationFailed"),
+              text2: data.error || t("common.error"),
               position: "top",
             });
           }
@@ -100,19 +102,19 @@ export default function AuthLandingScreen() {
       if (isErrorWithCode(err)) {
         switch (err.code) {
           case statusCodes.IN_PROGRESS:
-            Toast.show({ type: "info", text1: "Google sign in in progress" });
+            Toast.show({ type: "info", text1: t("auth.googleAuthInProgress") });
             break;
           case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
             Toast.show({
               type: "info",
-              text1: "Google Play Services unavailable",
+              text1: t("auth.googlePlayUnavailable"),
             });
             break;
           default:
             Toast.show({
               type: "error",
-              text1: "Google sign in failed",
-              text2: err.message || "Error",
+              text1: t("auth.googleAuthFailed"),
+              text2: err.message || t("common.error"),
             });
         }
       }
@@ -169,7 +171,7 @@ export default function AuthLandingScreen() {
               letterSpacing: -0.5,
             }}
           >
-            Welcome to LockIn
+            {t("auth.welcomeToLockIn")}
           </Text>
           <Text
             style={{
@@ -179,7 +181,7 @@ export default function AuthLandingScreen() {
               lineHeight: 22,
             }}
           >
-            Take control of your screen time
+            {t("auth.takeControl")}
           </Text>
         </View>
 
@@ -227,7 +229,7 @@ export default function AuthLandingScreen() {
                 flex: 1,
               }}
             >
-              Continue with Google
+              {t("auth.continueWithGoogle")}
             </Text>
             <ChevronRight size={20} color={isDark ? "rgba(255,255,255,0.3)" : "#cbd5e1"} strokeWidth={1.5} />
           </TouchableOpacity>
@@ -275,7 +277,7 @@ export default function AuthLandingScreen() {
                   flex: 1,
                 }}
               >
-                Continue with Apple
+                {t("auth.continueWithApple")}
               </Text>
               <ChevronRight size={20} color={isDark ? "rgba(255,255,255,0.3)" : "#cbd5e1"} strokeWidth={1.5} />
             </TouchableOpacity>
@@ -310,7 +312,7 @@ export default function AuthLandingScreen() {
                 flex: 1,
               }}
             >
-              Continue with Email
+              {t("auth.continueWithEmail")}
             </Text>
             <ChevronRight size={20} color={isDark ? "rgba(255,255,255,0.3)" : "#cbd5e1"} strokeWidth={1.5} />
           </TouchableOpacity>
@@ -359,7 +361,7 @@ export default function AuthLandingScreen() {
               letterSpacing: 0.3,
             }}
           >
-            Get Started
+            {t("auth.getStarted")}
           </Text>
         </TouchableOpacity>
 
@@ -393,7 +395,7 @@ export default function AuthLandingScreen() {
               letterSpacing: 0.3,
             }}
           >
-            I already have an account
+            {t("auth.alreadyHaveAccount")}
           </Text>
         </TouchableOpacity>
 
@@ -411,7 +413,7 @@ export default function AuthLandingScreen() {
                 fontSize: 13,
               }}
             >
-              Privacy Policy
+              {t("auth.privacyPolicy")}
             </Text>
           </TouchableOpacity>
 
@@ -436,7 +438,7 @@ export default function AuthLandingScreen() {
                 fontSize: 13,
               }}
             >
-              Terms of Service
+              {t("auth.termsOfService")}
             </Text>
           </TouchableOpacity>
         </View>

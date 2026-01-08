@@ -34,6 +34,7 @@ import {
 } from 'lucide-react-native';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const SWIPE_THRESHOLD = 50;
@@ -74,10 +75,11 @@ interface HelpCarouselProps {
 }
 
 // Animated Illustration Component
-const AnimatedIllustration: React.FC<{ type: AnimationType; isActive: boolean; isDark: boolean }> = ({
+const AnimatedIllustration: React.FC<{ type: AnimationType; isActive: boolean; isDark: boolean; t: (key: string, options?: any) => string }> = ({
   type,
   isActive,
   isDark,
+  t,
 }) => {
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
@@ -290,7 +292,7 @@ const AnimatedIllustration: React.FC<{ type: AnimationType; isActive: boolean; i
                 >
                   7
                 </Animated.Text>
-                <Text style={[styles.statLabel, { color: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)' }]}>Streak</Text>
+                <Text style={[styles.statLabel, { color: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)' }]}>{t("helpCarousel.streak")}</Text>
               </View>
               <View style={[styles.statCard, styles.statCardMain, { backgroundColor: isDark ? 'rgba(59, 130, 246, 0.15)' : 'rgba(59, 130, 246, 0.1)' }]}>
                 <Clock size={24} color="#3b82f6" />
@@ -302,7 +304,7 @@ const AnimatedIllustration: React.FC<{ type: AnimationType; isActive: boolean; i
                 >
                   2h 15m
                 </Animated.Text>
-                <Text style={[styles.statLabel, { color: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)' }]}>Today</Text>
+                <Text style={[styles.statLabel, { color: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)' }]}>{t("helpCarousel.today")}</Text>
               </View>
               <View style={[styles.statCard, { backgroundColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.04)' }]}>
                 <TrendingUp size={20} color="#10b981" />
@@ -314,7 +316,7 @@ const AnimatedIllustration: React.FC<{ type: AnimationType; isActive: boolean; i
                 >
                   -45m
                 </Animated.Text>
-                <Text style={[styles.statLabel, { color: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)' }]}>vs Avg</Text>
+                <Text style={[styles.statLabel, { color: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)' }]}>{t("helpCarousel.vsAvg")}</Text>
               </View>
             </View>
           </Animated.View>
@@ -361,7 +363,7 @@ const AnimatedIllustration: React.FC<{ type: AnimationType; isActive: boolean; i
                 style={styles.calendarHeader}
               >
                 <Calendar size={24} color="#ffffff" />
-                <Text style={styles.calendarTitle}>Schedule</Text>
+                <Text style={styles.calendarTitle}>{t("helpCarousel.schedule")}</Text>
               </LinearGradient>
               <View style={styles.calendarBody}>
                 {[...Array(7)].map((_, i) => (
@@ -623,7 +625,7 @@ const AnimatedIllustration: React.FC<{ type: AnimationType; isActive: boolean; i
                 ]}
               >
                 <BarChart3 size={32} color="#3b82f6" />
-                <Text style={[styles.swipeText, { color: isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)' }]}>Week 1</Text>
+                <Text style={[styles.swipeText, { color: isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)' }]}>{t("helpCarousel.week", { number: 1 })}</Text>
               </Animated.View>
               <View style={styles.swipeIndicator}>
                 <ChevronRight size={24} color={isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.2)'} />
@@ -833,6 +835,7 @@ export const HelpCarousel: React.FC<HelpCarouselProps> = ({
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const currentIndexRef = useRef(0);
   const translateX = useRef(new Animated.Value(0)).current;
@@ -985,7 +988,7 @@ export const HelpCarousel: React.FC<HelpCarouselProps> = ({
             </Animated.View>
           </View>
           <Text style={[styles.progressText, { color: isDark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)' }]}>
-            {currentIndex + 1} of {cards.length}
+            {currentIndex + 1} {t("common.of")} {cards.length}
           </Text>
         </View>
 
@@ -1017,6 +1020,7 @@ export const HelpCarousel: React.FC<HelpCarouselProps> = ({
                 type={card.animationType}
                 isActive={index === currentIndex}
                 isDark={isDark}
+                t={t}
               />
             ) : (card.image || card.video) ? (
               <View style={styles.mediaContainer}>
@@ -1051,7 +1055,7 @@ export const HelpCarousel: React.FC<HelpCarouselProps> = ({
       </Animated.View>
 
       {/* Bottom Action Button */}
-      <View style={[styles.bottomContainer, { paddingBottom: insets.bottom + 40 }]}>
+      <View style={[styles.bottomContainer, { paddingBottom: insets.bottom + 50 }]}>
         <TouchableOpacity
           onPress={handleNext}
           activeOpacity={0.9}
@@ -1064,7 +1068,7 @@ export const HelpCarousel: React.FC<HelpCarouselProps> = ({
             style={StyleSheet.absoluteFill}
           />
           <Text style={styles.nextButtonText}>
-            {currentIndex === cards.length - 1 ? "Get Started" : 'Next'}
+            {currentIndex === cards.length - 1 ? t("common.getStarted") : t("common.next")}
           </Text>
           {currentIndex < cards.length - 1 && (
             <ChevronRight

@@ -15,16 +15,27 @@
     "back": "뒤로",
     "next": "다음",
     "done": "완료",
-    "or": "또는"
+    "or": "또는",
+    "of": "/",
+    "getStarted": "시작하기"
+  },
+  "helpCarousel": {
+    "streak": "연속",
+    "today": "오늘",
+    "vsAvg": "vs 평균",
+    "schedule": "일정",
+    "week": "{{number}}주차"
   },
   "tabs": {
     "home": "홈",
     "blocking": "차단",
+    "goals": "목표",
     "detox": "디톡스",
     "stats": "통계",
     "profile": "프로필",
     "community": "커뮤니티",
-    "schedule": "일정"
+    "schedule": "일정",
+    "lockin": "LockIn"
   },
   "home": {
     "title": "LockIn",
@@ -33,6 +44,11 @@
     "loadingApps": "앱 로딩 중...",
     "focusModeActive": "집중 모드 활성화",
     "appsBlocked": "개 앱 차단됨",
+    "streak": "연속 기록",
+    "today": "오늘",
+    "vsAverage": "평균 대비",
+    "upcomingSchedules": "예정된 일정",
+    "createSchedule": "일정 만들기",
     "quickMenu": {
       "stats": "통계",
       "statsDesc": "상세한 사용 통계 보기",
@@ -41,7 +57,15 @@
       "detox": "디톡스",
       "detoxDesc": "휴대폰 디톡스 타이머 시작",
       "calendar": "캘린더",
-      "calendarDesc": "작업 일정 관리"
+      "calendarDesc": "작업 일정 관리",
+      "newSchedule": "새 일정",
+      "newScheduleDesc": "차단 일정 만들기"
+    },
+    "quickActions": {
+      "photoTask": "사진 작업",
+      "photoTaskDesc": "전/후 사진 - 1.5배 보너스",
+      "focusMode": "집중 모드",
+      "focusModeDesc": "LockIn으로 스크린 타임 획득"
     }
   },
   "stats": {
@@ -91,10 +115,26 @@
     "noUsageData": "아직 사용 데이터가 없습니다",
     "healthScore": "건강 점수",
     "screenTime": "화면 시간",
-    "topApps": "상위 3개 앱"
+    "topApps": "상위 3개 앱",
+    "vsLastWeek": "지난 주 대비",
+    "lessScreenTime": "스크린 타임 감소",
+    "moreScreenTime": "스크린 타임 증가",
+    "difference": "차이",
+    "shareProgress": "진행 공유",
+    "weeklyReport": "주간 리포트"
   },
   "blocking": {
     "title": "차단",
+    "pageTitle": "목표",
+    "pageSubtitle": "일일 스크린 타임 제한 설정",
+    "todaysProgress": "오늘의 진행",
+    "goal": "목표",
+    "timeLeft": "남음",
+    "used": "사용",
+    "remaining": "남은 시간",
+    "ofGoal": "목표 중",
+    "setDailyGoal": "일일 목표 설정:",
+    "limitReachedWarning": "일일 제한에 도달했습니다! 모든 앱이 차단됩니다.",
     "setupRequired": "설정 필요",
     "permissionsDesc": "앱 차단에는 특별한 권한이 필요합니다. 다음을 활성화하세요:",
     "accessibilityService": "1. 접근성 서비스",
@@ -140,6 +180,10 @@
       "task": "작업 필요",
       "dailyLimit": "일일 제한"
     },
+    "apps": "앱",
+    "sites": "사이트",
+    "appsBlocked": "차단된 앱",
+    "activeDays": "활성 일수",
     "modals": {
       "selectApps": "차단할 앱 선택",
       "confirmSelection": "선택 확인 ({{count}})",
@@ -149,8 +193,12 @@
       "scheduleName": "일정 이름",
       "scheduleNamePlaceholder": "예: 근무 시간",
       "appsToBlock": "차단할 앱",
+      "websitesToBlock": "차단할 웹사이트",
       "selectAppsPlaceholder": "앱 선택...",
       "appsSelected": "{{count}}개 앱 선택됨",
+      "apps": "앱",
+      "websites": "웹사이트",
+      "selectWebsites": "차단할 웹사이트 선택",
       "startTime": "시작 시간",
       "endTime": "종료 시간",
       "repeatOn": "반복 요일",
@@ -172,7 +220,7 @@
       "deselectAll": "선택 해제",
       "popularApps": "인기 앱",
       "moreApps": "더 많은 앱 ({{count}})",
-      "showPopularOnly": "← 인기 앱만 표시"
+      "showPopularOnly": "인기 앱만 표시"
     },
     "alerts": {
       "enterScheduleName": "일정 이름을 입력하세요",
@@ -206,14 +254,266 @@
       "hours": "시간",
       "minutes": "분",
       "dailyLimit": "일일 제한"
+    },
+    "share": {
+      "title": "내 스크린 타임 진행 상황",
+      "header": "📱 오늘의 스크린 타임",
+      "goal": "🎯 목표: {{time}}",
+      "used": "⏱️ 사용: {{time}}",
+      "remaining": "✅ 남음: {{time}}",
+      "progress": "📊 진행률: {{percent}}%",
+      "footer": "LockIn으로 스크린 타임을 관리하고 있어요! 💪"
     }
   },
   "detox": {
     "title": "디톡스"
   },
+  "progress": {
+    "todaysProgress": "오늘의 진행 상황",
+    "goal": "목표",
+    "earned": "획득",
+    "spent": "사용",
+    "balance": "잔액",
+    "earn": "획득하기",
+    "thisWeek": "이번 주"
+  },
+  "lockin": {
+    "title": "LockIn",
+    "readyToEarnTime": "시간 획득 준비됐나요?",
+    "lockInToEarn": "LockIn으로 스크린 타임 획득",
+    "giveUp": "포기하시겠어요?",
+    "giveUpMessage": "지금 포기하면 연속 기록이 사라집니다. 정말 포기하시겠어요?",
+    "giveUpConfirm": "포기하기",
+    "keepGoing": "계속하기",
+    "available": "사용 가능",
+    "minutes": "분",
+    "min": "분",
+    "today": "오늘",
+    "earnedSpent": "획득 / 사용",
+    "thisWeek": "이번 주:",
+    "earned": "획득",
+    "spent": "사용",
+    "photoTask": "사진 작업",
+    "photoTaskDesc": "전/후 사진으로 집중 검증",
+    "favorites": "즐겨찾기",
+    "doubleTapRemove": "(두 번 탭하여 제거)",
+    "allExercises": "모든 운동",
+    "earnWithExercise": "운동으로 획득",
+    "doubleTapFavorite": "(두 번 탭하여 즐겨찾기)",
+    "history": "기록",
+    "seeAll": "모두 보기",
+    "noSessions": "아직 세션이 없습니다",
+    "startFirst": "LockIn을 시작하여 기록을 확인하세요",
+    "recentActivities": "최근 활동",
+    "focusSession": "집중 세션",
+    "yesterday": "어제",
+    "daysAgo": "{{count}}일 전",
+    "hoursAgo": "{{count}}시간 전",
+    "minutesAgo": "{{count}}분 전",
+    "justNow": "방금",
+    "lockedIn": "LOCKED IN",
+    "remaining": "남음",
+    "currentTask": "현재 작업",
+    "before": "전",
+    "after": "후",
+    "tapWhenDone": "완료되면 탭하세요",
+    "appsBlocked": "개 앱 차단됨",
+    "earnPoints": "완료 시 {{points}} 포인트 획득",
+    "completeWithPhoto": "완료 - 사진으로 검증",
+    "completeSession": "세션 완료",
+    "giveUpLoseStreak": "포기 (연속 기록 상실)",
+    "currentBalance": "현재 잔액",
+    "chooseExercise": "운동 선택",
+    "earnScreenTimeInfo": "스크린 타임 획득",
+    "earnScreenTimeDesc": "운동을 완료하여 시간을 획득하세요. 더 많이 할수록 더 많은 시간을 획득합니다!",
+    "instructions": "설명",
+    "rewards": "보상",
+    "greatWork": "잘했어요!",
+    "tryAgain": "다시 시도",
+    "startExercise": "운동 시작",
+    "start": "시작",
+    "finishWithEarnings": "완료 (+{{minutes}}분)",
+    "finishExercise": "운동 완료",
+    "done": "완료",
+    "earnTime": "시간 획득",
+    "selectStep": "운동을 선택하세요",
+    "readyStep": "카메라를 배치한 후 시작을 탭하세요",
+    "exerciseStep": "계속하세요!",
+    "completeStep": "운동 완료",
+    "instructionsStep": "설명을 읽으세요",
+    "positionCamera": "카메라를 배치하세요",
+    "fullBodyVisible": "전신이 보이도록 해주세요",
+    "howToDoIt": "하는 방법",
+    "gotIt": "알겠습니다",
+    "earnScreenTimeModal": "스크린 타임 획득",
+    "firstRunDescription": "운동을 완료하여 좋아하는 앱에서 사용할 수 있는 시간을 획득하세요. 더 많이 운동할수록 더 많은 시간을 획득합니다!",
+    "featureBodyweight": "푸시업, 스쿼트 & 플랭크",
+    "featureAI": "AI가 자세를 추적합니다",
+    "featureEarnings": "반복당 0.5-1분 획득",
+    "letsGetStarted": "시작해볼까요!",
+    "seconds": "초",
+    "reps": "회",
+    "rep": "회",
+    "hours": "시간",
+    "timeEarned": "획득한 시간",
+    "watchDemoVideo": "데모 영상 보기",
+    "comingSoon": "곧 출시",
+    "holdDescription": "{{seconds}}초 동안 버텼습니다",
+    "repsDescription": "{{exercise}} {{count}}회 완료했습니다",
+    "rewardPlankDesc": "초당 {{rate}}분 획득. 최소 {{min}}초 버텨야 획득. {{bonusTime}}초 이상 버티면 {{bonus}} 보너스!",
+    "rewardRepsDesc": "반복당 {{rate}}분 획득. 최소 {{min}}회 해야 획득. {{bonusReps}}회 이상하면 {{bonus}} 보너스!",
+    "minimumPlankRequired": "시간을 획득하려면 최소 {{seconds}}초 버텨야 합니다.",
+    "minimumRepsRequired": "시간을 획득하려면 최소 {{count}}회 해야 합니다.",
+    "holdAtLeast": "시간을 획득하려면 최소 {{seconds}}초 버티세요",
+    "doAtLeast": "시간을 획득하려면 최소 {{count}}회 하세요",
+    "infoRewardPlank": "초당 {{rate}}분. 최소 {{min}}초에서 획득. {{bonusTime}}초에 {{bonus}} 보너스!",
+    "infoRewardReps": "반복당 {{rate}}분. 최소 {{min}}회에서 획득. {{bonusReps}}회에 {{bonus}} 보너스!"
+  },
+  "exercise": {
+    "pushups": {
+      "name": "푸시업",
+      "description": "반복당 0.5분 획득 (최소 3회)",
+      "instructions": [
+        "옆에서 전신이 보이도록 휴대폰을 배치하세요",
+        "팔을 펴고 푸시업 자세를 취하세요",
+        "가슴을 바닥으로 내리세요",
+        "다시 밀어 올려 1회 완료",
+        "20회 이후 1.1배 보너스!"
+      ]
+    },
+    "squats": {
+      "name": "스쿼트",
+      "description": "반복당 0.5분 획득 (최소 3회)",
+      "instructions": [
+        "옆에서 전신이 보이도록 휴대폰을 배치하세요",
+        "어깨 너비로 발을 벌리고 서세요",
+        "허벅지가 바닥과 평행이 될 때까지 앉으세요",
+        "다시 일어나 1회 완료",
+        "20회 이후 1.1배 보너스!"
+      ]
+    },
+    "plank": {
+      "name": "플랭크",
+      "description": "초당 0.1분 획득 (최소 10초)",
+      "instructions": [
+        "옆에서 전신이 보이도록 휴대폰을 배치하세요",
+        "몸을 일직선으로 유지하며 플랭크 자세를 취하세요",
+        "가능한 한 오래 자세를 유지하세요",
+        "엉덩이가 처지거나 올라가지 않도록 하세요",
+        "30초 이후 1.1배 보너스!"
+      ]
+    },
+    "jumpingJacks": {
+      "name": "점핑잭",
+      "description": "반복당 0.3분 획득 (최소 5회)",
+      "instructions": [
+        "전신이 보이도록 휴대폰을 배치하세요",
+        "발을 모으고 팔은 옆에 두고 서세요",
+        "점프하면서 다리를 벌리고 팔을 올리세요",
+        "다시 점프하여 시작 자세로 돌아오세요",
+        "30회 이후 1.1배 보너스!"
+      ]
+    },
+    "lunges": {
+      "name": "런지",
+      "description": "반복당 0.5분 획득 (최소 3회)",
+      "instructions": [
+        "옆에서 전신이 보이도록 휴대폰을 배치하세요",
+        "골반 너비로 발을 벌리고 서세요",
+        "앞으로 한 발 내딛고 앞 무릎이 90도가 될 때까지 내려가세요",
+        "다시 일어나 1회 완료",
+        "15회 이후 1.1배 보너스!"
+      ]
+    },
+    "crunches": {
+      "name": "크런치",
+      "description": "반복당 0.4분 획득 (최소 5회)",
+      "instructions": [
+        "옆에서 전신이 보이도록 휴대폰을 배치하세요",
+        "무릎을 구부리고 등을 대고 누우세요",
+        "어깨를 무릎 쪽으로 올리세요",
+        "천천히 내려와 1회 완료",
+        "20회 이후 1.1배 보너스!"
+      ]
+    },
+    "shoulderPress": {
+      "name": "숄더 프레스",
+      "description": "반복당 0.5분 획득 (최소 3회)",
+      "instructions": [
+        "상체가 보이도록 휴대폰을 배치하세요",
+        "어깨 높이에서 무게를 들고 시작하세요",
+        "팔을 머리 위로 쭉 펴세요",
+        "다시 어깨 높이로 내려 1회 완료",
+        "15회 이후 1.1배 보너스!"
+      ]
+    },
+    "legRaises": {
+      "name": "레그 레이즈",
+      "description": "반복당 0.4분 획득 (최소 5회)",
+      "instructions": [
+        "옆에서 전신이 보이도록 휴대폰을 배치하세요",
+        "다리를 편 채로 등을 대고 누우세요",
+        "다리를 천장 쪽으로 올리세요",
+        "천천히 다리를 내려 1회 완료",
+        "15회 이후 1.1배 보너스!"
+      ]
+    },
+    "highKnees": {
+      "name": "하이 니즈",
+      "description": "반복당 0.2분 획득 (최소 10회)",
+      "instructions": [
+        "전신이 보이도록 휴대폰을 배치하세요",
+        "제자리 달리기 준비 자세로 서세요",
+        "무릎을 골반 높이 이상으로 올리세요",
+        "빠르게 다리를 교차하세요",
+        "40회 이후 1.1배 보너스!"
+      ]
+    },
+    "pullUps": {
+      "name": "풀업",
+      "description": "반복당 0.8분 획득 (최소 2회)",
+      "instructions": [
+        "옆에서 몸이 보이도록 휴대폰을 배치하세요",
+        "팔을 편 채로 바에 매달리세요",
+        "턱이 바 위로 올라올 때까지 당기세요",
+        "천천히 내려와 1회 완료",
+        "10회 이후 1.15배 보너스!"
+      ]
+    },
+    "wallSit": {
+      "name": "월 싯",
+      "description": "초당 0.15분 획득 (최소 10초)",
+      "instructions": [
+        "옆에서 전신이 보이도록 휴대폰을 배치하세요",
+        "발을 어깨 너비로 벌리고 벽에 기대세요",
+        "무릎이 90도가 될 때까지 내려가세요",
+        "허벅지가 바닥과 평행이 되도록 자세를 유지하세요",
+        "45초 이후 1.1배 보너스!"
+      ]
+    },
+    "sidePlank": {
+      "name": "사이드 플랭크",
+      "description": "초당 0.12분 획득 (최소 10초)",
+      "instructions": [
+        "정면에서 전신이 보이도록 휴대폰을 배치하세요",
+        "옆으로 누워 팔꿈치로 몸을 지지하세요",
+        "엉덩이를 바닥에서 들어 올리세요",
+        "몸을 일직선으로 유지하세요",
+        "30초 이후 1.1배 보너스!"
+      ]
+    }
+  },
+  "exerciseCamera": {
+    "cameraPermissionRequired": "카메라 권한이 필요합니다",
+    "noCameraDevice": "카메라 장치를 찾을 수 없습니다",
+    "holding": "유지 중",
+    "getInPosition": "자세를 취하세요",
+    "down": "내려가세요",
+    "up": "올라가세요"
+  },
   "profile": {
     "title": "프로필",
-    "proMember": "PRO 멤버",
+    "proMember": "PRO 회원",
     "achievements": "업적",
     "viewAll": "모두 보기",
     "quickActions": "빠른 작업",
@@ -222,79 +522,95 @@
     "rateUs": "평가하기",
     "logOut": "로그아웃",
     "errorLoading": "프로필 로드 오류",
-    "loading": "프로필 로딩 중...",
+    "loading": "프로필 로드 중...",
+    "blockedItems": "차단된 앱 & 사이트",
+    "defaultBlockedItems": "기본 차단 항목",
+    "apps": "앱",
+    "websites": "사이트",
+    "blockedItemsDesc": "새 일정 생성 시 미리 선택됩니다",
+    "editBlockedItems": "차단 항목 편집",
+    "dailyGoal": "일일 목표",
+    "dailyGoalQuestion": "하루에 얼마나 스크린 타임을 획득하고 싶으세요?",
+    "dailyGoalUpdated": "일일 목표가 업데이트됨",
+    "minLabel": "15분",
+    "maxLabel": "3시간",
     "defaultAppLimit": "기본 앱 제한",
-    "defaultAppLimitDesc": "새 앱은 기본적으로 이 시간 제한을 사용합니다",
-    "limitUpdated": "기본 제한이 업데이트됨",
+    "defaultAppLimitDesc": "새 앱은 이 시간 제한을 기본으로 사용합니다",
+    "limitUpdated": "기본 제한 업데이트됨",
+    "minLimitLabel": "1분",
+    "maxLimitLabel": "2시간",
+    "streak": "연속 기록",
+    "sessions": "세션",
+    "tasks": "작업",
     "contactDescription": "메시지를 보내주시면 곧 답변 드리겠습니다",
-    "writeMessage": "메시지를 작성하세요...",
+    "writeMessage": "메시지를 입력하세요...",
     "sendMessage": "메시지 보내기",
     "emailUs": "이메일 보내기",
-    "messageSent": "메시지를 보냈습니다!",
+    "messageSent": "메시지 전송됨!",
     "messageThankYou": "곧 답변 드리겠습니다",
     "messageError": "메시지 전송 실패",
-    "rateExperience": "경험을 평가해 주세요",
+    "rateExperience": "경험 평가하기",
     "rateDescription": "LockIn을 어떻게 평가하시겠습니까?",
-    "tapToRate": "별을 탭하여 평가하세요",
+    "tapToRate": "별을 탭하여 평가",
     "thankYouRating": "평가해 주셔서 감사합니다!",
-    "tellUsMore": "자세히 알려주세요",
+    "tellUsMore": "더 알려주세요",
     "helpUsImprove": "경험 개선에 도움을 주세요",
     "describeProblem": "무엇을 개선할 수 있을까요?",
     "sendFeedback": "피드백 보내기",
     "changeRating": "평가 변경",
-    "feedbackSent": "피드백을 보냈습니다!",
+    "feedbackSent": "피드백 전송됨!",
     "feedbackThanks": "개선에 도움 주셔서 감사합니다",
     "feedbackError": "피드백 전송 실패"
   },
   "achievements": {
     "title": "업적",
-    "unlocked": "잠금 해제",
-    "locked": "잠금",
-    "unlockedCount": "{{total}} 개 중 {{count}} 개 잠금 해제",
+    "unlocked": "해제됨",
+    "locked": "잠김",
+    "unlockedCount": "{{total}}개 중 {{count}}개 해제",
     "list": {
       "firstBlock": {
-        "title": "처음으로",
+        "title": "첫 번째",
         "description": "첫 번째 앱 차단"
       },
       "focusBeginner": {
         "title": "집중 초보자",
-        "description": "첫 번째 집중 세션 완료"
+        "description": "첫 집중 세션 완료"
       },
       "taskMaster": {
-        "title": "작업 달인",
+        "title": "작업 마스터",
         "description": "작업 검증 완료"
       },
       "earlyBird": {
-        "title": "아침형",
+        "title": "아침형 인간",
         "description": "오전 8시 전에 집중 시작"
       },
       "nightOwl": {
-        "title": "저녁형",
-        "description": "밤 10시 이후 차단 사용"
+        "title": "올빼미",
+        "description": "오후 10시 이후 차단 사용"
       },
       "discipline": {
         "title": "규율",
         "description": "7일 연속 차단"
       },
       "ironWill": {
-        "title": "강철 같은 의지",
-        "description": "10개의 집중 세션 완료"
+        "title": "강철 의지",
+        "description": "10회 집중 세션 완료"
       },
       "zenMaster": {
-        "title": "선 대사",
-        "description": "50개의 집중 세션 완료"
+        "title": "젠 마스터",
+        "description": "50회 집중 세션 완료"
       },
       "schedulePro": {
-        "title": "일정 전문가",
-        "description": "첫 번째 일정 만들기"
+        "title": "일정 프로",
+        "description": "첫 일정 생성"
       },
       "timeKeeper": {
-        "title": "시간 관리자",
-        "description": "5개 일정 만들기"
+        "title": "시간 수호자",
+        "description": "5개 일정 생성"
       },
       "digitalDetox": {
-        "title": "디지털 해독",
-        "description": "24시간 동안 앱 차단"
+        "title": "디지털 디톡스",
+        "description": "24시간 앱 차단"
       },
       "weekendWarrior": {
         "title": "주말 전사",
@@ -302,10 +618,10 @@
       },
       "minimalist": {
         "title": "미니멀리스트",
-        "description": "동시에 10개 이상의 앱 차단"
+        "description": "10개 이상 앱 동시 차단"
       },
       "focusLegend": {
-        "title": "집중 전설",
+        "title": "집중의 전설",
         "description": "2시간 집중 세션"
       },
       "marathon": {
@@ -313,40 +629,40 @@
         "description": "4시간 집중 세션"
       },
       "consistencyKing": {
-        "title": "일관성의 왕",
+        "title": "꾸준함의 왕",
         "description": "30일 연속 차단"
       },
       "healthChampion": {
         "title": "건강 챔피언",
-        "description": "건강 점수 90 이상 달성"
+        "description": "건강 점수 90+ 달성"
       },
       "screenTimeSavior": {
-        "title": "스크린 타임 구원자",
-        "description": "화면 시간 50% 감소"
+        "title": "스크린타임 구원자",
+        "description": "스크린 타임 50% 감소"
       },
       "morningRoutine": {
         "title": "아침 루틴",
-        "description": "3개의 아침에 앱 차단"
+        "description": "3일 아침 앱 차단"
       },
       "productivityBeast": {
         "title": "생산성 괴물",
         "description": "5회 작업 검증 완료"
       },
       "appBlockerPro": {
-        "title": "앱 차단 전문가",
-        "description": "20개 이상의 다양한 앱 차단"
+        "title": "차단 프로",
+        "description": "20개 이상 다른 앱 차단"
       },
       "focusFlow": {
-        "title": "집중 흐름",
-        "description": "하루에 3개의 집중 세션"
+        "title": "집중 플로우",
+        "description": "하루에 3회 집중 세션"
       },
       "digitalWellbeing": {
         "title": "디지털 웰빙",
-        "description": "1주일 동안 건강 점수 80 이상"
+        "description": "일주일간 80+ 점수"
       },
       "selfControl": {
-        "title": "자제력",
-        "description": "10번 차단 해제 저항"
+        "title": "자기 통제",
+        "description": "10회 해제 저항"
       }
     }
   },
@@ -356,28 +672,556 @@
     "systemDefault": "시스템 기본값",
     "currentLanguage": "현재 언어"
   },
+  "payment": {
+    "title": "스크린 타임을\n관리하세요",
+    "subtitle": "집중력을 되찾고 스크린 타임을 50% 이상 줄인 수천 명과 함께하세요",
+    "usersLove": "10,000명 이상이 LockIn을 사랑합니다",
+    "features": {
+      "unlimitedBlocking": "무제한 앱 및 웹사이트 차단",
+      "advancedScheduling": "고급 일정 관리 및 시간 제한",
+      "focusSessions": "작업 확인이 포함된 집중 세션",
+      "prioritySupport": "우선 지원 및 얼리 액세스 기능",
+      "detailedAnalytics": "상세한 사용 분석 및 인사이트"
+    },
+    "reviews": {
+      "review1": "드디어 스마트폰 중독을 극복했어요!",
+      "review1Author": "Sarah M.",
+      "review2": "스크린 타임이 하루 3시간 줄었어요",
+      "review2Author": "James K.",
+      "review3": "사용해 본 최고의 집중 앱",
+      "review3Author": "Emily R."
+    },
+    "trial": {
+      "notSure": "확신이 없으신가요? 3일 무료 체험",
+      "cancelAnytime": "체험 기간 중 언제든 취소 가능",
+      "afterTrial": "3일 무료 체험 후, "
+    },
+    "plans": {
+      "choosePlan": "플랜 선택",
+      "loading": "플랜 불러오는 중...",
+      "save": "{{percent}}% 할인",
+      "annual": "연간",
+      "monthly": "월간",
+      "billedAnnually": "/월 (연간 결제)"
+    },
+    "cta": {
+      "startTrial": "3일 무료 체험 시작",
+      "subscribeNow": "지금 구독하기",
+      "restorePurchases": "구매 복원"
+    },
+    "legal": {
+      "paymentCharged": "결제는 {{store}} 계정으로 청구됩니다. 구독은 기간 종료 24시간 전까지 취소하지 않으면 자동 갱신됩니다.",
+      "termsOfService": "이용약관",
+      "privacyPolicy": "개인정보처리방침",
+      "cancelIn": "{{store}}에서 취소"
+    },
+    "toast": {
+      "welcomePro": "LockIn PRO에 오신 것을 환영합니다!",
+      "welcomeProDesc": "집중의 여정이 지금 시작됩니다",
+      "purchaseFailed": "구매에 실패했습니다. 다시 시도해 주세요.",
+      "purchasesRestored": "구매가 복원되었습니다",
+      "purchasesRestoredDesc": "PRO 액세스가 복원되었습니다",
+      "noPurchases": "구매 내역이 없습니다",
+      "noPurchasesDesc": "이전 구독이 감지되지 않았습니다",
+      "restoreFailed": "복원에 실패했습니다",
+      "restoreFailedDesc": "나중에 다시 시도해 주세요"
+    }
+  },
+  "settings": {
+    "title": "설정",
+    "accentColor": "강조 색상",
+    "appearance": "외관",
+    "themeSystem": "시스템 기본값",
+    "themeLight": "라이트",
+    "themeDark": "다크",
+    "changePassword": "비밀번호 변경",
+    "newPasswordPlaceholder": "새 비밀번호 입력",
+    "dangerZone": "위험 구역",
+    "deleteAccount": "계정 삭제",
+    "deleteAccountTitle": "계정 삭제",
+    "deleteAccountWarning": "이 작업은 되돌릴 수 없습니다. 입력하세요",
+    "deleteAccountConfirm": "삭제",
+    "toConfirm": "확인하려면:",
+    "typeDelete": "삭제 입력",
+    "deleting": "삭제 중...",
+    "accountDeleted": "계정이 삭제됨",
+    "profileUpdated": "프로필 업데이트됨",
+    "typeDeleteToConfirm": "'삭제'를 입력하여 확인하세요.",
+    "premium": "프리미엄",
+    "manageSubscription": "구독 관리",
+    "earnedTime": "획득한 시간",
+    "earnedTimeDesc": "운동을 완료하여 앱 사용 추가 시간을 획득",
+    "notifications": "알림",
+    "notificationsDesc": "매일 리마인더와 동기부여 알림을 받으세요",
+    "general": "일반",
+    "language": "언어",
+    "contactUs": "문의하기",
+    "privacyPolicy": "개인정보 처리방침",
+    "termsOfService": "서비스 약관",
+    "about": "앱 정보",
+    "version": "버전 {{version}}"
+  },
+  "auth": {
+    "welcomeToLockIn": "LockIn에 오신 것을 환영합니다",
+    "takeControl": "스크린 타임을 관리하세요",
+    "continueWithGoogle": "Google로 계속",
+    "continueWithApple": "Apple로 계속",
+    "continueWithEmail": "이메일로 계속",
+    "getStarted": "시작하기",
+    "alreadyHaveAccount": "이미 계정이 있습니다",
+    "privacyPolicy": "개인정보 처리방침",
+    "termsOfService": "서비스 약관",
+    "welcomeBack": "다시 오셨군요",
+    "createAccount": "계정 만들기",
+    "focusGoalsWaiting": "집중 목표가 기다리고 있습니다",
+    "startControlScreenTime": "스크린 타임 관리를 시작하세요",
+    "email": "이메일",
+    "emailPlaceholder": "your@email.com",
+    "password": "비밀번호",
+    "passwordPlaceholder": "비밀번호 입력",
+    "agreeToTerms": "동의합니다 ",
+    "termsConditions": "이용약관",
+    "signIn": "로그인",
+    "signUp": "가입",
+    "orContinueWith": "또는 계속",
+    "dontHaveAccount": "계정이 없으신가요? ",
+    "alreadyHaveAccountQuestion": "이미 계정이 있으신가요? ",
+    "loginSuccessful": "로그인 성공",
+    "signUpSuccessful": "가입 성공",
+    "registrationSuccessful": "가입 성공",
+    "welcomeBack2": "다시 오셨군요!",
+    "welcomeToLockIn2": "LockIn에 오신 것을 환영합니다!",
+    "authenticationFailed": "인증 실패",
+    "googleAuthInProgress": "Google 인증 진행 중",
+    "googlePlayUnavailable": "Google Play 사용 불가",
+    "googleAuthFailed": "Google 인증 실패",
+    "termsRequired": "이용약관에 동의해 주세요",
+    "invalidEmail": "잘못된 이메일",
+    "invalidEmailDesc": "유효한 이메일 주소를 입력하세요",
+    "invalidPassword": "잘못된 비밀번호",
+    "invalidPasswordDesc": "비밀번호는 최소 4자 이상이어야 합니다",
+    "registrationFailed": "가입 실패",
+    "userNotFound": "사용자를 찾을 수 없습니다",
+    "userNotFoundDesc": "이메일을 확인하거나 먼저 가입하세요",
+    "loginFailed": "로그인 실패",
+    "authenticationError": "인증 오류",
+    "pleaseTryAgain": "다시 시도해 주세요",
+    "welcome": "환영합니다!",
+    "authenticationSuccessful": "인증 성공"
+  },
+  "rateApp": {
+    "rateOurApp": "앱 평가하기!",
+    "chooseRating": "평가 선택",
+    "pleaseSelectRating": "평가를 선택해 주세요",
+    "rate": "평가",
+    "later": "나중에",
+    "couldNotOpenAppStore": "App Store를 열 수 없습니다",
+    "couldNotOpenPlayStore": "Google Play를 열 수 없습니다",
+    "tellUsImprove": "개선할 점을 알려주세요",
+    "yourFeedbackPlaceholder": "피드백...",
+    "submit": "제출",
+    "pleaseWriteFeedback": "피드백을 작성해 주세요",
+    "thankYouFeedback": "피드백 감사합니다!",
+    "failedSendFeedback": "전송 실패. 다시 시도해 주세요."
+  },
   "community": {
-    "title": "Leaderboard",
-    "addFriends": "+ Add Friends",
-    "membersCount_one": "{{count}} Friend",
-    "membersCount_other": "{{count}} Friends",
-    "groupDescription": "See your friends Screen Time. Resets daily at midnight.",
-    "defaultGroupName": "The Focused Few",
-    "noGroupTitle": "Join a Group",
-    "noGroupDesc": "Connect with friends and compete to reduce screen time together.",
-    "createGroup": "Create Group",
-    "createGroupDesc": "Create a new group and invite your friends to join.",
-    "createGroupBtn": "Create a Group",
-    "joinGroupBtn": "Join with Code",
-    "joinGroup": "Join Group",
-    "enterInviteCode": "Enter the 6-character invite code",
-    "join": "Join",
-    "invalidCode": "Invalid invite code. Please try again.",
-    "shareMessage": "Join my group on LockIn! Use code: {{code}}",
+    "title": "순위표",
+    "addFriends": "+ 친구 추가",
+    "membersCount_one": "{{count}}명의 친구",
+    "membersCount_other": "{{count}}명의 친구",
+    "groupDescription": "친구들의 스크린 타임을 확인하세요. 매일 자정에 초기화됩니다.",
+    "defaultGroupName": "집중하는 사람들",
+    "noGroupTitle": "그룹 참여",
+    "noGroupDesc": "친구들과 연결하고 함께 스크린 타임을 줄여보세요.",
+    "createGroup": "그룹 만들기",
+    "createGroupDesc": "새 그룹을 만들고 친구들을 초대하세요.",
+    "createGroupBtn": "그룹 만들기",
+    "joinGroupBtn": "코드로 참여",
+    "joinGroup": "그룹 참여",
+    "enterInviteCode": "6자리 초대 코드를 입력하세요",
+    "join": "참여",
+    "invalidCode": "잘못된 초대 코드입니다. 다시 시도해주세요.",
+    "shareMessage": "LockIn에서 내 그룹 \"{{groupName}}\"에 참여하세요! 코드: {{code}}",
     "tabs": {
-      "screenTime": "Screen Time",
-      "streak": "Streak",
-      "focusHours": "Focus Hours"
+      "screenTime": "스크린 타임",
+      "streak": "연속 기록",
+      "focusHours": "집중 시간"
+    }
+  },
+  "intention": {
+    "greeting": "안녕하세요! {{appName}}을 열게 된 이유가 뭔가요?",
+    "errorFallback": "음, 처리할 수 없었어요. 계속해도 되지만, 시간을 의식해 주세요.",
+    "tip1": "무엇을 해야 하는지 구체적으로 생각해보세요",
+    "tip2": "지금 꼭 해야 하는지 생각해보세요",
+    "tip3": "얼마나 시간을 쓸지 생각해보세요",
+    "whyApp": "왜 {{appName}}을 사용하고 싶으신가요?",
+    "blockedByLockIn": "LockIn으로 차단됨",
+    "lockInCoach": "LockIn 코치",
+    "minGranted": "{{count}}분 부여됨",
+    "tipsTitle": "빠른 접근을 위한 팁",
+    "inputPlaceholder": "이 앱이 필요한 이유를 알려주세요...",
+    "leaveApp": "{{appName}} 나가기",
+    "header": "의도 설정",
+    "placeholder": "이 앱을 여는 이유는...",
+    "continueButton": "{{appName}}(으)로 계속",
+    "coach": "코치",
+    "timeGranted": "{{minutes}}분 부여됨"
+  },
+  "spend": {
+    "coachLimitReached": "안녕하세요! 오늘 {{appName}}의 {{minutes}}분 제한에 도달했습니다. 목표대로 잘 하고 계시네요!",
+    "coachBlockedUntilTomorrow": "앱이 내일까지 차단됩니다. 급한 일이 있으면 알려주세요!",
+    "coachError": "죄송합니다, 처리할 수 없었습니다. 다시 시도해 주세요!",
+    "freeTimeActive": "자유 시간 활성화",
+    "freeTimeDesc": "예정된 자유 시간입니다. 획득한 시간을 사용하지 않고 앱을 사용하세요!",
+    "minRemainingToday": "오늘 {{count}}분 남음",
+    "openApp": "{{appName}} 열기",
+    "totalLimitReached": "일일 총 제한 도달",
+    "usedAllScreenTime": "오늘의 스크린 타임을 모두 사용했습니다",
+    "allAppsBlockedExplanation": "일일 총 스크린 타임 목표에 도달하여 모든 앱이 차단됩니다. 이것은 건강한 습관 유지에 도움이 됩니다.",
+    "totalRemaining": "총 남은 시간: {{count}}분",
+    "goBack": "뒤로가기",
+    "dailyLimitReached": "일일 제한 도달",
+    "usedOfLimit": "{{limit}}분 중 {{used}}분 사용",
+    "blockedUntilTomorrow": "내일까지 차단됨",
+    "coach": "코치",
+    "coachTyping": "코치가 입력 중...",
+    "chatPlaceholder": "코치에게 필요한 것을 알려주세요...",
+    "appBlocked": "{{appName}} 차단됨",
+    "earnToUnlock": "이 앱을 잠금 해제하려면 시간을 획득하세요",
+    "minutesAvailable": "분 사용 가능",
+    "completeExercises": "운동을 완료하여\n스크린 타임을 획득하세요",
+    "earnTimeNow": "지금 시간 획득",
+    "readyToUse": "획득한 시간을 사용할 준비가 됐나요?",
+    "timeTrackedAutomatically": "시간은 자동으로 추적되어\n잔액에서 차감됩니다",
+    "coachNoLimit": "안녕! 오늘 {{appName}}에서 시간을 보냈네. 즐겁게 쓰고 있어? 휴식이 필요하면 여기 있어!",
+    "coachFreeTimeReminder": "알림: 자유 시간 모드 중이야! {{appName}}에서의 시간을 즐겨.",
+    "coachNotBlockedNoLimit": "안녕! {{appName}}은 차단 목록에 없어. 자유롭게 사용할 수 있지만, 휴식도 잊지 마!",
+    "coachNotBlocked": "안녕! {{appName}}은 차단 목록에 없어. 자유롭게 사용해!",
+    "limitReached": "시간 제한 도달",
+    "limitReachedDesc": "{{appName}}의 일일 한도에 도달했습니다",
+    "freeTimeActiveDesc": "자유 시간이 끝날 때까지 무제한으로 사용하세요.",
+    "noLimitSet": "제한 없음",
+    "noLimitSetDesc": "{{appName}}에 제한이 설정되어 있지 않습니다",
+    "notBlocked": "앱 미차단",
+    "notBlockedDesc": "{{appName}}은 차단 목록에 없습니다",
+    "earnTime": "시간 얻기",
+    "earnTimeDesc": "운동으로 +{{minutes}}분 얻기",
+    "useFreeTime": "자유 시간 사용",
+    "useFreeTimeDesc": "자유 시간 패스 사용",
+    "freeTimePasses": "오늘 {{count}}개 패스 남음",
+    "buyPremium": "프리미엄 구매",
+    "buyPremiumDesc": "무제한 자유 시간 패스 잠금 해제",
+    "cancelFreeTime": "자유 시간 취소"
+  },
+  "onboarding": {
+    "welcome": {
+      "hello": "안녕하세요!",
+      "welcomeTo": "환영합니다",
+      "helpWithTime": "시간 관리를 도와드릴 준비가 됐습니다",
+      "takingControl": "시간을 되찾으세요",
+      "letsStart": "시작하기"
+    },
+    "age": {
+      "title": "나이가 어떻게 되세요?",
+      "subtitle": "맞춤형 경험을 위해 필요합니다",
+      "under18": "18세 미만",
+      "range1824": "18-24세",
+      "range2530": "25-30세",
+      "range3140": "31-40세",
+      "range4150": "41-50세",
+      "range51plus": "51세 이상"
+    },
+    "hours": {
+      "title": "하루 스크린 타임은?",
+      "subtitle": "솔직하게 - 비판하지 않아요",
+      "range12": "1-2시간",
+      "range24": "2-4시간",
+      "range46": "4-6시간",
+      "range68": "6-8시간",
+      "range8plus": "8시간 이상"
+    },
+    "newsIntro": {
+      "title": "나쁜 소식과\n좋은 소식이 있어요",
+      "subtitle": "스크린 타임에 대한 중요한 것을 보여드릴게요...",
+      "showMe": "보여주세요"
+    },
+    "badNews": {
+      "badge": "나쁜 소식",
+      "atHoursPerDay": "하루 {{hours}}시간 사용 시",
+      "days": "일",
+      "lookingAtPhone": "을 휴대폰을 보며 보내게 됩니다",
+      "thisYear": "올해",
+      "thatsApproximately": "이는 약",
+      "years": "년",
+      "ofYourLife": "에 해당합니다",
+      "explanation": "네, 맞게 읽으셨어요. 목표를 달성하고 원하는 삶을 살 수 있는 시간의 대부분을 휴대폰을 보며 보내고 있어요.",
+      "whatsGoodNews": "좋은 소식은 뭔가요?"
+    },
+    "goodNews": {
+      "badge": "좋은 소식",
+      "canHelpGetBack": "LockIn이 되찾아줄 수 있어요",
+      "ofYourLife": "당신의 인생을",
+      "turnInto": "그리고 항상 이루고 싶었던 것들로 바꿔드릴게요.",
+      "moreTime": "목표, 열정, 그리고 사랑하는 사람들을 위한 더 많은 시간.",
+      "letsGetStarted": "시작해봅시다"
+    },
+    "firstStep": {
+      "title": "첫 걸음을 내딛어볼까요",
+      "subtitle": "LockIn이 스크린 타임에 연결하여",
+      "focusReport": "맞춤형 집중 리포트를 제공합니다",
+      "seeUsage": "실제 사용 데이터 확인",
+      "getRecommendations": "맞춤형 추천 받기",
+      "trackProgress": "시간에 따른 진행 추적",
+      "imReady": "준비됐어요"
+    },
+    "screenTimePermission": {
+      "title": "LockIn이 스크린 타임을 모니터링하도록 허용",
+      "secureInfo": "모든 정보는 100% 안전하며 기기에만 저장됩니다",
+      "permissionGranted": "권한이 부여됨!",
+      "howToEnable": "활성화 방법:",
+      "step1": "앱 목록에서 \"LockIn\"을 찾으세요",
+      "step2": "\"사용 접근 허용\"을 켜세요",
+      "continue": "계속",
+      "checking": "확인 중...",
+      "learnMore": "자세히 알아보기",
+      "whyNeedTitle": "왜 필요한가요",
+      "trackUsage": "사용량 추적",
+      "trackUsageDesc": "가장 많이 사용하는 앱과 사용 시간을 확인하세요",
+      "monitorProgress": "진행 모니터링",
+      "monitorProgressDesc": "시간에 따른 디지털 웰빙 여정을 추적하세요",
+      "personalizedInsights": "맞춤형 인사이트",
+      "personalizedInsightsDesc": "습관에 기반한 추천을 받으세요",
+      "smartAlerts": "스마트 알림",
+      "smartAlertsDesc": "앱에서 너무 많은 시간을 보낼 때 알림을 받으세요"
+    },
+    "commitment": {
+      "title": "다짐하기",
+      "committed": "다짐 완료!",
+      "subtitle": "스크린 타임 관리를 시작하려면 길게 누르세요",
+      "completedSubtitle": "인생을 바꾸는 첫 걸음을 내딛었어요",
+      "keepHolding": "계속 누르세요...",
+      "holdOrb": "3초 동안 구를 누르세요",
+      "letsSetUp": "앱을 설정해봅시다!"
+    },
+    "apps": {
+      "title": "차단할 앱 선택",
+      "subtitle": "시간을 획득할 때까지 이 앱들이 차단됩니다",
+      "selectApps": "앱 선택",
+      "changeSelection": "선택 변경",
+      "appsSelected": "{{count}}개 앱 선택됨",
+      "categoriesIncluded": "{{count}}개 카테고리 포함"
+    },
+    "websites": {
+      "title": "웹사이트 차단",
+      "subtitle": "선택 사항: 브라우저에서 방해되는 웹사이트 차단",
+      "addCustom": "사용자 정의 웹사이트 추가",
+      "customWebsites": "사용자 정의 웹사이트:",
+      "websitesSelected": "{{count}}개 웹사이트 선택됨",
+      "websitesSelectedPlural": "{{count}}개 웹사이트 선택됨"
+    },
+    "goal": {
+      "title": "일일 목표 설정",
+      "subtitle": "앱당 얼마나 스크린 타임을 원하세요?",
+      "lightUsage": "가벼운 사용",
+      "moderate": "보통",
+      "balanced": "균형",
+      "flexible": "유연",
+      "canChange": "설정에서 언제든지 변경할 수 있어요",
+      "min30": "30분",
+      "hour1": "1시간",
+      "hours2": "2시간",
+      "hours3": "3시간"
+    },
+    "complete": {
+      "title": "모든 준비 완료!",
+      "subtitle": "선택한 앱이 이제 차단됩니다.\n운동을 통해 시간을 획득하여 사용하세요!",
+      "appsBlocked": "차단된 앱",
+      "websitesBlocked": "차단된 웹사이트",
+      "dailyLimitPerApp": "앱당 일일 제한",
+      "getStarted": "시작하기",
+      "continue": "계속",
+      "skip": "건너뛰기",
+      "startUsingApp": "앱 사용 시작"
+    }
+  },
+  "helpContent": {
+    "home": {
+      "welcome": {
+        "title": "LockIn에 오신 것을 환영합니다",
+        "description": "더 건강한 디지털 습관을 만들기 위한 개인 동반자입니다. 집중력을 유지하고 스크린 타임을 최대한 활용하도록 도와드립니다."
+      },
+      "orb": {
+        "title": "건강 오브",
+        "description": "이 오브는 디지털 웰빙을 반영합니다. 상태가 좋을 때는 녹색으로 빛나고, 휴식이 필요할 때는 따뜻한 색으로 바뀝니다."
+      },
+      "stats": {
+        "title": "진행 상황 추적",
+        "description": "연속 기록, 일일 스크린 타임, 주간 평균 비교를 확인하세요. 작은 개선이 큰 변화로 이어집니다."
+      },
+      "quickActions": {
+        "title": "빠른 동작",
+        "description": "오른쪽 하단의 번개 버튼을 탭하여 차단 기능, 일정, 집중 모드에 즉시 접근하세요. 필요한 모든 것이 한 번의 탭으로."
+      },
+      "schedules": {
+        "title": "스마트 일정",
+        "description": "업무, 학습, 휴식 시간에 대한 자동 차단 일정을 만드세요. 한 번 설정하면 앱이 나머지를 처리합니다."
+      },
+      "appUsage": {
+        "title": "앱 인사이트",
+        "description": "어떤 앱이 가장 많은 시간을 사용하는지 확인하세요. 습관을 이해하는 것이 개선의 첫 걸음입니다."
+      },
+      "ready": {
+        "title": "준비 완료!",
+        "description": "방해되는 앱 몇 개를 차단하고 집중력이 향상되는 것을 확인하세요. 이 여정을 함께 합니다."
+      }
+    },
+    "blocking": {
+      "intro": {
+        "title": "차단 제어",
+        "description": "방해 요소를 관리하는 커맨드 센터입니다. 앱 차단, 일정 설정, 일일 제한을 한 곳에서."
+      },
+      "focusSession": {
+        "title": "집중 세션",
+        "description": "지금 집중해야 하나요? 집중 세션을 시작하여 방해되는 앱을 일정 시간 동안 차단하세요. 잠금 해제 전 작업 완료를 요구할 수도 있습니다."
+      },
+      "schedules": {
+        "title": "예약된 차단",
+        "description": "집중이 필요한 시간대에 반복 일정을 설정하세요. 근무 시간, 학습 세션, 취침 시간에 완벽합니다."
+      },
+      "appLimits": {
+        "title": "일일 앱 제한",
+        "description": "앱을 완전히 차단할 준비가 안 되셨나요? 대신 일일 시간 제한을 설정하세요. 제한에 도달하면 앱이 하루 동안 차단됩니다."
+      }
+    },
+    "stats": {
+      "intro": {
+        "title": "주간 리포트",
+        "description": "스크린 타임 습관의 전체 그림을 확인하세요. 총 시간, 일일 평균을 추적하고 사용 패턴을 파악하세요."
+      },
+      "weeklyView": {
+        "title": "주별 비교",
+        "description": "좌우로 스와이프하여 다른 주를 비교하세요. 시간에 따른 진행 상황을 확인하고 개선을 축하하세요."
+      },
+      "calendar": {
+        "title": "사용 캘린더",
+        "description": "캘린더 히트맵은 일일 사용량을 한눈에 보여줍니다. 진한 색상은 더 많은 스크린 타임을 나타냅니다."
+      },
+      "appBreakdown": {
+        "title": "앱 분석",
+        "description": "어떤 앱이 시간을 차지하는지 정확히 확인하세요. 이 인사이트를 사용하여 무엇을 제한할지 현명한 결정을 내리세요."
+      }
+    },
+    "detox": {
+      "intro": {
+        "title": "디지털 디톡스",
+        "description": "때때로 휴대폰에서 완전히 벗어나는 시간이 필요합니다. 디톡스 세션을 시작하여 모든 방해 앱을 차단하고 주변 세계와 다시 연결하세요."
+      },
+      "timer": {
+        "title": "시간 설정",
+        "description": "휴대폰 없이 보내고 싶은 시간을 선택하세요. 짧은 세션부터 시작하여 습관을 만들면서 점차 늘려가세요."
+      },
+      "unlock": {
+        "title": "헌신 유지",
+        "description": "디톡스 세션을 시작하면 완료될 때까지 실행됩니다. 유혹 없이 목표에 대한 헌신을 유지하도록 도와줍니다."
+      }
+    },
+    "profile": {
+      "intro": {
+        "title": "프로필",
+        "description": "계정 관리, 업적 확인, 설정 커스터마이즈. 모든 정보가 한 곳에."
+      },
+      "achievements": {
+        "title": "업적",
+        "description": "더 나은 습관을 만들면서 배지를 잠금 해제하세요. 각 업적은 디지털 웰빙 여정의 이정표를 나타냅니다."
+      },
+      "defaultBlocks": {
+        "title": "기본 설정",
+        "description": "기본 차단 앱과 시간 제한을 설정하세요. 새 일정 생성 시 미리 선택되어 시간을 절약합니다."
+      }
+    }
+  },
+  "loader": {
+    "loading": "로딩 중...",
+    "phrases": [
+      "디지털 웰빙을 향한 여정이 지금 시작됩니다",
+      "집중하는 매 순간이 중요합니다",
+      "더 나은 습관을 한 걸음씩 만들어가기",
+      "집중하고, 현재에 머무르세요",
+      "당신의 시간을 되찾으세요",
+      "완벽보다 진전이 중요합니다",
+      "작은 발걸음이 큰 변화를 만듭니다",
+      "당신은 방해 요소보다 강합니다",
+      "오늘을 의미있게 만드세요",
+      "집중력은 당신의 초능력입니다",
+      "디지털 사슬에서 벗어나세요",
+      "미래의 당신이 감사할 것입니다",
+      "자기 훈련이 곧 자유입니다",
+      "폰을 다스리면 삶을 다스립니다",
+      "지금 이 순간에 집중하세요",
+      "스크린 타임은 줄이고, 진짜 시간은 늘리고",
+      "당신의 주의력은 소중합니다",
+      "오늘 자신에게 투자하세요",
+      "중요한 것을 위한 공간을 만드세요",
+      "마음챙김은 인식에서 시작됩니다"
+    ]
+  },
+  "verifiedLockIn": {
+    "title": "인증된 LockIn",
+    "durations": {
+      "30m": "30분",
+      "1h": "1시간",
+      "1.5h": "1.5시간",
+      "2h": "2시간"
+    },
+    "presetTasks": {
+      "cleanRoom": "방 청소하기",
+      "completeHomework": "숙제 완료하기",
+      "workoutRoutine": "운동하기",
+      "cookMeal": "요리하기",
+      "readPages": "10페이지 읽기",
+      "writePlan": "계획 작성하기"
+    },
+    "step1": {
+      "whatAccomplish": "무엇을 달성할 건가요?",
+      "describeTask": "작업을 설명하세요...",
+      "orChoosePreset": "또는 프리셋 선택"
+    },
+    "step2": {
+      "takeBeforePhoto": "\"이전\" 사진 찍기",
+      "showCurrentState": "작업의 현재 상태를 보여주세요.\n실제로 작업했다는 증거가 됩니다!",
+      "tapToTakePhoto": "탭하여 사진 촬영",
+      "tips": "팁:",
+      "tipsContent": "어지러운 상태/작업을 명확하게 보여주세요. 좋은 조명이 도움됩니다. 이것은 \"이후\" 사진과 비교됩니다!"
+    },
+    "step3": {
+      "beforePhotoReady": "이전 사진 준비 완료",
+      "taskSelected": "작업 선택됨",
+      "focusDuration": "집중 시간",
+      "appsToBlock": "차단할 앱",
+      "appsWillBeBlocked": "{{count}}개 앱이 차단됩니다"
+    },
+    "buttons": {
+      "continue": "계속",
+      "lockInNow": "LockIn 시작",
+      "completeToUnlock": "작업 완료 + \"이후\" 사진으로 잠금 해제"
+    }
+  },
+  "focusMode": {
+    "title": "집중 모드",
+    "subtitle": "방해 요소를 차단하고 집중하세요",
+    "startSession": "집중 세션 시작",
+    "endSession": "집중 세션 종료",
+    "duration": "시간",
+    "minutes": "{{count}} 분",
+    "whyTitle": "왜 집중 모드인가요?",
+    "whyDescription": "방해되는 앱을 차단하고 생산성을 유지하세요. 집중 세션은 중요한 일에 집중하는 데 도움이 됩니다.",
+    "settings": {
+      "title": "집중 설정",
+      "durationLabel": "시간",
+      "appsToBlock": "차단할 앱",
+      "selectApps": "차단할 앱 선택",
+      "appsSelected": "{{count}}개 앱 선택됨",
+      "save": "설정 저장"
     }
   }
 }

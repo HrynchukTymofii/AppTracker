@@ -23,7 +23,7 @@
  */
 
 import React, { useState, useRef } from 'react';
-import { View, useColorScheme } from 'react-native';
+import { View, useColorScheme, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -32,6 +32,7 @@ import { getInstalledApps, InstalledApp } from '@/modules/usage-stats';
 
 import {
   GRADIENT_COLORS,
+  GRADIENT_PALETTE,
   getThemeColors,
   OnboardingThemeContext,
   Step1Welcome,
@@ -41,6 +42,7 @@ import {
   Step5BadNews,
   Step6GoodNews,
   Step7FirstStep,
+  StepCommitment,
   Step8ScreenTimePermission,
   Step9OverlayPermission,
   Step10AccessibilityPermission,
@@ -90,7 +92,7 @@ export default function SellingOnboarding() {
     }
   };
 
-  const totalSteps = 16;
+  const totalSteps = 17; // Added commitment step
   const progress = (currentStep / totalSteps) * 100;
 
   const nextStep = () => {
@@ -144,6 +146,9 @@ export default function SellingOnboarding() {
       case 7:
         return <Step7FirstStep onContinue={nextStep} />;
       case 8:
+        // Commitment step - press and hold for 3 seconds
+        return <StepCommitment onComplete={nextStep} />;
+      case 9:
         return (
           <Step8ScreenTimePermission
             onGranted={(realHours) => {
@@ -159,19 +164,19 @@ export default function SellingOnboarding() {
             }}
           />
         );
-      case 9:
-        return <Step9OverlayPermission onContinue={nextStep} />;
       case 10:
-        return <Step10AccessibilityPermission onContinue={nextStep} onSkip={nextStep} />;
+        return <Step9OverlayPermission onContinue={nextStep} />;
       case 11:
-        return <Step11UsageData userAnswers={userAnswers} onContinue={nextStep} />;
+        return <Step10AccessibilityPermission onContinue={nextStep} onSkip={nextStep} />;
       case 12:
-        return <Step12Projection userAnswers={userAnswers} onContinue={nextStep} />;
+        return <Step11UsageData userAnswers={userAnswers} onContinue={nextStep} />;
       case 13:
-        return <Step13Comparison userAnswers={userAnswers} onContinue={nextStep} />;
+        return <Step12Projection userAnswers={userAnswers} onContinue={nextStep} />;
       case 14:
-        return <Step14Notifications onContinue={nextStep} />;
+        return <Step13Comparison userAnswers={userAnswers} onContinue={nextStep} />;
       case 15:
+        return <Step14Notifications onContinue={nextStep} />;
+      case 16:
         return (
           <Step15DailyGoal
             onSelect={(minutes) => {
@@ -180,7 +185,7 @@ export default function SellingOnboarding() {
             }}
           />
         );
-      case 16:
+      case 17:
         return (
           <Step16AppSelection
             preloadedApps={preloadedApps}
@@ -198,6 +203,38 @@ export default function SellingOnboarding() {
   return (
     <OnboardingThemeContext.Provider value={{ isDark, colors: themeColors }}>
       <View style={{ flex: 1, backgroundColor: themeColors.background }}>
+        {/* Background Gradients - matching app style */}
+        <LinearGradient
+          colors={
+            isDark
+              ? [`rgba(139, 92, 246, 0.15)`, `rgba(139, 92, 246, 0.06)`, 'rgba(0, 0, 0, 0)']
+              : [`rgba(139, 92, 246, 0.12)`, `rgba(139, 92, 246, 0.05)`, '#ffffff']
+          }
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0.5 }}
+          style={StyleSheet.absoluteFill}
+        />
+        <LinearGradient
+          colors={
+            isDark
+              ? [`rgba(6, 182, 212, 0.10)`, 'transparent']
+              : [`rgba(6, 182, 212, 0.07)`, 'transparent']
+          }
+          start={{ x: 1, y: 1 }}
+          end={{ x: 0.2, y: 0.5 }}
+          style={StyleSheet.absoluteFill}
+        />
+        <LinearGradient
+          colors={
+            isDark
+              ? [`rgba(139, 92, 246, 0.08)`, 'transparent']
+              : [`rgba(139, 92, 246, 0.06)`, 'transparent']
+          }
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 0.3 }}
+          style={StyleSheet.absoluteFill}
+        />
+
         {/* Progress Bar */}
         <View style={{ paddingHorizontal: 24, paddingTop: 60, paddingBottom: 16 }}>
           <View style={{

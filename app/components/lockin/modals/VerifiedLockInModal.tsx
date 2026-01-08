@@ -14,6 +14,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import { DEFAULT_BLOCKED_APPS } from "@/lib/blockingConstants";
 import { AppSelectionModal } from "./AppSelectionModal";
+import { useTranslation } from "react-i18next";
 
 interface VerifiedLockInModalProps {
   visible: boolean;
@@ -28,10 +29,10 @@ interface VerifiedLockInModalProps {
 }
 
 const DURATION_OPTIONS = [
-  { value: 30, label: "30m" },
-  { value: 60, label: "1h" },
-  { value: 90, label: "1.5h" },
-  { value: 120, label: "2h" },
+  { value: 30, labelKey: "30m" },
+  { value: 60, labelKey: "1h" },
+  { value: 90, labelKey: "1.5h" },
+  { value: 120, labelKey: "2h" },
 ];
 
 // Tasks that require before photo for comparison
@@ -41,14 +42,14 @@ const DURATION_OPTIONS = [
 // - Workout: exercise itself is the proof
 // - Cook a meal: the finished dish is the proof
 // - Complete homework: completion is the proof
-// - Write: word count is the proof
+// - Write: the plan itself is the proof
 const PRESET_TASKS = [
-  { emoji: "🏠", name: "Clean room", requiresBeforePhoto: true },
-  { emoji: "📚", name: "Complete homework", requiresBeforePhoto: false },
-  { emoji: "💪", name: "Workout routine", requiresBeforePhoto: false },
-  { emoji: "🍳", name: "Cook a meal", requiresBeforePhoto: false },
-  { emoji: "📖", name: "Read for 30 minutes", requiresBeforePhoto: true },
-  { emoji: "✏️", name: "Write 500 words", requiresBeforePhoto: false },
+  { emoji: "🏠", nameKey: "cleanRoom", requiresBeforePhoto: true },
+  { emoji: "📚", nameKey: "completeHomework", requiresBeforePhoto: false },
+  { emoji: "💪", nameKey: "workoutRoutine", requiresBeforePhoto: false },
+  { emoji: "🍳", nameKey: "cookMeal", requiresBeforePhoto: false },
+  { emoji: "📖", nameKey: "readPages", requiresBeforePhoto: true },
+  { emoji: "✏️", nameKey: "writePlan", requiresBeforePhoto: false },
 ];
 
 // Check if a custom task requires before photo using AI
@@ -97,6 +98,7 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
   onClose,
   onStart,
 }) => {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [step, setStep] = useState(1);
   const [taskDescription, setTaskDescription] = useState("");
@@ -132,7 +134,7 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
       setCheckingPhotoRequirement(true);
 
       // Check if it's a preset task
-      const presetTask = PRESET_TASKS.find((t) => t.name === taskDescription);
+      const presetTask = PRESET_TASKS.find((task) => t(`verifiedLockIn.presetTasks.${task.nameKey}`) === taskDescription);
       let needsPhoto = true;
 
       if (presetTask) {
@@ -238,13 +240,13 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
           letterSpacing: 1,
         }}
       >
-        What will you accomplish?
+        {t("verifiedLockIn.step1.whatAccomplish")}
       </Text>
 
       <TextInput
         value={taskDescription}
         onChangeText={setTaskDescription}
-        placeholder="Describe your task..."
+        placeholder={t("verifiedLockIn.step1.describeTask")}
         placeholderTextColor={isDark ? "#4b5563" : "#9ca3af"}
         style={{
           backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#f9fafb",
@@ -268,18 +270,18 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
           letterSpacing: 1,
         }}
       >
-        Or choose a preset
+        {t("verifiedLockIn.step1.orChoosePreset")}
       </Text>
 
       {PRESET_TASKS.map((task) => (
         <TouchableOpacity
-          key={task.name}
-          onPress={() => setTaskDescription(task.name)}
+          key={task.nameKey}
+          onPress={() => setTaskDescription(t(`verifiedLockIn.presetTasks.${task.nameKey}`))}
           style={{
             flexDirection: "row",
             alignItems: "center",
             backgroundColor:
-              taskDescription === task.name
+              taskDescription === t(`verifiedLockIn.presetTasks.${task.nameKey}`)
                 ? "rgba(16, 185, 129, 0.12)"
                 : isDark
                 ? "rgba(255, 255, 255, 0.03)"
@@ -287,9 +289,9 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
             borderRadius: 14,
             padding: 16,
             marginBottom: 10,
-            borderWidth: taskDescription === task.name ? 1.5 : 1,
+            borderWidth: taskDescription === t(`verifiedLockIn.presetTasks.${task.nameKey}`) ? 1.5 : 1,
             borderColor:
-              taskDescription === task.name
+              taskDescription === t(`verifiedLockIn.presetTasks.${task.nameKey}`)
                 ? "#10b981"
                 : isDark
                 ? "rgba(255, 255, 255, 0.06)"
@@ -317,9 +319,9 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
               color: isDark ? "#ffffff" : "#111827",
             }}
           >
-            {task.name}
+            {t(`verifiedLockIn.presetTasks.${task.nameKey}`)}
           </Text>
-          {taskDescription === task.name && (
+          {taskDescription === t(`verifiedLockIn.presetTasks.${task.nameKey}`) && (
             <View
               style={{
                 width: 26,
@@ -350,7 +352,7 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
           textAlign: "center",
         }}
       >
-        Take a "Before" Photo
+        {t("verifiedLockIn.step2.takeBeforePhoto")}
       </Text>
       <Text
         style={{
@@ -361,7 +363,7 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
           lineHeight: 22,
         }}
       >
-        Show the current state of your task.{"\n"}This proves you did real work!
+        {t("verifiedLockIn.step2.showCurrentState")}
       </Text>
 
       {/* Camera preview/placeholder */}
@@ -406,7 +408,7 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
                 fontWeight: "500",
               }}
             >
-              Tap to take photo
+              {t("verifiedLockIn.step2.tapToTakePhoto")}
             </Text>
           </>
         )}
@@ -430,8 +432,8 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
             lineHeight: 20,
           }}
         >
-          <Text style={{ color: "#10b981", fontWeight: "600" }}>Tips: </Text>
-          Show the mess/task clearly. Good lighting helps. This will be compared with your "after" photo!
+          <Text style={{ color: "#10b981", fontWeight: "600" }}>{t("verifiedLockIn.step2.tips")} </Text>
+          {t("verifiedLockIn.step2.tipsContent")}
         </Text>
       </View>
     </View>
@@ -506,7 +508,7 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
               letterSpacing: 0.5,
             }}
           >
-            {requiresBeforePhoto ? "Before photo ready" : "Task selected"}
+            {requiresBeforePhoto ? t("verifiedLockIn.step3.beforePhotoReady") : t("verifiedLockIn.step3.taskSelected")}
           </Text>
           <Text
             style={{
@@ -532,7 +534,7 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
           letterSpacing: 1,
         }}
       >
-        Focus Duration
+        {t("verifiedLockIn.step3.focusDuration")}
       </Text>
 
       <View
@@ -573,7 +575,7 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
                     : "#374151",
               }}
             >
-              {option.label}
+              {t(`verifiedLockIn.durations.${option.labelKey}`)}
             </Text>
           </TouchableOpacity>
         ))}
@@ -590,7 +592,7 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
           letterSpacing: 1,
         }}
       >
-        Apps to Block
+        {t("verifiedLockIn.step3.appsToBlock")}
       </Text>
 
       <TouchableOpacity
@@ -616,7 +618,7 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
               marginLeft: 10,
             }}
           >
-            {selectedApps.length} apps will be blocked
+            {t("verifiedLockIn.step3.appsWillBeBlocked", { count: selectedApps.length })}
           </Text>
         </View>
         <ChevronRight size={20} color="#ef4444" />
@@ -698,7 +700,7 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
                     color: isDark ? "#ffffff" : "#111827",
                   }}
                 >
-                  Verified LockIn
+                  {t("verifiedLockIn.title")}
                 </Text>
               </View>
               <View
@@ -783,7 +785,7 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
                         marginRight: 8,
                       }}
                     >
-                      Continue
+                      {t("verifiedLockIn.buttons.continue")}
                     </Text>
                     <ChevronRight size={20} color={taskDescription.trim() ? "#ffffff" : isDark ? "#6b7280" : "#9ca3af"} />
                   </>
@@ -814,7 +816,7 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
                     color: "#ffffff",
                   }}
                 >
-                  Lock In Now
+                  {t("verifiedLockIn.buttons.lockInNow")}
                 </Text>
                 <Text
                   style={{
@@ -823,7 +825,7 @@ export const VerifiedLockInModal: React.FC<VerifiedLockInModalProps> = ({
                     marginTop: 4,
                   }}
                 >
-                  Complete task + take "after" photo to unlock
+                  {t("verifiedLockIn.buttons.completeToUnlock")}
                 </Text>
               </TouchableOpacity>
             )}

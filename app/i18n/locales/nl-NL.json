@@ -15,16 +15,27 @@
     "back": "Terug",
     "next": "Volgende",
     "done": "Klaar",
-    "or": "of"
+    "or": "of",
+    "of": "van",
+    "getStarted": "Aan de slag"
+  },
+  "helpCarousel": {
+    "streak": "Reeks",
+    "today": "Vandaag",
+    "vsAvg": "vs Gem.",
+    "schedule": "Schema",
+    "week": "Week {{number}}"
   },
   "tabs": {
     "home": "Home",
     "blocking": "Blokkeren",
+    "goals": "Doelen",
     "detox": "Detox",
     "stats": "Statistieken",
     "profile": "Profiel",
     "community": "Community",
-    "schedule": "Schema"
+    "schedule": "Schema",
+    "lockin": "LockIn"
   },
   "home": {
     "title": "LockIn",
@@ -33,6 +44,11 @@
     "loadingApps": "Apps laden...",
     "focusModeActive": "Focusmodus Actief",
     "appsBlocked": "apps geblokkeerd",
+    "streak": "Reeks",
+    "today": "Vandaag",
+    "vsAverage": "vs gem",
+    "upcomingSchedules": "Aankomend",
+    "createSchedule": "Maak een Schema",
     "quickMenu": {
       "stats": "Statistieken",
       "statsDesc": "Bekijk gedetailleerde gebruiksstatistieken",
@@ -41,7 +57,15 @@
       "detox": "Detox",
       "detoxDesc": "Start telefoon detox timer",
       "calendar": "Kalender",
-      "calendarDesc": "Plan je taken"
+      "calendarDesc": "Plan je taken",
+      "newSchedule": "Nieuw Schema",
+      "newScheduleDesc": "Maak een blokkeer schema"
+    },
+    "quickActions": {
+      "photoTask": "Foto Taak",
+      "photoTaskDesc": "Voor/na foto's - 1.5x bonus",
+      "focusMode": "Focusmodus",
+      "focusModeDesc": "LockIn om schermtijd te verdienen"
     }
   },
   "stats": {
@@ -91,10 +115,26 @@
     "noUsageData": "Nog geen gebruiksgegevens",
     "healthScore": "Gezondheidsscore",
     "screenTime": "Schermtijd",
-    "topApps": "Top 3 Apps"
+    "topApps": "Top 3 Apps",
+    "vsLastWeek": "vs Vorige Week",
+    "lessScreenTime": "minder schermtijd",
+    "moreScreenTime": "meer schermtijd",
+    "difference": "verschil",
+    "shareProgress": "Deel Voortgang",
+    "weeklyReport": "Wekelijks Rapport"
   },
   "blocking": {
     "title": "Blokkeren",
+    "pageTitle": "Doelen",
+    "pageSubtitle": "Stel je dagelijkse schermtijdlimieten in",
+    "todaysProgress": "VOORTGANG VANDAAG",
+    "goal": "doel",
+    "timeLeft": "over",
+    "used": "Gebruikt",
+    "remaining": "Resterend",
+    "ofGoal": "Van doel",
+    "setDailyGoal": "Stel dagelijks doel:",
+    "limitReachedWarning": "Dagelijkse limiet bereikt! Alle apps zijn geblokkeerd.",
     "setupRequired": "Instelling Vereist",
     "permissionsDesc": "App-blokkering vereist speciale toestemmingen. Schakel in:",
     "accessibilityService": "1. Toegankelijkheidsdienst",
@@ -140,6 +180,10 @@
       "task": "Taak vereist",
       "dailyLimit": "Dagelijkse limiet"
     },
+    "apps": "apps",
+    "sites": "sites",
+    "appsBlocked": "Geblokkeerde Apps",
+    "activeDays": "Actieve Dagen",
     "modals": {
       "selectApps": "Selecteer Apps om te Blokkeren",
       "confirmSelection": "Bevestig Selectie ({{count}})",
@@ -149,8 +193,12 @@
       "scheduleName": "SCHEMANAAM",
       "scheduleNamePlaceholder": "bijv. Werktijden",
       "appsToBlock": "APPS OM TE BLOKKEREN",
+      "websitesToBlock": "WEBSITES OM TE BLOKKEREN",
       "selectAppsPlaceholder": "Selecteer apps...",
       "appsSelected": "{{count}} apps geselecteerd",
+      "apps": "Apps",
+      "websites": "Websites",
+      "selectWebsites": "Selecteer Websites om te Blokkeren",
       "startTime": "STARTTIJD",
       "endTime": "EINDTIJD",
       "repeatOn": "HERHAAL OP",
@@ -172,13 +220,13 @@
       "deselectAll": "Alles Deselecteren",
       "popularApps": "Populaire Apps",
       "moreApps": "Meer Apps ({{count}})",
-      "showPopularOnly": "← Alleen Populaire Tonen"
+      "showPopularOnly": "Alleen Populaire Tonen"
     },
     "alerts": {
       "enterScheduleName": "Voer een schemanaam in",
-      "selectAtLeastOneApp": "Selecteer minimaal één app",
-      "selectAtLeastOneDay": "Selecteer minimaal één dag",
-      "selectAtLeastOneAppToBlock": "Selecteer minimaal één app om te blokkeren",
+      "selectAtLeastOneApp": "Selecteer minimaal een app",
+      "selectAtLeastOneDay": "Selecteer minimaal een dag",
+      "selectAtLeastOneAppToBlock": "Selecteer minimaal een app om te blokkeren",
       "takeBeforePhoto": "Maak een \"voor\" foto voor taakverificatie",
       "deleteSchedule": "Schema Verwijderen",
       "deleteScheduleConfirm": "Weet je zeker dat je dit schema wilt verwijderen?",
@@ -206,48 +254,316 @@
       "hours": "Uren",
       "minutes": "Minuten",
       "dailyLimit": "Dagelijkse Limiet"
+    },
+    "share": {
+      "title": "Mijn schermtijd voortgang",
+      "header": "📱 Mijn schermtijd vandaag",
+      "goal": "🎯 Doel: {{time}}",
+      "used": "⏱️ Gebruikt: {{time}}",
+      "remaining": "✅ Resterend: {{time}}",
+      "progress": "📊 Voortgang: {{percent}}%",
+      "footer": "Ik heb mijn schermtijd onder controle met LockIn! 💪"
     }
   },
   "detox": {
     "title": "Detox"
   },
+  "progress": {
+    "todaysProgress": "Voortgang van Vandaag",
+    "goal": "Doel",
+    "earned": "Verdiend",
+    "spent": "Besteed",
+    "balance": "Saldo",
+    "earn": "Verdienen",
+    "thisWeek": "Deze Week"
+  },
+  "lockin": {
+    "title": "LockIn",
+    "readyToEarnTime": "Klaar om Tijd te Verdienen?",
+    "lockInToEarn": "LockIn om schermtijd te verdienen",
+    "giveUp": "Opgeven?",
+    "giveUpMessage": "Je verliest je huidige reeks als je nu opgeeft. Weet je het zeker?",
+    "giveUpConfirm": "Opgeven",
+    "keepGoing": "Doorgaan",
+    "available": "Beschikbaar",
+    "minutes": "minuten",
+    "min": "min",
+    "today": "Vandaag",
+    "earnedSpent": "verdiend / besteed",
+    "thisWeek": "Deze week:",
+    "earned": "verdiend",
+    "spent": "besteed",
+    "photoTask": "Foto Taak",
+    "photoTaskDesc": "Verifieer je focus met voor/na foto's",
+    "favorites": "Favorieten",
+    "doubleTapRemove": "(dubbeltik om te verwijderen)",
+    "allExercises": "Alle Oefeningen",
+    "earnWithExercise": "Verdien met Oefeningen",
+    "doubleTapFavorite": "(dubbeltik om favoriet te maken)",
+    "history": "Geschiedenis",
+    "seeAll": "Bekijk alles",
+    "noSessions": "Nog geen sessies",
+    "startFirst": "Start een LockIn om je geschiedenis te zien",
+    "recentActivities": "Recente Activiteiten",
+    "focusSession": "Focussessie",
+    "yesterday": "Gisteren",
+    "daysAgo": "{{count}} dagen geleden",
+    "hoursAgo": "{{count}}u geleden",
+    "minutesAgo": "{{count}}m geleden",
+    "justNow": "Zojuist",
+    "lockedIn": "INGEKLIKT",
+    "remaining": "resterend",
+    "currentTask": "Huidige Taak",
+    "before": "Voor",
+    "after": "Na",
+    "tapWhenDone": "Tik wanneer klaar",
+    "appsBlocked": "apps geblokkeerd",
+    "earnPoints": "Verdien {{points}} punten bij voltooiing",
+    "completeWithPhoto": "Ik ben Klaar - Verifieer met Foto",
+    "completeSession": "Sessie Voltooien",
+    "giveUpLoseStreak": "Opgeven (Verlies reeks)",
+    "currentBalance": "Huidig Saldo",
+    "chooseExercise": "Kies een Oefening",
+    "earnScreenTimeInfo": "Verdien schermtijd",
+    "earnScreenTimeDesc": "door oefeningen te voltooien. Hoe meer je doet, hoe meer tijd je verdient!",
+    "instructions": "Instructies",
+    "rewards": "Beloningen",
+    "greatWork": "Goed Gedaan!",
+    "tryAgain": "Probeer Opnieuw",
+    "startExercise": "Start Oefening",
+    "start": "Start",
+    "finishWithEarnings": "Voltooien (+{{minutes}} min)",
+    "finishExercise": "Oefening Voltooien",
+    "done": "Klaar",
+    "earnTime": "Verdien Tijd",
+    "selectStep": "Kies een oefening",
+    "readyStep": "Positioneer camera, tik dan op Start",
+    "exerciseStep": "Blijf doorgaan!",
+    "completeStep": "Oefening voltooid",
+    "instructionsStep": "Lees de instructies",
+    "positionCamera": "Positioneer je camera",
+    "fullBodyVisible": "Zorg dat je hele lichaam zichtbaar is",
+    "howToDoIt": "Hoe doe je het",
+    "gotIt": "Begrepen",
+    "earnScreenTimeModal": "Verdien Schermtijd",
+    "firstRunDescription": "Voltooi oefeningen om minuten te verdienen die je kunt besteden aan je favoriete apps. Hoe meer je oefent, hoe meer tijd je verdient!",
+    "featureBodyweight": "Push-ups, squats & planks",
+    "featureAI": "AI volgt je vorm",
+    "featureEarnings": "Verdien 0.5-1 min per herhaling",
+    "letsGetStarted": "Laten We Beginnen!",
+    "seconds": "SECONDEN",
+    "reps": "herhalingen",
+    "rep": "herhaling",
+    "hours": "u",
+    "timeEarned": "Tijd verdiend",
+    "watchDemoVideo": "Bekijk demovideo",
+    "comingSoon": "Binnenkort beschikbaar",
+    "holdDescription": "Je hebt {{seconds}} seconden gehouden",
+    "repsDescription": "Je hebt {{count}} {{exercise}} voltooid",
+    "rewardPlankDesc": "Verdien {{rate}} min per seconde. Minimum {{min}}s om te verdienen. {{bonus}} bonus voor {{bonusTime}}s+ houden!",
+    "rewardRepsDesc": "Verdien {{rate}} min per herhaling. Minimum {{min}} herhalingen om te verdienen. {{bonus}} bonus voor {{bonusReps}}+ herhalingen!",
+    "minimumPlankRequired": "Je moet minstens {{seconds}}s houden om tijd te verdienen.",
+    "minimumRepsRequired": "Je hebt minstens {{count}} herhalingen nodig om tijd te verdienen.",
+    "holdAtLeast": "Houd minstens {{seconds}}s om tijd te verdienen",
+    "doAtLeast": "Doe minstens {{count}} herhalingen om tijd te verdienen",
+    "infoRewardPlank": "{{rate}} min per seconde. Min {{min}}s om te verdienen. {{bonus}} bonus bij {{bonusTime}}s!",
+    "infoRewardReps": "{{rate}} min per herhaling. Min {{min}} herhalingen om te verdienen. {{bonus}} bonus bij {{bonusReps}} herhalingen!"
+  },
+  "exercise": {
+    "pushups": {
+      "name": "Push-ups",
+      "description": "Verdien 0.5 min per herhaling (min 3 herhalingen)",
+      "instructions": [
+        "Positioneer je telefoon om je hele lichaam van opzij te zien",
+        "Ga in push-up positie met gestrekte armen",
+        "Laat je borst naar de grond zakken",
+        "Duw terug omhoog om een herhaling te voltooien",
+        "1.1x bonus na 20 herhalingen!"
+      ]
+    },
+    "squats": {
+      "name": "Squats",
+      "description": "Verdien 0.5 min per herhaling (min 3 herhalingen)",
+      "instructions": [
+        "Positioneer je telefoon om je hele lichaam van opzij te zien",
+        "Sta met voeten op schouderbreedete",
+        "Zak door je knieen tot je dijen parallel zijn met de grond",
+        "Sta weer op om een herhaling te voltooien",
+        "1.1x bonus na 20 herhalingen!"
+      ]
+    },
+    "plank": {
+      "name": "Plank",
+      "description": "Verdien 0.1 min per seconde (min 10s)",
+      "instructions": [
+        "Positioneer je telefoon om je hele lichaam van opzij te zien",
+        "Ga in plank positie met een recht lichaam",
+        "Houd de positie zo lang je kunt",
+        "Houd je heupen recht - niet doorzakken of omhoog",
+        "1.1x bonus na 30 seconden!"
+      ]
+    },
+    "jumpingJacks": {
+      "name": "Jumping Jacks",
+      "description": "Verdien 0.3 min per herhaling (min 5 herhalingen)",
+      "instructions": [
+        "Positioneer je telefoon om je hele lichaam te zien",
+        "Sta met voeten samen, armen langs je zij",
+        "Spring terwijl je benen spreidt en armen omhoog brengt",
+        "Spring terug naar startpositie",
+        "1.1x bonus na 30 herhalingen!"
+      ]
+    },
+    "lunges": {
+      "name": "Lunges",
+      "description": "Verdien 0.5 min per herhaling (min 3 herhalingen)",
+      "instructions": [
+        "Positioneer je telefoon om je hele lichaam van opzij te zien",
+        "Sta rechtop met voeten op heupbreedte",
+        "Stap naar voren en zak tot je voorste knie op 90 graden is",
+        "Duw terug naar staande positie",
+        "1.1x bonus na 15 herhalingen!"
+      ]
+    },
+    "crunches": {
+      "name": "Crunches",
+      "description": "Verdien 0.4 min per herhaling (min 5 herhalingen)",
+      "instructions": [
+        "Positioneer je telefoon om je hele lichaam van opzij te zien",
+        "Lig op je rug met gebogen knieen",
+        "Krul je schouders omhoog richting je knieen",
+        "Laat gecontroleerd terug zakken",
+        "1.1x bonus na 20 herhalingen!"
+      ]
+    },
+    "shoulderPress": {
+      "name": "Schouder Press",
+      "description": "Verdien 0.5 min per herhaling (min 3 herhalingen)",
+      "instructions": [
+        "Positioneer je telefoon om je bovenlichaam te zien",
+        "Houd gewichten op schouderhoogte",
+        "Duw armen recht omhoog boven je hoofd",
+        "Laat terug zakken naar schouderhoogte",
+        "1.1x bonus na 15 herhalingen!"
+      ]
+    },
+    "legRaises": {
+      "name": "Leg Raises",
+      "description": "Verdien 0.4 min per herhaling (min 5 herhalingen)",
+      "instructions": [
+        "Positioneer je telefoon om je hele lichaam van opzij te zien",
+        "Lig plat op je rug, benen gestrekt",
+        "Til je benen omhoog richting het plafond",
+        "Laat benen gecontroleerd terug zakken",
+        "1.1x bonus na 15 herhalingen!"
+      ]
+    },
+    "highKnees": {
+      "name": "High Knees",
+      "description": "Verdien 0.2 min per herhaling (min 10 herhalingen)",
+      "instructions": [
+        "Positioneer je telefoon om je hele lichaam te zien",
+        "Sta rechtop, klaar om op de plaats te rennen",
+        "Breng knieen boven heuphoogte omhoog",
+        "Wissel snel van been",
+        "1.1x bonus na 40 herhalingen!"
+      ]
+    },
+    "pullUps": {
+      "name": "Pull-ups",
+      "description": "Verdien 0.8 min per herhaling (min 2 herhalingen)",
+      "instructions": [
+        "Positioneer je telefoon om je lichaam van opzij te zien",
+        "Hang aan de stang met gestrekte armen",
+        "Trek jezelf omhoog tot je kin boven de stang is",
+        "Laat gecontroleerd terug zakken",
+        "1.15x bonus na 10 herhalingen!"
+      ]
+    },
+    "wallSit": {
+      "name": "Wall Sit",
+      "description": "Verdien 0.15 min per seconde (min 10s)",
+      "instructions": [
+        "Positioneer je telefoon om je hele lichaam van opzij te zien",
+        "Leun tegen een muur met voeten op schouderbreedte",
+        "Zak naar beneden tot knieen op 90 graden zijn",
+        "Houd de positie - dijen parallel aan de grond",
+        "1.1x bonus na 45 seconden!"
+      ]
+    },
+    "sidePlank": {
+      "name": "Side Plank",
+      "description": "Verdien 0.12 min per seconde (min 10s)",
+      "instructions": [
+        "Positioneer je telefoon om je hele lichaam van voren te zien",
+        "Lig op je zij, steun op je elleboog",
+        "Til je heupen van de grond",
+        "Houd je lichaam in een rechte lijn",
+        "1.1x bonus na 30 seconden!"
+      ]
+    }
+  },
+  "exerciseCamera": {
+    "cameraPermissionRequired": "Camera toestemming is vereist",
+    "noCameraDevice": "Geen camera gevonden",
+    "holding": "VASTHOUDEN",
+    "getInPosition": "GA IN POSITIE",
+    "down": "OMLAAG",
+    "up": "OMHOOG"
+  },
   "profile": {
     "title": "Profiel",
     "proMember": "PRO Lid",
-    "achievements": "Behaalde Prestaties",
-    "viewAll": "Alles Weergeven",
+    "achievements": "Prestaties",
+    "viewAll": "Bekijk Alles",
     "quickActions": "Snelle Acties",
     "editProfile": "Profiel Bewerken",
-    "contactUs": "Contact Opnemen",
+    "contactUs": "Neem Contact Op",
     "rateUs": "Beoordeel Ons",
-    "logOut": "Afmelden",
-    "errorLoading": "Fout bij laden van profiel",
+    "logOut": "Uitloggen",
+    "errorLoading": "Fout bij laden profiel",
     "loading": "Profiel laden...",
+    "blockedItems": "Geblokkeerde Apps & Sites",
+    "defaultBlockedItems": "Standaard Geblokkeerde Items",
+    "apps": "apps",
+    "websites": "sites",
+    "blockedItemsDesc": "Deze zijn voorgeselecteerd bij het maken van nieuwe schema's",
+    "editBlockedItems": "Geblokkeerde Items Bewerken",
+    "dailyGoal": "Dagelijks Doel",
+    "dailyGoalQuestion": "Hoeveel schermtijd wil je per dag verdienen?",
+    "dailyGoalUpdated": "Dagelijks doel bijgewerkt",
+    "minLabel": "15 min",
+    "maxLabel": "3 uur",
     "defaultAppLimit": "Standaard App-limiet",
     "defaultAppLimitDesc": "Nieuwe apps gebruiken standaard deze tijdslimiet",
     "limitUpdated": "Standaardlimiet bijgewerkt",
-    "contactDescription": "Stuur ons een bericht en we nemen snel contact met je op",
+    "minLimitLabel": "1 min",
+    "maxLimitLabel": "2 uur",
+    "streak": "Reeks",
+    "sessions": "Sessies",
+    "tasks": "Taken",
+    "contactDescription": "Stuur ons een bericht en we reageren snel",
     "writeMessage": "Schrijf je bericht...",
-    "sendMessage": "Bericht verzenden",
-    "emailUs": "E-mail ons",
+    "sendMessage": "Bericht Versturen",
+    "emailUs": "E-mail Ons",
     "messageSent": "Bericht verzonden!",
-    "messageThankYou": "We nemen snel contact met je op",
-    "messageError": "Verzenden mislukt",
-    "rateExperience": "Beoordeel je ervaring",
+    "messageThankYou": "We reageren snel",
+    "messageError": "Kon bericht niet versturen",
+    "rateExperience": "Beoordeel je Ervaring",
     "rateDescription": "Hoe zou je LockIn beoordelen?",
     "tapToRate": "Tik op een ster om te beoordelen",
     "thankYouRating": "Bedankt voor je beoordeling!",
-    "tellUsMore": "Vertel ons meer",
+    "tellUsMore": "Vertel Ons Meer",
     "helpUsImprove": "Help ons je ervaring te verbeteren",
-    "describeProblem": "Wat kunnen we beter doen?",
-    "sendFeedback": "Feedback verzenden",
+    "describeProblem": "Wat kunnen we verbeteren?",
+    "sendFeedback": "Feedback Versturen",
     "changeRating": "Beoordeling wijzigen",
     "feedbackSent": "Feedback verzonden!",
-    "feedbackThanks": "Bedankt dat je ons helpt verbeteren",
-    "feedbackError": "Feedback verzenden mislukt"
+    "feedbackThanks": "Bedankt voor je hulp bij het verbeteren",
+    "feedbackError": "Kon feedback niet versturen"
   },
   "achievements": {
-    "title": "Behaalde Prestaties",
+    "title": "Prestaties",
     "unlocked": "Ontgrendeld",
     "locked": "Vergrendeld",
     "unlockedCount": "{{count}} van {{total}} ontgrendeld",
@@ -258,26 +574,26 @@
       },
       "focusBeginner": {
         "title": "Focus Beginner",
-        "description": "Voltooi eerste focussessie"
+        "description": "Voltooi je eerste focussessie"
       },
       "taskMaster": {
         "title": "Taakmeester",
-        "description": "Voltooi taakverificatie"
+        "description": "Voltooi een taakverificatie"
       },
       "earlyBird": {
         "title": "Vroege Vogel",
         "description": "Start focus voor 8 uur"
       },
       "nightOwl": {
-        "title": "Nachtdier",
-        "description": "Gebruik blokkering na 22:00"
+        "title": "Nachtuil",
+        "description": "Gebruik blokkering na 22 uur"
       },
       "discipline": {
         "title": "Discipline",
-        "description": "7-daagse blokkeringsreeks"
+        "description": "7-daagse blokkeerreeks"
       },
       "ironWill": {
-        "title": "Ijzeren Wil",
+        "title": "IJzeren Wil",
         "description": "Voltooi 10 focussessies"
       },
       "zenMaster": {
@@ -289,64 +605,64 @@
         "description": "Maak je eerste schema"
       },
       "timeKeeper": {
-        "title": "Tijdsbewaarder",
+        "title": "Tijdbewaker",
         "description": "Maak 5 schema's"
       },
       "digitalDetox": {
         "title": "Digitale Detox",
-        "description": "Blokkeer apps 24 uur lang"
+        "description": "Blokkeer apps voor 24 uur"
       },
       "weekendWarrior": {
-        "title": "Weekendkrijger",
-        "description": "Gebruik blokkering in weekends"
+        "title": "Weekend Strijder",
+        "description": "Gebruik blokkering in het weekend"
       },
       "minimalist": {
-        "title": "Minimaliste",
+        "title": "Minimalist",
         "description": "Blokkeer 10+ apps tegelijk"
       },
       "focusLegend": {
         "title": "Focus Legende",
-        "description": "2-uur focussessie"
+        "description": "2-uurs focussessie"
       },
       "marathon": {
         "title": "Marathon",
-        "description": "4-uur focussessie"
+        "description": "4-uurs focussessie"
       },
       "consistencyKing": {
-        "title": "Consistentiekoning",
-        "description": "30-daagse blokkeringsreeks"
+        "title": "Koning van Consistentie",
+        "description": "30-daagse blokkeerreeks"
       },
       "healthChampion": {
-        "title": "Gezondheidskampioen",
-        "description": "Behaal gezondheidsscore 90+"
+        "title": "Gezondheid Kampioen",
+        "description": "Bereik gezondheidsscore 90+"
       },
       "screenTimeSavior": {
         "title": "Schermtijd Redder",
         "description": "Verminder schermtijd met 50%"
       },
       "morningRoutine": {
-        "title": "Ochtendrutine",
+        "title": "Ochtendroutine",
         "description": "Blokkeer apps 3 ochtenden"
       },
       "productivityBeast": {
-        "title": "Productiviteitsbeest",
+        "title": "Productiviteit Beest",
         "description": "Voltooi 5 taakverificaties"
       },
       "appBlockerPro": {
-        "title": "App Blokkerings Pro",
+        "title": "Blokkeer Pro",
         "description": "Blokkeer 20+ verschillende apps"
       },
       "focusFlow": {
-        "title": "Focus Stroom",
+        "title": "Focus Flow",
         "description": "3 focussessies in een dag"
       },
       "digitalWellbeing": {
         "title": "Digitaal Welzijn",
-        "description": "Gezondheidsscore 80+ voor een week"
+        "description": "Score 80+ voor een week"
       },
       "selfControl": {
         "title": "Zelfbeheersing",
-        "description": "Weersta ontgrendeling 10 keer"
+        "description": "Weersta ontgrendelen 10 keer"
       }
     }
   },
@@ -356,28 +672,556 @@
     "systemDefault": "Systeemstandaard",
     "currentLanguage": "Huidige Taal"
   },
+  "payment": {
+    "title": "Neem de Controle\nover Je Schermtijd",
+    "subtitle": "Sluit je aan bij duizenden die hun focus hebben teruggewonnen en schermtijd met 50%+ hebben verminderd",
+    "usersLove": "10.000+ gebruikers houden van LockIn",
+    "features": {
+      "unlimitedBlocking": "Onbeperkt apps en websites blokkeren",
+      "advancedScheduling": "Geavanceerde planning en tijdslimieten",
+      "focusSessions": "Focussessies met taakverificatie",
+      "prioritySupport": "Prioriteitsondersteuning en vroege functies",
+      "detailedAnalytics": "Gedetailleerde gebruiksanalyses en inzichten"
+    },
+    "reviews": {
+      "review1": "Eindelijk mijn telefoonverslaving overwonnen!",
+      "review1Author": "Sarah M.",
+      "review2": "Mijn schermtijd daalde met 3 uur/dag",
+      "review2Author": "James K.",
+      "review3": "De beste focus-app die ik ooit heb gebruikt",
+      "review3Author": "Emily R."
+    },
+    "trial": {
+      "notSure": "Niet zeker? Probeer 3 dagen gratis",
+      "cancelAnytime": "Annuleer op elk moment tijdens de proefperiode",
+      "afterTrial": "Na je gratis proefperiode van 3 dagen, "
+    },
+    "plans": {
+      "choosePlan": "Kies Je Abonnement",
+      "loading": "Abonnementen laden...",
+      "save": "BESPAAR {{percent}}%",
+      "annual": "Jaarlijks",
+      "monthly": "Maandelijks",
+      "billedAnnually": "/maand, jaarlijks gefactureerd"
+    },
+    "cta": {
+      "startTrial": "Start 3-Daagse Proefperiode",
+      "subscribeNow": "Nu Abonneren",
+      "restorePurchases": "Aankopen Herstellen"
+    },
+    "legal": {
+      "paymentCharged": "Betaling wordt in rekening gebracht op je {{store}}-account. Abonnementen worden automatisch verlengd tenzij 24 uur voor het einde van de periode geannuleerd.",
+      "termsOfService": "Servicevoorwaarden",
+      "privacyPolicy": "Privacybeleid",
+      "cancelIn": "Annuleren in {{store}}"
+    },
+    "toast": {
+      "welcomePro": "Welkom bij LockIn PRO!",
+      "welcomeProDesc": "Je focusreis begint nu",
+      "purchaseFailed": "Aankoop mislukt. Probeer het opnieuw.",
+      "purchasesRestored": "Aankopen hersteld",
+      "purchasesRestoredDesc": "Je PRO-toegang is hersteld",
+      "noPurchases": "Geen aankopen gevonden",
+      "noPurchasesDesc": "Geen eerdere abonnementen gedetecteerd",
+      "restoreFailed": "Herstel mislukt",
+      "restoreFailedDesc": "Probeer het later opnieuw"
+    }
+  },
+  "settings": {
+    "title": "Instellingen",
+    "accentColor": "Accentkleur",
+    "appearance": "Uiterlijk",
+    "themeSystem": "Systeemstandaard",
+    "themeLight": "Licht",
+    "themeDark": "Donker",
+    "changePassword": "Wachtwoord Wijzigen",
+    "newPasswordPlaceholder": "Voer nieuw wachtwoord in",
+    "dangerZone": "Gevarenzone",
+    "deleteAccount": "Account Verwijderen",
+    "deleteAccountTitle": "Account Verwijderen",
+    "deleteAccountWarning": "Deze actie is onomkeerbaar. Typ",
+    "deleteAccountConfirm": "Verwijderen",
+    "toConfirm": "om te bevestigen:",
+    "typeDelete": "Typ Verwijderen",
+    "deleting": "Verwijderen...",
+    "accountDeleted": "Account verwijderd",
+    "profileUpdated": "Profiel bijgewerkt",
+    "typeDeleteToConfirm": "Typ 'Verwijderen' om te bevestigen.",
+    "premium": "Premium",
+    "manageSubscription": "Abonnement Beheren",
+    "earnedTime": "Verdiende Tijd",
+    "earnedTimeDesc": "Verdien extra tijd in apps door oefeningen te voltooien",
+    "notifications": "Meldingen",
+    "notificationsDesc": "Ontvang dagelijkse herinneringen en motiverende meldingen",
+    "general": "Algemeen",
+    "language": "Taal",
+    "contactUs": "Contact",
+    "privacyPolicy": "Privacybeleid",
+    "termsOfService": "Servicevoorwaarden",
+    "about": "Over",
+    "version": "Versie {{version}}"
+  },
+  "auth": {
+    "welcomeToLockIn": "Welkom bij LockIn",
+    "takeControl": "Neem controle over je schermtijd",
+    "continueWithGoogle": "Doorgaan met Google",
+    "continueWithApple": "Doorgaan met Apple",
+    "continueWithEmail": "Doorgaan met Email",
+    "getStarted": "Aan de Slag",
+    "alreadyHaveAccount": "Ik heb al een account",
+    "privacyPolicy": "Privacybeleid",
+    "termsOfService": "Servicevoorwaarden",
+    "welcomeBack": "Welkom Terug",
+    "createAccount": "Account Maken",
+    "focusGoalsWaiting": "Je focusdoelen wachten op je",
+    "startControlScreenTime": "Begin met het controleren van je schermtijd",
+    "email": "Email",
+    "emailPlaceholder": "jouw@email.nl",
+    "password": "Wachtwoord",
+    "passwordPlaceholder": "Voer je wachtwoord in",
+    "agreeToTerms": "Ik ga akkoord met de ",
+    "termsConditions": "Algemene Voorwaarden",
+    "signIn": "Inloggen",
+    "signUp": "Registreren",
+    "orContinueWith": "of doorgaan met",
+    "dontHaveAccount": "Geen account? ",
+    "alreadyHaveAccountQuestion": "Al een account? ",
+    "loginSuccessful": "Inloggen gelukt",
+    "signUpSuccessful": "Registratie gelukt",
+    "registrationSuccessful": "Registratie gelukt",
+    "welcomeBack2": "Welkom terug!",
+    "welcomeToLockIn2": "Welkom bij LockIn!",
+    "authenticationFailed": "Authenticatie mislukt",
+    "googleAuthInProgress": "Google authenticatie bezig",
+    "googlePlayUnavailable": "Google Play niet beschikbaar",
+    "googleAuthFailed": "Google authenticatie mislukt",
+    "termsRequired": "Accepteer de Algemene Voorwaarden",
+    "invalidEmail": "Ongeldig email",
+    "invalidEmailDesc": "Voer een geldig emailadres in",
+    "invalidPassword": "Ongeldig wachtwoord",
+    "invalidPasswordDesc": "Wachtwoord moet minimaal 4 tekens zijn",
+    "registrationFailed": "Registratie mislukt",
+    "userNotFound": "Gebruiker niet gevonden",
+    "userNotFoundDesc": "Controleer je email of registreer eerst",
+    "loginFailed": "Inloggen mislukt",
+    "authenticationError": "Authenticatiefout",
+    "pleaseTryAgain": "Probeer opnieuw",
+    "welcome": "Welkom!",
+    "authenticationSuccessful": "Authenticatie gelukt"
+  },
+  "rateApp": {
+    "rateOurApp": "Beoordeel Onze App!",
+    "chooseRating": "Kies een beoordeling",
+    "pleaseSelectRating": "Selecteer een beoordeling",
+    "rate": "Beoordeel",
+    "later": "Later",
+    "couldNotOpenAppStore": "Kon App Store niet openen",
+    "couldNotOpenPlayStore": "Kon Google Play niet openen",
+    "tellUsImprove": "Vertel ons wat we kunnen verbeteren",
+    "yourFeedbackPlaceholder": "Je feedback...",
+    "submit": "Versturen",
+    "pleaseWriteFeedback": "Schrijf je feedback",
+    "thankYouFeedback": "Bedankt voor je feedback!",
+    "failedSendFeedback": "Kon niet versturen. Probeer opnieuw."
+  },
   "community": {
-    "title": "Leaderboard",
-    "addFriends": "+ Add Friends",
-    "membersCount_one": "{{count}} Friend",
-    "membersCount_other": "{{count}} Friends",
-    "groupDescription": "See your friends Screen Time. Resets daily at midnight.",
-    "defaultGroupName": "The Focused Few",
-    "noGroupTitle": "Join a Group",
-    "noGroupDesc": "Connect with friends and compete to reduce screen time together.",
-    "createGroup": "Create Group",
-    "createGroupDesc": "Create a new group and invite your friends to join.",
-    "createGroupBtn": "Create a Group",
-    "joinGroupBtn": "Join with Code",
-    "joinGroup": "Join Group",
-    "enterInviteCode": "Enter the 6-character invite code",
-    "join": "Join",
-    "invalidCode": "Invalid invite code. Please try again.",
-    "shareMessage": "Join my group on LockIn! Use code: {{code}}",
+    "title": "Ranglijst",
+    "addFriends": "+ Vrienden Toevoegen",
+    "membersCount_one": "{{count}} Vriend",
+    "membersCount_other": "{{count}} Vrienden",
+    "groupDescription": "Bekijk de Schermtijd van je vrienden. Reset dagelijks om middernacht.",
+    "defaultGroupName": "De Gefocusten",
+    "noGroupTitle": "Groep Toetreden",
+    "noGroupDesc": "Verbind met vrienden en strijd samen om schermtijd te verminderen.",
+    "createGroup": "Groep Maken",
+    "createGroupDesc": "Maak een nieuwe groep en nodig je vrienden uit om mee te doen.",
+    "createGroupBtn": "Maak een Groep",
+    "joinGroupBtn": "Toetreden met Code",
+    "joinGroup": "Groep Toetreden",
+    "enterInviteCode": "Voer de 6-tekens uitnodigingscode in",
+    "join": "Toetreden",
+    "invalidCode": "Ongeldige uitnodigingscode. Probeer opnieuw.",
+    "shareMessage": "Word lid van mijn groep \"{{groupName}}\" op LockIn! Gebruik code: {{code}}",
     "tabs": {
-      "screenTime": "Screen Time",
-      "streak": "Streak",
-      "focusHours": "Focus Hours"
+      "screenTime": "Schermtijd",
+      "streak": "Reeks",
+      "focusHours": "Focus Uren"
+    }
+  },
+  "intention": {
+    "greeting": "He! Wat brengt je naar {{appName}}? ",
+    "errorFallback": "Hmm, ik kon dat niet verwerken. Ga je gang, maar probeer bewust met je tijd om te gaan.",
+    "tip1": "Wees specifiek over wat je moet doen",
+    "tip2": "Denk na of dit kan wachten",
+    "tip3": "Overweeg hoeveel tijd je wilt besteden",
+    "whyApp": "Waarom {{appName}}?",
+    "blockedByLockIn": "Geblokkeerd door LockIn",
+    "lockInCoach": "LockIn Coach",
+    "minGranted": "{{count}} min toegekend",
+    "tipsTitle": "Tips voor snelle toegang",
+    "inputPlaceholder": "Vertel me waarom je deze app nodig hebt...",
+    "leaveApp": "Verlaat {{appName}}",
+    "header": "Stel je intentie in",
+    "placeholder": "Ik open deze app omdat...",
+    "continueButton": "Ga verder naar {{appName}}",
+    "coach": "Coach",
+    "timeGranted": "{{minutes}} minuten toegekend"
+  },
+  "spend": {
+    "coachLimitReached": "He! Je hebt je {{minutes}} minuten limiet voor {{appName}} vandaag bereikt. Dat is je doel dat werkt!",
+    "coachBlockedUntilTomorrow": "De app is geblokkeerd tot morgen. Als je iets dringends hebt, vertel me wat je nodig hebt!",
+    "coachError": "Sorry, ik kon dat niet verwerken. Probeer opnieuw!",
+    "freeTimeActive": "Vrije Tijd Actief",
+    "freeTimeDesc": "Je bent in een geplande vrije periode. Gebruik de app zonder verdiende tijd te besteden!",
+    "minRemainingToday": "{{count}} min over vandaag",
+    "openApp": "Open {{appName}}",
+    "totalLimitReached": "Totale Dagelijkse Limiet Bereikt",
+    "usedAllScreenTime": "Je hebt al je schermtijd voor vandaag gebruikt",
+    "allAppsBlockedExplanation": "Alle apps zijn geblokkeerd omdat je je totale dagelijkse schermtijd doel hebt bereikt. Dit helpt je gezonde gewoontes te behouden.",
+    "totalRemaining": "Totaal resterend: {{count}} min",
+    "goBack": "Terug",
+    "dailyLimitReached": "Dagelijkse Limiet Bereikt",
+    "usedOfLimit": "{{used}}m gebruikt van {{limit}}m limiet",
+    "blockedUntilTomorrow": "Geblokkeerd tot morgen",
+    "coach": "Coach",
+    "coachTyping": "Coach is aan het typen...",
+    "chatPlaceholder": "Vertel coach wat je nodig hebt...",
+    "appBlocked": "{{appName}} is Geblokkeerd",
+    "earnToUnlock": "Verdien tijd om deze app te ontgrendelen",
+    "minutesAvailable": "minuten beschikbaar",
+    "completeExercises": "Voltooi oefeningen om\nschermtijd te verdienen",
+    "earnTimeNow": "Verdien Nu Tijd",
+    "readyToUse": "Klaar om je verdiende tijd te gebruiken?",
+    "timeTrackedAutomatically": "Tijd wordt automatisch bijgehouden\nen afgetrokken van je saldo",
+    "coachNoLimit": "Hoi! Je hebt wat tijd doorgebracht in {{appName}} vandaag. Geniet je ervan? Als je een pauze wilt, ben ik hier!",
+    "coachFreeTimeReminder": "Herinnering: Je bent in Vrije Tijd modus! Geniet van je tijd in {{appName}}.",
+    "coachNotBlockedNoLimit": "Hoi! {{appName}} staat niet op je blokkeerlijst. Je kunt het vrij gebruiken, maar vergeet niet te pauzeren!",
+    "coachNotBlocked": "Hoi! {{appName}} staat niet op je blokkeerlijst. Je kunt het vrij gebruiken!",
+    "limitReached": "Tijdslimiet Bereikt",
+    "limitReachedDesc": "Je hebt je dagelijkse limiet voor {{appName}} bereikt",
+    "freeTimeActiveDesc": "Geniet van onbeperkt gebruik tot je Vrije Tijd eindigt.",
+    "noLimitSet": "Geen Limiet Ingesteld",
+    "noLimitSetDesc": "Je hebt geen limiet ingesteld voor {{appName}}",
+    "notBlocked": "App Niet Geblokkeerd",
+    "notBlockedDesc": "{{appName}} staat niet op je blokkeerlijst",
+    "earnTime": "Verdien Tijd",
+    "earnTimeDesc": "Verdien +{{minutes}} min door een oefening",
+    "useFreeTime": "Gebruik Vrije Tijd",
+    "useFreeTimeDesc": "Gebruik een vrije tijd pas",
+    "freeTimePasses": "{{count}} passen over vandaag",
+    "buyPremium": "Koop Premium",
+    "buyPremiumDesc": "Ontgrendel onbeperkte vrije tijd passen",
+    "cancelFreeTime": "Annuleer Vrije Tijd"
+  },
+  "onboarding": {
+    "welcome": {
+      "hello": "Hallo!",
+      "welcomeTo": "Welkom bij",
+      "helpWithTime": "We staan klaar om je te helpen met",
+      "takingControl": "controle nemen over je tijd",
+      "letsStart": "Laten We Beginnen"
+    },
+    "age": {
+      "title": "Hoe oud ben je?",
+      "subtitle": "Dit helpt ons je ervaring te personaliseren",
+      "under18": "Jonger dan 18",
+      "range1824": "18-24",
+      "range2530": "25-30",
+      "range3140": "31-40",
+      "range4150": "41-50",
+      "range51plus": "51+"
+    },
+    "hours": {
+      "title": "Dagelijkse schermtijd?",
+      "subtitle": "Wees eerlijk - we oordelen niet",
+      "range12": "1-2 uur",
+      "range24": "2-4 uur",
+      "range46": "4-6 uur",
+      "range68": "6-8 uur",
+      "range8plus": "8+ uur"
+    },
+    "newsIntro": {
+      "title": "We hebben slecht nieuws\nen goed nieuws",
+      "subtitle": "Laat ons je iets belangrijks laten zien over je schermtijd...",
+      "showMe": "Laat Zien"
+    },
+    "badNews": {
+      "badge": "HET SLECHTE NIEUWS",
+      "atHoursPerDay": "Met {{hours}} uur per dag, zul je",
+      "days": "dagen",
+      "lookingAtPhone": "naar je telefoon kijken",
+      "thisYear": "DIT JAAR",
+      "thatsApproximately": "Dat is ongeveer",
+      "years": "jaar",
+      "ofYourLife": "van je leven",
+      "explanation": "Ja, je leest dit goed. Je besteedt het grootste deel van je vrije tijd aan je telefoon terwijl je je doelen zou kunnen bereiken en het leven zou kunnen leiden dat je wilt.",
+      "whatsGoodNews": "Wat is het goede nieuws?"
+    },
+    "goodNews": {
+      "badge": "HET GOEDE NIEUWS",
+      "canHelpGetBack": "LockIn kan je helpen om terug te krijgen",
+      "ofYourLife": "van je leven",
+      "turnInto": "En ze om te zetten in de dingen die je altijd wilde bereiken.",
+      "moreTime": "Meer tijd voor je doelen, je passies, en de mensen van wie je houdt.",
+      "letsGetStarted": "Laten We Beginnen"
+    },
+    "firstStep": {
+      "title": "Laten we de eerste stap zetten",
+      "subtitle": "LockIn zal verbinden met je schermtijd om je een",
+      "focusReport": "gepersonaliseerd focusrapport",
+      "seeUsage": "Bekijk je echte gebruiksdata",
+      "getRecommendations": "Krijg gepersonaliseerde aanbevelingen",
+      "trackProgress": "Volg je voortgang over tijd",
+      "imReady": "Ik Ben Klaar"
+    },
+    "screenTimePermission": {
+      "title": "Sta LockIn toe om Schermtijd te Monitoren",
+      "secureInfo": "100% van de info is veilig en blijft op je telefoon",
+      "permissionGranted": "Toestemming verleend!",
+      "howToEnable": "Hoe in te schakelen:",
+      "step1": "Vind \"LockIn\" in de lijst met apps",
+      "step2": "Schakel \"Gebruik toegang toestaan\" in",
+      "continue": "Doorgaan",
+      "checking": "Controleren...",
+      "learnMore": "Meer informatie",
+      "whyNeedTitle": "Waarom We Dit Nodig Hebben",
+      "trackUsage": "Volg Je Gebruik",
+      "trackUsageDesc": "Bekijk welke apps je het meest gebruikt en hoe lang",
+      "monitorProgress": "Monitor Voortgang",
+      "monitorProgressDesc": "Volg je digitale welzijnsreis over tijd",
+      "personalizedInsights": "Gepersonaliseerde Inzichten",
+      "personalizedInsightsDesc": "Krijg aanbevelingen gebaseerd op je gewoontes",
+      "smartAlerts": "Slimme Meldingen",
+      "smartAlertsDesc": "Weet wanneer je te veel tijd aan een app besteedt"
+    },
+    "commitment": {
+      "title": "Maak een Belofte",
+      "committed": "Beloofd!",
+      "subtitle": "Houd ingedrukt om te beloven controle te nemen over je schermtijd",
+      "completedSubtitle": "Je hebt de eerste stap gezet om je leven te veranderen",
+      "keepHolding": "Blijf vasthouden...",
+      "holdOrb": "Houd de orb 3 seconden vast",
+      "letsSetUp": "Laten we je app instellen!"
+    },
+    "apps": {
+      "title": "Selecteer Apps om te Blokkeren",
+      "subtitle": "Deze apps worden geblokkeerd tot je tijd verdient",
+      "selectApps": "Selecteer Apps",
+      "changeSelection": "Wijzig Selectie",
+      "appsSelected": "{{count}} apps geselecteerd",
+      "categoriesIncluded": "{{count}} categorieen inbegrepen"
+    },
+    "websites": {
+      "title": "Blokkeer Websites",
+      "subtitle": "Optioneel: Blokkeer afleidende websites in browsers",
+      "addCustom": "Voeg aangepaste website toe",
+      "customWebsites": "Aangepaste websites:",
+      "websitesSelected": "{{count}} website geselecteerd",
+      "websitesSelectedPlural": "{{count}} websites geselecteerd"
+    },
+    "goal": {
+      "title": "Stel Je Dagelijks Doel In",
+      "subtitle": "Hoeveel schermtijd wil je per app?",
+      "lightUsage": "Licht gebruik",
+      "moderate": "Matig",
+      "balanced": "Gebalanceerd",
+      "flexible": "Flexibel",
+      "canChange": "Je kunt dit altijd wijzigen in instellingen",
+      "min30": "30 min",
+      "hour1": "1 uur",
+      "hours2": "2 uur",
+      "hours3": "3 uur"
+    },
+    "complete": {
+      "title": "Je Bent Klaar!",
+      "subtitle": "Je geselecteerde apps zijn nu geblokkeerd.\nVerdien tijd door oefeningen om ze te gebruiken!",
+      "appsBlocked": "Apps geblokkeerd",
+      "websitesBlocked": "Websites geblokkeerd",
+      "dailyLimitPerApp": "Dagelijkse limiet per app",
+      "getStarted": "Aan de Slag",
+      "continue": "Doorgaan",
+      "skip": "Overslaan",
+      "startUsingApp": "Begin Met Gebruiken"
+    }
+  },
+  "helpContent": {
+    "home": {
+      "welcome": {
+        "title": "Welkom bij LockIn",
+        "description": "Je persoonlijke begeleider voor gezondere digitale gewoontes. We helpen je gefocust te blijven en het meeste uit je schermtijd te halen."
+      },
+      "orb": {
+        "title": "Je Gezondheidsbol",
+        "description": "Deze bol weerspiegelt je digitale welzijn. Hij gloeit groen als het goed gaat en verschuift naar warmere kleuren wanneer het tijd is voor een pauze."
+      },
+      "stats": {
+        "title": "Volg je Voortgang",
+        "description": "Houd je streak, dagelijkse schermtijd en vergelijking met je weekgemiddelde in de gaten. Kleine verbeteringen leiden tot grote veranderingen."
+      },
+      "quickActions": {
+        "title": "Snelle Acties",
+        "description": "Tik op de bliksemknop rechtsonder voor directe toegang tot blokkeer functies, schema's en focusmodus. Alles wat je nodig hebt, een tik verwijderd."
+      },
+      "schedules": {
+        "title": "Slimme Schema's",
+        "description": "Maak automatische blokkeer schema's voor werk, studie of rusttijd. Stel eenmaal in en laat de app de rest doen."
+      },
+      "appUsage": {
+        "title": "App Inzichten",
+        "description": "Zie welke apps het meeste van je tijd gebruiken. Je gewoontes begrijpen is de eerste stap naar verbetering."
+      },
+      "ready": {
+        "title": "Je Bent Klaar!",
+        "description": "Begin met het blokkeren van een paar afleidende apps en zie je focus verbeteren. We zijn hier om je te ondersteunen op deze reis."
+      }
+    },
+    "blocking": {
+      "intro": {
+        "title": "Blokkeer Bediening",
+        "description": "Dit is je commandocentrum voor het beheren van afleidingen. Blokkeer apps, stel schema's in en definieer dagelijkse limieten vanaf een plek."
+      },
+      "focusSession": {
+        "title": "Focus Sessies",
+        "description": "Moet je je nu concentreren? Start een focus sessie om afleidende apps te blokkeren voor een bepaalde duur. Je kunt zelfs een taak vereisen voor het ontgrendelen."
+      },
+      "schedules": {
+        "title": "Gepland Blokkeren",
+        "description": "Stel terugkerende schema's in voor momenten waarop je gefocust moet blijven. Perfect voor werkuren, studiesessies of bedtijd."
+      },
+      "appLimits": {
+        "title": "Dagelijkse App Limieten",
+        "description": "Nog niet klaar om een app volledig te blokkeren? Stel een dagelijkse tijdslimiet in. Zodra je deze bereikt, is de app geblokkeerd voor de rest van de dag."
+      }
+    },
+    "stats": {
+      "intro": {
+        "title": "Je Wekelijkse Rapport",
+        "description": "Krijg een compleet beeld van je schermtijd gewoontes. Volg totale uren, daggemiddelden en identificeer patronen in je gebruik."
+      },
+      "weeklyView": {
+        "title": "Week voor Week",
+        "description": "Veeg naar links en rechts om verschillende weken te vergelijken. Zie je voortgang door de tijd en vier je verbeteringen."
+      },
+      "calendar": {
+        "title": "Gebruik Kalender",
+        "description": "De kalender heatmap toont je dagelijkse gebruik in een oogopslag. Donkere kleuren geven meer schermtijd aan."
+      },
+      "appBreakdown": {
+        "title": "App Overzicht",
+        "description": "Zie precies welke apps je tijd innemen. Gebruik deze inzichten om weloverwogen beslissingen te nemen over wat te beperken."
+      }
+    },
+    "detox": {
+      "intro": {
+        "title": "Digitale Detox",
+        "description": "Soms heb je een volledige pauze van je telefoon nodig. Start een detox sessie om alle afleidende apps te blokkeren en opnieuw verbinding te maken met de wereld om je heen."
+      },
+      "timer": {
+        "title": "Stel je Duur In",
+        "description": "Kies hoe lang je zonder telefoon wilt. Begin met kortere sessies en verhoog geleidelijk terwijl je de gewoonte opbouwt."
+      },
+      "unlock": {
+        "title": "Blijf Toegewijd",
+        "description": "Zodra je een detox sessie start, loopt deze tot voltooiing. Dit helpt je toegewijd te blijven aan je doel zonder verleiding."
+      }
+    },
+    "profile": {
+      "intro": {
+        "title": "Je Profiel",
+        "description": "Beheer je account, bekijk prestaties en pas je instellingen aan. Alles over jou op een plek."
+      },
+      "achievements": {
+        "title": "Prestaties",
+        "description": "Ontgrendel badges terwijl je betere gewoontes opbouwt. Elke prestatie vertegenwoordigt een mijlpaal in je digitale welzijn reis."
+      },
+      "defaultBlocks": {
+        "title": "Standaard Instellingen",
+        "description": "Stel je standaard geblokkeerde apps en tijdslimieten in. Deze worden voorgeselecteerd bij het maken van nieuwe schema's, wat je tijd bespaart."
+      }
+    }
+  },
+  "loader": {
+    "loading": "Laden...",
+    "phrases": [
+      "Je reis naar digitaal welzijn begint nu",
+      "Elk moment van focus telt",
+      "Betere gewoontes opbouwen, stap voor stap",
+      "Blijf gefocust, blijf aanwezig",
+      "Neem je tijd terug, neem je leven terug",
+      "Vooruitgang boven perfectie",
+      "Kleine stappen leiden tot grote veranderingen",
+      "Je bent sterker dan je afleidingen",
+      "Maak vandaag belangrijk",
+      "Focus is je superkracht",
+      "Breek vrij van digitale ketenen",
+      "Je toekomstige zelf zal je dankbaar zijn",
+      "Discipline betekent vrijheid",
+      "Beheers je telefoon, beheers je leven",
+      "Wees aanwezig in het moment",
+      "Minder schermtijd, meer echte tijd",
+      "Je aandacht is waardevol",
+      "Investeer vandaag in jezelf",
+      "Creëer ruimte voor wat belangrijk is",
+      "Mindfulness begint met bewustzijn"
+    ]
+  },
+  "verifiedLockIn": {
+    "title": "Geverifieerde LockIn",
+    "durations": {
+      "30m": "30m",
+      "1h": "1u",
+      "1.5h": "1,5u",
+      "2h": "2u"
+    },
+    "presetTasks": {
+      "cleanRoom": "Kamer opruimen",
+      "completeHomework": "Huiswerk maken",
+      "workoutRoutine": "Workout routine",
+      "cookMeal": "Maaltijd koken",
+      "readPages": "10 pagina's lezen",
+      "writePlan": "Plan schrijven"
+    },
+    "step1": {
+      "whatAccomplish": "Wat ga je bereiken?",
+      "describeTask": "Beschrijf je taak...",
+      "orChoosePreset": "Of kies een voorinstelling"
+    },
+    "step2": {
+      "takeBeforePhoto": "Maak een \"Voor\" foto",
+      "showCurrentState": "Toon de huidige staat van je taak.\nDit bewijst dat je echt werk hebt gedaan!",
+      "tapToTakePhoto": "Tik om foto te maken",
+      "tips": "Tips:",
+      "tipsContent": "Toon de rommel/taak duidelijk. Goede verlichting helpt. Dit wordt vergeleken met je \"na\" foto!"
+    },
+    "step3": {
+      "beforePhotoReady": "Voor-foto klaar",
+      "taskSelected": "Taak geselecteerd",
+      "focusDuration": "Focus duur",
+      "appsToBlock": "Te blokkeren apps",
+      "appsWillBeBlocked": "{{count}} apps worden geblokkeerd"
+    },
+    "buttons": {
+      "continue": "Doorgaan",
+      "lockInNow": "Start LockIn",
+      "completeToUnlock": "Voltooi taak + maak \"na\" foto om te ontgrendelen"
+    }
+  },
+  "focusMode": {
+    "title": "Focusmodus",
+    "subtitle": "Blokkeer afleidingen en blijf gefocust",
+    "startSession": "Start focussessie",
+    "endSession": "Beëindig focussessie",
+    "duration": "Duur",
+    "minutes": "{{count}} minuten",
+    "whyTitle": "Waarom Focusmodus?",
+    "whyDescription": "Blokkeer afleidende apps en blijf productief. Focussessies helpen je te concentreren op wat belangrijk is.",
+    "settings": {
+      "title": "Focus instellingen",
+      "durationLabel": "Duur",
+      "appsToBlock": "Te blokkeren apps",
+      "selectApps": "Selecteer apps om te blokkeren",
+      "appsSelected": "{{count}} apps geselecteerd",
+      "save": "Instellingen opslaan"
     }
   }
 }
