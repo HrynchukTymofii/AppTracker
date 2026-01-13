@@ -7,6 +7,7 @@ import {
   Platform,
   Share,
   StyleSheet,
+  RefreshControl,
 } from "react-native";
 import { BlurView } from "expo-blur";
 import {
@@ -146,6 +147,7 @@ export default function BlockingPage() {
   } = useEarnedTime();
 
   const [showTotalLimitOptions, setShowTotalLimitOptions] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   // Real device usage stats
   const [todayUsage, setTodayUsage] = useState(0); // in minutes
@@ -377,6 +379,22 @@ export default function BlockingPage() {
     }, [totalDailyLimit]), // eslint-disable-line react-hooks/exhaustive-deps
   );
 
+  // Pull-to-refresh handler
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await Promise.all([
+        refreshData(),
+        refreshEarnedTimeData(),
+        fetchUsageStats(),
+      ]);
+      checkPermissions();
+      refreshAppsCache();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refreshData, refreshEarnedTimeData, fetchUsageStats]);
+
   // Refresh usage stats whenever daily limits change (new apps added/removed)
   useEffect(() => {
     console.log('[Blocking] dailyLimits.length changed:', dailyLimits.length);
@@ -453,9 +471,17 @@ export default function BlockingPage() {
     <ThemedBackground>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
-        contentContainerStyle={{ paddingBottom: 100 }}
-        showsVerticalScrollIndicator={false}
-      >
+          contentContainerStyle={{ paddingBottom: 100 }}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={isDark ? '#ffffff' : '#0f172a'}
+              colors={['#10b981']}
+            />
+          }
+        >
         {/* Header */}
         <View
           style={{
