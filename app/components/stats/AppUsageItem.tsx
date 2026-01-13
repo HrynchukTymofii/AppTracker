@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, Image, Animated } from "react-native";
+import { Smartphone } from "lucide-react-native";
 import { getBarColor } from "./constants";
 
 // App Usage Item Component (matches homepage style)
@@ -21,6 +22,7 @@ export const AppUsageItem = ({
   isLast?: boolean;
 }) => {
   // Handle both base64 URIs and local require() images
+  const hasIcon = iconUrl && (typeof iconUrl !== "string" || iconUrl.length > 0);
   const imageSource = typeof iconUrl === "string" ? { uri: iconUrl } : iconUrl;
 
   // Color based on rank (like homepage)
@@ -39,16 +41,32 @@ export const AppUsageItem = ({
           : "rgba(0, 0, 0, 0.04)",
       }}
     >
-      <Image
-        source={imageSource}
-        style={{
-          width: 40,
-          height: 40,
-          borderRadius: 10,
-          marginRight: 12,
-        }}
-        resizeMode="cover"
-      />
+      {hasIcon ? (
+        <Image
+          source={imageSource}
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 10,
+            marginRight: 12,
+          }}
+          resizeMode="cover"
+        />
+      ) : (
+        <View
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 10,
+            backgroundColor: isDark ? "#374151" : "#e5e7eb",
+            alignItems: "center",
+            justifyContent: "center",
+            marginRight: 12,
+          }}
+        >
+          <Smartphone size={20} color={isDark ? "#9ca3af" : "#6b7280"} />
+        </View>
+      )}
       <View style={{ flex: 1 }}>
         <Text
           style={{

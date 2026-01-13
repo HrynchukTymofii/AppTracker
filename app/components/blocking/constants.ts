@@ -131,13 +131,29 @@ export const formatDaysCompact = (daysOfWeek: number[], t: any): string => {
   if (daysOfWeek.length === 2 && daysOfWeek.includes(0) && daysOfWeek.includes(6)) {
     return t("blocking.weekends") || "Weekends";
   }
-  const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
+  const dayNames = [
+    t("common.dayNames.sun"),
+    t("common.dayNames.mon"),
+    t("common.dayNames.tue"),
+    t("common.dayNames.wed"),
+    t("common.dayNames.thu"),
+    t("common.dayNames.fri"),
+    t("common.dayNames.sat"),
+  ];
   return daysOfWeek.sort().map((d) => dayNames[d]).join(" ");
 };
 
 // Helper function to get day abbreviations
 export const getDayAbbreviations = (daysOfWeek: number[], t: any): string => {
-  const dayNames = ["S", "M", "T", "W", "T", "F", "S"];
+  const dayNames = [
+    t("common.dayNames.sun"),
+    t("common.dayNames.mon"),
+    t("common.dayNames.tue"),
+    t("common.dayNames.wed"),
+    t("common.dayNames.thu"),
+    t("common.dayNames.fri"),
+    t("common.dayNames.sat"),
+  ];
   if (daysOfWeek.length === 7) return t("blocking.everyday") || "Everyday";
   if (daysOfWeek.length === 5 && daysOfWeek.every((d) => d >= 1 && d <= 5)) {
     return t("blocking.weekdays") || "Weekdays";
@@ -148,12 +164,14 @@ export const getDayAbbreviations = (daysOfWeek: number[], t: any): string => {
     .join(", ");
 };
 
-// Format time display
-export const formatTime = (mins: number): string => {
+// Format time display (requires t function for localized units)
+export const formatTime = (mins: number, t?: any): string => {
+  const hUnit = t ? t("common.timeUnits.h") : "h";
+  const mUnit = t ? t("common.timeUnits.m") : "m";
   if (mins >= 60) {
     const h = Math.floor(mins / 60);
     const m = mins % 60;
-    return m > 0 ? `${h}h ${m}m` : `${h}h`;
+    return m > 0 ? `${h}${hUnit} ${m}${mUnit}` : `${h}${hUnit}`;
   }
-  return `${mins}m`;
+  return `${mins}${mUnit}`;
 };

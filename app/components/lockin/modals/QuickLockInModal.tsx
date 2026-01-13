@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, Modal, TouchableOpacity, ScrollView } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { View, Text, Modal, TouchableOpacity, ScrollView, PanResponder, Animated } from "react-native";
 import { X, Zap, Shield, ChevronRight } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DEFAULT_BLOCKED_APPS } from "@/lib/blockingConstants";
@@ -32,6 +32,37 @@ export const QuickLockInModal: React.FC<QuickLockInModalProps> = ({
   const [selectedApps, setSelectedApps] = useState<string[]>(DEFAULT_BLOCKED_APPS);
   const [showAppSelection, setShowAppSelection] = useState(false);
 
+  // Swipe-to-close gesture
+  const translateY = useRef(new Animated.Value(0)).current;
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (_, gestureState) => gestureState.dy > 10,
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dy > 0) {
+          translateY.setValue(gestureState.dy);
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (gestureState.dy > 100 || gestureState.vy > 0.5) {
+          Animated.timing(translateY, {
+            toValue: 500,
+            duration: 200,
+            useNativeDriver: true,
+          }).start(() => {
+            translateY.setValue(0);
+            onClose();
+          });
+        } else {
+          Animated.spring(translateY, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
+
   // Reset state when modal opens
   useEffect(() => {
     if (visible) {
@@ -54,7 +85,7 @@ export const QuickLockInModal: React.FC<QuickLockInModalProps> = ({
           justifyContent: "flex-end",
         }}
       >
-        <View
+        <Animated.View
           style={{
             backgroundColor: isDark ? "#0a0a0a" : "#ffffff",
             borderTopLeftRadius: 28,
@@ -63,10 +94,14 @@ export const QuickLockInModal: React.FC<QuickLockInModalProps> = ({
             maxHeight: "85%",
             borderTopWidth: 1,
             borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.05)",
+            transform: [{ translateY }],
           }}
         >
-          {/* Handle */}
-          <View style={{ alignItems: "center", paddingTop: 12 }}>
+          {/* Handle - swipe area */}
+          <View
+            {...panResponder.panHandlers}
+            style={{ alignItems: "center", paddingTop: 12, paddingBottom: 4 }}
+          >
             <View
               style={{
                 width: 40,
@@ -80,9 +115,7 @@ export const QuickLockInModal: React.FC<QuickLockInModalProps> = ({
           {/* Header */}
           <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
+              position: "relative",
               paddingHorizontal: 20,
               paddingTop: 16,
               paddingBottom: 16,
@@ -90,7 +123,7 @@ export const QuickLockInModal: React.FC<QuickLockInModalProps> = ({
               borderBottomColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.05)",
             }}
           >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: "row", alignItems: "center", paddingRight: 50 }}>
               <View
                 style={{
                   width: 44,
@@ -128,6 +161,9 @@ export const QuickLockInModal: React.FC<QuickLockInModalProps> = ({
             <TouchableOpacity
               onPress={onClose}
               style={{
+                position: "absolute",
+                top: 16,
+                right: 16,
                 width: 38,
                 height: 38,
                 borderRadius: 19,
@@ -325,7 +361,7 @@ export const QuickLockInModal: React.FC<QuickLockInModalProps> = ({
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </Animated.View>
       </View>
 
       {/* App Selection Modal */}

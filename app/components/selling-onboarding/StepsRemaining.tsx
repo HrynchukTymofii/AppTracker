@@ -10,7 +10,9 @@ import {
   Dimensions,
   Platform,
   Animated,
+  StyleSheet,
 } from 'react-native';
+import { useVideoPlayer, VideoView } from 'expo-video';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
@@ -24,6 +26,7 @@ import {
   Star,
 } from 'lucide-react-native';
 import * as Notifications from 'expo-notifications';
+import { useTranslation } from 'react-i18next';
 import {
   hasOverlayPermission,
   openOverlaySettings,
@@ -41,7 +44,7 @@ import { Clock, AlertTriangle, Bot, Target, Sparkles, CheckCircle2 } from 'lucid
 
 import { COLORS, GRADIENT_COLORS, useOnboardingTheme } from './designSystem';
 import { FadeInView } from './AnimatedComponents';
-import { GlassCard, GradientButton, GradientBarChart } from './UIComponents';
+import { GlassCard, GradientButton, GradientBarChart, WhiteGlassButton } from './UIComponents';
 import {
   LearnMoreModal,
   AccessibilityReassuranceModal,
@@ -69,9 +72,20 @@ export const Step9OverlayPermission = ({
   onContinue: () => void;
 }) => {
   const { colors } = useOnboardingTheme();
+  const { t } = useTranslation();
   const [isChecking, setIsChecking] = useState(false);
   const [hasPermission, setHasPermission] = useState(false);
   const [showLearnMore, setShowLearnMore] = useState(false);
+
+  // Video player for the overlay permission tutorial
+  const videoPlayer = useVideoPlayer(
+    require('@/assets/videos/onboarding/Appear-on-top-video.mp4'),
+    player => {
+      player.loop = true;
+      player.muted = true;
+      player.play();
+    }
+  );
 
   useEffect(() => {
     // iOS doesn't have overlay permission - auto skip
@@ -124,9 +138,9 @@ export const Step9OverlayPermission = ({
   }, [isChecking]);
 
   const learnMoreFeatures = [
-    { icon: '🛡️', title: 'Block Distracting Apps', description: 'Show a blocking screen when you try to open blocked apps' },
-    { icon: '⏰', title: 'Break Reminders', description: 'Remind you to take breaks during long sessions' },
-    { icon: '🎯', title: 'Focus Sessions', description: 'Keep you on track during focus mode' },
+    { icon: '🛡️', title: t('sellingOnboarding.overlay.learnMore.blockApps'), description: t('sellingOnboarding.overlay.learnMore.blockAppsDesc') },
+    { icon: '⏰', title: t('sellingOnboarding.overlay.learnMore.breakReminders'), description: t('sellingOnboarding.overlay.learnMore.breakRemindersDesc') },
+    { icon: '🎯', title: t('sellingOnboarding.overlay.learnMore.focusSessions'), description: t('sellingOnboarding.overlay.learnMore.focusSessionsDesc') },
   ];
 
   return (
@@ -134,7 +148,7 @@ export const Step9OverlayPermission = ({
       <LearnMoreModal
         visible={showLearnMore}
         onClose={() => setShowLearnMore(false)}
-        title="Why We Need This"
+        title={t('sellingOnboarding.overlay.whyWeNeedThis')}
         features={learnMoreFeatures}
       />
 
@@ -147,7 +161,7 @@ export const Step9OverlayPermission = ({
           marginBottom: 12,
           letterSpacing: -0.5,
         }}>
-          Enable App Blocking
+          {t('sellingOnboarding.overlay.title')}
         </Text>
       </FadeInView>
 
@@ -156,27 +170,41 @@ export const Step9OverlayPermission = ({
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Shield size={20} color={COLORS.success} style={{ marginRight: 12 }} />
             <Text style={{ fontSize: 14, color: COLORS.success, flex: 1, fontWeight: '500' }}>
-              This allows us to show the block screen
+              {t('sellingOnboarding.overlay.securityNote')}
             </Text>
           </View>
         </GlassCard>
       </FadeInView>
 
-      {/* Video commented out
       <FadeInView delay={200}>
-        <VideoPlaceholder />
+        <View style={{
+          borderRadius: 16,
+          overflow: 'hidden',
+          marginBottom: 20,
+          borderWidth: 1,
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+        }}>
+          <VideoView
+            player={videoPlayer}
+            style={{
+              width: '100%',
+              aspectRatio: 4 / 3,
+            }}
+            contentFit="contain"
+            nativeControls={false}
+          />
+        </View>
       </FadeInView>
-      */}
 
       {hasPermission ? (
         <FadeInView delay={300}>
           <GlassCard style={{ alignItems: 'center', marginBottom: 24, backgroundColor: 'rgba(16, 185, 129, 0.1)' }}>
             <CheckCircle size={36} color={COLORS.success} style={{ marginBottom: 12 }} />
             <Text style={{ fontSize: 18, fontWeight: '700', color: COLORS.success }}>
-              Permission granted!
+              {t('sellingOnboarding.overlay.permissionGranted')}
             </Text>
           </GlassCard>
-          <GradientButton onPress={onContinue} title="Continue" colors={GRADIENT_COLORS.success} />
+          <GradientButton onPress={onContinue} title={t('sellingOnboarding.overlay.continue')} colors={GRADIENT_COLORS.success} />
         </FadeInView>
       ) : (
         <>
@@ -188,9 +216,9 @@ export const Step9OverlayPermission = ({
                 color: colors.textPrimary,
                 marginBottom: 16,
               }}>
-                How to enable:
+                {t('sellingOnboarding.overlay.howToEnable')}
               </Text>
-              {['Find "LockIn" in the list', 'Toggle "Allow display over other apps"'].map((step, i) => (
+              {[t('sellingOnboarding.overlay.step1'), t('sellingOnboarding.overlay.step2')].map((step, i) => (
                 <View key={i} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
                   <LinearGradient
                     colors={GRADIENT_COLORS.success}
@@ -218,7 +246,7 @@ export const Step9OverlayPermission = ({
           <FadeInView delay={400}>
             <GradientButton
               onPress={handleGrantPermission}
-              title={isChecking ? 'Checking...' : 'Continue'}
+              title={isChecking ? t('sellingOnboarding.overlay.checking') : t('sellingOnboarding.overlay.continue')}
               colors={GRADIENT_COLORS.success}
               style={{ marginBottom: 12 }}
             />
@@ -236,7 +264,7 @@ export const Step9OverlayPermission = ({
             >
               <Info size={16} color={colors.textTertiary} style={{ marginRight: 6 }} />
               <Text style={{ fontSize: 14, color: colors.textTertiary }}>
-                Learn more
+                {t('sellingOnboarding.overlay.learnMore.title')}
               </Text>
             </TouchableOpacity>
           </FadeInView>
@@ -258,11 +286,22 @@ export const Step10AccessibilityPermission = ({
   onSkip: () => void;
 }) => {
   const { colors } = useOnboardingTheme();
+  const { t } = useTranslation();
   const [isChecking, setIsChecking] = useState(false);
   const [hasPermission, setHasPermission] = useState(false);
   const [showLearnMore, setShowLearnMore] = useState(false);
   const [showReassurance, setShowReassurance] = useState(false);
   const [showDeclineWarning, setShowDeclineWarning] = useState(false);
+
+  // Video player for the accessibility permission tutorial
+  const videoPlayer = useVideoPlayer(
+    require('@/assets/videos/onboarding/Accessebility-access-video.mp4'),
+    player => {
+      player.loop = true;
+      player.muted = true;
+      player.play();
+    }
+  );
 
   useEffect(() => {
     // iOS doesn't have accessibility permission - auto skip
@@ -338,9 +377,9 @@ export const Step10AccessibilityPermission = ({
   }, [isChecking]);
 
   const learnMoreFeatures = [
-    { icon: '🔍', title: 'Detect App Opens', description: 'Know when you try to open a blocked app' },
-    { icon: '🛡️', title: 'Instant Blocking', description: 'Block apps before they fully open' },
-    { icon: '🔒', title: 'Privacy First', description: 'We only detect app names, nothing else' },
+    { icon: '🔍', title: t('sellingOnboarding.accessibility.learnMore.detectAppOpens'), description: t('sellingOnboarding.accessibility.learnMore.detectAppOpensDesc') },
+    { icon: '🛡️', title: t('sellingOnboarding.accessibility.learnMore.instantBlocking'), description: t('sellingOnboarding.accessibility.learnMore.instantBlockingDesc') },
+    { icon: '🔒', title: t('sellingOnboarding.accessibility.learnMore.privacyFirst'), description: t('sellingOnboarding.accessibility.learnMore.privacyFirstDesc') },
   ];
 
   return (
@@ -348,7 +387,7 @@ export const Step10AccessibilityPermission = ({
       <LearnMoreModal
         visible={showLearnMore}
         onClose={() => setShowLearnMore(false)}
-        title="Why We Need This"
+        title={t('sellingOnboarding.accessibility.whyWeNeedThis')}
         features={learnMoreFeatures}
       />
 
@@ -373,7 +412,7 @@ export const Step10AccessibilityPermission = ({
           marginBottom: 12,
           letterSpacing: -0.5,
         }}>
-          Enable Accessibility
+          {t('sellingOnboarding.accessibility.title')}
         </Text>
       </FadeInView>
 
@@ -385,26 +424,40 @@ export const Step10AccessibilityPermission = ({
             textAlign: 'center',
             lineHeight: 20,
           }}>
-            Your phone may show a warning - this is normal! We only use this to detect when you open blocked apps.
+            {t('sellingOnboarding.accessibility.warningNote')}
           </Text>
         </GlassCard>
       </FadeInView>
 
-      {/* Video commented out
       <FadeInView delay={200}>
-        <VideoPlaceholder />
+        <View style={{
+          borderRadius: 16,
+          overflow: 'hidden',
+          marginBottom: 20,
+          borderWidth: 1,
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+        }}>
+          <VideoView
+            player={videoPlayer}
+            style={{
+              width: '100%',
+              aspectRatio: 4 / 5,
+            }}
+            contentFit="contain"
+            nativeControls={false}
+          />
+        </View>
       </FadeInView>
-      */}
 
       {hasPermission ? (
         <FadeInView delay={300}>
           <GlassCard style={{ alignItems: 'center', marginBottom: 24, backgroundColor: 'rgba(16, 185, 129, 0.1)' }}>
             <CheckCircle size={36} color={COLORS.success} style={{ marginBottom: 12 }} />
             <Text style={{ fontSize: 18, fontWeight: '700', color: COLORS.success }}>
-              Permission granted!
+              {t('sellingOnboarding.accessibility.permissionGranted')}
             </Text>
           </GlassCard>
-          <GradientButton onPress={onContinue} title="Continue" colors={GRADIENT_COLORS.success} />
+          <GradientButton onPress={onContinue} title={t('sellingOnboarding.accessibility.continue')} colors={GRADIENT_COLORS.success} />
         </FadeInView>
       ) : (
         <>
@@ -416,9 +469,9 @@ export const Step10AccessibilityPermission = ({
                 color: colors.textPrimary,
                 marginBottom: 16,
               }}>
-                How to enable:
+                {t('sellingOnboarding.accessibility.howToEnable')}
               </Text>
-              {['Find "LockIn" in Installed apps', 'Toggle it ON', 'Confirm when prompted'].map((step, i) => (
+              {[t('sellingOnboarding.accessibility.step1'), t('sellingOnboarding.accessibility.step2'), t('sellingOnboarding.accessibility.step3')].map((step, i) => (
                 <View key={i} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
                   <LinearGradient
                     colors={GRADIENT_COLORS.success}
@@ -446,7 +499,7 @@ export const Step10AccessibilityPermission = ({
           <FadeInView delay={400}>
             <GradientButton
               onPress={handleGrantPermission}
-              title={isChecking ? 'Checking...' : 'Continue'}
+              title={isChecking ? t('sellingOnboarding.accessibility.checking') : t('sellingOnboarding.accessibility.continue')}
               colors={GRADIENT_COLORS.success}
               style={{ marginBottom: 12 }}
             />
@@ -464,7 +517,7 @@ export const Step10AccessibilityPermission = ({
             >
               <Info size={16} color={colors.textTertiary} style={{ marginRight: 6 }} />
               <Text style={{ fontSize: 14, color: colors.textTertiary }}>
-                Learn more
+                {t('sellingOnboarding.accessibility.learnMore.title')}
               </Text>
             </TouchableOpacity>
           </FadeInView>
@@ -486,6 +539,7 @@ export const Step11UsageData = ({
   onContinue: () => void;
 }) => {
   const { colors, isDark } = useOnboardingTheme();
+  const { t } = useTranslation();
   const [weeklyData, setWeeklyData] = useState<{ day: string; hours: number }[]>([]);
   const [todayScreenTime, setTodayScreenTime] = useState<number>(0);
   const [topApps, setTopApps] = useState<{ name: string; time: number; icon?: string }[]>([]);
@@ -518,13 +572,18 @@ export const Step11UsageData = ({
           setTodayScreenTime(todayStats.totalScreenTime);
           // Get top 3 apps
           if (todayStats.apps && todayStats.apps.length > 0) {
+            // Fetch installed apps to get icons (usage stats don't include icons for performance)
+            const { getInstalledApps } = await import('@/modules/usage-stats');
+            const installedApps = await getInstalledApps();
+            const iconMap = new Map(installedApps.map(app => [app.packageName, app.iconUrl]));
+
             const sortedApps = [...todayStats.apps]
               .sort((a: AppUsageData, b: AppUsageData) => b.timeInForeground - a.timeInForeground)
               .slice(0, 3)
               .map((app: AppUsageData) => ({
                 name: app.appName || app.packageName.split('.').pop() || 'Unknown',
                 time: app.timeInForeground,
-                icon: app.iconUrl,
+                icon: iconMap.get(app.packageName) || '',
               }));
             setTopApps(sortedApps);
           }
@@ -565,10 +624,10 @@ export const Step11UsageData = ({
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 }}>
         <AnimatedOrb size={100} level={3} />
         <Text style={{ fontSize: 18, fontWeight: '600', color: colors.textPrimary, marginTop: 24 }}>
-          Analyzing your usage...
+          {t('sellingOnboarding.usageData.analyzing')}
         </Text>
         <Text style={{ fontSize: 14, color: colors.textSecondary, marginTop: 8 }}>
-          This will only take a moment
+          {t('sellingOnboarding.usageData.onlyTakeAMoment')}
         </Text>
       </View>
     );
@@ -589,7 +648,7 @@ export const Step11UsageData = ({
           marginBottom: 8,
           letterSpacing: -0.5,
         }}>
-          Here's Your Reality
+          {t('sellingOnboarding.usageData.title')}
         </Text>
         <Text style={{
           fontSize: 15,
@@ -597,7 +656,7 @@ export const Step11UsageData = ({
           textAlign: 'center',
           marginBottom: 24,
         }}>
-          Based on your actual phone usage
+          {t('sellingOnboarding.usageData.subtitle')}
         </Text>
       </FadeInView>
 
@@ -615,7 +674,7 @@ export const Step11UsageData = ({
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
             <Clock size={18} color={COLORS.error} style={{ marginRight: 8 }} />
             <Text style={{ fontSize: 14, fontWeight: '600', color: COLORS.error }}>
-              TODAY'S SCREEN TIME
+              {t('sellingOnboarding.usageData.todaysScreenTime')}
             </Text>
           </View>
           <Text style={{ fontSize: 48, fontWeight: '800', color: COLORS.error }}>
@@ -635,7 +694,7 @@ export const Step11UsageData = ({
             textTransform: 'uppercase',
             letterSpacing: 0.5,
           }}>
-            Top Time Wasters Today
+            {t('sellingOnboarding.usageData.topTimeWasters')}
           </Text>
           <View style={{
             backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : '#ffffff',
@@ -691,7 +750,7 @@ export const Step11UsageData = ({
           textTransform: 'uppercase',
           letterSpacing: 0.5,
         }}>
-          This Week
+          {t('sellingOnboarding.usageData.thisWeek')}
         </Text>
         <View style={{
           backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : '#ffffff',
@@ -721,7 +780,7 @@ export const Step11UsageData = ({
               {Math.round(totalWeeklyHours)}h
             </Text>
             <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 4 }}>
-              This week
+              {t('sellingOnboarding.usageData.thisWeekCard')}
             </Text>
           </View>
           <View style={{
@@ -737,7 +796,7 @@ export const Step11UsageData = ({
               {yearsOnTrack}y
             </Text>
             <Text style={{ fontSize: 12, color: colors.textSecondary, marginTop: 4, textAlign: 'center' }}>
-              Life on phone
+              {t('sellingOnboarding.usageData.lifeOnPhone')}
             </Text>
           </View>
         </View>
@@ -762,7 +821,7 @@ export const Step11UsageData = ({
             color: isDark ? 'rgba(255,255,255,0.8)' : '#78350f',
             lineHeight: 20,
           }}>
-            At this rate, you'll spend <Text style={{ fontWeight: '700' }}>{yearsOnTrack} years</Text> of your life staring at your phone.
+            {t('sellingOnboarding.usageData.warningMessage', { years: yearsOnTrack })}
           </Text>
         </View>
       </FadeInView>
@@ -772,7 +831,7 @@ export const Step11UsageData = ({
         <GradientButton
           style={{ marginBottom: 8 }}
           onPress={onContinue}
-          title="Let's Fix This"
+          title={t('sellingOnboarding.usageData.letsFixThis')}
           colors={GRADIENT_COLORS.success}
         />
       </FadeInView>
@@ -1038,6 +1097,7 @@ export const Step12Projection = ({
   onContinue: () => void;
 }) => {
   const { colors, isDark } = useOnboardingTheme();
+  const { t } = useTranslation();
 
   const hours = userAnswers.realDailyHours ?? userAnswers.dailyHours;
   const savedHoursWeekly = Math.round(hours * 0.5 * 7);
@@ -1054,14 +1114,14 @@ export const Step12Projection = ({
           marginTop: 20,
           lineHeight: 40,
         }}>
-          LockIn rewires your brain for{'\n'}long-term focus.
+          {t('sellingOnboarding.projection.title')}
         </Text>
         <Text style={{
           fontSize: 17,
           color: colors.textSecondary,
           marginBottom: 40,
         }}>
-          LockIn users regain {savedHoursWeekly}+ hours of focus every week.
+          {t('sellingOnboarding.projection.subtitle', { hours: savedHoursWeekly })}
         </Text>
       </FadeInView>
 
@@ -1075,35 +1135,7 @@ export const Step12Projection = ({
 
       {/* Continue Button */}
       <FadeInView delay={400}>
-        <TouchableOpacity
-          onPress={onContinue}
-          activeOpacity={0.8}
-          style={{ marginBottom: 100 }}
-        >
-          <View style={{
-            backgroundColor: isDark ? '#FFFFFF' : '#000000',
-            borderRadius: 16,
-            paddingVertical: 18,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-            <Text style={{
-              fontSize: 18,
-              fontWeight: '600',
-              color: isDark ? '#000000' : '#FFFFFF',
-              marginRight: 8,
-            }}>
-              Continue
-            </Text>
-            <Text style={{
-              fontSize: 18,
-              color: isDark ? '#000000' : '#FFFFFF',
-            }}>
-              {'>'}
-            </Text>
-          </View>
-        </TouchableOpacity>
+        <WhiteGlassButton onPress={onContinue} title={t('sellingOnboarding.projection.continue')} shadowDelay={1000} style={{ marginBottom: 100 }} />
       </FadeInView>
     </View>
   );
@@ -1121,15 +1153,16 @@ export const Step13Comparison = ({
   onContinue: () => void;
 }) => {
   const { colors, isDark } = useOnboardingTheme();
+  const { t } = useTranslation();
   const [showPaywall, setShowPaywall] = useState(false);
   const hours = userAnswers.realDailyHours ?? userAnswers.dailyHours;
   const savedHoursWeekly = Math.round(hours * 0.5 * 7);
 
   const reviews = [
-    { name: 'Sarah M.', text: 'I was losing 5 hours daily to Instagram. Now I read books again and sleep better.' },
-    { name: 'Mike R.', text: 'My productivity doubled in the first week. I finally complete my daily tasks.' },
-    { name: 'Emma L.', text: 'Finally have time for my hobbies. LockIn helped me reclaim my evenings.' },
-    { name: 'James K.', text: 'The task verification changed everything. I actually finish what I start now.' },
+    { name: t('sellingOnboarding.comparison.reviews.review1Name'), text: t('sellingOnboarding.comparison.reviews.review1Text') },
+    { name: t('sellingOnboarding.comparison.reviews.review2Name'), text: t('sellingOnboarding.comparison.reviews.review2Text') },
+    { name: t('sellingOnboarding.comparison.reviews.review3Name'), text: t('sellingOnboarding.comparison.reviews.review3Text') },
+    { name: t('sellingOnboarding.comparison.reviews.review4Name'), text: t('sellingOnboarding.comparison.reviews.review4Text') },
   ];
 
   const [currentReview, setCurrentReview] = useState(0);
@@ -1157,23 +1190,23 @@ export const Step13Comparison = ({
   const features = [
     {
       icon: <Bot size={22} color={COLORS.gradientPurple} />,
-      title: 'Smart Coach',
-      description: 'Verifies task completion through chat',
+      title: t('sellingOnboarding.comparison.features.smartCoach'),
+      description: t('sellingOnboarding.comparison.features.smartCoachDesc'),
     },
     {
       icon: <CheckCircle2 size={22} color={COLORS.success} />,
-      title: 'Task Verification',
-      description: 'Prove you completed your goals',
+      title: t('sellingOnboarding.comparison.features.taskVerification'),
+      description: t('sellingOnboarding.comparison.features.taskVerificationDesc'),
     },
     {
       icon: <Target size={22} color={COLORS.gradientCyan} />,
-      title: 'Focus Sessions',
-      description: 'Block distractions while you work',
+      title: t('sellingOnboarding.comparison.features.focusSessions'),
+      description: t('sellingOnboarding.comparison.features.focusSessionsDesc'),
     },
     {
       icon: <Sparkles size={22} color={COLORS.warning} />,
-      title: 'Daily Goals',
-      description: 'Build better habits consistently',
+      title: t('sellingOnboarding.comparison.features.dailyGoals'),
+      description: t('sellingOnboarding.comparison.features.dailyGoalsDesc'),
     },
   ];
 
@@ -1200,7 +1233,7 @@ export const Step13Comparison = ({
           marginBottom: 8,
           letterSpacing: -0.5,
         }}>
-          Unlock Your Potential
+          {t('sellingOnboarding.comparison.title')}
         </Text>
         <Text style={{
           fontSize: 15,
@@ -1208,7 +1241,7 @@ export const Step13Comparison = ({
           textAlign: 'center',
           marginBottom: 24,
         }}>
-          Get <Text style={{ color: COLORS.success, fontWeight: '700' }}>{savedHoursWeekly}+ hours</Text> back every week
+          {t('sellingOnboarding.comparison.getHoursBack', { hours: savedHoursWeekly })}
         </Text>
       </FadeInView>
 
@@ -1267,7 +1300,7 @@ export const Step13Comparison = ({
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 20, paddingBottom: 16, borderBottomWidth: 0.5, borderBottomColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)' }}>
             <View style={{ alignItems: 'center' }}>
               <Text style={{ fontSize: 22, fontWeight: '800', color: COLORS.success }}>92%</Text>
-              <Text style={{ fontSize: 11, color: colors.textSecondary }}>Complete Tasks</Text>
+              <Text style={{ fontSize: 11, color: colors.textSecondary }}>{t('sellingOnboarding.comparison.stats.completeTasks')}</Text>
             </View>
             <View style={{ width: 1, backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)' }} />
             <View style={{ alignItems: 'center' }}>
@@ -1275,12 +1308,12 @@ export const Step13Comparison = ({
                 <Text style={{ fontSize: 22, fontWeight: '800', color: colors.textPrimary }}>4.8</Text>
                 <Star size={16} color="#FBBF24" fill="#FBBF24" style={{ marginLeft: 4 }} />
               </View>
-              <Text style={{ fontSize: 11, color: colors.textSecondary }}>App Rating</Text>
+              <Text style={{ fontSize: 11, color: colors.textSecondary }}>{t('sellingOnboarding.comparison.stats.appRating')}</Text>
             </View>
             <View style={{ width: 1, backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)' }} />
             <View style={{ alignItems: 'center' }}>
               <Text style={{ fontSize: 22, fontWeight: '800', color: colors.textPrimary }}>3x</Text>
-              <Text style={{ fontSize: 11, color: colors.textSecondary }}>More Productive</Text>
+              <Text style={{ fontSize: 11, color: colors.textSecondary }}>{t('sellingOnboarding.comparison.stats.moreProductive')}</Text>
             </View>
           </View>
 
@@ -1327,15 +1360,15 @@ export const Step13Comparison = ({
       <FadeInView delay={300}>
         <GradientButton
           onPress={() => setShowPaywall(true)}
-          title="Start Free Trial"
-          subtitle="3 days free"
+          title={t('sellingOnboarding.comparison.startFreeTrial')}
+          subtitle={t('sellingOnboarding.comparison.threeDaysFree')}
           style={{ marginBottom: 12 }}
         />
       </FadeInView>
 
       <FadeInView delay={400}>
         <TouchableOpacity onPress={onContinue} style={{ padding: 12, alignItems: 'center' }}>
-          <Text style={{ fontSize: 14, color: colors.textTertiary }}>Maybe later</Text>
+          <Text style={{ fontSize: 14, color: colors.textTertiary }}>{t('sellingOnboarding.comparison.maybeLater')}</Text>
         </TouchableOpacity>
       </FadeInView>
     </ScrollView>
@@ -1352,6 +1385,7 @@ export const Step14Notifications = ({
   onContinue: () => void;
 }) => {
   const { colors, isDark } = useOnboardingTheme();
+  const { t } = useTranslation();
   const [hasPermission, setHasPermission] = useState(false);
 
   useEffect(() => {
@@ -1404,11 +1438,11 @@ export const Step14Notifications = ({
                   LockIn
                 </Text>
                 <Text style={{ fontSize: 12, color: colors.textTertiary }}>
-                  now
+                  {t('sellingOnboarding.notifications.now')}
                 </Text>
               </View>
               <Text style={{ fontSize: 14, color: colors.textSecondary, lineHeight: 20 }}>
-                You've been scrolling for 30 min. Time for a break?
+                {t('sellingOnboarding.notifications.previewMessage')}
               </Text>
             </View>
           </View>
@@ -1424,7 +1458,7 @@ export const Step14Notifications = ({
           marginBottom: 12,
           letterSpacing: -0.5,
         }}>
-          Allow Notifications
+          {t('sellingOnboarding.notifications.title')}
         </Text>
       </FadeInView>
 
@@ -1436,7 +1470,7 @@ export const Step14Notifications = ({
           marginBottom: 40,
           lineHeight: 24,
         }}>
-          So we can remind you about over-scrolling and help you stay on track with your goals
+          {t('sellingOnboarding.notifications.subtitle')}
         </Text>
       </FadeInView>
 
@@ -1445,24 +1479,24 @@ export const Step14Notifications = ({
           <GlassCard style={{ alignItems: 'center', marginBottom: 24, backgroundColor: 'rgba(16, 185, 129, 0.1)' }}>
             <CheckCircle size={36} color={COLORS.success} style={{ marginBottom: 12 }} />
             <Text style={{ fontSize: 18, fontWeight: '700', color: COLORS.success }}>
-              Notifications enabled!
+              {t('sellingOnboarding.notifications.enabled')}
             </Text>
           </GlassCard>
-          <GradientButton onPress={onContinue} title="Continue" />
+          <GradientButton onPress={onContinue} title={t('sellingOnboarding.notifications.continue')} />
         </FadeInView>
       ) : (
         <>
           <FadeInView delay={300}>
             <GradientButton
               onPress={handleGrantPermission}
-              title="Continue"
+              title={t('sellingOnboarding.notifications.continue')}
               style={{ marginBottom: 12 }}
             />
           </FadeInView>
 
           <FadeInView delay={400}>
             <TouchableOpacity onPress={onContinue} style={{ padding: 12, alignItems: 'center' }}>
-              <Text style={{ fontSize: 14, color: colors.textTertiary }}>Maybe later</Text>
+              <Text style={{ fontSize: 14, color: colors.textTertiary }}>{t('sellingOnboarding.notifications.maybeLater')}</Text>
             </TouchableOpacity>
           </FadeInView>
         </>
@@ -1481,11 +1515,12 @@ export const Step15DailyGoal = ({
   onSelect: (minutes: number) => void;
 }) => {
   const { colors, isDark } = useOnboardingTheme();
+  const { t } = useTranslation();
   const [goalMinutes, setGoalMinutes] = useState(30); // Default 30 minutes
 
   const formatTime = (minutes: number) => {
     if (minutes < 60) {
-      return `${minutes} min`;
+      return `${minutes} ${t('sellingOnboarding.dailyGoal.min')}`;
     }
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
@@ -1496,11 +1531,11 @@ export const Step15DailyGoal = ({
   };
 
   const getGoalDescription = (minutes: number) => {
-    if (minutes <= 15) return 'Minimal usage - very strict';
-    if (minutes <= 30) return 'Light usage - recommended';
-    if (minutes <= 60) return 'Moderate usage';
-    if (minutes <= 120) return 'Balanced approach';
-    return 'Flexible usage';
+    if (minutes <= 15) return t('sellingOnboarding.dailyGoal.minimalUsage');
+    if (minutes <= 30) return t('sellingOnboarding.dailyGoal.lightUsage');
+    if (minutes <= 60) return t('sellingOnboarding.dailyGoal.moderateUsage');
+    if (minutes <= 120) return t('sellingOnboarding.dailyGoal.balancedApproach');
+    return t('sellingOnboarding.dailyGoal.flexibleUsage');
   };
 
   return (
@@ -1517,7 +1552,7 @@ export const Step15DailyGoal = ({
           marginBottom: 12,
           letterSpacing: -0.5,
         }}>
-          Set Your Daily Goal
+          {t('sellingOnboarding.dailyGoal.title')}
         </Text>
       </FadeInView>
 
@@ -1529,7 +1564,7 @@ export const Step15DailyGoal = ({
           marginBottom: 40,
           lineHeight: 24,
         }}>
-          How much screen time per app{'\n'}do you want to allow daily?
+          {t('sellingOnboarding.dailyGoal.subtitle')}
         </Text>
       </FadeInView>
 
@@ -1613,15 +1648,15 @@ export const Step15DailyGoal = ({
 
         {/* Labels */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8, marginBottom: 40 }}>
-          <Text style={{ fontSize: 12, color: colors.textTertiary }}>5 min</Text>
-          <Text style={{ fontSize: 12, color: colors.textTertiary }}>3 hours</Text>
+          <Text style={{ fontSize: 12, color: colors.textTertiary }}>{t('sellingOnboarding.dailyGoal.fiveMin')}</Text>
+          <Text style={{ fontSize: 12, color: colors.textTertiary }}>{t('sellingOnboarding.dailyGoal.threeHours')}</Text>
         </View>
       </FadeInView>
 
       <FadeInView delay={400}>
         <GradientButton
           onPress={() => onSelect(goalMinutes)}
-          title="Continue"
+          title={t('sellingOnboarding.dailyGoal.continue')}
           colors={GRADIENT_COLORS.success}
         />
       </FadeInView>
@@ -1643,6 +1678,7 @@ export const Step16AppSelection = ({
   onConfirm: (apps: string[], websites: string[]) => void;
 }) => {
   const { colors, isDark } = useOnboardingTheme();
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<'apps' | 'websites'>('apps');
   const [installedApps, setInstalledApps] = useState<InstalledApp[]>([]);
@@ -1654,12 +1690,21 @@ export const Step16AppSelection = ({
   useEffect(() => {
     // Use pre-loaded apps if available
     if (preloadedApps.length > 0) {
-      const filteredApps = preloadedApps.filter(app => app.packageName !== CURRENT_APP_PACKAGE);
-      setInstalledApps(filteredApps);
-
-      const socialApps = filteredApps
+      const filtered = preloadedApps.filter(app => app.packageName !== CURRENT_APP_PACKAGE);
+      const socialApps = filtered
         .filter(app => SOCIAL_PACKAGE_NAMES.includes(app.packageName))
         .map(app => app.packageName);
+
+      // Sort once: selected first, then alphabetically
+      const sorted = [...filtered].sort((a, b) => {
+        const aSelected = socialApps.includes(a.packageName);
+        const bSelected = socialApps.includes(b.packageName);
+        if (aSelected && !bSelected) return -1;
+        if (!aSelected && bSelected) return 1;
+        return a.appName.localeCompare(b.appName);
+      });
+
+      setInstalledApps(sorted);
       setSelectedApps(socialApps);
       setIsLoading(false);
     } else if (!appsLoading) {
@@ -1667,12 +1712,21 @@ export const Step16AppSelection = ({
       const fetchApps = async () => {
         try {
           const apps = await getInstalledApps();
-          const filteredApps = apps.filter(app => app.packageName !== CURRENT_APP_PACKAGE);
-          setInstalledApps(filteredApps);
-
-          const socialApps = filteredApps
+          const filtered = apps.filter(app => app.packageName !== CURRENT_APP_PACKAGE);
+          const socialApps = filtered
             .filter(app => SOCIAL_PACKAGE_NAMES.includes(app.packageName))
             .map(app => app.packageName);
+
+          // Sort once: selected first, then alphabetically
+          const sorted = [...filtered].sort((a, b) => {
+            const aSelected = socialApps.includes(a.packageName);
+            const bSelected = socialApps.includes(b.packageName);
+            if (aSelected && !bSelected) return -1;
+            if (!aSelected && bSelected) return 1;
+            return a.appName.localeCompare(b.appName);
+          });
+
+          setInstalledApps(sorted);
           setSelectedApps(socialApps);
         } catch (error) {
           console.error('Error fetching installed apps:', error);
@@ -1702,44 +1756,13 @@ export const Step16AppSelection = ({
   };
 
   const filteredApps = installedApps
-    .filter(app => app.appName.toLowerCase().includes(searchQuery.toLowerCase()))
-    .sort((a, b) => {
-      const aSelected = selectedApps.includes(a.packageName);
-      const bSelected = selectedApps.includes(b.packageName);
-      if (aSelected && !bSelected) return -1;
-      if (!aSelected && bSelected) return 1;
-      return a.appName.localeCompare(b.appName);
-    });
+    .filter(app => app.appName.toLowerCase().includes(searchQuery.toLowerCase()));
 
   const filteredWebsites = POPULAR_WEBSITES.filter(site =>
     site.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     site.id.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const ToggleButtonLocal = ({
-    isSelected,
-    onPress,
-  }: {
-    isSelected: boolean;
-    onPress: () => void;
-  }) => (
-    <TouchableOpacity
-      onPress={onPress}
-      activeOpacity={0.7}
-      style={{
-        width: 28,
-        height: 28,
-        borderRadius: 8,
-        borderWidth: 2,
-        borderColor: isSelected ? COLORS.success : colors.glassBorder,
-        backgroundColor: isSelected ? COLORS.success : 'transparent',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      {isSelected && <Check size={16} color="#FFFFFF" strokeWidth={3} />}
-    </TouchableOpacity>
-  );
 
   return (
     <View style={{ flex: 1 }}>
@@ -1753,7 +1776,7 @@ export const Step16AppSelection = ({
             marginBottom: 8,
             letterSpacing: -0.5,
           }}>
-            What to block?
+            {t('sellingOnboarding.appSelection.title')}
           </Text>
           <Text style={{
             fontSize: 15,
@@ -1761,42 +1784,44 @@ export const Step16AppSelection = ({
             textAlign: 'center',
             marginBottom: 24,
           }}>
-            Don't worry, you can change this later
+            {t('sellingOnboarding.appSelection.subtitle')}
           </Text>
         </FadeInView>
 
         <FadeInView delay={100}>
-          <GlassCard noPadding style={{ flexDirection: 'row', padding: 4, marginBottom: 16 }}>
+          <GlassCard noPadding style={{ flexDirection: 'row', gap: 8, padding: 6, marginBottom: 16 }}>
             <TouchableOpacity
               onPress={() => setActiveTab('apps')}
               style={{
                 flex: 1,
-                paddingVertical: 14,
-                borderRadius: 14,
-                alignItems: 'center',
+                borderRadius: 12,
+                overflow: 'hidden',
               }}
             >
               {activeTab === 'apps' ? (
-                <LinearGradient
-                  colors={GRADIENT_COLORS.primary}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    borderRadius: 14,
-                  }}
-                />
+                <>
+                  <LinearGradient
+                    colors={[COLORS.gradientPurple, COLORS.gradientBlue]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={StyleSheet.absoluteFill}
+                  />
+                  <LinearGradient
+                    colors={['rgba(255, 255, 255, 0.25)', 'transparent']}
+                    start={{ x: 0.5, y: 0 }}
+                    end={{ x: 0.5, y: 0.6 }}
+                    style={[StyleSheet.absoluteFill, { height: '60%' }]}
+                  />
+                </>
               ) : null}
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                 <Smartphone size={18} color={activeTab === 'apps' ? '#FFFFFF' : colors.textSecondary} style={{ marginRight: 6 }} />
                 <Text style={{
                   fontSize: 15,
                   fontWeight: '600',
                   color: activeTab === 'apps' ? '#FFFFFF' : colors.textSecondary,
                 }}>
-                  Apps
+                  {t('sellingOnboarding.appSelection.appsTab')}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -1804,32 +1829,34 @@ export const Step16AppSelection = ({
               onPress={() => setActiveTab('websites')}
               style={{
                 flex: 1,
-                paddingVertical: 14,
-                borderRadius: 14,
-                alignItems: 'center',
+                borderRadius: 12,
+                overflow: 'hidden',
               }}
             >
               {activeTab === 'websites' ? (
-                <LinearGradient
-                  colors={GRADIENT_COLORS.primary}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    borderRadius: 14,
-                  }}
-                />
+                <>
+                  <LinearGradient
+                    colors={[COLORS.gradientPurple, COLORS.gradientBlue]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={StyleSheet.absoluteFill}
+                  />
+                  <LinearGradient
+                    colors={['rgba(255, 255, 255, 0.25)', 'transparent']}
+                    start={{ x: 0.5, y: 0 }}
+                    end={{ x: 0.5, y: 0.6 }}
+                    style={[StyleSheet.absoluteFill, { height: '60%' }]}
+                  />
+                </>
               ) : null}
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                 <Globe size={18} color={activeTab === 'websites' ? '#FFFFFF' : colors.textSecondary} style={{ marginRight: 6 }} />
                 <Text style={{
                   fontSize: 15,
                   fontWeight: '600',
                   color: activeTab === 'websites' ? '#FFFFFF' : colors.textSecondary,
                 }}>
-                  Websites
+                  {t('sellingOnboarding.appSelection.websitesTab')}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -1847,7 +1874,7 @@ export const Step16AppSelection = ({
                 fontSize: 16,
                 color: colors.textPrimary,
               }}
-              placeholder={`Search ${activeTab}...`}
+              placeholder={activeTab === 'apps' ? t('sellingOnboarding.appSelection.searchApps') : t('sellingOnboarding.appSelection.searchWebsites')}
               placeholderTextColor={colors.textTertiary}
               value={searchQuery}
               onChangeText={setSearchQuery}
@@ -1862,11 +1889,11 @@ export const Step16AppSelection = ({
             (isLoading || appsLoading) ? (
               <View style={{ alignItems: 'center', paddingVertical: 40 }}>
                 <AnimatedOrb size={60} level={3} />
-                <Text style={{ color: colors.textSecondary, marginTop: 16 }}>Loading your apps...</Text>
+                <Text style={{ color: colors.textSecondary, marginTop: 16 }}>{t('sellingOnboarding.appSelection.loadingApps')}</Text>
               </View>
             ) : filteredApps.length === 0 ? (
               <View style={{ alignItems: 'center', paddingVertical: 40 }}>
-                <Text style={{ color: colors.textSecondary }}>No apps found</Text>
+                <Text style={{ color: colors.textSecondary }}>{t('sellingOnboarding.appSelection.noAppsFound')}</Text>
               </View>
             ) : (
               filteredApps.map((app, index) => {
@@ -1879,30 +1906,54 @@ export const Step16AppSelection = ({
                     style={{
                       flexDirection: 'row',
                       alignItems: 'center',
-                      paddingVertical: 14,
-                      borderBottomWidth: index < filteredApps.length - 1 ? 1 : 0,
-                      borderBottomColor: colors.glassBorder,
+                      padding: 10,
+                      marginBottom: 8,
+                      borderRadius: 14,
+                      overflow: 'hidden',
+                      borderWidth: isSelected ? 1 : 0,
+                      borderColor: isDark ? 'rgba(16, 185, 129, 0.3)' : 'rgba(16, 185, 129, 0.25)',
                     }}
                   >
+                    {isSelected && (
+                      <>
+                        <LinearGradient
+                          colors={isDark
+                            ? ['rgba(16, 185, 129, 0.15)', 'rgba(6, 182, 212, 0.08)']
+                            : ['rgba(16, 185, 129, 0.12)', 'rgba(6, 182, 212, 0.06)']
+                          }
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 1 }}
+                          style={StyleSheet.absoluteFill}
+                        />
+                        <LinearGradient
+                          colors={['rgba(255, 255, 255, 0.1)', 'transparent']}
+                          start={{ x: 0.5, y: 0 }}
+                          end={{ x: 0.5, y: 0.6 }}
+                          style={[StyleSheet.absoluteFill, { height: '60%' }]}
+                        />
+                      </>
+                    )}
                     {app.iconUrl ? (
-                      <Image source={{ uri: app.iconUrl }} style={{ width: 44, height: 44, borderRadius: 12, marginRight: 14 }} />
+                      <Image source={{ uri: app.iconUrl }} style={{ width: 40, height: 40, borderRadius: 10, marginRight: 12 }} />
                     ) : (
                       <View style={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: 12,
+                        width: 40,
+                        height: 40,
+                        borderRadius: 10,
                         backgroundColor: colors.glassLight,
                         alignItems: 'center',
                         justifyContent: 'center',
-                        marginRight: 14,
+                        marginRight: 12,
                       }}>
-                        <Smartphone size={22} color={colors.textSecondary} />
+                        <Smartphone size={20} color={colors.textSecondary} />
                       </View>
                     )}
-                    <Text style={{ flex: 1, fontSize: 16, color: colors.textPrimary, fontWeight: '500' }}>
+                    <Text style={{ flex: 1, fontSize: 15, color: colors.textPrimary, fontWeight: '500' }}>
                       {app.appName}
                     </Text>
-                    <ToggleButtonLocal isSelected={isSelected} onPress={() => toggleApp(app.packageName)} />
+                    {isSelected && (
+                      <Check size={20} color={COLORS.success} strokeWidth={3} />
+                    )}
                   </TouchableOpacity>
                 );
               })
@@ -1918,35 +1969,59 @@ export const Step16AppSelection = ({
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    paddingVertical: 14,
-                    borderBottomWidth: index < filteredWebsites.length - 1 ? 1 : 0,
-                    borderBottomColor: colors.glassBorder,
+                    padding: 10,
+                    marginBottom: 8,
+                    borderRadius: 14,
+                    overflow: 'hidden',
+                    borderWidth: isSelected ? 1 : 0,
+                    borderColor: isDark ? 'rgba(16, 185, 129, 0.3)' : 'rgba(16, 185, 129, 0.25)',
                   }}
                 >
+                  {isSelected && (
+                    <>
+                      <LinearGradient
+                        colors={isDark
+                          ? ['rgba(16, 185, 129, 0.15)', 'rgba(6, 182, 212, 0.08)']
+                          : ['rgba(16, 185, 129, 0.12)', 'rgba(6, 182, 212, 0.06)']
+                        }
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={StyleSheet.absoluteFill}
+                      />
+                      <LinearGradient
+                        colors={['rgba(255, 255, 255, 0.1)', 'transparent']}
+                        start={{ x: 0.5, y: 0 }}
+                        end={{ x: 0.5, y: 0.6 }}
+                        style={[StyleSheet.absoluteFill, { height: '60%' }]}
+                      />
+                    </>
+                  )}
                   {site.icon ? (
-                    <Image source={site.icon} style={{ width: 44, height: 44, borderRadius: 12, marginRight: 14 }} />
+                    <Image source={site.icon} style={{ width: 40, height: 40, borderRadius: 10, marginRight: 12 }} />
                   ) : (
                     <View style={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: 12,
+                      width: 40,
+                      height: 40,
+                      borderRadius: 10,
                       backgroundColor: colors.glassLight,
                       alignItems: 'center',
                       justifyContent: 'center',
-                      marginRight: 14,
+                      marginRight: 12,
                     }}>
-                      <Globe size={22} color={colors.textSecondary} />
+                      <Globe size={20} color={colors.textSecondary} />
                     </View>
                   )}
                   <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: 16, color: colors.textPrimary, fontWeight: '500' }}>
+                    <Text style={{ fontSize: 15, color: colors.textPrimary, fontWeight: '500' }}>
                       {site.name}
                     </Text>
                     <Text style={{ fontSize: 12, color: colors.textTertiary }}>
                       {site.id}
                     </Text>
                   </View>
-                  <ToggleButtonLocal isSelected={isSelected} onPress={() => toggleWebsite(site.id)} />
+                  {isSelected && (
+                    <Check size={20} color={COLORS.success} strokeWidth={3} />
+                  )}
                 </TouchableOpacity>
               );
             })
@@ -1957,8 +2032,8 @@ export const Step16AppSelection = ({
       <View style={{ paddingHorizontal: 24, paddingBottom: Math.max(insets.bottom, 16) + 8, paddingTop: 8 }}>
         <GradientButton
           onPress={() => onConfirm(selectedApps, selectedWebsites)}
-          title="Start Blocking"
-          subtitle={`${selectedApps.length} apps · ${selectedWebsites.length} websites`}
+          title={t('sellingOnboarding.appSelection.startBlocking')}
+          subtitle={t('sellingOnboarding.appSelection.selectedCount', { apps: selectedApps.length, websites: selectedWebsites.length })}
         />
       </View>
     </View>

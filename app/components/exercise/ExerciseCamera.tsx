@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { Camera, useCameraDevice, PhotoFile } from 'react-native-vision-camera';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import { readAsStringAsync, deleteAsync } from 'expo-file-system/legacy';
 import Svg, { Circle, Line } from 'react-native-svg';
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
+import { useTranslation } from 'react-i18next';
 import {
   initialize as initPoseDetection,
   detectPose,
@@ -36,6 +38,100 @@ const CAMERA_HEIGHT = SCREEN_WIDTH * 1.33;
 // Detection interval in ms (20 FPS = 50ms for smoother tracking)
 const DETECTION_INTERVAL = 50;
 
+// Exercise-specific landmark indices to display
+// Arms only: shoulders (11-12), elbows (13-14), wrists (15-16)
+// Legs only: hips (23-24), knees (25-26), ankles (27-28)
+// Full body: all body landmarks (11-16, 23-28)
+const EXERCISE_LANDMARKS: Record<ExerciseType, number[]> = {
+  // Arms only exercises
+  'pushups': [11, 12, 13, 14, 15, 16],
+  'shoulder-press': [11, 12, 13, 14, 15, 16],
+  'pull-ups': [11, 12, 13, 14, 15, 16],
+
+  // Legs only exercises
+  'squats': [23, 24, 25, 26, 27, 28],
+  'lunges': [23, 24, 25, 26, 27, 28],
+  'high-knees': [23, 24, 25, 26, 27, 28],
+  'wall-sit': [23, 24, 25, 26, 27, 28],
+
+  // Full body exercises
+  'jumping-jacks': [11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28],
+  'plank': [11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28],
+  'side-plank': [11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28],
+  'crunches': [11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28],
+  'leg-raises': [11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28],
+};
+
+// Exercise-specific skeleton connections
+const EXERCISE_CONNECTIONS: Record<ExerciseType, [number, number][]> = {
+  // Arms only - shoulder to shoulder, shoulder to elbow, elbow to wrist
+  'pushups': [[11, 12], [11, 13], [13, 15], [12, 14], [14, 16]],
+  'shoulder-press': [[11, 12], [11, 13], [13, 15], [12, 14], [14, 16]],
+  'pull-ups': [[11, 12], [11, 13], [13, 15], [12, 14], [14, 16]],
+
+  // Legs only - hip to hip, hip to knee, knee to ankle
+  'squats': [[23, 24], [23, 25], [25, 27], [24, 26], [26, 28]],
+  'lunges': [[23, 24], [23, 25], [25, 27], [24, 26], [26, 28]],
+  'high-knees': [[23, 24], [23, 25], [25, 27], [24, 26], [26, 28]],
+  'wall-sit': [[23, 24], [23, 25], [25, 27], [24, 26], [26, 28]],
+
+  // Full body - all body connections (will be set in component using BODY_CONNECTIONS)
+  'jumping-jacks': [],  // Will use BODY_CONNECTIONS
+  'plank': [],
+  'side-plank': [],
+  'crunches': [],
+  'leg-raises': [],
+};
+
+// Required landmarks for each exercise (must all be visible to show skeleton)
+const REQUIRED_LANDMARKS: Record<ExerciseType, number[]> = {
+  // Arms exercises - need both arms visible
+  'pushups': [11, 12, 13, 14, 15, 16],
+  'shoulder-press': [11, 12, 13, 14, 15, 16],
+  'pull-ups': [11, 12, 13, 14, 15, 16],
+
+  // Legs exercises - need both legs visible
+  'squats': [23, 24, 25, 26, 27, 28],
+  'lunges': [23, 24, 25, 26, 27, 28],
+  'high-knees': [23, 24, 25, 26, 27, 28],
+  'wall-sit': [23, 24, 25, 26, 27, 28],
+
+  // Full body - key points for spread detection
+  'jumping-jacks': [11, 12, 15, 16, 23, 24, 27, 28],  // shoulders, wrists, hips, ankles
+  'plank': [11, 12, 23, 24, 27, 28],  // shoulders, hips, ankles
+  'side-plank': [11, 12, 23, 24, 27, 28],
+  'crunches': [11, 12, 23, 24, 25, 26],  // shoulders, hips, knees
+  'leg-raises': [11, 12, 23, 24, 25, 26],
+};
+
+// Visibility check result interface
+interface VisibilityCheck {
+  allVisible: boolean;
+  direction: 'left' | 'right' | 'up' | 'down' | 'back' | null;
+  message: string;
+}
+
+// Direction guidance messages (will be translated via i18n)
+const DIRECTION_MESSAGES: Record<string, string> = {
+  left: 'exercise.guidance.moveLeft',
+  right: 'exercise.guidance.moveRight',
+  up: 'exercise.guidance.moveUp',
+  down: 'exercise.guidance.moveDown',
+  back: 'exercise.guidance.moveBack',
+};
+
+// Direction arrows
+const DIRECTION_ARROWS: Record<string, string> = {
+  left: '←',
+  right: '→',
+  up: '↑',
+  down: '↓',
+  back: '↔',
+};
+
+// Exercises that prefer landscape orientation
+const LANDSCAPE_EXERCISES: ExerciseType[] = ['plank', 'side-plank', 'crunches', 'leg-raises'];
+
 export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
   exerciseType,
   isDark,
@@ -45,6 +141,11 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
   cameraActive,
   hideStats = false,
 }) => {
+  const { t } = useTranslation();
+
+  // Get dynamic window dimensions that update on rotation
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+
   // Keep screen awake during exercise/pose detection
   useEffect(() => {
     activateKeepAwakeAsync('exercise-camera').catch(() => {
@@ -123,6 +224,117 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
   const lastFrameTimeRef = useRef(Date.now());
   const frameCountRef = useRef(0);
   const lastValidPhaseRef = useRef<'up' | 'down' | null>(null); // Track last VALID phase (up/down only)
+
+  // Visibility check state for directional guidance
+  const [visibilityCheck, setVisibilityCheck] = useState<VisibilityCheck>({
+    allVisible: false,
+    direction: null,
+    message: '',
+  });
+
+  // COMMENTED OUT: Landscape orientation - to be fixed later
+  // const prefersLandscape = LANDSCAPE_EXERCISES.includes(exerciseType);
+  // const [isLandscape, setIsLandscape] = useState(prefersLandscape);
+  const isLandscape = false; // Always portrait for now
+
+  // // Handle orientation changes
+  // const toggleOrientation = useCallback(async () => {
+  //   const newIsLandscape = !isLandscape;
+  //   setIsLandscape(newIsLandscape);
+  //   try {
+  //     if (newIsLandscape) {
+  //       await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT);
+  //     } else {
+  //       await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+  //     }
+  //   } catch (e) {
+  //     console.log('[ExerciseCamera] Orientation lock failed:', e);
+  //   }
+  // }, [isLandscape]);
+
+  // // Set initial orientation based on exercise type
+  // useEffect(() => {
+  //   const setInitialOrientation = async () => {
+  //     if (!isActive) return;
+  //     try {
+  //       if (prefersLandscape) {
+  //         await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT);
+  //         setIsLandscape(true);
+  //       } else {
+  //         await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+  //         setIsLandscape(false);
+  //       }
+  //     } catch (e) {
+  //       console.log('[ExerciseCamera] Initial orientation lock failed:', e);
+  //     }
+  //   };
+  //   setInitialOrientation();
+  //
+  //   // Cleanup: return to portrait when component unmounts or exercise ends
+  //   return () => {
+  //     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP).catch(() => {});
+  //   };
+  // }, [isActive, prefersLandscape]);
+
+  // Check if all required landmarks for this exercise are visible
+  // Returns direction guidance if some landmarks are missing
+  const checkRequiredVisibility = useCallback((
+    detectedLandmarks: PoseLandmark[],
+    threshold = 0.5
+  ): VisibilityCheck => {
+    const required = REQUIRED_LANDMARKS[exerciseType] || [];
+    const missing: number[] = [];
+
+    required.forEach(idx => {
+      const landmark = detectedLandmarks[idx];
+      if (!landmark || (landmark.visibility ?? 0) < threshold) {
+        missing.push(idx);
+      }
+    });
+
+    if (missing.length === 0) {
+      return { allVisible: true, direction: null, message: '' };
+    }
+
+    // Determine direction based on which landmarks are missing
+    // Left side body landmarks (user's left = camera's right due to mirror)
+    const LEFT_SIDE = [11, 13, 15, 23, 25, 27];  // Left shoulder, elbow, wrist, hip, knee, ankle
+    // Right side body landmarks (user's right = camera's left due to mirror)
+    const RIGHT_SIDE = [12, 14, 16, 24, 26, 28];  // Right shoulder, elbow, wrist, hip, knee, ankle
+    // Upper body landmarks
+    const UPPER_BODY = [11, 12, 13, 14, 15, 16];  // Shoulders, elbows, wrists
+    // Lower body landmarks
+    const LOWER_BODY = [23, 24, 25, 26, 27, 28];  // Hips, knees, ankles
+
+    const leftMissing = missing.filter(idx => LEFT_SIDE.includes(idx)).length;
+    const rightMissing = missing.filter(idx => RIGHT_SIDE.includes(idx)).length;
+    const upperMissing = missing.filter(idx => UPPER_BODY.includes(idx)).length;
+    const lowerMissing = missing.filter(idx => LOWER_BODY.includes(idx)).length;
+
+    let direction: VisibilityCheck['direction'] = 'back';
+
+    // Front camera is mirrored, so if user's left side is cut off (RIGHT_SIDE landmarks),
+    // they need to move RIGHT to show their left side
+    if (rightMissing > leftMissing) {
+      // User's right side (camera's left) is cut off - move right
+      direction = 'right';
+    } else if (leftMissing > rightMissing) {
+      // User's left side (camera's right) is cut off - move left
+      direction = 'left';
+    } else if (lowerMissing > upperMissing) {
+      // Lower body cut off - step back or move down in frame
+      direction = 'back';
+    } else if (upperMissing > lowerMissing) {
+      // Upper body cut off - move down (lower phone or step back)
+      direction = 'down';
+    }
+
+    return {
+      allVisible: false,
+      direction,
+      message: DIRECTION_MESSAGES[direction] || '',
+    };
+  }, [exerciseType]);
   const lastPlankCheckTimeRef = useRef<number | null>(null);
   const accumulatedPlankTimeRef = useRef(0);
   const [holdTime, setHoldTime] = useState(0);
@@ -285,6 +497,7 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
   };
 
   // Detect jumping jacks position - arm and leg spread
+  // FIXED: Require BOTH arms AND legs to spread/close for a rep to count
   const detectJumpingJacksPhase = (landmarks: PoseLandmark[]): 'up' | 'down' | 'unknown' => {
     const leftShoulder = landmarks[11];
     const rightShoulder = landmarks[12];
@@ -317,12 +530,16 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
     const ankleSpread = Math.sqrt(Math.pow(rightAnkle.x - leftAnkle.x, 2) + Math.pow(rightAnkle.y - leftAnkle.y, 2));
     const legRatio = ankleSpread / hipWidth;
 
-    const spreadScore = (armRatio + legRatio) / 2;
+    // FIXED: Check BOTH arms AND legs separately (not averaged)
+    const armsSpread = armRatio > 2.0;
+    const legsSpread = legRatio > 1.8;
+    const armsClosed = armRatio < 1.3;
+    const legsClosed = legRatio < 1.3;
 
-    // Spread position (arms and legs wide) - lowered threshold for faster detection
-    if (spreadScore > 1.8) return 'down';
-    // Closed position (arms down, legs together)
-    if (spreadScore < 1.4) return 'up';
+    // Spread position: BOTH arms AND legs must be spread
+    if (armsSpread && legsSpread) return 'down';
+    // Closed position: BOTH arms AND legs must be closed
+    if (armsClosed && legsClosed) return 'up';
     return 'unknown';
   };
 
@@ -449,23 +666,44 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
     return 'unknown';
   };
 
-  // Detect high knees position - knee above hip
+  // Detect high knees position - knee angle based detection
+  // FIXED: Use hip-knee-ankle angle with range 60-100 degrees for better fast movement detection
   const detectHighKneesPhase = (landmarks: PoseLandmark[]): 'up' | 'down' | 'unknown' => {
     const leftHip = landmarks[23];
     const rightHip = landmarks[24];
     const leftKnee = landmarks[25];
     const rightKnee = landmarks[26];
+    const leftAnkle = landmarks[27];
+    const rightAnkle = landmarks[28];
 
     const minVisibility = 0.5;
-    const leftVisible = (leftHip?.visibility ?? 0) >= minVisibility && (leftKnee?.visibility ?? 0) >= minVisibility;
-    const rightVisible = (rightHip?.visibility ?? 0) >= minVisibility && (rightKnee?.visibility ?? 0) >= minVisibility;
+    const leftVisible = (leftHip?.visibility ?? 0) >= minVisibility &&
+                        (leftKnee?.visibility ?? 0) >= minVisibility &&
+                        (leftAnkle?.visibility ?? 0) >= minVisibility;
+    const rightVisible = (rightHip?.visibility ?? 0) >= minVisibility &&
+                         (rightKnee?.visibility ?? 0) >= minVisibility &&
+                         (rightAnkle?.visibility ?? 0) >= minVisibility;
 
     if (!leftVisible && !rightVisible) return 'unknown';
 
-    // Check if either knee is above hip level (y decreases going up)
+    // Check if either knee is raised using angle-based detection
+    // Knee is raised when hip-knee-ankle angle is between 60-100 degrees (thigh near horizontal)
     let kneeRaised = false;
-    if (leftVisible && leftHip.y - leftKnee.y > 0.05) kneeRaised = true;
-    if (rightVisible && rightHip.y - rightKnee.y > 0.05) kneeRaised = true;
+
+    if (leftVisible) {
+      const leftAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
+      // Knee raised when thigh is near horizontal (angle 60-100 degrees)
+      if (leftAngle >= 60 && leftAngle <= 100) {
+        kneeRaised = true;
+      }
+    }
+
+    if (rightVisible && !kneeRaised) {
+      const rightAngle = calculateAngle(rightHip, rightKnee, rightAnkle);
+      if (rightAngle >= 60 && rightAngle <= 100) {
+        kneeRaised = true;
+      }
+    }
 
     return kneeRaised ? 'up' : 'down';
   };
@@ -501,6 +739,7 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
   };
 
   // Detect wall sit position (hold exercise)
+  // FIXED: Stricter angle range 80-110 for proper form (was 70-120)
   const detectWallSitPosition = (landmarks: PoseLandmark[]): { isHolding: boolean; angle: number } => {
     const leftHip = landmarks[23];
     const rightHip = landmarks[24];
@@ -525,7 +764,7 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
     if (rightVisible) { totalAngle += calculateAngle(rightHip, rightKnee, rightAnkle); count++; }
     const avgAngle = totalAngle / count;
 
-    // Wall sit: knees at ~90 degrees (70-120 range)
+    // Wall sit: knees at ~90 degrees (80-110 range for stricter form)
     const isHolding = avgAngle >= 70 && avgAngle <= 120;
     return { isHolding, angle: avgAngle };
   };
@@ -643,6 +882,10 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
 
         setLandmarks(result.landmarks);
         const visibleCount = result.landmarks.filter(l => (l?.visibility ?? 0) > 0.5).length;
+
+        // Check visibility of required landmarks and update guidance
+        const visCheck = checkRequiredVisibility(result.landmarks);
+        setVisibilityCheck(visCheck);
 
         // Detect exercise phase and count reps
         if (exerciseType === 'pushups') {
@@ -823,6 +1066,12 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
       } else {
         setLandmarks(null);
         setDebugMessage('No pose detected');
+        // Reset visibility check - no pose means user needs to get in frame
+        setVisibilityCheck({
+          allVisible: false,
+          direction: 'back',
+          message: DIRECTION_MESSAGES['back'],
+        });
       }
 
       // Calculate FPS
@@ -942,9 +1191,14 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
   const displayLandmarks = interpolatedLandmarks || landmarks || TEST_SKELETON;
   const showSkeleton = true; // Always show skeleton (test or real)
 
+  // Calculate dynamic dimensions based on orientation
+  // In landscape, use full screen; in portrait, use 4:3 aspect ratio
+  const screenWidth = windowWidth;
+  const screenHeight = isLandscape ? windowHeight : windowWidth * 1.33;
+
   // Calculate aspect ratio adjustment
   const frameAspect = frameWidth / frameHeight;
-  const screenAspect = SCREEN_WIDTH / CAMERA_HEIGHT;
+  const screenAspect = screenWidth / screenHeight;
 
   // Convert normalized coordinates (0-1) to screen coordinates
   // Note: Front camera snapshot is already in the same orientation as the preview
@@ -954,9 +1208,9 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
       // Frame is wider - need to crop sides
       const scale = screenAspect / frameAspect;
       const offset = (1 - scale) / 2;
-      return ((x - offset) / scale) * SCREEN_WIDTH;
+      return ((x - offset) / scale) * screenWidth;
     }
-    return x * SCREEN_WIDTH;
+    return x * screenWidth;
   };
 
   const toScreenY = (y: number) => {
@@ -964,18 +1218,22 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
       // Frame is taller - need to crop top/bottom
       const scale = frameAspect / screenAspect;
       const offset = (1 - scale) / 2;
-      return ((y - offset) / scale) * CAMERA_HEIGHT;
+      return ((y - offset) / scale) * screenHeight;
     }
-    return y * CAMERA_HEIGHT;
+    return y * screenHeight;
   };
 
-  // Render skeleton lines (body only, no face)
+  // Render skeleton lines - exercise-specific (only relevant body parts)
   const renderSkeleton = () => {
     if (!displayLandmarks) return null;
 
     const isTestSkeleton = !landmarks;
 
-    return BODY_CONNECTIONS.map(([startIdx, endIdx], index) => {
+    // Get exercise-specific connections, or fall back to BODY_CONNECTIONS for full body exercises
+    const exerciseConnections = EXERCISE_CONNECTIONS[exerciseType];
+    const connections = exerciseConnections.length > 0 ? exerciseConnections : BODY_CONNECTIONS;
+
+    return connections.map(([startIdx, endIdx], index) => {
       const start = displayLandmarks[startIdx];
       const end = displayLandmarks[endIdx];
 
@@ -1002,19 +1260,18 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
     });
   };
 
-  // Render landmark points (body only - skip face 0-10, fingers 17-22, toes 29+)
+  // Render landmark points - exercise-specific (only relevant body parts)
   const renderLandmarks = () => {
     if (!displayLandmarks) return null;
 
     const isTestSkeleton = !landmarks;
 
+    // Get the relevant landmarks for this exercise type
+    const relevantLandmarks = EXERCISE_LANDMARKS[exerciseType] || [];
+
     return displayLandmarks.map((landmark, index) => {
-      // Skip face landmarks (0-10)
-      if (index <= 10) return null;
-      // Skip fingers (17-22)
-      if (index >= 17 && index <= 22) return null;
-      // Skip toes (29-32)
-      if (index >= 29) return null;
+      // Only show landmarks relevant to this exercise
+      if (!relevantLandmarks.includes(index)) return null;
       if (!landmark || (landmark.visibility ?? 0) < 0.5) return null;
 
       // Color based on body part
@@ -1036,9 +1293,18 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
     });
   };
 
+  // Dynamic container style based on orientation
+  const dynamicContainerStyle = {
+    width: screenWidth,
+    height: screenHeight,
+    backgroundColor: '#000',
+    borderRadius: isLandscape ? 0 : 20,
+    overflow: 'hidden' as const,
+  };
+
   if (!hasPermission) {
     return (
-      <View style={[styles.container, styles.centered, isDark && styles.containerDark]}>
+      <View style={[dynamicContainerStyle, styles.centered, isDark && styles.containerDark]}>
         <Text style={[styles.permissionText, isDark && styles.textDark]}>
           Camera permission is required
         </Text>
@@ -1048,7 +1314,7 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
 
   if (!device) {
     return (
-      <View style={[styles.container, styles.centered, isDark && styles.containerDark]}>
+      <View style={[dynamicContainerStyle, styles.centered, isDark && styles.containerDark]}>
         <Text style={[styles.permissionText, isDark && styles.textDark]}>
           No camera device found
         </Text>
@@ -1057,7 +1323,7 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
   }
 
   return (
-    <View style={styles.container}>
+    <View style={dynamicContainerStyle}>
       <View style={styles.cameraContainer}>
         <Camera
           ref={cameraRef}
@@ -1067,21 +1333,43 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
           photo={true}
         />
 
-        {/* Body skeleton overlay - always shows (test or real) */}
-        {showSkeleton && (
+        {/* Body skeleton overlay - only shows when all required landmarks are visible */}
+        {showSkeleton && visibilityCheck.allVisible && (
           <Svg style={StyleSheet.absoluteFill}>
             {renderSkeleton()}
             {renderLandmarks()}
           </Svg>
         )}
 
+        {/* Directional guidance overlay - shows when required landmarks are not all visible */}
+        {!visibilityCheck.allVisible && visibilityCheck.direction && (
+          <View style={styles.guidanceOverlay}>
+            <View style={styles.guidanceContainer}>
+              <Text style={styles.guidanceArrow}>
+                {DIRECTION_ARROWS[visibilityCheck.direction]}
+              </Text>
+              <Text style={styles.guidanceText}>
+                {t(visibilityCheck.message, { defaultValue: `Move ${visibilityCheck.direction}` })}
+              </Text>
+            </View>
+          </View>
+        )}
+
         {/* Overlay */}
         <View style={styles.overlay} pointerEvents="box-none">
-          {/* Top: Exercise info - hidden when hideStats is true */}
+          {/* Top: Exercise info and rotate button - hidden when hideStats is true */}
           {!hideStats && (
-            <View style={styles.topOverlay}>
-              <Text style={styles.exerciseIcon}>{exerciseInfo.icon}</Text>
-              <Text style={styles.exerciseName}>{exerciseInfo.name}</Text>
+            <View style={styles.topOverlayRow}>
+              <View style={styles.topOverlay}>
+                <Text style={styles.exerciseIcon}>{exerciseInfo.icon}</Text>
+                <Text style={styles.exerciseName}>{exerciseInfo.name}</Text>
+              </View>
+              {/* Rotate button - commented out for now */}
+              {/* <TouchableOpacity onPress={toggleOrientation} style={styles.rotateButton}>
+                <Text style={styles.rotateButtonText}>
+                  {isLandscape ? '📱' : '🔄'}
+                </Text>
+              </TouchableOpacity> */}
             </View>
           )}
 
@@ -1099,22 +1387,22 @@ export const ExerciseCamera: React.FC<ExerciseCameraProps> = ({
                     : repCount}
                 </Text>
                 <Text style={styles.statLabel}>
-                  {exerciseType === 'pushups' ? 'PUSH-UPS' :
-                   exerciseType === 'squats' ? 'SQUATS' :
-                   exerciseType === 'jumping-jacks' ? 'JUMPING JACKS' :
-                   exerciseType === 'lunges' ? 'LUNGES' :
-                   exerciseType === 'crunches' ? 'CRUNCHES' :
-                   exerciseType === 'shoulder-press' ? 'PRESSES' :
-                   exerciseType === 'leg-raises' ? 'LEG RAISES' :
-                   exerciseType === 'high-knees' ? 'HIGH KNEES' :
-                   exerciseType === 'pull-ups' ? 'PULL-UPS' :
-                   'SECONDS'}
+                  {exerciseType === 'pushups' ? t('exerciseLabels.labels.pushups') :
+                   exerciseType === 'squats' ? t('exerciseLabels.labels.squats') :
+                   exerciseType === 'jumping-jacks' ? t('exerciseLabels.labels.jumpingJacks') :
+                   exerciseType === 'lunges' ? t('exerciseLabels.labels.lunges') :
+                   exerciseType === 'crunches' ? t('exerciseLabels.labels.crunches') :
+                   exerciseType === 'shoulder-press' ? t('exerciseLabels.labels.shoulderPress') :
+                   exerciseType === 'leg-raises' ? t('exerciseLabels.labels.legRaises') :
+                   exerciseType === 'high-knees' ? t('exerciseLabels.labels.highKnees') :
+                   exerciseType === 'pull-ups' ? t('exerciseLabels.labels.pullUps') :
+                   t('exerciseLabels.labels.seconds')}
                 </Text>
                 {poseDetected && (
                   <Text style={styles.phaseText}>
                     {(exerciseType === 'plank' || exerciseType === 'wall-sit' || exerciseType === 'side-plank')
-                      ? (exercisePhase === 'down' ? '✓ HOLDING' : '⚠️ GET IN POSITION')
-                      : (exercisePhase === 'down' ? '⬇️ DOWN' : exercisePhase === 'up' ? '⬆️ UP' : '...')}
+                      ? (exercisePhase === 'down' ? `✓ ${t('exerciseLabels.holding')}` : `⚠️ ${t('exerciseLabels.getInPosition')}`)
+                      : (exercisePhase === 'down' ? `⬇️ ${t('exerciseLabels.down')}` : exercisePhase === 'up' ? `⬆️ ${t('exerciseLabels.up')}` : '...')}
                   </Text>
                 )}
               </View>
@@ -1177,6 +1465,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 20,
   },
+  topOverlayRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
   topOverlay: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1184,7 +1477,18 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 16,
     paddingVertical: 10,
-    alignSelf: 'flex-start',
+  },
+  rotateButton: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 12,
+    padding: 10,
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rotateButtonText: {
+    fontSize: 20,
   },
   exerciseIcon: {
     fontSize: 24,
@@ -1268,6 +1572,33 @@ const styles = StyleSheet.create({
   },
   textDark: {
     color: '#999',
+  },
+  // Guidance overlay styles
+  guidanceOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+  },
+  guidanceContainer: {
+    backgroundColor: 'rgba(239, 68, 68, 0.8)',
+    borderRadius: 20,
+    paddingHorizontal: 32,
+    paddingVertical: 20,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#ef4444',
+  },
+  guidanceArrow: {
+    fontSize: 64,
+    color: '#fff',
+    marginBottom: 8,
+  },
+  guidanceText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '700',
+    textAlign: 'center',
   },
 });
 

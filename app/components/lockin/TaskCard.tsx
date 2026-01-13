@@ -13,6 +13,7 @@ import {
   Bell,
 } from "lucide-react-native";
 import { LockInTask, TaskCategory } from "@/context/LockInContext";
+import { useTranslation } from "react-i18next";
 
 interface TaskCardProps {
   task: LockInTask;
@@ -72,24 +73,35 @@ const getCategoryName = (category: TaskCategory) => {
   }
 };
 
-const formatDuration = (minutes: number): string => {
-  if (minutes < 60) return `${minutes}m`;
+const formatDuration = (minutes: number, t: (key: string) => string): string => {
+  const h = t("common.timeUnits.h");
+  const m = t("common.timeUnits.m");
+  if (minutes < 60) return `${minutes}${m}`;
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;
-  return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+  return mins > 0 ? `${hours}${h} ${mins}${m}` : `${hours}${h}`;
 };
 
-const getDaysLabel = (days?: number[]): string => {
+const getDaysLabel = (days: number[] | undefined, t: (key: string) => string): string => {
   if (!days || days.length === 0) return "";
-  if (days.length === 7) return "Daily";
-  if (days.length === 5 && !days.includes(0) && !days.includes(6)) return "Weekdays";
-  if (days.length === 2 && days.includes(0) && days.includes(6)) return "Weekends";
+  if (days.length === 7) return t("common.daily");
+  if (days.length === 5 && !days.includes(0) && !days.includes(6)) return t("common.weekdays");
+  if (days.length === 2 && days.includes(0) && days.includes(6)) return t("common.weekends");
 
-  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const dayNames = [
+    t("common.dayNames.sun"),
+    t("common.dayNames.mon"),
+    t("common.dayNames.tue"),
+    t("common.dayNames.wed"),
+    t("common.dayNames.thu"),
+    t("common.dayNames.fri"),
+    t("common.dayNames.sat"),
+  ];
   return days.map((d) => dayNames[d]).join(", ");
 };
 
 export const TaskCard: React.FC<TaskCardProps> = ({ task, isDark, onPress, onLongPress }) => {
+  const { t } = useTranslation();
   const Icon = getCategoryIcon(task.category);
   const color = getCategoryColor(task.category);
 
@@ -185,7 +197,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, isDark, onPress, onLon
                   marginLeft: 4,
                 }}
               >
-                {formatDuration(task.durationMinutes)}
+                {formatDuration(task.durationMinutes, t)}
               </Text>
             </View>
 
@@ -210,7 +222,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, isDark, onPress, onLon
                     marginLeft: 4,
                   }}
                 >
-                  {getDaysLabel(task.repeatDays)}
+                  {getDaysLabel(task.repeatDays, t)}
                 </Text>
               </View>
             )}
@@ -236,7 +248,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, isDark, onPress, onLon
                     marginLeft: 4,
                   }}
                 >
-                  Verified
+                  {t("common.verified")}
                 </Text>
               </View>
             )}

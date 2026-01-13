@@ -32,14 +32,23 @@ import * as QuickActions from "expo-quick-actions";
 import { RouterAction } from "expo-quick-actions/router";
 import * as AppBlocker from "@/modules/app-blocker";
 import * as UsageStats from "@/modules/usage-stats";
+import { initIconCache } from "@/lib/iconCache";
 
 // Clear corrupted app cache on startup (one-time fix for SQLite full error)
-AsyncStorage.multiRemove([
-  "@installed_apps_cache",
-  "@installed_apps_cache_time",
-  "@installed_apps_cache_v2",
-  "@installed_apps_cache_time_v2",
-]).catch(() => {});
+// Delayed to not block app startup
+setTimeout(() => {
+  AsyncStorage.multiRemove([
+    "@installed_apps_cache",
+    "@installed_apps_cache_time",
+    "@installed_apps_cache_v2",
+    "@installed_apps_cache_time_v2",
+  ]).catch(() => {});
+}, 3000);
+
+// Initialize icon cache after app is stable (delayed to not block startup)
+setTimeout(() => {
+  initIconCache().catch(() => {});
+}, 2000);
 
 configureReanimatedLogger({
   level: ReanimatedLogLevel.warn,
@@ -49,7 +58,7 @@ configureReanimatedLogger({
 function AppSyncWrapper({ children }: { children: React.ReactNode }) {
   const { token, user, setUser } = useAuth();
   const { dailyLimits } = useBlocking();
-  const { syncUsageWithWallet } = useEarnedTime();
+  const { syncUsageWithWallet, syncWebsiteUsageWithWallet, syncNativeAppUsageWithWallet } = useEarnedTime();
   const [isOffline, setIsOffline] = useState(false);
   const router = useRouter();
   const rootNavigation = useNavigationContainerRef();
@@ -369,9 +378,13 @@ function AppSyncWrapper({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // 1️⃣ Fire-and-forget sync on app start
+  // 1️⃣ Fire-and-forget sync on app start - DELAYED to not overwhelm native bridge
   useEffect(() => {
-    syncIfOnline();
+    // Delay sync to let critical initialization happen first
+    const timer = setTimeout(() => {
+      syncIfOnline();
+    }, 2000);
+    return () => clearTimeout(timer);
   }, [token]);
 
   useEffect(() => {
@@ -387,7 +400,8 @@ function AppSyncWrapper({ children }: { children: React.ReactNode }) {
   }, [token]);
 
   useEffect(() => {
-    const configurePurchases = async () => {
+    // Delay Purchases configuration to not block critical startup
+    const timer = setTimeout(async () => {
       try {
         if (Platform.OS === "ios") {
           await Purchases.configure({ apiKey: "appl_DXtiSBNTmQOgIEgTfHOiqHSFlbm" });
@@ -399,47 +413,78 @@ function AppSyncWrapper({ children }: { children: React.ReactNode }) {
       } catch (error) {
         console.warn("Failed to configure Purchases:", error);
       }
-    };
+    }, 1500);
 
-    configurePurchases();
+    return () => clearTimeout(timer);
   }, []);
 
-  // Periodic usage sync - syncs real device usage with wallet every 30 seconds
+  // Periodic usage sync - syncs real device usage with wallet every 15 seconds
+  // Also syncs immediately when app comes to foreground for faster updates
+  // DELAYED to not overwhelm native bridge on startup
   useEffect(() => {
-    if (Platform.OS !== 'android' || blockedPackages.length === 0) return;
+    if (Platform.OS !== 'android') return;
 
     const syncUsage = async () => {
       try {
-        const todayStats = await UsageStats.getTodayUsageStats();
-        if (todayStats.hasPermission && todayStats.apps) {
-          const usageMap: Record<string, number> = {};
-          for (const app of todayStats.apps) {
-            if (blockedPackages.includes(app.packageName)) {
-              const usedMins = Math.round(app.timeInForeground / (1000 * 60));
-              if (usedMins > 0) {
-                usageMap[app.packageName] = usedMins;
+        // Sync app usage
+        if (blockedPackages.length > 0) {
+          const todayStats = await UsageStats.getTodayUsageStats();
+          if (todayStats.hasPermission && todayStats.apps) {
+            const usageMap: Record<string, number> = {};
+            for (const app of todayStats.apps) {
+              if (blockedPackages.includes(app.packageName)) {
+                const usedMins = Math.round(app.timeInForeground / (1000 * 60));
+                if (usedMins > 0) {
+                  usageMap[app.packageName] = usedMins;
+                }
               }
             }
-          }
-          if (Object.keys(usageMap).length > 0) {
-            await syncUsageWithWallet(usageMap);
+            if (Object.keys(usageMap).length > 0) {
+              await syncUsageWithWallet(usageMap);
+            }
           }
         }
+
+        // Sync website usage
+        const websiteUsage = await AppBlocker.getWebsiteUsageToday();
+        if (Object.keys(websiteUsage).length > 0) {
+          await syncWebsiteUsageWithWallet(websiteUsage);
+        }
+
+        // Sync native app usage (from AccessibilityService session tracking)
+        // This is more immediate than UsageStats for blocked apps
+        await syncNativeAppUsageWithWallet();
       } catch (error) {
         console.log('[UsageSync] Error syncing usage:', error);
       }
     };
 
-    // Initial sync
-    syncUsage();
+    // Delay initial sync to let critical startup complete
+    const initialTimer = setTimeout(() => {
+      syncUsage();
+    }, 4000);
 
-    // Set up periodic sync every 30 seconds
-    const syncInterval = setInterval(syncUsage, 30000);
+    // Set up periodic sync every 15 seconds (reduced from 30s for faster updates)
+    let syncInterval: ReturnType<typeof setInterval> | null = null;
+    const intervalTimer = setTimeout(() => {
+      syncInterval = setInterval(syncUsage, 15000);
+    }, 4000);
+
+    // Also sync immediately when app comes to foreground
+    const appStateSubscription = AppState.addEventListener("change", (nextAppState) => {
+      if (nextAppState === "active") {
+        // Small delay to ensure app is fully active
+        setTimeout(syncUsage, 500);
+      }
+    });
 
     return () => {
-      clearInterval(syncInterval);
+      clearTimeout(initialTimer);
+      clearTimeout(intervalTimer);
+      if (syncInterval) clearInterval(syncInterval);
+      appStateSubscription.remove();
     };
-  }, [blockedPackages, syncUsageWithWallet]);
+  }, [blockedPackages, syncUsageWithWallet, syncWebsiteUsageWithWallet, syncNativeAppUsageWithWallet]);
 
   return <>{children}</>;
 }

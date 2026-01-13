@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   View,
   Text,
   Modal,
   TouchableOpacity,
+  PanResponder,
+  Animated,
 } from "react-native";
 import { AlertTriangle, Trash2, X, Info } from "lucide-react-native";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -71,6 +73,39 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
   const colors = getColors();
 
+  // Swipe-to-close gesture
+  const translateY = useRef(new Animated.Value(0)).current;
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        return gestureState.dy > 10;
+      },
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dy > 0) {
+          translateY.setValue(gestureState.dy);
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (gestureState.dy > 100 || gestureState.vy > 0.5) {
+          Animated.timing(translateY, {
+            toValue: 400,
+            duration: 200,
+            useNativeDriver: true,
+          }).start(() => {
+            translateY.setValue(0);
+            onCancel();
+          });
+        } else {
+          Animated.spring(translateY, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
+
   const getIcon = () => {
     switch (type) {
       case "danger":
@@ -91,7 +126,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           justifyContent: "flex-end",
         }}
       >
-        <View
+        <Animated.View
           style={{
             backgroundColor: isDark ? "#0a0a0a" : "#ffffff",
             borderTopLeftRadius: 28,
@@ -103,19 +138,14 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             borderColor: isDark
               ? "rgba(255, 255, 255, 0.08)"
               : "rgba(0, 0, 0, 0.05)",
+            transform: [{ translateY }],
           }}
         >
-          {/* Header */}
+          {/* Header with handle bar - swipe area */}
           <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: 20,
-              paddingBottom: 0,
-            }}
+            {...panResponder.panHandlers}
+            style={{ alignItems: "center", paddingTop: 12, paddingBottom: 8 }}
           >
-            <View style={{ width: 40 }} />
             <View
               style={{
                 width: 40,
@@ -126,22 +156,28 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
                 borderRadius: 2,
               }}
             />
-            <TouchableOpacity
-              onPress={onCancel}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-                backgroundColor: isDark
-                  ? "rgba(255, 255, 255, 0.08)"
-                  : "rgba(0, 0, 0, 0.04)",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <X size={20} color={isDark ? "#9ca3af" : "#6b7280"} />
-            </TouchableOpacity>
           </View>
+
+          {/* Close button - absolutely positioned */}
+          <TouchableOpacity
+            onPress={onCancel}
+            style={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              zIndex: 10,
+              width: 40,
+              height: 40,
+              borderRadius: 20,
+              backgroundColor: isDark
+                ? "rgba(255, 255, 255, 0.08)"
+                : "rgba(0, 0, 0, 0.04)",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <X size={20} color={isDark ? "#9ca3af" : "#6b7280"} />
+          </TouchableOpacity>
 
           {/* Content */}
           <View style={{ padding: 24, alignItems: "center" }}>
@@ -243,7 +279,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </Animated.View>
       </View>
     </Modal>
   );

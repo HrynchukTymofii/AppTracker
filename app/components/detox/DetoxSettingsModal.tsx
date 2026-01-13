@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Modal,
+  PanResponder,
+  Animated,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from 'react-i18next';
@@ -34,6 +36,37 @@ export const DetoxSettingsModal = ({
   const [showAppSelection, setShowAppSelection] = useState(false);
   const durations = [15, 30, 45, 60, 90, 120];
 
+  // Swipe-to-close gesture
+  const translateY = useRef(new Animated.Value(0)).current;
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (_, gestureState) => gestureState.dy > 10,
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dy > 0) {
+          translateY.setValue(gestureState.dy);
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (gestureState.dy > 100 || gestureState.vy > 0.5) {
+          Animated.timing(translateY, {
+            toValue: 500,
+            duration: 200,
+            useNativeDriver: true,
+          }).start(() => {
+            translateY.setValue(0);
+            onClose();
+          });
+        } else {
+          Animated.spring(translateY, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
+
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View
@@ -43,12 +76,12 @@ export const DetoxSettingsModal = ({
           justifyContent: "flex-end",
         }}
       >
-        <View
+        <Animated.View
           style={{
             backgroundColor: isDark ? "#000000" : "#ffffff",
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,
-            padding: 20,
+            paddingHorizontal: 20,
             paddingBottom: Math.max(20, insets.bottom),
             borderTopWidth: 1,
             borderLeftWidth: 1,
@@ -56,13 +89,28 @@ export const DetoxSettingsModal = ({
             borderColor: isDark
               ? "rgba(255, 255, 255, 0.1)"
               : "rgba(0, 0, 0, 0.05)",
+            transform: [{ translateY }],
           }}
         >
+          {/* Handle bar - swipe area */}
+          <View
+            {...panResponder.panHandlers}
+            style={{ alignItems: "center", paddingTop: 12, paddingBottom: 8 }}
+          >
+            <View
+              style={{
+                width: 40,
+                height: 4,
+                backgroundColor: isDark
+                  ? "rgba(255, 255, 255, 0.2)"
+                  : "rgba(0, 0, 0, 0.1)",
+                borderRadius: 2,
+              }}
+            />
+          </View>
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
+              position: "relative",
               marginBottom: 24,
             }}
           >
@@ -71,6 +119,7 @@ export const DetoxSettingsModal = ({
                 fontSize: 24,
                 fontWeight: "bold",
                 color: isDark ? "#ffffff" : "#111827",
+                paddingRight: 50,
               }}
             >
               {t("common.settings")}
@@ -78,6 +127,9 @@ export const DetoxSettingsModal = ({
             <TouchableOpacity
               onPress={onClose}
               style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
                 width: 36,
                 height: 36,
                 borderRadius: 18,
@@ -190,7 +242,7 @@ export const DetoxSettingsModal = ({
               {t("common.save")}
             </Text>
           </TouchableOpacity>
-        </View>
+        </Animated.View>
       </View>
 
       <AppSelectionModal

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -8,11 +8,15 @@ import {
   TextInput,
   Switch,
   Platform,
+  PanResponder,
+  Animated,
 } from "react-native";
-import { X, Check, Clock } from "lucide-react-native";
+import { X, Check, Clock, Crown } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { useRouter } from "expo-router";
 import { useLockIn, LockInTask, TaskCategory } from "@/context/LockInContext";
+import { useAuth } from "@/context/AuthContext";
 
 interface AddTaskModalProps {
   visible: boolean;
@@ -54,6 +58,8 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
   onClose,
 }) => {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const { user } = useAuth();
   const { addTask, updateTask, deleteTask } = useLockIn();
 
   const [name, setName] = useState("");
@@ -65,6 +71,37 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
   const [hasScheduledTime, setHasScheduledTime] = useState(false);
   const [scheduledTime, setScheduledTime] = useState(new Date());
   const [showTimePicker, setShowTimePicker] = useState(false);
+
+  // Swipe-to-close gesture
+  const translateY = useRef(new Animated.Value(0)).current;
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (_, gestureState) => gestureState.dy > 10,
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dy > 0) {
+          translateY.setValue(gestureState.dy);
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (gestureState.dy > 100 || gestureState.vy > 0.5) {
+          Animated.timing(translateY, {
+            toValue: 500,
+            duration: 200,
+            useNativeDriver: true,
+          }).start(() => {
+            translateY.setValue(0);
+            handleClose();
+          });
+        } else {
+          Animated.spring(translateY, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
 
   // Populate form when editing
   useEffect(() => {
@@ -160,6 +197,16 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
     }
   };
 
+  const handlePhotoToggle = (value: boolean) => {
+    if (value && !user.isPro) {
+      // User wants to enable photo verification but is not Pro
+      handleClose();
+      router.push("/payment");
+      return;
+    }
+    setRequiresPhoto(value);
+  };
+
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View
@@ -169,7 +216,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
           justifyContent: "flex-end",
         }}
       >
-        <View
+        <Animated.View
           style={{
             backgroundColor: isDark ? "#000000" : "#ffffff",
             borderTopLeftRadius: 24,
@@ -180,15 +227,31 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
             borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)",
             paddingBottom: Math.max(insets.bottom, 20),
             maxHeight: "90%",
+            transform: [{ translateY }],
           }}
         >
+          {/* Handle bar - swipe area */}
+          <View
+            {...panResponder.panHandlers}
+            style={{ alignItems: "center", paddingTop: 12, paddingBottom: 4 }}
+          >
+            <View
+              style={{
+                width: 40,
+                height: 4,
+                backgroundColor: isDark
+                  ? "rgba(255, 255, 255, 0.2)"
+                  : "rgba(0, 0, 0, 0.1)",
+                borderRadius: 2,
+              }}
+            />
+          </View>
           {/* Header */}
           <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
+              position: "relative",
               padding: 20,
+              paddingTop: 8,
               borderBottomWidth: 1,
               borderBottomColor: isDark
                 ? "rgba(255, 255, 255, 0.08)"
@@ -200,6 +263,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
                 fontSize: 20,
                 fontWeight: "700",
                 color: isDark ? "#ffffff" : "#111827",
+                paddingRight: 50,
               }}
             >
               {task ? "Edit LockIn" : "New LockIn"}
@@ -207,6 +271,9 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
             <TouchableOpacity
               onPress={handleClose}
               style={{
+                position: "absolute",
+                top: 16,
+                right: 16,
                 width: 36,
                 height: 36,
                 borderRadius: 18,
@@ -523,7 +590,9 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
             )}
 
             {/* Photo Verification Toggle */}
-            <View
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => !user.isPro && handlePhotoToggle(true)}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -536,22 +605,49 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
                 borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.05)",
               }}
             >
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: "500",
-                  color: isDark ? "#ffffff" : "#111827",
-                }}
-              >
-                📸 Require before/after photos
-              </Text>
+              <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontWeight: "500",
+                    color: isDark ? "#ffffff" : "#111827",
+                  }}
+                >
+                  📸 Require before/after photos
+                </Text>
+                {!user.isPro && (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: "rgba(234, 179, 8, 0.15)",
+                      paddingHorizontal: 6,
+                      paddingVertical: 2,
+                      borderRadius: 6,
+                      marginLeft: 8,
+                    }}
+                  >
+                    <Crown size={12} color="#eab308" />
+                    <Text
+                      style={{
+                        fontSize: 11,
+                        fontWeight: "600",
+                        color: "#eab308",
+                        marginLeft: 3,
+                      }}
+                    >
+                      PRO
+                    </Text>
+                  </View>
+                )}
+              </View>
               <Switch
                 value={requiresPhoto}
-                onValueChange={setRequiresPhoto}
+                onValueChange={handlePhotoToggle}
                 trackColor={{ false: "#767577", true: "#10b981" }}
                 thumbColor="#ffffff"
               />
-            </View>
+            </TouchableOpacity>
           </ScrollView>
 
           {/* Footer Buttons */}
@@ -605,7 +701,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
               </TouchableOpacity>
             )}
           </View>
-        </View>
+        </Animated.View>
       </View>
     </Modal>
   );

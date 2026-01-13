@@ -10,11 +10,13 @@ import {
   Image,
   ActivityIndicator,
   Linking,
+  StyleSheet,
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { router } from "expo-router";
 import { useSearchParams } from "expo-router/build/hooks";
 import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
 import Toast from "react-native-toast-message";
 import * as SecureStore from "expo-secure-store";
 import { useTranslation } from "react-i18next";
@@ -269,8 +271,11 @@ export default function AuthScreen() {
       }
 
       const data = await loginRes.json();
+      console.log(data.token)
       if (data.token) {
+        console.log('loading')
         await setToken(data.token);
+        console.log('loading')
 
         const onboarding = await SecureStore.getItemAsync(
           "onboardingCompleted"
@@ -278,6 +283,7 @@ export default function AuthScreen() {
         if (onboarding !== "true") {
           await SecureStore.setItemAsync("onboardingCompleted", "true");
         }
+        console.log('loading')
 
         // Check if selling onboarding was completed
         const sellingOnboardingCompleted = await SecureStore.getItemAsync(
@@ -348,20 +354,28 @@ export default function AuthScreen() {
                 width: 44,
                 height: 44,
                 borderRadius: 14,
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#ffffff",
-                alignItems: "center",
-                justifyContent: "center",
+                overflow: "hidden",
                 marginBottom: 28,
-                borderWidth: 0.5,
-                borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.06)",
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: isDark ? 0 : 0.04,
-                shadowRadius: 8,
-                elevation: 2,
+                borderWidth: 1,
+                borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
               }}
             >
-              <ArrowLeft size={22} color={isDark ? "#ffffff" : "#0f172a"} strokeWidth={1.5} />
+              <BlurView intensity={isDark ? 20 : 35} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+              <LinearGradient
+                colors={isDark ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"] : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <LinearGradient
+                colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 0.6 }}
+                style={[StyleSheet.absoluteFill, { height: "60%" }]}
+              />
+              <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+                <ArrowLeft size={22} color={isDark ? "#ffffff" : "#0f172a"} strokeWidth={1.5} />
+              </View>
             </TouchableOpacity>
 
             <Text
@@ -404,37 +418,43 @@ export default function AuthScreen() {
               </Text>
               <View
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
-                  borderWidth: 0.5,
-                  borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)",
                   borderRadius: 16,
-                  paddingHorizontal: 16,
-                  paddingVertical: Platform.OS === "ios" ? 12 : 8,
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: isDark ? 0 : 0.03,
-                  shadowRadius: 8,
-                  elevation: 2,
+                  overflow: "hidden",
+                  borderWidth: 1,
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
                 }}
               >
-                <Mail size={20} color={isDark ? "rgba(255,255,255,0.4)" : "#94a3b8"} strokeWidth={1.5} />
-                <TextInput
-                  style={{
-                    flex: 1,
-                    marginLeft: 12,
-                    color: isDark ? "#ffffff" : "#0f172a",
-                    fontSize: 16,
-                  }}
-                  placeholder={t("auth.emailPlaceholder")}
-                  placeholderTextColor={isDark ? "rgba(255,255,255,0.3)" : "#94a3b8"}
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoCorrect={false}
+                <BlurView intensity={isDark ? 20 : 35} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+                <LinearGradient
+                  colors={isDark ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"] : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={StyleSheet.absoluteFill}
                 />
+                <LinearGradient
+                  colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+                  start={{ x: 0.5, y: 0 }}
+                  end={{ x: 0.5, y: 0.6 }}
+                  style={[StyleSheet.absoluteFill, { height: "60%" }]}
+                />
+                <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingVertical: Platform.OS === "ios" ? 12 : 8 }}>
+                  <Mail size={20} color={isDark ? "rgba(255,255,255,0.4)" : "#94a3b8"} strokeWidth={1.5} />
+                  <TextInput
+                    style={{
+                      flex: 1,
+                      marginLeft: 12,
+                      color: isDark ? "#ffffff" : "#0f172a",
+                      fontSize: 16,
+                    }}
+                    placeholder={t("auth.emailPlaceholder")}
+                    placeholderTextColor={isDark ? "rgba(255,255,255,0.3)" : "#94a3b8"}
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                </View>
               </View>
             </View>
 
@@ -452,46 +472,52 @@ export default function AuthScreen() {
               </Text>
               <View
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
-                  borderWidth: 0.5,
-                  borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)",
                   borderRadius: 16,
-                  paddingHorizontal: 16,
-                  paddingVertical: Platform.OS === "ios" ? 12 : 8,
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: isDark ? 0 : 0.03,
-                  shadowRadius: 8,
-                  elevation: 2,
+                  overflow: "hidden",
+                  borderWidth: 1,
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
                 }}
               >
-                <Lock size={20} color={isDark ? "rgba(255,255,255,0.4)" : "#94a3b8"} strokeWidth={1.5} />
-                <TextInput
-                  style={{
-                    flex: 1,
-                    marginLeft: 12,
-                    color: isDark ? "#ffffff" : "#0f172a",
-                    fontSize: 16,
-                  }}
-                  placeholder={t("auth.passwordPlaceholder")}
-                  placeholderTextColor={isDark ? "rgba(255,255,255,0.3)" : "#94a3b8"}
-                  secureTextEntry={!showPassword}
-                  value={password}
-                  onChangeText={setPassword}
+                <BlurView intensity={isDark ? 20 : 35} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+                <LinearGradient
+                  colors={isDark ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"] : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={StyleSheet.absoluteFill}
                 />
-                <TouchableOpacity
-                  onPress={() => setShowPassword(!showPassword)}
-                  activeOpacity={0.7}
-                  style={{ padding: 4 }}
-                >
-                  {showPassword ? (
-                    <EyeOff size={20} color={isDark ? "rgba(255,255,255,0.4)" : "#94a3b8"} strokeWidth={1.5} />
-                  ) : (
-                    <Eye size={20} color={isDark ? "rgba(255,255,255,0.4)" : "#94a3b8"} strokeWidth={1.5} />
-                  )}
-                </TouchableOpacity>
+                <LinearGradient
+                  colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+                  start={{ x: 0.5, y: 0 }}
+                  end={{ x: 0.5, y: 0.6 }}
+                  style={[StyleSheet.absoluteFill, { height: "60%" }]}
+                />
+                <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingVertical: Platform.OS === "ios" ? 12 : 8 }}>
+                  <Lock size={20} color={isDark ? "rgba(255,255,255,0.4)" : "#94a3b8"} strokeWidth={1.5} />
+                  <TextInput
+                    style={{
+                      flex: 1,
+                      marginLeft: 12,
+                      color: isDark ? "#ffffff" : "#0f172a",
+                      fontSize: 16,
+                    }}
+                    placeholder={t("auth.passwordPlaceholder")}
+                    placeholderTextColor={isDark ? "rgba(255,255,255,0.3)" : "#94a3b8"}
+                    secureTextEntry={!showPassword}
+                    value={password}
+                    onChangeText={setPassword}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setShowPassword(!showPassword)}
+                    activeOpacity={0.7}
+                    style={{ padding: 4 }}
+                  >
+                    {showPassword ? (
+                      <EyeOff size={20} color={isDark ? "rgba(255,255,255,0.4)" : "#94a3b8"} strokeWidth={1.5} />
+                    ) : (
+                      <Eye size={20} color={isDark ? "rgba(255,255,255,0.4)" : "#94a3b8"} strokeWidth={1.5} />
+                    )}
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
 
@@ -562,9 +588,6 @@ export default function AuthScreen() {
               activeOpacity={0.8}
               style={{
                 borderRadius: 18,
-                paddingVertical: 18,
-                alignItems: "center",
-                justifyContent: "center",
                 marginBottom: 24,
                 overflow: "hidden",
                 shadowColor: "#3b82f6",
@@ -577,29 +600,31 @@ export default function AuthScreen() {
               <LinearGradient
                 colors={["#3b82f6", "#1d4ed8"]}
                 start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                }}
+                end={{ x: 1, y: 1 }}
+                style={StyleSheet.absoluteFill}
               />
-              {loading ? (
-                <ActivityIndicator color="#ffffff" />
-              ) : (
-                <Text
-                  style={{
-                    color: "#ffffff",
-                    fontWeight: "700",
-                    fontSize: 17,
-                    letterSpacing: 0.3,
-                  }}
-                >
-                  {mode === "login" ? t("auth.signIn") : t("auth.createAccount")}
-                </Text>
-              )}
+              <LinearGradient
+                colors={["rgba(255, 255, 255, 0.25)", "transparent"]}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 0.6 }}
+                style={[StyleSheet.absoluteFill, { height: "60%" }]}
+              />
+              <View style={{ paddingVertical: 18, alignItems: "center", justifyContent: "center" }}>
+                {loading ? (
+                  <ActivityIndicator color="#ffffff" />
+                ) : (
+                  <Text
+                    style={{
+                      color: "#ffffff",
+                      fontWeight: "700",
+                      fontSize: 17,
+                      letterSpacing: 0.3,
+                    }}
+                  >
+                    {mode === "login" ? t("auth.signIn") : t("auth.createAccount")}
+                  </Text>
+                )}
+              </View>
             </TouchableOpacity>
 
             {/* Divider */}
@@ -653,26 +678,34 @@ export default function AuthScreen() {
                   flex: 1,
                   height: 56,
                   borderRadius: 16,
-                  borderWidth: 0.5,
-                  borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: isDark ? 0 : 0.03,
-                  shadowRadius: 8,
-                  elevation: 2,
+                  overflow: "hidden",
+                  borderWidth: 1,
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
                 }}
               >
-                {googleLoading ? (
-                  <ActivityIndicator size="small" color={isDark ? "#ffffff" : "#0f172a"} />
-                ) : (
-                  <Image
-                    source={require("@/assets/images/google-logo.webp")}
-                    style={{ width: 24, height: 24 }}
-                  />
-                )}
+                <BlurView intensity={isDark ? 20 : 35} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+                <LinearGradient
+                  colors={isDark ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"] : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={StyleSheet.absoluteFill}
+                />
+                <LinearGradient
+                  colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+                  start={{ x: 0.5, y: 0 }}
+                  end={{ x: 0.5, y: 0.6 }}
+                  style={[StyleSheet.absoluteFill, { height: "60%" }]}
+                />
+                <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+                  {googleLoading ? (
+                    <ActivityIndicator size="small" color={isDark ? "#ffffff" : "#0f172a"} />
+                  ) : (
+                    <Image
+                      source={require("@/assets/images/google-logo.webp")}
+                      style={{ width: 24, height: 24 }}
+                    />
+                  )}
+                </View>
               </TouchableOpacity>
 
               {Platform.OS === "ios" && (
@@ -690,22 +723,30 @@ export default function AuthScreen() {
                     flex: 1,
                     height: 56,
                     borderRadius: 16,
-                    borderWidth: 0.5,
-                    borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#ffffff",
-                    shadowColor: "#000",
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: isDark ? 0 : 0.03,
-                    shadowRadius: 8,
-                    elevation: 2,
+                    overflow: "hidden",
+                    borderWidth: 1,
+                    borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
                   }}
                 >
-                  <Image
-                    source={require("@/assets/images/apple-logo.png")}
-                    style={{ width: 24, height: 24 }}
+                  <BlurView intensity={isDark ? 20 : 35} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+                  <LinearGradient
+                    colors={isDark ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"] : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={StyleSheet.absoluteFill}
                   />
+                  <LinearGradient
+                    colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+                    start={{ x: 0.5, y: 0 }}
+                    end={{ x: 0.5, y: 0.6 }}
+                    style={[StyleSheet.absoluteFill, { height: "60%" }]}
+                  />
+                  <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+                    <Image
+                      source={require("@/assets/images/apple-logo.png")}
+                      style={{ width: 24, height: 24 }}
+                    />
+                  </View>
                 </TouchableOpacity>
               )}
             </View>

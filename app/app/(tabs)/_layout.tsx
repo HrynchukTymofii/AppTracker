@@ -221,12 +221,12 @@ export default function TabLayout() {
           href: null,
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="community/index"
         options={{
           href: null,
         }}
-      />
+      /> */}
     </Tabs>
   );
 }

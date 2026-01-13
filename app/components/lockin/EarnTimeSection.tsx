@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
 import { Camera, TrendingUp, ChevronRight, Star } from "lucide-react-native";
 import { useEarnedTime } from "@/context/EarnedTimeContext";
 import { ExerciseType } from "@/lib/poseUtils";
 import { getFavorites, toggleFavorite, MAX_EXERCISE_FAVORITES } from "@/lib/exerciseFavorites";
-import { EXERCISE_DISPLAY_INFO, ExerciseDisplayInfo } from "@/lib/exerciseIcons";
+import { EXERCISE_DISPLAY_INFO, ExerciseDisplayInfo, getExerciseIcon } from "@/lib/exerciseIcons";
 import { useTranslation } from "react-i18next";
 
 // Map exercise type (kebab-case) to translation key (camelCase)
@@ -76,108 +77,152 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
   const otherExercises = EXERCISE_DISPLAY_INFO.filter(e => !favorites.includes(e.type));
 
   // Render exercise card
-  const renderExerciseCard = (exercise: ExerciseDisplayInfo, isFavorite: boolean) => (
+  const renderExerciseCard = (exercise: ExerciseDisplayInfo, isFavorite: boolean) => {
+    const iconInfo = getExerciseIcon(exercise.type);
+    const glowColor = isFavorite ? "#fbbf24" : "#10b981";
+    return (
     <TouchableOpacity
       key={exercise.type}
       onPress={() => handleExercisePress(exercise.type)}
       activeOpacity={0.7}
       style={{
-        backgroundColor: isDark ? "#0a0a0a" : "#ffffff",
         borderRadius: 16,
-        padding: 16,
-        flexDirection: "row",
-        alignItems: "center",
         marginBottom: 12,
+        overflow: "hidden",
         borderWidth: 1,
-        borderColor: isFavorite ? "rgba(251, 191, 36, 0.4)" : "rgba(16, 185, 129, 0.3)",
-        shadowColor: isFavorite ? "#fbbf24" : "#10b981",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.15,
-        shadowRadius: 12,
-        elevation: 4,
+        borderColor: isFavorite
+          ? (isDark ? "rgba(251, 191, 36, 0.4)" : "rgba(251, 191, 36, 0.3)")
+          : (isDark ? "rgba(16, 185, 129, 0.4)" : "rgba(16, 185, 129, 0.3)"),
       }}
     >
-      <View
-        style={{
-          width: 48,
-          height: 48,
-          borderRadius: 14,
-          alignItems: "center",
-          justifyContent: "center",
-          marginRight: 14,
-          overflow: "hidden",
-        }}
-      >
-        <LinearGradient
-          colors={exercise.colors}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
+      <BlurView
+        intensity={isDark ? 20 : 35}
+        tint={isDark ? "dark" : "light"}
+        style={StyleSheet.absoluteFill}
+      />
+      <LinearGradient
+        colors={
+          isDark
+            ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"]
+            : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]
+        }
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      {/* Top shine */}
+      <LinearGradient
+        colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 0.6 }}
+        style={[StyleSheet.absoluteFill, { height: "60%" }]}
+      />
+      {/* Glow */}
+      <LinearGradient
+        colors={[`${glowColor}15`, "transparent"]}
+        start={{ x: 0.5, y: 1 }}
+        end={{ x: 0.5, y: 0 }}
+        style={StyleSheet.absoluteFill}
+      />
+      <View style={{ padding: 16, flexDirection: "row", alignItems: "center" }}>
+        <View
           style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
+            width: 48,
+            height: 48,
+            borderRadius: 14,
+            alignItems: "center",
+            justifyContent: "center",
+            marginRight: 14,
+            overflow: "hidden",
+            borderWidth: iconInfo.image ? 2 : 0,
+            borderColor: exercise.colors[0],
           }}
-        />
-        {exercise.image ? (
-          <Image
-            source={exercise.image}
-            style={{ width: 32, height: 32 }}
-            resizeMode="contain"
-          />
-        ) : (
-          <Text style={{ fontSize: 24 }}>{exercise.emoji}</Text>
+        >
+          {iconInfo.image ? (
+            <Image
+              source={iconInfo.image}
+              style={{ width: "100%", height: "100%", borderRadius: 12 }}
+              resizeMode="cover"
+            />
+          ) : (
+            <>
+              <LinearGradient
+                colors={exercise.colors}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <Text style={{ fontSize: 24 }}>{iconInfo.emoji}</Text>
+            </>
+          )}
+        </View>
+
+        <View style={{ flex: 1 }}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "700",
+              color: isDark ? "#ffffff" : "#0f172a",
+              letterSpacing: -0.3,
+            }}
+          >
+            {t(`exercise.${exerciseTypeToTranslationKey[exercise.type]}.name`)}
+          </Text>
+          <Text
+            style={{
+              fontSize: 13,
+              color: isDark ? "rgba(255,255,255,0.5)" : "#94a3b8",
+              marginTop: 2,
+            }}
+          >
+            {t(`exercise.${exerciseTypeToTranslationKey[exercise.type]}.description`)}
+          </Text>
+        </View>
+
+        {isFavorite && (
+          <Star size={16} color="#fbbf24" fill="#fbbf24" style={{ marginRight: 8 }} />
         )}
+        <ChevronRight size={20} color={isFavorite ? "#fbbf24" : "#10b981"} strokeWidth={2} />
       </View>
-
-      <View style={{ flex: 1 }}>
-        <Text
-          style={{
-            fontSize: 16,
-            fontWeight: "700",
-            color: isDark ? "#ffffff" : "#0f172a",
-            letterSpacing: -0.3,
-          }}
-        >
-          {t(`exercise.${exerciseTypeToTranslationKey[exercise.type]}.name`)}
-        </Text>
-        <Text
-          style={{
-            fontSize: 13,
-            color: isDark ? "rgba(255,255,255,0.5)" : "#94a3b8",
-            marginTop: 2,
-          }}
-        >
-          {t(`exercise.${exerciseTypeToTranslationKey[exercise.type]}.description`)}
-        </Text>
-      </View>
-
-      {isFavorite && (
-        <Star size={16} color="#fbbf24" fill="#fbbf24" style={{ marginRight: 8 }} />
-      )}
-      <ChevronRight size={20} color={isFavorite ? "#fbbf24" : "#10b981"} strokeWidth={2} />
     </TouchableOpacity>
   );
+  };
 
   return (
     <View style={{ paddingHorizontal: 20, marginTop: 16 }}>
       {/* Balance Card */}
       <View
         style={{
-          backgroundColor: isDark ? "#0a0a0a" : "#ffffff",
           borderRadius: 20,
-          padding: 20,
           marginBottom: 16,
+          overflow: "hidden",
           borderWidth: 1,
-          borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: isDark ? 0.15 : 0.06,
-          shadowRadius: 12,
-          elevation: 3,
+          borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
         }}
       >
+        <BlurView
+          intensity={isDark ? 25 : 40}
+          tint={isDark ? "dark" : "light"}
+          style={StyleSheet.absoluteFill}
+        />
+        <LinearGradient
+          colors={
+            isDark
+              ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"]
+              : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]
+          }
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+        {/* Top shine */}
+        <LinearGradient
+          colors={isDark ? ["rgba(255, 255, 255, 0.08)", "transparent"] : ["rgba(255, 255, 255, 0.5)", "transparent"]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 0.5 }}
+          style={[StyleSheet.absoluteFill, { height: "50%" }]}
+        />
+        <View style={{ padding: 20 }}>
         <View
           style={{
             flexDirection: "row",
@@ -322,6 +367,7 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
             {t("lockin.spent")}
           </Text>
         </View>
+        </View>
       </View>
 
       {/* Photo Task Button */}
@@ -329,70 +375,87 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
         onPress={onVerifiedStart}
         activeOpacity={0.7}
         style={{
-          backgroundColor: isDark ? "#0a0a0a" : "#ffffff",
           borderRadius: 16,
-          padding: 16,
-          flexDirection: "row",
-          alignItems: "center",
           marginBottom: 12,
+          overflow: "hidden",
           borderWidth: 1,
-          borderColor: "rgba(59, 130, 246, 0.3)",
-          shadowColor: "#3b82f6",
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.15,
-          shadowRadius: 12,
-          elevation: 4,
+          borderColor: isDark ? "rgba(59, 130, 246, 0.4)" : "rgba(59, 130, 246, 0.3)",
         }}
       >
-        <View
-          style={{
-            width: 48,
-            height: 48,
-            borderRadius: 14,
-            alignItems: "center",
-            justifyContent: "center",
-            marginRight: 14,
-            overflow: "hidden",
-          }}
-        >
-          <LinearGradient
-            colors={["#3b82f6", "#2563eb"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
+        <BlurView
+          intensity={isDark ? 20 : 35}
+          tint={isDark ? "dark" : "light"}
+          style={StyleSheet.absoluteFill}
+        />
+        <LinearGradient
+          colors={
+            isDark
+              ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"]
+              : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]
+          }
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+        {/* Top shine */}
+        <LinearGradient
+          colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 0.6 }}
+          style={[StyleSheet.absoluteFill, { height: "60%" }]}
+        />
+        {/* Blue glow */}
+        <LinearGradient
+          colors={["rgba(59, 130, 246, 0.15)", "transparent"]}
+          start={{ x: 0.5, y: 1 }}
+          end={{ x: 0.5, y: 0 }}
+          style={StyleSheet.absoluteFill}
+        />
+        <View style={{ padding: 16, flexDirection: "row", alignItems: "center" }}>
+          <View
             style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-            }}
-          />
-          <Camera size={24} color="#ffffff" strokeWidth={2} />
-        </View>
-
-        <View style={{ flex: 1 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "700",
-              color: isDark ? "#ffffff" : "#0f172a",
-              letterSpacing: -0.3,
-            }}
-          >
-            {t("lockin.photoTask")}
-          </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              color: isDark ? "rgba(255,255,255,0.5)" : "#94a3b8",
-              marginTop: 2,
+              width: 48,
+              height: 48,
+              borderRadius: 14,
+              alignItems: "center",
+              justifyContent: "center",
+              marginRight: 14,
+              overflow: "hidden",
             }}
           >
-            {t("lockin.photoTaskDesc")}
-          </Text>
-        </View>
+            <LinearGradient
+              colors={["#3b82f6", "#2563eb"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <Camera size={24} color="#ffffff" strokeWidth={2} />
+          </View>
 
-        <ChevronRight size={20} color="#3b82f6" strokeWidth={2} />
+          <View style={{ flex: 1 }}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "700",
+                color: isDark ? "#ffffff" : "#0f172a",
+                letterSpacing: -0.3,
+              }}
+            >
+              {t("lockin.photoTask")}
+            </Text>
+            <Text
+              style={{
+                fontSize: 13,
+                color: isDark ? "rgba(255,255,255,0.5)" : "#94a3b8",
+                marginTop: 2,
+              }}
+            >
+              {t("lockin.photoTaskDesc")}
+            </Text>
+          </View>
+
+          <ChevronRight size={20} color="#3b82f6" strokeWidth={2} />
+        </View>
       </TouchableOpacity>
 
       {/* Favorites Section */}

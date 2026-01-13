@@ -11,12 +11,25 @@ import { ArrowLeft, ChevronLeft, ChevronRight, Calendar as CalendarIcon, AlertCi
 import { useRouter, useFocusEffect } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { getAllPlanDates, getTaskCount } from "@/lib/studyPlanStorage";
+import { useTranslation } from "react-i18next";
 
 export default function CalendarScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+
+  // Localized day names
+  const dayNames = [
+    t("common.dayNames.sun"),
+    t("common.dayNames.mon"),
+    t("common.dayNames.tue"),
+    t("common.dayNames.wed"),
+    t("common.dayNames.thu"),
+    t("common.dayNames.fri"),
+    t("common.dayNames.sat"),
+  ];
 
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -455,8 +468,8 @@ export default function CalendarScreen() {
 
           {/* Day Labels */}
           <View style={{ flexDirection: "row", marginBottom: 8 }}>
-            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-              <View key={day} style={{ flex: 1, alignItems: "center" }}>
+            {dayNames.map((day, index) => (
+              <View key={index} style={{ flex: 1, alignItems: "center" }}>
                 <Text
                   style={{
                     fontSize: 12,

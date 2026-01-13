@@ -241,7 +241,10 @@ export const blockApp = async (
     // Update native module's blocked apps list on Android
     if (Platform.OS === 'android') {
       const packageNames = blockedApps.filter(a => a.isBlocked).map(a => a.packageName);
-      AppBlocker.setBlockedApps(packageNames);
+      // Also include default blocked apps from profile
+      const defaultApps = await getDefaultBlockedApps();
+      const allBlockedApps = [...new Set([...packageNames, ...defaultApps])];
+      AppBlocker.setBlockedApps(allBlockedApps);
     }
   } catch (error) {
     console.error('Error blocking app:', error);
@@ -253,15 +256,28 @@ export const blockApp = async (
  */
 export const unblockApp = async (packageName: string): Promise<void> => {
   try {
+    // Remove from blocked apps list
     const blockedApps = await getBlockedApps();
     const filtered = blockedApps.filter((a) => a.packageName !== packageName);
     await AsyncStorage.setItem(BLOCKED_APPS_KEY, JSON.stringify(filtered));
 
+    // Also remove from default blocked apps (profile) to prevent re-adding on sync
+    const defaultApps = await getDefaultBlockedApps();
+    const filteredDefault = defaultApps.filter((a) => a !== packageName);
+    await AsyncStorage.setItem(DEFAULT_BLOCKED_APPS_KEY, JSON.stringify(filteredDefault));
+    await SecureStore.setItemAsync('blockedApps', JSON.stringify(filteredDefault));
+
     // Update native module's blocked apps list on Android
     if (Platform.OS === 'android') {
-      const packageNames = filtered.filter(a => a.isBlocked).map(a => a.packageName);
-      AppBlocker.setBlockedApps(packageNames);
+      // Clear all blocking data for this specific app (removes from blocked_apps set + temp_unblock)
+      AppBlocker.clearAppBlockData(packageName);
+
+      // Sync the combined list minus this app
+      const allRemainingApps = [...new Set([...filtered.map(a => a.packageName), ...filteredDefault])];
+      AppBlocker.setBlockedApps(allRemainingApps);
     }
+
+    console.log('[AppBlocking] Unblocked app:', packageName);
   } catch (error) {
     console.error('Error unblocking app:', error);
   }
@@ -624,6 +640,7 @@ export const updateDailyLimitUsage = async (
 
 /**
  * Reset daily limits at midnight
+ * Only resets usage counters - apps remain in the blocked list
  */
 export const resetDailyLimitsIfNeeded = async (): Promise<void> => {
   try {
@@ -637,9 +654,8 @@ export const resetDailyLimitsIfNeeded = async (): Promise<void> => {
         limit.usedMinutes = 0;
         limit.lastResetDate = today;
         needsUpdate = true;
-
-        // Unblock apps that were blocked due to limit
-        await unblockApp(limit.packageName);
+        // Note: Apps stay blocked, only usage counter resets
+        // Do NOT call unblockApp() here as it removes apps from defaults
       }
     }
 
@@ -888,6 +904,10 @@ export const setDefaultBlockedApps = async (apps: string[]): Promise<void> => {
     await AsyncStorage.setItem(DEFAULT_BLOCKED_APPS_KEY, JSON.stringify(apps));
     // Also update SecureStore for consistency
     await SecureStore.setItemAsync('blockedApps', JSON.stringify(apps));
+    // Update native module so blocking actually works
+    if (Platform.OS === 'android') {
+      AppBlocker.setBlockedApps(apps);
+    }
   } catch (error) {
     console.error('Error setting default blocked apps:', error);
   }
@@ -922,5 +942,30 @@ export const syncBlockedWebsitesToNative = async (): Promise<void> => {
     AppBlocker.setBlockedWebsites(websites);
   } catch (error) {
     console.error('Error syncing blocked websites to native:', error);
+  }
+};
+
+/**
+ * Sync blocked apps to native module
+ * Should be called on app startup and when apps change
+ */
+export const syncBlockedAppsToNative = async (): Promise<void> => {
+  try {
+    if (Platform.OS !== 'android') return;
+
+    // Get apps from the actual blocked apps list (managed by BlockingContext)
+    const blockedApps = await getBlockedApps();
+    const packageNames = blockedApps.map(a => a.packageName);
+
+    // Also merge with default blocked apps from profile
+    const defaultApps = await getDefaultBlockedApps();
+
+    // Combine both lists (unique values)
+    const allBlockedApps = [...new Set([...packageNames, ...defaultApps])];
+
+    console.log('[AppBlocking] Syncing to native:', allBlockedApps.length, 'apps');
+    AppBlocker.setBlockedApps(allBlockedApps);
+  } catch (error) {
+    console.error('Error syncing blocked apps to native:', error);
   }
 };

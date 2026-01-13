@@ -190,6 +190,7 @@ export const IntentionModal = ({
       {/* Header */}
       <View
         style={{
+          position: 'relative',
           paddingTop: Platform.OS === 'ios' ? 60 : 40,
           paddingHorizontal: 20,
           paddingBottom: 16,
@@ -198,64 +199,65 @@ export const IntentionModal = ({
           backgroundColor: isDark ? '#000000' : '#ffffff',
         }}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-            {/* App Icon */}
-            <View
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: 12,
-                backgroundColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginRight: 12,
-                overflow: 'hidden',
-              }}
-            >
-              {appIcon ? (
-                <Image source={appIcon} style={{ width: 32, height: 32 }} />
-              ) : (
-                <Shield size={24} color={isDark ? '#ffffff' : '#111827'} />
-              )}
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: 'bold',
-                  color: isDark ? '#ffffff' : '#111827',
-                }}
-                numberOfLines={1}
-              >
-                {t("intention.whyApp", { appName })}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 13,
-                  color: '#ef4444',
-                  fontWeight: '500',
-                  marginTop: 2,
-                }}
-              >
-                {t("intention.blockedByLockIn")}
-              </Text>
-            </View>
-          </View>
-          <TouchableOpacity
-            onPress={handleLeave}
+        <View style={{ flexDirection: 'row', alignItems: 'center', paddingRight: 50 }}>
+          {/* App Icon */}
+          <View
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: 18,
+              width: 48,
+              height: 48,
+              borderRadius: 12,
               backgroundColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
               alignItems: 'center',
               justifyContent: 'center',
+              marginRight: 12,
+              overflow: 'hidden',
             }}
           >
-            <X size={20} color={isDark ? '#ffffff' : '#111827'} />
-          </TouchableOpacity>
+            {appIcon ? (
+              <Image source={appIcon} style={{ width: 32, height: 32 }} />
+            ) : (
+              <Shield size={24} color={isDark ? '#ffffff' : '#111827'} />
+            )}
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: 'bold',
+                color: isDark ? '#ffffff' : '#111827',
+              }}
+              numberOfLines={1}
+            >
+              {t("intention.whyApp", { appName })}
+            </Text>
+            <Text
+              style={{
+                fontSize: 13,
+                color: '#ef4444',
+                fontWeight: '500',
+                marginTop: 2,
+              }}
+            >
+              {t("intention.blockedByLockIn")}
+            </Text>
+          </View>
         </View>
+        <TouchableOpacity
+          onPress={handleLeave}
+          style={{
+            position: 'absolute',
+            top: Platform.OS === 'ios' ? 60 : 40,
+            right: 20,
+            width: 36,
+            height: 36,
+            borderRadius: 18,
+            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <X size={20} color={isDark ? '#ffffff' : '#111827'} />
+        </TouchableOpacity>
       </View>
 
       {/* Chat Messages */}

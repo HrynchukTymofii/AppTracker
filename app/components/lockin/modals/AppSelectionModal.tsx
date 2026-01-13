@@ -266,15 +266,13 @@ export const AppSelectionModal: React.FC<AppSelectionModalProps> = ({
           {/* Header */}
           <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
+              position: "relative",
               paddingHorizontal: 20,
               paddingTop: 16,
               paddingBottom: 16,
             }}
           >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: "row", alignItems: "center", paddingRight: 50 }}>
               <View
                 style={{
                   width: 44,
@@ -288,7 +286,7 @@ export const AppSelectionModal: React.FC<AppSelectionModalProps> = ({
               >
                 <Shield size={22} color="#ef4444" />
               </View>
-              <View>
+              <View style={{ flex: 1 }}>
                 <Text
                   style={{
                     fontSize: 20,
@@ -312,6 +310,9 @@ export const AppSelectionModal: React.FC<AppSelectionModalProps> = ({
             <TouchableOpacity
               onPress={onClose}
               style={{
+                position: "absolute",
+                top: 16,
+                right: 16,
                 width: 38,
                 height: 38,
                 borderRadius: 19,

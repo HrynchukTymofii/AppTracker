@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import { COLORS, GRADIENT_COLORS, GradientTuple, useOnboardingTheme } from './designSystem';
 
 // ============================================
@@ -31,19 +32,57 @@ export const GlassCard = ({
     return colors.glassMedium;
   };
 
+  // Extract layout styles for inner content, keep container styles for outer
+  const flatStyle = StyleSheet.flatten(style) || {};
+  const {
+    flexDirection,
+    alignItems,
+    justifyContent,
+    gap,
+    rowGap,
+    columnGap,
+    flexWrap,
+    alignContent,
+    ...containerStyle
+  } = flatStyle;
+
+  const contentStyle: any = {
+    padding: noPadding ? 0 : 20,
+  };
+  if (flexDirection) contentStyle.flexDirection = flexDirection;
+  if (alignItems) contentStyle.alignItems = alignItems;
+  if (justifyContent) contentStyle.justifyContent = justifyContent;
+  if (gap) contentStyle.gap = gap;
+  if (rowGap) contentStyle.rowGap = rowGap;
+  if (columnGap) contentStyle.columnGap = columnGap;
+  if (flexWrap) contentStyle.flexWrap = flexWrap;
+  if (alignContent) contentStyle.alignContent = alignContent;
+
   const cardContent = (
     <View style={[
       {
-        backgroundColor: getBgColor(),
         borderRadius: gradientBorder ? 18 : 20,
         borderWidth: gradientBorder ? 0 : 1,
-        borderColor: colors.glassBorder,
-        padding: noPadding ? 0 : 20,
+        borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.6)',
         overflow: 'hidden',
       },
-      style,
+      containerStyle,
     ]}>
-      {/* Inner gradient overlay for depth */}
+      <BlurView intensity={isDark ? 20 : 35} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
+      <LinearGradient
+        colors={isDark ? ['rgba(255, 255, 255, 0.06)', 'rgba(255, 255, 255, 0.02)'] : ['rgba(255, 255, 255, 0.9)', 'rgba(255, 255, 255, 0.7)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      {/* Top shine */}
+      <LinearGradient
+        colors={isDark ? ['rgba(255, 255, 255, 0.06)', 'transparent'] : ['rgba(255, 255, 255, 0.4)', 'transparent']}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 0.6 }}
+        style={[StyleSheet.absoluteFill, { height: '60%' }]}
+      />
+      {/* Inner gradient overlay for depth (gradient variant) */}
       {variant === 'gradient' && (
         <LinearGradient
           colors={isDark
@@ -52,17 +91,12 @@ export const GlassCard = ({
           }
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            borderRadius: gradientBorder ? 18 : 20,
-          }}
+          style={StyleSheet.absoluteFill}
         />
       )}
-      {children}
+      <View style={contentStyle}>
+        {children}
+      </View>
     </View>
   );
 
@@ -117,6 +151,7 @@ export const GradientButton = ({
   colors = GRADIENT_COLORS.primary,
   style,
   disabled = false,
+  shadowDelay = 800,
 }: {
   onPress: () => void;
   title: string;
@@ -124,29 +159,212 @@ export const GradientButton = ({
   colors?: GradientTuple;
   style?: any;
   disabled?: boolean;
+  shadowDelay?: number;
 }) => {
+  const { isDark } = useOnboardingTheme();
+  const [showShadow, setShowShadow] = React.useState(false);
+
+  // Delay shadow appearance to after fade-in animation
+  React.useEffect(() => {
+    const timer = setTimeout(() => setShowShadow(true), shadowDelay);
+    return () => clearTimeout(timer);
+  }, [shadowDelay]);
+
+  // Get accent color from gradient for subtle tint
+  const accentColor = colors[0];
+
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.8} disabled={disabled} style={style}>
-      <LinearGradient
-        colors={colors}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={{
-          borderRadius: 16,
-          padding: 18,
-          alignItems: 'center',
-          opacity: disabled ? 0.5 : 1,
-        }}
-      >
-        <Text style={{ fontSize: 17, fontWeight: '700', color: '#FFFFFF', letterSpacing: 0.3 }}>
-          {title}
-        </Text>
-        {subtitle && (
-          <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', marginTop: 4 }}>
-            {subtitle}
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={1}
+      disabled={disabled}
+      style={[style, {
+        borderRadius: 20,
+        ...(showShadow && {
+          shadowColor: accentColor,
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.3,
+          shadowRadius: 16,
+          elevation: 8,
+        }),
+      }]}
+    >
+      <View style={{
+        borderRadius: 20,
+        overflow: 'hidden',
+        opacity: disabled ? 0.5 : 1,
+        borderWidth: 1,
+        borderColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.8)',
+      }}>
+        {/* Base blur layer */}
+        <BlurView intensity={isDark ? 40 : 60} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
+
+        {/* Subtle color tint */}
+        <LinearGradient
+          colors={isDark
+            ? [`${accentColor}25`, `${accentColor}15`]
+            : [`${accentColor}20`, `${accentColor}10`]
+          }
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+
+        {/* Glass base - more opaque to hide shadow */}
+        <LinearGradient
+          colors={isDark
+            ? ['rgba(40, 40, 50, 0.95)', 'rgba(30, 30, 40, 0.9)']
+            : ['rgba(255, 255, 255, 0.98)', 'rgba(245, 245, 250, 0.95)']
+          }
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+
+        {/* Top shine for 3D effect */}
+        <LinearGradient
+          colors={isDark
+            ? ['rgba(255, 255, 255, 0.2)', 'transparent']
+            : ['rgba(255, 255, 255, 0.9)', 'transparent']
+          }
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 0.5 }}
+          style={[StyleSheet.absoluteFill, { height: '50%' }]}
+        />
+
+        {/* Bottom shadow for depth */}
+        <LinearGradient
+          colors={['transparent', isDark ? 'rgba(0, 0, 0, 0.15)' : 'rgba(0, 0, 0, 0.05)']}
+          start={{ x: 0.5, y: 0.5 }}
+          end={{ x: 0.5, y: 1 }}
+          style={[StyleSheet.absoluteFill, { top: '50%' }]}
+        />
+
+        <View style={{ padding: 18, alignItems: 'center' }}>
+          <Text style={{
+            fontSize: 17,
+            fontWeight: '700',
+            color: isDark ? '#FFFFFF' : '#1a1a2e',
+            letterSpacing: 0.3,
+          }}>
+            {title}
           </Text>
-        )}
-      </LinearGradient>
+          {subtitle && (
+            <Text style={{
+              fontSize: 13,
+              color: isDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)',
+              marginTop: 4,
+            }}>
+              {subtitle}
+            </Text>
+          )}
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+// ============================================
+// WHITE GLASS BUTTON (Light glassy style)
+// ============================================
+
+export const WhiteGlassButton = ({
+  onPress,
+  title,
+  style,
+  disabled = false,
+  shadowDelay = 800,
+}: {
+  onPress: () => void;
+  title: string;
+  style?: any;
+  disabled?: boolean;
+  shadowDelay?: number;
+}) => {
+  const { isDark } = useOnboardingTheme();
+  const [showShadow, setShowShadow] = React.useState(false);
+
+  // Delay shadow appearance to after fade-in animation
+  React.useEffect(() => {
+    const timer = setTimeout(() => setShowShadow(true), shadowDelay);
+    return () => clearTimeout(timer);
+  }, [shadowDelay]);
+
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.85}
+      disabled={disabled}
+      style={[style, {
+        borderRadius: 20,
+        ...(showShadow && {
+          shadowColor: isDark ? '#FFFFFF' : '#000000',
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: isDark ? 0.3 : 0.15,
+          shadowRadius: 16,
+          elevation: 8,
+        }),
+      }]}
+    >
+      <View style={{
+        borderRadius: 20,
+        overflow: 'hidden',
+        opacity: disabled ? 0.5 : 1,
+        borderWidth: 1,
+        borderColor: isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.1)',
+      }}>
+        {/* Base blur layer */}
+        <BlurView intensity={isDark ? 60 : 40} tint={isDark ? 'light' : 'dark'} style={StyleSheet.absoluteFill} />
+
+        {/* Glass base */}
+        <LinearGradient
+          colors={isDark
+            ? ['rgba(255, 255, 255, 0.98)', 'rgba(240, 240, 245, 0.95)']
+            : ['rgba(20, 20, 30, 0.98)', 'rgba(30, 30, 40, 0.95)']
+          }
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+
+        {/* Top shine for 3D effect */}
+        <LinearGradient
+          colors={isDark
+            ? ['rgba(255, 255, 255, 0.5)', 'transparent']
+            : ['rgba(255, 255, 255, 0.15)', 'transparent']
+          }
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 0.5 }}
+          style={[StyleSheet.absoluteFill, { height: '50%' }]}
+        />
+
+        {/* Bottom shadow for depth */}
+        <LinearGradient
+          colors={['transparent', isDark ? 'rgba(0, 0, 0, 0.08)' : 'rgba(0, 0, 0, 0.2)']}
+          start={{ x: 0.5, y: 0.5 }}
+          end={{ x: 0.5, y: 1 }}
+          style={[StyleSheet.absoluteFill, { top: '50%' }]}
+        />
+
+        <View style={{ padding: 18, alignItems: 'center', flexDirection: 'row', justifyContent: 'center' }}>
+          <Text style={{
+            fontSize: 17,
+            fontWeight: '700',
+            color: isDark ? '#1a1a2e' : '#FFFFFF',
+            letterSpacing: 0.3,
+            marginRight: 8,
+          }}>
+            {title}
+          </Text>
+          <Text style={{
+            fontSize: 17,
+            fontWeight: '600',
+            color: isDark ? '#1a1a2e' : '#FFFFFF',
+          }}>
+            {'>'}
+          </Text>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -267,26 +485,62 @@ export const ToggleButton = ({
   label: string;
   onPress: () => void;
 }) => {
-  const { colors } = useOnboardingTheme();
+  const { colors, isDark } = useOnboardingTheme();
 
   return (
     <TouchableOpacity
       onPress={onPress}
       style={{
         flex: 1,
-        paddingVertical: 12,
-        borderRadius: 12,
-        backgroundColor: selected ? COLORS.gradientPurple : colors.glassLight,
-        alignItems: 'center',
+        borderRadius: 14,
+        overflow: 'hidden',
+        borderWidth: selected ? 0 : 1,
+        borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.6)',
       }}
     >
-      <Text style={{
-        fontSize: 15,
-        fontWeight: '600',
-        color: selected ? '#FFFFFF' : colors.textSecondary,
-      }}>
-        {label}
-      </Text>
+      {selected ? (
+        <>
+          <LinearGradient
+            colors={[COLORS.gradientPurple, COLORS.gradientBlue]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          {/* Top shine */}
+          <LinearGradient
+            colors={['rgba(255, 255, 255, 0.25)', 'transparent']}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 0.6 }}
+            style={[StyleSheet.absoluteFill, { height: '60%' }]}
+          />
+        </>
+      ) : (
+        <>
+          <BlurView intensity={isDark ? 20 : 35} tint={isDark ? 'dark' : 'light'} style={StyleSheet.absoluteFill} />
+          <LinearGradient
+            colors={isDark ? ['rgba(255, 255, 255, 0.06)', 'rgba(255, 255, 255, 0.02)'] : ['rgba(255, 255, 255, 0.9)', 'rgba(255, 255, 255, 0.7)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          {/* Top shine */}
+          <LinearGradient
+            colors={isDark ? ['rgba(255, 255, 255, 0.06)', 'transparent'] : ['rgba(255, 255, 255, 0.4)', 'transparent']}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 0.6 }}
+            style={[StyleSheet.absoluteFill, { height: '60%' }]}
+          />
+        </>
+      )}
+      <View style={{ paddingVertical: 12, alignItems: 'center' }}>
+        <Text style={{
+          fontSize: 15,
+          fontWeight: '600',
+          color: selected ? '#FFFFFF' : colors.textSecondary,
+        }}>
+          {label}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 };

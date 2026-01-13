@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { Clock, Check, X, Camera, ChevronRight, History, Dumbbell } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
 import { LockInSession } from "@/context/LockInContext";
 import { useTranslation } from "react-i18next";
 
@@ -125,31 +126,34 @@ export const SessionHistory: React.FC<SessionHistoryProps> = ({
             key={session.id}
             style={{
               borderRadius: 14,
-              padding: 14,
               marginBottom: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              borderWidth: 1,
-              borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.05)",
               overflow: "hidden",
+              borderWidth: 1,
+              borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
             }}
           >
-            {/* Inner gradient background */}
+            <BlurView
+              intensity={isDark ? 20 : 35}
+              tint={isDark ? "dark" : "light"}
+              style={StyleSheet.absoluteFill}
+            />
             <LinearGradient
               colors={isDark
-                ? ["rgba(255, 255, 255, 0.04)", "rgba(255, 255, 255, 0.01)"]
-                : ["#ffffff", "#f9fafb"]
+                ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"]
+                : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]
               }
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-              }}
+              style={StyleSheet.absoluteFill}
             />
+            {/* Top shine */}
+            <LinearGradient
+              colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 0.6 }}
+              style={[StyleSheet.absoluteFill, { height: "60%" }]}
+            />
+            <View style={{ padding: 14, flexDirection: "row", alignItems: "center" }}>
             {/* Status indicator */}
             <View
               style={{
@@ -246,51 +250,66 @@ export const SessionHistory: React.FC<SessionHistoryProps> = ({
                 </Text>
               </View>
             )}
+            </View>
           </View>
         ))
       ) : (
         <View
           style={{
-            backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#f9fafb",
             borderRadius: 14,
-            padding: 32,
-            alignItems: "center",
+            overflow: "hidden",
             borderWidth: 1,
-            borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.05)",
+            borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
           }}
         >
-          <View
-            style={{
-              width: 56,
-              height: 56,
-              borderRadius: 28,
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#e5e7eb",
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: 12,
-            }}
-          >
-            <History size={28} color={isDark ? "#6b7280" : "#9ca3af"} />
+          <BlurView
+            intensity={isDark ? 20 : 35}
+            tint={isDark ? "dark" : "light"}
+            style={StyleSheet.absoluteFill}
+          />
+          <LinearGradient
+            colors={isDark
+              ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"]
+              : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]
+            }
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={{ padding: 32, alignItems: "center" }}>
+            <View
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: 28,
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.05)",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: 12,
+              }}
+            >
+              <History size={28} color={isDark ? "#6b7280" : "#9ca3af"} />
+            </View>
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: "600",
+                color: isDark ? "#9ca3af" : "#6b7280",
+                marginBottom: 4,
+              }}
+            >
+              {t("lockin.noSessions")}
+            </Text>
+            <Text
+              style={{
+                fontSize: 13,
+                color: isDark ? "#6b7280" : "#9ca3af",
+                textAlign: "center",
+              }}
+            >
+              {t("lockin.startFirst")}
+            </Text>
           </View>
-          <Text
-            style={{
-              fontSize: 15,
-              fontWeight: "600",
-              color: isDark ? "#9ca3af" : "#6b7280",
-              marginBottom: 4,
-            }}
-          >
-            {t("lockin.noSessions")}
-          </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              color: isDark ? "#6b7280" : "#9ca3af",
-              textAlign: "center",
-            }}
-          >
-            {t("lockin.startFirst")}
-          </Text>
         </View>
       )}
     </View>

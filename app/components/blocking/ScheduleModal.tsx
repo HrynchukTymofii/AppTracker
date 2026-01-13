@@ -9,6 +9,8 @@ import {
   ScrollView,
   Platform,
   KeyboardAvoidingView,
+  PanResponder,
+  Animated,
 } from "react-native";
 import { Shield, X, Check, ChevronRight, Globe } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
@@ -52,6 +54,37 @@ export const ScheduleModal = ({
   const [showAppSelection, setShowAppSelection] = useState(false);
   const [activeTab, setActiveTab] = useState<'apps' | 'websites'>('apps');
   const nameInputRef = useRef<any>(null);
+
+  // Swipe-to-close gesture
+  const translateY = useRef(new Animated.Value(0)).current;
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (_, gestureState) => gestureState.dy > 10,
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dy > 0) {
+          translateY.setValue(gestureState.dy);
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (gestureState.dy > 100 || gestureState.vy > 0.5) {
+          Animated.timing(translateY, {
+            toValue: 500,
+            duration: 200,
+            useNativeDriver: true,
+          }).start(() => {
+            translateY.setValue(0);
+            onClose();
+          });
+        } else {
+          Animated.spring(translateY, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
 
   // Load initial values or edit schedule when modal opens
   useEffect(() => {
@@ -179,7 +212,7 @@ export const ScheduleModal = ({
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
         >
-          <ScrollView
+          <Animated.View
             style={{
               backgroundColor: isDark ? "#000000" : "#ffffff",
               borderTopLeftRadius: 24,
@@ -191,17 +224,34 @@ export const ScheduleModal = ({
               borderColor: isDark
                 ? "rgba(255, 255, 255, 0.1)"
                 : "rgba(0, 0, 0, 0.05)",
+              transform: [{ translateY }],
             }}
-            contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
           >
+            {/* Handle bar - swipe area */}
+            <View
+              {...panResponder.panHandlers}
+              style={{ alignItems: "center", paddingTop: 12, paddingBottom: 8 }}
+            >
+              <View
+                style={{
+                  width: 40,
+                  height: 4,
+                  backgroundColor: isDark
+                    ? "rgba(255, 255, 255, 0.2)"
+                    : "rgba(0, 0, 0, 0.1)",
+                  borderRadius: 2,
+                }}
+              />
+            </View>
+            <ScrollView
+              contentContainerStyle={{ padding: 20, paddingTop: 8, paddingBottom: 40 }}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
             {/* Header */}
             <View
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
+                position: "relative",
                 marginBottom: 24,
               }}
             >
@@ -210,6 +260,7 @@ export const ScheduleModal = ({
                   fontSize: 24,
                   fontWeight: "bold",
                   color: isDark ? "#ffffff" : "#111827",
+                  paddingRight: 50,
                 }}
               >
                 {editSchedule
@@ -219,6 +270,9 @@ export const ScheduleModal = ({
               <TouchableOpacity
                 onPress={onClose}
                 style={{
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
                   width: 36,
                   height: 36,
                   borderRadius: 18,
@@ -672,7 +726,8 @@ export const ScheduleModal = ({
                 {t("blocking.modals.saveSchedule")}
               </Text>
             </TouchableOpacity>
-          </ScrollView>
+            </ScrollView>
+          </Animated.View>
         </KeyboardAvoidingView>
       </View>
 

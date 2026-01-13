@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { trackFocusSession } from "@/lib/achievementTracking";
+import { useEarnedTime } from "@/context/EarnedTimeContext";
 
 // Types
 export type TaskCategory = "study" | "health" | "work" | "creative" | "reading" | "custom";
@@ -58,7 +59,7 @@ interface LockInContextType {
   activeSession: LockInSession | null;
   sessionHistory: LockInSession[];
   startSession: (session: Omit<LockInSession, "id" | "startedAt" | "status">) => Promise<void>;
-  completeSession: (afterPhotoUri?: string) => Promise<void>;
+  completeSession: (afterPhotoUri?: string) => Promise<boolean>; // Returns true if first activity of day (for streak modal)
   cancelSession: () => Promise<void>;
   addExerciseActivity: (exerciseType: string, earnedMinutes: number, details: string) => Promise<void>;
 
@@ -85,6 +86,7 @@ const STORAGE_KEYS = {
 };
 
 export function LockInProvider({ children }: { children: ReactNode }) {
+  const { recordActivity } = useEarnedTime();
   const [tasks, setTasks] = useState<LockInTask[]>([]);
   const [activeSession, setActiveSession] = useState<LockInSession | null>(null);
   const [sessionHistory, setSessionHistory] = useState<LockInSession[]>([]);
@@ -159,8 +161,8 @@ export function LockInProvider({ children }: { children: ReactNode }) {
     await AsyncStorage.setItem(STORAGE_KEYS.ACTIVE_SESSION, JSON.stringify(newSession));
   };
 
-  const completeSession = async (afterPhotoUri?: string) => {
-    if (!activeSession) return;
+  const completeSession = async (afterPhotoUri?: string): Promise<boolean> => {
+    if (!activeSession) return false;
 
     const completedSession: LockInSession = {
       ...activeSession,
@@ -190,6 +192,10 @@ export function LockInProvider({ children }: { children: ReactNode }) {
       true // taskCompleted
     );
 
+    // Record activity for the unified streak system (shared with exercises)
+    // Returns true if this was the first activity of the day
+    const isFirstActivityToday = await recordActivity();
+
     await Promise.all([
       AsyncStorage.removeItem(STORAGE_KEYS.ACTIVE_SESSION),
       AsyncStorage.setItem(STORAGE_KEYS.SESSION_HISTORY, JSON.stringify(updatedHistory)),
@@ -199,6 +205,8 @@ export function LockInProvider({ children }: { children: ReactNode }) {
         totalPoints: newTotalPoints,
       })),
     ]);
+
+    return isFirstActivityToday; // Return whether to show streak modal
   };
 
   const cancelSession = async () => {

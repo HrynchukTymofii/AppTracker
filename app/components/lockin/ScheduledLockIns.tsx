@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { Calendar, Clock, Camera, ChevronRight, Plus } from "lucide-react-native";
 import { ScheduledLockIn } from "@/context/LockInContext";
+import { useTranslation } from "react-i18next";
 
 interface ScheduledLockInsProps {
   scheduled: ScheduledLockIn[];
@@ -11,41 +12,51 @@ interface ScheduledLockInsProps {
   onScheduledPress: (scheduled: ScheduledLockIn) => void;
 }
 
-const formatDuration = (minutes: number): string => {
-  if (minutes < 60) return `${minutes}m`;
+const formatDuration = (minutes: number, t: (key: string) => string): string => {
+  const h = t("common.timeUnits.h");
+  const m = t("common.timeUnits.m");
+  if (minutes < 60) return `${minutes}${m}`;
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;
-  return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+  return mins > 0 ? `${hours}${h} ${mins}${m}` : `${hours}${h}`;
 };
 
-const getDayLabel = (scheduled: ScheduledLockIn): string => {
+const getDayLabel = (scheduled: ScheduledLockIn, t: (key: string) => string): string => {
   if (scheduled.scheduledDate) {
     const date = new Date(scheduled.scheduledDate);
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    if (date.toDateString() === today.toDateString()) return "Today";
-    if (date.toDateString() === tomorrow.toDateString()) return "Tomorrow";
+    if (date.toDateString() === today.toDateString()) return t("common.today");
+    if (date.toDateString() === tomorrow.toDateString()) return t("common.tomorrow");
     return date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
   }
 
   if (scheduled.repeatDays && scheduled.repeatDays.length > 0) {
-    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const dayNames = [
+      t("common.dayNames.sun"),
+      t("common.dayNames.mon"),
+      t("common.dayNames.tue"),
+      t("common.dayNames.wed"),
+      t("common.dayNames.thu"),
+      t("common.dayNames.fri"),
+      t("common.dayNames.sat"),
+    ];
     const today = new Date().getDay();
 
     // Find the next day
     for (let i = 0; i < 7; i++) {
       const checkDay = (today + i) % 7;
       if (scheduled.repeatDays.includes(checkDay)) {
-        if (i === 0) return "Today";
-        if (i === 1) return "Tomorrow";
+        if (i === 0) return t("common.today");
+        if (i === 1) return t("common.tomorrow");
         return dayNames[checkDay];
       }
     }
   }
 
-  return "Scheduled";
+  return t("common.scheduled");
 };
 
 export const ScheduledLockIns: React.FC<ScheduledLockInsProps> = ({
@@ -55,6 +66,7 @@ export const ScheduledLockIns: React.FC<ScheduledLockInsProps> = ({
   onAddScheduled,
   onScheduledPress,
 }) => {
+  const { t } = useTranslation();
   // Only show first 3
   const displayScheduled = scheduled.slice(0, 3);
 
@@ -130,7 +142,7 @@ export const ScheduledLockIns: React.FC<ScheduledLockInsProps> = ({
                   marginBottom: 4,
                 }}
               >
-                {getDayLabel(item)}
+                {getDayLabel(item, t)}
               </Text>
 
               {/* Time */}
@@ -169,7 +181,7 @@ export const ScheduledLockIns: React.FC<ScheduledLockInsProps> = ({
                     color: isDark ? "#9ca3af" : "#6b7280",
                   }}
                 >
-                  {formatDuration(item.durationMinutes)}
+                  {formatDuration(item.durationMinutes, t)}
                 </Text>
                 {item.requiresPhotoVerification && (
                   <Camera size={12} color="#10b981" />

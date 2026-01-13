@@ -31,7 +31,7 @@ export interface AppUsageData {
 export interface UsageStatsData {
   apps: AppUsageData[];
   totalScreenTime: number;
-  pickups: number;
+  unlocks: number;
   hasRealData?: boolean;
 }
 
@@ -40,27 +40,27 @@ export interface DailyUsageData {
   dayOfMonth: number;
   dayOfWeek: number;
   hours: number;
-  pickups: number;
+  unlocks: number;
 }
 
 export interface WeekComparisonData {
   thisWeek: {
     totalHours: number;
     avgHours: number;
-    pickups: number;
+    unlocks: number;
     dailyData: { day: string; hours: number }[];
   };
   lastWeek: {
     totalHours: number;
     avgHours: number;
-    pickups: number;
+    unlocks: number;
     dailyData: { day: string; hours: number }[];
   };
   comparison: {
     hoursDiff: number;
     hoursPercentChange: number;
-    pickupsDiff: number;
-    pickupsPercentChange: number;
+    unlocksDiff: number;
+    unlocksPercentChange: number;
     improved: boolean;
   };
 }
@@ -99,7 +99,7 @@ export const initializeTracking = async () => {
     if (!stored) {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({
         sessions: [],
-        pickups: 0,
+        unlocks: 0,
         lastReset: Date.now(),
       }));
     }
@@ -109,25 +109,25 @@ export const initializeTracking = async () => {
 };
 
 /**
- * Log a phone pickup/unlock event
+ * Log a phone unlock event
  */
-export const logPickup = async () => {
+export const logUnlock = async () => {
   try {
     const stored = await AsyncStorage.getItem(STORAGE_KEY);
     if (stored) {
       const data = JSON.parse(stored);
-      data.pickups = (data.pickups || 0) + 1;
+      data.unlocks = (data.unlocks || 0) + 1;
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     }
   } catch (error) {
-    console.error('Error logging pickup:', error);
+    console.error('Error logging unlock:', error);
   }
 };
 
 /**
- * Get today's pickup count
+ * Get today's unlock count
  */
-export const getTodayPickups = async (): Promise<number> => {
+export const getTodayUnlocks = async (): Promise<number> => {
   try {
     const stored = await AsyncStorage.getItem(STORAGE_KEY);
     if (stored) {
@@ -137,16 +137,16 @@ export const getTodayPickups = async (): Promise<number> => {
       today.setHours(0, 0, 0, 0);
 
       if (lastReset < today.getTime()) {
-        data.pickups = 0;
+        data.unlocks = 0;
         data.lastReset = Date.now();
         await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         return 0;
       }
 
-      return data.pickups || 0;
+      return data.unlocks || 0;
     }
   } catch (error) {
-    console.error('Error getting pickups:', error);
+    console.error('Error getting unlocks:', error);
   }
   return 0;
 };
@@ -203,7 +203,7 @@ export const getTodayUsageStats = async (): Promise<UsageStatsData> => {
         return {
           apps: filteredApps,
           totalScreenTime, // Includes current app usage
-          pickups: nativeData.pickups,
+          unlocks: nativeData.unlocks,
           hasRealData: true,
         };
       }
@@ -212,9 +212,14 @@ export const getTodayUsageStats = async (): Promise<UsageStatsData> => {
     }
   }
 
-  // Fall back to simulated data
-  const pickups = await getTodayPickups();
-  return getSimulatedUsageData(pickups);
+  // Don't use simulated data - return empty
+  console.log('[UsageTracking] getTodayUsageStats - No real data available, returning empty');
+  return {
+    apps: [],
+    totalScreenTime: 0,
+    unlocks: 0,
+    hasRealData: false,
+  };
 };
 
 /**
@@ -228,10 +233,16 @@ export const getWeekUsageStats = async (): Promise<UsageStatsData> => {
  * Get usage stats for a specific week offset
  */
 export const getWeekUsageStatsWithOffset = async (weekOffset: number): Promise<UsageStatsData> => {
+  const fnStart = Date.now();
+  console.log('[UsageTracking] getWeekUsageStatsWithOffset START, weekOffset:', weekOffset);
+
   // Try native module first
   if (NativeUsageStats && Platform.OS === 'android') {
     try {
+      console.log('[UsageTracking] Calling native getWeekUsageStats...');
+      const nativeStart = Date.now();
       const nativeData = await NativeUsageStats.getWeekUsageStats(weekOffset);
+      console.log('[UsageTracking] Native getWeekUsageStats done', `(${Date.now() - nativeStart}ms)`, { hasPermission: nativeData.hasPermission, appsCount: nativeData.apps?.length });
 
       if (nativeData.hasPermission && nativeData.apps && nativeData.apps.length > 0) {
         // Filter apps for display (remove current app from list)
@@ -241,15 +252,16 @@ export const getWeekUsageStatsWithOffset = async (weekOffset: number): Promise<U
         const totalScreenTime = nativeData.totalScreenTime ||
           nativeData.apps.reduce((sum: number, app: AppUsageData) => sum + app.timeInForeground, 0);
 
+        console.log('[UsageTracking] getWeekUsageStatsWithOffset SUCCESS (native)', `(${Date.now() - fnStart}ms total)`);
         return {
           apps: filteredApps,
           totalScreenTime,
-          pickups: nativeData.pickups || 0,
+          unlocks: nativeData.unlocks || 0,
           hasRealData: true,
         };
       }
     } catch (error) {
-      // Silently fall back to empty data
+      console.log('[UsageTracking] Native getWeekUsageStats error:', error);
     }
   }
 
@@ -260,14 +272,14 @@ export const getWeekUsageStatsWithOffset = async (weekOffset: number): Promise<U
       const dbData = await getWeekUsage(startDate, endDate);
 
       if (dbData && dbData.length > 0) {
-        // Sum up screen time and pickups from database
+        // Sum up screen time and unlocks from database
         let totalScreenTime = 0;
-        let totalPickups = 0;
+        let totalUnlocks = 0;
         const appsMap = new Map<string, any>();
 
         dbData.forEach(row => {
           totalScreenTime += row.total_screen_time || 0;
-          totalPickups += row.pickups || 0;
+          totalUnlocks += row.pickups || 0; // DB column is still named 'pickups'
 
           // Aggregate app data
           if (row.apps_data && Array.isArray(row.apps_data)) {
@@ -289,7 +301,7 @@ export const getWeekUsageStatsWithOffset = async (weekOffset: number): Promise<U
         return {
           apps,
           totalScreenTime,
-          pickups: totalPickups,
+          unlocks: totalUnlocks,
           hasRealData: true,
         };
       }
@@ -301,19 +313,28 @@ export const getWeekUsageStatsWithOffset = async (weekOffset: number): Promise<U
     return {
       apps: [],
       totalScreenTime: 0,
-      pickups: 0,
+      unlocks: 0,
       hasRealData: false,
     };
   }
 
-  // Only use simulated data for current week (weekOffset = 0) when native not available
-  return getSimulatedWeekUsageData(weekOffset);
+  // Don't use simulated data - return empty data instead
+  console.log('[UsageTracking] getWeekUsageStatsWithOffset - No real data available, returning empty');
+  return {
+    apps: [],
+    totalScreenTime: 0,
+    unlocks: 0,
+    hasRealData: false,
+  };
 };
 
 /**
  * Get daily usage stats for the week
  */
 export const getDailyUsageForWeek = async (weekOffset: number = 0): Promise<{ day: string; hours: number }[]> => {
+  const fnStart = Date.now();
+  console.log('[UsageTracking] getDailyUsageForWeek START, weekOffset:', weekOffset);
+
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -325,20 +346,28 @@ export const getDailyUsageForWeek = async (weekOffset: number = 0): Promise<{ da
   // Try native module first
   if (NativeUsageStats && Platform.OS === 'android') {
     try {
+      console.log('[UsageTracking] Checking hasUsageStatsPermission...');
+      const permStart = Date.now();
       const hasPermission = await NativeUsageStats.hasUsageStatsPermission();
+      console.log('[UsageTracking] hasUsageStatsPermission:', hasPermission, `(${Date.now() - permStart}ms)`);
+
       if (hasPermission) {
+        console.log('[UsageTracking] Calling native getDailyUsageForWeek...');
+        const nativeStart = Date.now();
         const dailyData = await NativeUsageStats.getDailyUsageForWeek(weekOffset);
+        console.log('[UsageTracking] Native getDailyUsageForWeek done', `(${Date.now() - nativeStart}ms)`, { length: dailyData?.length });
 
         // Only use native data if it has actual content (not all zeros)
         if (dailyData && dailyData.length === 7) {
           const hasActualData = dailyData.some((d: any) => d.hours > 0);
           if (hasActualData) {
+            console.log('[UsageTracking] getDailyUsageForWeek SUCCESS (native)', `(${Date.now() - fnStart}ms total)`);
             return dailyData;
           }
         }
       }
     } catch (error) {
-      // Silently fall back to database/empty data
+      console.log('[UsageTracking] getDailyUsageForWeek native error:', error);
     }
   }
 
@@ -383,16 +412,14 @@ export const getDailyUsageForWeek = async (weekOffset: number = 0): Promise<{ da
     });
   }
 
-  // Only for current week when native not available: use minimal simulated data
-  const seed = Math.abs(weekOffset * 7) + new Date().getMonth() + 10;
+  // Don't use simulated data - return zeros instead
+  console.log('[UsageTracking] getDailyUsageForWeek - No real data available, returning zeros');
   return Array.from({ length: 7 }, (_, index) => {
     const date = new Date(startDate);
     date.setDate(startDate.getDate() + index);
-    const isFuture = date > new Date();
-
     return {
       day: dayNames[date.getDay()],
-      hours: isFuture ? 0 : Math.round((2 + ((seed + index) % 5)) * 10) / 10,
+      hours: 0,
     };
   });
 };
@@ -400,7 +427,7 @@ export const getDailyUsageForWeek = async (weekOffset: number = 0): Promise<{ da
 /**
  * Simulated data for today (used when native is unavailable)
  */
-const getSimulatedUsageData = (pickups: number): UsageStatsData => {
+const getSimulatedUsageData = (unlocks: number): UsageStatsData => {
   // Use consistent data based on current date (not random each call)
   const today = new Date();
   const seed = today.getDate() + today.getMonth() * 31;
@@ -459,7 +486,7 @@ const getSimulatedUsageData = (pickups: number): UsageStatsData => {
   return {
     apps: filteredApps.slice(0, 7),
     totalScreenTime,
-    pickups: pickups > 0 ? pickups : 80 + (seed % 50),
+    unlocks: unlocks > 0 ? unlocks : 80 + (seed % 50),
     hasRealData: false,
   };
 };
@@ -514,7 +541,7 @@ const getSimulatedWeekUsageData = (weekOffset: number = 0): UsageStatsData => {
   return {
     apps: filteredApps,
     totalScreenTime,
-    pickups: 600 + (seed % 200),
+    unlocks: 600 + (seed % 200),
     hasRealData: false,
   };
 };
@@ -522,24 +549,26 @@ const getSimulatedWeekUsageData = (weekOffset: number = 0): UsageStatsData => {
 /**
  * Format milliseconds to human readable duration
  */
-export const formatDuration = (milliseconds: number): string => {
+export const formatDuration = (milliseconds: number, t?: (key: string) => string): string => {
+  const hUnit = t ? t("common.timeUnits.h") : "h";
+  const mUnit = t ? t("common.timeUnits.m") : "m";
   const hours = Math.floor(milliseconds / (1000 * 60 * 60));
   const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
 
   if (hours > 0) {
-    return `${hours}h ${minutes}m`;
+    return `${hours}${hUnit} ${minutes}${mUnit}`;
   }
-  return `${minutes}m`;
+  return `${minutes}${mUnit}`;
 };
 
 /**
  * Calculate health score based on usage and earned time
- * Formula: base + (earned * 0.3) - (spent * 0.3) - (pickups * 0.2)
+ * Formula: base + (earned * 0.3) - (spent * 0.3) - (unlocks * 0.2)
  * Returns: { displayScore: 0-100 capped, rawScore: actual value which can exceed 100 }
  */
 export const calculateHealthScore = (
   totalScreenTimeMs: number,
-  pickups: number,
+  unlocks: number,
   earnedMinutes: number = 0,
   dailyGoalMinutes: number = 180 // Default 3 hours
 ): number => {
@@ -551,14 +580,14 @@ export const calculateHealthScore = (
   // At 100% of goal = -40 points, at 200% = -80 points
   const screenTimePenalty = (screenTimeMinutes / dailyGoalMinutes) * 40;
 
-  // Pickups penalty: small deduction (max -15 at 150 pickups)
-  const pickupsPenalty = Math.min((pickups / 150) * 15, 15);
+  // Unlocks penalty: small deduction (max -15 at 150 unlocks)
+  const unlocksPenalty = Math.min((unlocks / 150) * 15, 15);
 
   // Earned time bonus: reward exercise (0.5 per min, max +20)
   const earnedBonus = Math.min(earnedMinutes * 0.5, 20);
 
   // Calculate score
-  const rawScore = baseScore - screenTimePenalty - pickupsPenalty + earnedBonus;
+  const rawScore = baseScore - screenTimePenalty - unlocksPenalty + earnedBonus;
 
   // Return score capped between 0 and 100
   return Math.round(Math.max(0, Math.min(100, rawScore)));
@@ -569,7 +598,7 @@ export const calculateHealthScore = (
  */
 export const calculateRawHealthScore = (
   totalScreenTimeMs: number,
-  pickups: number,
+  unlocks: number,
   earnedMinutes: number = 0,
   dailyGoalMinutes: number = 180
 ): number => {
@@ -577,10 +606,10 @@ export const calculateRawHealthScore = (
   const screenTimeMinutes = totalScreenTimeMs / 1000 / 60;
 
   const screenTimePenalty = (screenTimeMinutes / dailyGoalMinutes) * 40;
-  const pickupsPenalty = Math.min((pickups / 150) * 15, 15);
+  const unlocksPenalty = Math.min((unlocks / 150) * 15, 15);
   const earnedBonus = Math.min(earnedMinutes * 0.5, 20);
 
-  return Math.round(Math.max(0, baseScore - screenTimePenalty - pickupsPenalty + earnedBonus));
+  return Math.round(Math.max(0, baseScore - screenTimePenalty - unlocksPenalty + earnedBonus));
 };
 
 /**
@@ -618,7 +647,7 @@ export const getMonthUsageStats = async (monthOffset: number = 0): Promise<Usage
         return {
           apps: filteredApps,
           totalScreenTime,
-          pickups: nativeData.pickups,
+          unlocks: nativeData.unlocks,
           hasRealData: true,
         };
       }
@@ -627,8 +656,14 @@ export const getMonthUsageStats = async (monthOffset: number = 0): Promise<Usage
     }
   }
 
-  const pickups = await getTodayPickups();
-  return getSimulatedWeekUsageData(pickups * 30);
+  // Don't use simulated data - return empty
+  console.log('[UsageTracking] getMonthUsageStats - No real data available, returning empty');
+  return {
+    apps: [],
+    totalScreenTime: 0,
+    unlocks: 0,
+    hasRealData: false,
+  };
 };
 
 /**
@@ -649,25 +684,9 @@ export const getDailyUsageForMonth = async (monthOffset: number = 0): Promise<Da
     }
   }
 
-  // Fall back to simulated data
-  const now = new Date();
-  now.setMonth(now.getMonth() + monthOffset);
-  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-  const seed = now.getMonth() + now.getFullYear();
-
-  return Array.from({ length: daysInMonth }, (_, i) => {
-    const date = new Date(now.getFullYear(), now.getMonth(), i + 1);
-    const isFuture = date > new Date();
-    const baseHours = isFuture ? 0 : 2 + ((seed + i) % 4);
-
-    return {
-      date: date.toISOString().split('T')[0],
-      dayOfMonth: i + 1,
-      dayOfWeek: date.getDay(),
-      hours: Math.round(baseHours * 10) / 10,
-      pickups: isFuture ? 0 : 50 + ((seed + i) % 50),
-    };
-  });
+  // Don't use simulated data - return empty array
+  console.log('[UsageTracking] getDailyUsageForMonth - No real data available, returning empty');
+  return [];
 };
 
 /**
@@ -694,8 +713,8 @@ export const getWeekComparison = async (): Promise<WeekComparisonData> => {
     const thisWeekAvgHours = thisWeekTotalHours / thisWeekDaysWithData;
     const lastWeekAvgHours = lastWeekTotalHours / lastWeekDaysWithData;
 
-    const thisWeekPickups = thisWeekStats.pickups || 0;
-    const lastWeekPickups = lastWeekStats.pickups || 0;
+    const thisWeekUnlocks = thisWeekStats.unlocks || 0;
+    const lastWeekUnlocks = lastWeekStats.unlocks || 0;
 
     // Calculate differences
     const hoursDiff = thisWeekTotalHours - lastWeekTotalHours;
@@ -703,9 +722,9 @@ export const getWeekComparison = async (): Promise<WeekComparisonData> => {
       ? Math.round((hoursDiff / lastWeekTotalHours) * 100)
       : 0;
 
-    const pickupsDiff = thisWeekPickups - lastWeekPickups;
-    const pickupsPercentChange = lastWeekPickups > 0
-      ? Math.round((pickupsDiff / lastWeekPickups) * 100)
+    const unlocksDiff = thisWeekUnlocks - lastWeekUnlocks;
+    const unlocksPercentChange = lastWeekUnlocks > 0
+      ? Math.round((unlocksDiff / lastWeekUnlocks) * 100)
       : 0;
 
     // Improved = less screen time this week
@@ -715,20 +734,20 @@ export const getWeekComparison = async (): Promise<WeekComparisonData> => {
       thisWeek: {
         totalHours: Math.round(thisWeekTotalHours * 10) / 10,
         avgHours: Math.round(thisWeekAvgHours * 10) / 10,
-        pickups: thisWeekPickups,
+        unlocks: thisWeekUnlocks,
         dailyData: thisWeekDaily,
       },
       lastWeek: {
         totalHours: Math.round(lastWeekTotalHours * 10) / 10,
         avgHours: Math.round(lastWeekAvgHours * 10) / 10,
-        pickups: lastWeekPickups,
+        unlocks: lastWeekUnlocks,
         dailyData: lastWeekDaily,
       },
       comparison: {
         hoursDiff: Math.round(hoursDiff * 10) / 10,
         hoursPercentChange,
-        pickupsDiff,
-        pickupsPercentChange,
+        unlocksDiff,
+        unlocksPercentChange,
         improved,
       },
     };
@@ -745,20 +764,20 @@ export const getWeekComparison = async (): Promise<WeekComparisonData> => {
       thisWeek: {
         totalHours: 0,
         avgHours: 0,
-        pickups: 0,
+        unlocks: 0,
         dailyData: emptyDailyData,
       },
       lastWeek: {
         totalHours: 0,
         avgHours: 0,
-        pickups: 0,
+        unlocks: 0,
         dailyData: emptyDailyData,
       },
       comparison: {
         hoursDiff: 0,
         hoursPercentChange: 0,
-        pickupsDiff: 0,
-        pickupsPercentChange: 0,
+        unlocksDiff: 0,
+        unlocksPercentChange: 0,
         improved: false,
       },
     };

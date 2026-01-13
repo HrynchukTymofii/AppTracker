@@ -27,7 +27,7 @@ import { View, useColorScheme, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { LinearGradient } from 'expo-linear-gradient';
-import { setBlockedApps, setBlockedWebsites } from '@/modules/app-blocker';
+import { setBlockedApps, setBlockedWebsites, setTotalDailyLimit } from '@/modules/app-blocker';
 import { getInstalledApps, InstalledApp } from '@/modules/usage-stats';
 
 import {
@@ -105,12 +105,15 @@ export default function SellingOnboarding() {
     await SecureStore.setItemAsync('sellingOnboardingCompleted', 'true');
     await SecureStore.setItemAsync('blockedApps', JSON.stringify(apps));
     await SecureStore.setItemAsync('blockedWebsites', JSON.stringify(websites));
-    await SecureStore.setItemAsync('dailyGoal', userAnswers.dailyGoal.toString());
+    // Save to correct key that EarnedTimeContext reads from
+    await SecureStore.setItemAsync('totalDailyLimit', userAnswers.dailyGoal.toString());
     await SecureStore.setItemAsync('defaultAppLimit', userAnswers.dailyGoal.toString());
 
     // Sync to native module immediately so blocking works right away
     setBlockedApps(apps);
     setBlockedWebsites(websites);
+    // Also sync daily goal to native SharedPreferences
+    setTotalDailyLimit(userAnswers.dailyGoal);
 
     router.replace('/auth');
   };

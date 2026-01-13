@@ -5,13 +5,13 @@ import {
   TouchableOpacity,
   Share,
   Dimensions,
+  Platform,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   TrendingDown,
   TrendingUp,
   Clock,
-  Smartphone,
   Share2,
   X,
   Sparkles,
@@ -19,7 +19,8 @@ import {
 import { captureRef } from "react-native-view-shot";
 import * as Sharing from "expo-sharing";
 import { WeekComparisonData } from "@/lib/usageTracking";
-import { BlurView } from "expo-blur";
+import { useTranslation } from "react-i18next";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -34,6 +35,8 @@ export const ShareCard: React.FC<ShareCardProps> = ({
   onClose,
   isDark,
 }) => {
+  const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const cardRef = useRef<View>(null);
 
   const { thisWeek, lastWeek, comparison: comp } = comparison;
@@ -50,11 +53,11 @@ export const ShareCard: React.FC<ShareCardProps> = ({
         if (await Sharing.isAvailableAsync()) {
           await Sharing.shareAsync(uri, {
             mimeType: "image/png",
-            dialogTitle: "Share your progress",
+            dialogTitle: t("stats.shareProgress"),
           });
         } else {
           await Share.share({
-            message: `📱 My Screen Time Progress\n\nThis Week: ${thisWeek.totalHours}h\nLast Week: ${lastWeek.totalHours}h\n${improved ? "📉" : "📈"} ${Math.abs(comp.hoursPercentChange)}% ${improved ? "less" : "more"} screen time!\n\n#LockIn #DigitalWellbeing`,
+            message: `📱 ${t("stats.shareCard.myProgress")}\n\n${t("stats.thisWeek")}: ${thisWeek.totalHours}${t("common.timeUnits.h")}\n${t("stats.lastWeek")}: ${lastWeek.totalHours}${t("common.timeUnits.h")}\n${improved ? "📉" : "📈"} ${Math.abs(comp.hoursPercentChange)}% ${improved ? t("stats.lessScreenTime") : t("stats.moreScreenTime")}!\n\n#LockIn #DigitalWellbeing`,
           });
         }
       }
@@ -68,18 +71,26 @@ export const ShareCard: React.FC<ShareCardProps> = ({
   const maxHours = Math.max(...allData, 1);
 
   const BarChart = () => {
-    const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    const days = [
+      t("common.dayNames.mon"),
+      t("common.dayNames.tue"),
+      t("common.dayNames.wed"),
+      t("common.dayNames.thu"),
+      t("common.dayNames.fri"),
+      t("common.dayNames.sat"),
+      t("common.dayNames.sun"),
+    ];
     return (
       <View style={{ marginBottom: 20 }}>
         {/* Labels */}
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.9)', marginRight: 6 }} />
-            <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: '500' }}>This Week</Text>
+            <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: '500' }}>{t("stats.thisWeek")}</Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.3)', marginRight: 6 }} />
-            <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: '500' }}>Last Week</Text>
+            <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: '500' }}>{t("stats.lastWeek")}</Text>
           </View>
         </View>
 
@@ -123,33 +134,36 @@ export const ShareCard: React.FC<ShareCardProps> = ({
       right: 0,
       bottom: 0,
       backgroundColor: "rgba(0, 0, 0, 0.85)",
-      justifyContent: "center",
-      alignItems: "center",
       zIndex: 1000,
     }}>
+      {/* Close button - positioned at top with safe area */}
+      <TouchableOpacity
+        style={{
+          position: "absolute",
+          top: insets.top + 16,
+          right: 20,
+          width: 44,
+          height: 44,
+          borderRadius: 22,
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1001,
+        }}
+        onPress={onClose}
+        activeOpacity={0.7}
+      >
+        <X size={22} color="#ffffff" />
+      </TouchableOpacity>
+
       <View style={{
-        width: "100%",
-        paddingHorizontal: 20,
+        flex: 1,
+        justifyContent: "flex-start",
         alignItems: "center",
+        paddingHorizontal: 20,
+        paddingTop: insets.top + 40,
+        paddingBottom: insets.bottom + 20,
       }}>
-        {/* Close button */}
-        <TouchableOpacity
-          style={{
-            position: "absolute",
-            top: -60,
-            right: 20,
-            width: 44,
-            height: 44,
-            borderRadius: 22,
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 10,
-          }}
-          onPress={onClose}
-        >
-          <X size={22} color="#ffffff" />
-        </TouchableOpacity>
 
         {/* Card to capture - Glassy Design */}
         <View
@@ -204,7 +218,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({
                 </View>
                 <View>
                   <Text style={{ fontSize: 18, fontWeight: '700', color: '#ffffff', letterSpacing: -0.3 }}>LockIn</Text>
-                  <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontWeight: '500' }}>Weekly Report</Text>
+                  <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontWeight: '500' }}>{t("stats.weeklyReport")}</Text>
                 </View>
               </View>
 
@@ -222,7 +236,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({
                   fontWeight: '700',
                   color: improved ? '#10b981' : '#ef4444',
                 }}>
-                  {improved ? '↓ Improved' : '↑ Increased'}
+                  {improved ? t("stats.shareCard.improved") : t("stats.shareCard.increased")}
                 </Text>
               </View>
             </View>
@@ -248,8 +262,9 @@ export const ShareCard: React.FC<ShareCardProps> = ({
                 fontSize: 16,
                 color: 'rgba(255,255,255,0.6)',
                 fontWeight: '500',
+                textTransform: 'capitalize',
               }}>
-                {improved ? 'Less Screen Time' : 'More Screen Time'}
+                {improved ? t("stats.lessScreenTime") : t("stats.moreScreenTime")}
               </Text>
             </View>
 
@@ -267,14 +282,10 @@ export const ShareCard: React.FC<ShareCardProps> = ({
             }}>
               {/* This Week */}
               <View style={{ flex: 1, alignItems: 'center' }}>
-                <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontWeight: '600', marginBottom: 6 }}>THIS WEEK</Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-                  <Clock size={14} color="rgba(255,255,255,0.5)" style={{ marginRight: 6 }} />
-                  <Text style={{ fontSize: 20, fontWeight: '700', color: '#ffffff' }}>{thisWeek.totalHours}h</Text>
-                </View>
+                <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontWeight: '600', marginBottom: 6, textTransform: 'uppercase' }}>{t("stats.thisWeek")}</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Smartphone size={12} color="rgba(255,255,255,0.4)" style={{ marginRight: 4 }} />
-                  <Text style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>{thisWeek.pickups} pickups</Text>
+                  <Clock size={14} color="rgba(255,255,255,0.5)" style={{ marginRight: 6 }} />
+                  <Text style={{ fontSize: 20, fontWeight: '700', color: '#ffffff' }}>{thisWeek.totalHours}{t("common.timeUnits.h")}</Text>
                 </View>
               </View>
 
@@ -283,53 +294,33 @@ export const ShareCard: React.FC<ShareCardProps> = ({
 
               {/* Last Week */}
               <View style={{ flex: 1, alignItems: 'center' }}>
-                <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontWeight: '600', marginBottom: 6 }}>LAST WEEK</Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-                  <Clock size={14} color="rgba(255,255,255,0.5)" style={{ marginRight: 6 }} />
-                  <Text style={{ fontSize: 20, fontWeight: '700', color: 'rgba(255,255,255,0.6)' }}>{lastWeek.totalHours}h</Text>
-                </View>
+                <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontWeight: '600', marginBottom: 6, textTransform: 'uppercase' }}>{t("stats.lastWeek")}</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Smartphone size={12} color="rgba(255,255,255,0.4)" style={{ marginRight: 4 }} />
-                  <Text style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>{lastWeek.pickups} pickups</Text>
+                  <Clock size={14} color="rgba(255,255,255,0.5)" style={{ marginRight: 6 }} />
+                  <Text style={{ fontSize: 20, fontWeight: '700', color: 'rgba(255,255,255,0.6)' }}>{lastWeek.totalHours}{t("common.timeUnits.h")}</Text>
                 </View>
               </View>
 
               {/* Difference */}
               <View style={{ width: 1, backgroundColor: 'rgba(255,255,255,0.08)', marginHorizontal: 16 }} />
               <View style={{ flex: 1, alignItems: 'center' }}>
-                <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontWeight: '600', marginBottom: 6 }}>CHANGE</Text>
+                <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontWeight: '600', marginBottom: 6, textTransform: 'uppercase' }}>{t("stats.shareCard.change")}</Text>
                 <Text style={{
                   fontSize: 20,
                   fontWeight: '700',
                   color: improved ? '#10b981' : '#ef4444',
                 }}>
-                  {comp.hoursDiff > 0 ? '+' : ''}{comp.hoursDiff}h
+                  {comp.hoursDiff > 0 ? '+' : ''}{comp.hoursDiff}{t("common.timeUnits.h")}
                 </Text>
                 <Text style={{
                   fontSize: 12,
                   color: improved ? 'rgba(16, 185, 129, 0.7)' : 'rgba(239, 68, 68, 0.7)',
                 }}>
-                  {improved ? 'saved' : 'more'}
+                  {improved ? t("stats.shareCard.saved") : t("stats.shareCard.more")}
                 </Text>
               </View>
             </View>
 
-            {/* Footer */}
-            <View style={{
-              marginTop: 20,
-              alignItems: 'center',
-              paddingTop: 20,
-              borderTopWidth: 1,
-              borderTopColor: 'rgba(255,255,255,0.06)',
-            }}>
-              <Text style={{
-                fontSize: 13,
-                color: 'rgba(255,255,255,0.3)',
-                fontWeight: '500',
-              }}>
-                lockin.app
-              </Text>
-            </View>
           </LinearGradient>
         </View>
 
@@ -344,25 +335,15 @@ export const ShareCard: React.FC<ShareCardProps> = ({
             paddingVertical: 16,
             borderRadius: 16,
             overflow: 'hidden',
+            backgroundColor: 'rgba(255,255,255,0.2)',
+            borderWidth: 1,
+            borderColor: 'rgba(255,255,255,0.25)',
           }}
           onPress={handleShare}
           activeOpacity={0.8}
         >
-          <LinearGradient
-            colors={['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.05)']}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              borderRadius: 16,
-              borderWidth: 1,
-              borderColor: 'rgba(255,255,255,0.1)',
-            }}
-          />
           <Share2 size={18} color="#ffffff" style={{ marginRight: 10 }} />
-          <Text style={{ fontSize: 16, fontWeight: '600', color: '#ffffff' }}>Share Progress</Text>
+          <Text style={{ fontSize: 16, fontWeight: '600', color: '#ffffff' }}>{t("stats.shareProgress")}</Text>
         </TouchableOpacity>
       </View>
     </View>

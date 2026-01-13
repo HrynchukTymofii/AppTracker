@@ -37,6 +37,7 @@ import {
   hasAllRequiredPermissions,
   POPULAR_APPS,
   syncBlockedWebsitesToNative,
+  syncBlockedAppsToNative,
 } from '@/lib/appBlocking';
 import * as AppBlocker from '@/modules/app-blocker';
 import {
@@ -129,6 +130,8 @@ export const BlockingProvider = ({ children }: { children: ReactNode }) => {
 
   // Load all data
   const refreshData = useCallback(async () => {
+    const start = Date.now();
+    console.log('[BlockingContext] refreshData START');
     try {
       const [apps, scheds, session, limits, tasks] = await Promise.all([
         getBlockedApps(),
@@ -137,6 +140,7 @@ export const BlockingProvider = ({ children }: { children: ReactNode }) => {
         getDailyLimits(),
         getActiveTasks(),
       ]);
+      console.log('[BlockingContext] refreshData fetched', `(${Date.now() - start}ms)`, { apps: apps.length, limits: limits.length });
 
       setBlockedApps(apps);
       setSchedules(scheds);
@@ -146,45 +150,99 @@ export const BlockingProvider = ({ children }: { children: ReactNode }) => {
 
       // Sync daily limits to native for the blocking screen
       syncDailyLimitsToNative(limits);
+      console.log('[BlockingContext] refreshData DONE', `(${Date.now() - start}ms)`);
     } catch (error) {
-      console.error('Error refreshing blocking data:', error);
+      console.error('[BlockingContext] Error refreshing blocking data:', error);
     }
   }, [syncDailyLimitsToNative]);
 
-  // Initialize on mount
+  // Initialize on mount - STAGGERED to not overwhelm native bridge
   useEffect(() => {
+    let isMounted = true;
+    const initStart = Date.now();
+    console.log('[BlockingContext] init START');
+
     const init = async () => {
       setIsLoading(true);
-      await initializeBlocking();
 
-      // Platform-specific initialization
-      if (Platform.OS === 'ios') {
-        // Request Family Controls authorization on iOS
-        try {
-          await AppBlocker.requestAuthorization();
-        } catch (error) {
-          console.log('iOS authorization request:', error);
+      // Delay initialization to let auth and navigation set up first
+      await new Promise(resolve => setTimeout(resolve, 500));
+      if (!isMounted) return;
+      console.log('[BlockingContext] after 500ms delay', `(${Date.now() - initStart}ms)`);
+
+      try {
+        console.log('[BlockingContext] calling initializeBlocking...');
+        await initializeBlocking();
+        console.log('[BlockingContext] initializeBlocking done', `(${Date.now() - initStart}ms)`);
+        if (!isMounted) return;
+
+        // Small delay before platform-specific init
+        await new Promise(resolve => setTimeout(resolve, 200));
+        if (!isMounted) return;
+
+        // Platform-specific initialization
+        if (Platform.OS === 'ios') {
+          try {
+            await AppBlocker.requestAuthorization();
+          } catch (error) {
+            console.log('iOS authorization request:', error);
+          }
+        } else {
+          console.log('[BlockingContext] calling syncBlockedWebsitesToNative...');
+          await syncBlockedWebsitesToNative();
+          console.log('[BlockingContext] syncBlockedWebsitesToNative done', `(${Date.now() - initStart}ms)`);
+
+          console.log('[BlockingContext] calling syncBlockedAppsToNative...');
+          await syncBlockedAppsToNative();
+          console.log('[BlockingContext] syncBlockedAppsToNative done', `(${Date.now() - initStart}ms)`);
         }
-      } else {
-        // Android: Sync websites to native module
-        await syncBlockedWebsitesToNative();
-      }
 
-      await initializeAppLimitsFromOnboarding(); // Initialize app limits from onboarding
-      await refreshData();
-      setIsLoading(false);
+        if (!isMounted) return;
+
+        // Small delay before app limits init
+        await new Promise(resolve => setTimeout(resolve, 200));
+        if (!isMounted) return;
+
+        console.log('[BlockingContext] calling initializeAppLimitsFromOnboarding...');
+        await initializeAppLimitsFromOnboarding();
+        console.log('[BlockingContext] initializeAppLimitsFromOnboarding done', `(${Date.now() - initStart}ms)`);
+
+        if (!isMounted) return;
+
+        // Small delay before refreshData
+        await new Promise(resolve => setTimeout(resolve, 200));
+        if (!isMounted) return;
+
+        await refreshData();
+        console.log('[BlockingContext] init COMPLETE', `(${Date.now() - initStart}ms)`);
+      } catch (error) {
+        console.error('[BlockingContext] Error during init:', error);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
     };
 
     init();
 
-    // Check schedules every minute
-    const interval = setInterval(() => {
-      checkAndApplySchedules();
-      refreshData();
-    }, 60000);
+    // Check schedules every minute (delayed start)
+    const intervalId = setTimeout(() => {
+      const interval = setInterval(() => {
+        if (isMounted) {
+          checkAndApplySchedules();
+          refreshData();
+        }
+      }, 60000);
 
-    return () => clearInterval(interval);
-  }, [refreshData]);
+      return () => clearInterval(interval);
+    }, 5000); // Start interval checks after 5 seconds
+
+    return () => {
+      isMounted = false;
+      clearTimeout(intervalId);
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // App blocking actions
   const addBlockedApp = async (packageName: string, appName: string) => {

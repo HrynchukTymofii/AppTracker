@@ -8,7 +8,9 @@ import {
   PanResponder,
   Animated,
   LayoutChangeEvent,
+  StyleSheet,
 } from "react-native";
+import { BlurView } from "expo-blur";
 import { useAuth, UserType } from "@/context/AuthContext";
 import { useTranslation } from 'react-i18next';
 import {
@@ -41,6 +43,7 @@ import { RatingDrawer } from "@/components/modals/RatingDrawer";
 import { DefaultBlockedItemsModal } from "@/components/modals/DefaultBlockedItemsModal";
 import { getDefaultBlockedApps, getDefaultBlockedWebsites, getDefaultAppLimitMinutes, setDefaultAppLimitMinutes } from "@/lib/appBlocking";
 import { getAchievementStats } from "@/lib/achievementTracking";
+import { useEarnedTime } from "@/context/EarnedTimeContext";
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -61,6 +64,7 @@ interface SmoothSliderProps {
   value: number;
   minValue: number;
   maxValue: number;
+  step?: number;
   onValueChange: (value: number) => void;
   onSlidingComplete?: (value: number) => void;
   gradientColors: readonly [string, string, ...string[]];
@@ -73,6 +77,7 @@ const SmoothSlider: React.FC<SmoothSliderProps> = ({
   value,
   minValue,
   maxValue,
+  step = 1,
   onValueChange,
   onSlidingComplete,
   gradientColors,
@@ -87,8 +92,8 @@ const SmoothSlider: React.FC<SmoothSliderProps> = ({
   const animatedValue = useRef(new Animated.Value((value - minValue) / (maxValue - minValue))).current;
 
   // Store props in refs so PanResponder always has current values
-  const propsRef = useRef({ minValue, maxValue, onValueChange, onSlidingComplete });
-  propsRef.current = { minValue, maxValue, onValueChange, onSlidingComplete };
+  const propsRef = useRef({ minValue, maxValue, step, onValueChange, onSlidingComplete });
+  propsRef.current = { minValue, maxValue, step, onValueChange, onSlidingComplete };
 
   useEffect(() => {
     // Update animated value when external value changes
@@ -99,14 +104,20 @@ const SmoothSlider: React.FC<SmoothSliderProps> = ({
 
   const updateValueFromPageX = (pageX: number) => {
     if (sliderWidth.current > 0) {
-      const { minValue: min, maxValue: max, onValueChange: onChange } = propsRef.current;
+      const { minValue: min, maxValue: max, step: stepSize, onValueChange: onChange } = propsRef.current;
       // Calculate x position relative to slider using pageX
       const x = pageX - sliderPageX.current;
       const percentage = Math.max(0, Math.min(1, x / sliderWidth.current));
-      const newValue = Math.round(min + percentage * (max - min));
-      currentValue.current = newValue;
-      animatedValue.setValue(percentage);
-      onChange(newValue);
+      const rawValue = min + percentage * (max - min);
+      // Round to nearest step
+      const newValue = Math.round(rawValue / stepSize) * stepSize;
+      // Clamp to min/max range
+      const clampedValue = Math.max(min, Math.min(max, newValue));
+      currentValue.current = clampedValue;
+      // Update animated value based on clamped value
+      const adjustedPercentage = (clampedValue - min) / (max - min);
+      animatedValue.setValue(adjustedPercentage);
+      onChange(clampedValue);
     }
   };
 
@@ -226,12 +237,28 @@ const SmoothSlider: React.FC<SmoothSliderProps> = ({
 export default function ProfileScreen() {
   const { t } = useTranslation();
   const { token, setToken, user, setUser } = useAuth();
+  const { totalDailyLimit, setTotalDailyLimit, streak: earnedTimeStreak } = useEarnedTime();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [contactOpen, setContactOpen] = useState(false);
   const [ratingDrawerOpen, setRatingDrawerOpen] = useState(false);
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+
+  // Helper to format time with localized units
+  const formatTime = (minutes: number): string => {
+    const h = t("common.timeUnits.h");
+    const m = t("common.timeUnits.m");
+    if (minutes >= 60) {
+      const hours = Math.floor(minutes / 60);
+      const mins = minutes % 60;
+      if (mins > 0) {
+        return `${hours}${h} ${mins}${m}`;
+      }
+      return `${hours}${h}`;
+    }
+    return `${minutes}${m}`;
+  };
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
   const [achievementStats, setAchievementStats] = useState({
@@ -252,7 +279,7 @@ export default function ProfileScreen() {
   const [achievements, setAchievements] = useState(
     getDynamicAchievements(t, achievementStats)
   );
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Blocked items state
@@ -263,39 +290,45 @@ export default function ProfileScreen() {
   // Default app limit state
   const [defaultAppLimit, setDefaultAppLimit] = useState(30);
 
-  // Daily goal state
-  const [dailyGoal, setDailyGoal] = useState(60);
+  useEffect(() => {
+    console.log("🧠 Profile mounted");
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     if (!token) {
-  //       router.push({ pathname: "/login", params: { returnUrl: "/profile" } });
-  //       return;
-  //     }
+    return () => {
+      console.log("🧹 Profile unmounted");
+    };
+  }, []);
 
-  //     const load = async () => {
-  //       try {
-  //         setLoading(true);
-  //         const res = await getUserData(token);
-  //         if (res.success) {
-  //           const mappedUser: UserType = {
-  //             ...res.user,
-  //             categories: res.user.league,
-  //           };
-  //           setUser(mappedUser);
-  //         } else {
-  //           setError(res.error || "Error loading data");
-  //         }
-  //       } catch {
-  //         setError("An unexpected error occurred");
-  //       } finally {
-  //         setLoading(false);
-  //       }
-  //     };
+  useEffect(() => {
+      console.log(" Profile useEffect");
+      console.log(token)
+      if (!token) {
+        router.push({ pathname: "/login", params: { returnUrl: "/profile" } });
+        return;
+      }
 
-  //     load();
-  //   }, [token])
-  // );
+      const load = async () => {
+        try {
+          setLoading(true);
+          const res = await getUserData(token);
+          if (res.success) {
+            const mappedUser: UserType = {
+              ...res.user
+            };
+            setUser(mappedUser);
+          } else {
+            setError(res.error || "Error loading data");
+          }
+        } catch {
+          setError("An unexpected error occurred");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      if(!user) load();
+    }, [token]
+  )
+
 
   useFocusEffect(
     useCallback(() => {
@@ -326,23 +359,19 @@ export default function ProfileScreen() {
     }, [t])
   );
 
-  // Load blocked items counts, default app limit, and daily goal
+  // Load blocked items counts and default app limit
   useFocusEffect(
     useCallback(() => {
       const loadBlockedItems = async () => {
         try {
-          const [apps, websites, limit, storedGoal] = await Promise.all([
+          const [apps, websites, limit] = await Promise.all([
             getDefaultBlockedApps(),
             getDefaultBlockedWebsites(),
             getDefaultAppLimitMinutes(),
-            SecureStore.getItemAsync("dailyGoal"),
           ]);
           setDefaultAppsCount(apps.length);
           setDefaultWebsitesCount(websites.length);
           setDefaultAppLimit(limit);
-          if (storedGoal) {
-            setDailyGoal(parseInt(storedGoal, 10));
-          }
         } catch (error) {
           console.error('Error loading blocked items:', error);
         }
@@ -487,16 +516,24 @@ export default function ProfileScreen() {
             marginTop: 16,
             marginBottom: 28,
             borderRadius: 24,
-            paddingTop: 28,
-            paddingHorizontal: 28,
-            paddingBottom: 16,
-            alignItems: "center",
             overflow: "hidden",
-            backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "rgba(255, 255, 255, 0.7)",
-            borderWidth: 0.5,
-            borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
+            borderWidth: 1,
+            borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
           }}
         >
+          <BlurView intensity={isDark ? 20 : 35} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+          <LinearGradient
+            colors={isDark ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"] : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          <LinearGradient
+            colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 0.5 }}
+            style={[StyleSheet.absoluteFill, { height: "50%" }]}
+          />
           <LinearGradient
             colors={isDark
               ? ["rgba(59, 130, 246, 0.15)", "rgba(59, 130, 246, 0.05)", "transparent"]
@@ -504,14 +541,9 @@ export default function ProfileScreen() {
             }
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-            }}
+            style={StyleSheet.absoluteFill}
           />
+          <View style={{ paddingTop: 28, paddingHorizontal: 28, paddingBottom: 16, alignItems: "center" }}>
 
             {/* Name */}
           <Text
@@ -572,7 +604,7 @@ export default function ProfileScreen() {
                     marginLeft: 6,
                   }}
                 >
-                  {achievementStats.currentStreak}
+                  {earnedTimeStreak.currentStreak}
                 </Text>
               </View>
               <Text
@@ -664,6 +696,7 @@ export default function ProfileScreen() {
               </Text>
             </View>
           )}
+          </View>
         </View>
 
         {/* Content */}
@@ -734,26 +767,40 @@ export default function ProfileScreen() {
 
             <View
               style={{
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "rgba(255, 255, 255, 0.7)",
                 borderRadius: 20,
-                padding: 18,
-                borderWidth: 0.5,
-                borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
+                overflow: "hidden",
+                borderWidth: 1,
+                borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
               }}
             >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                {achievements.slice(0, 3).map((ach) => (
-                  <AchievementBadge
-                    key={ach.id}
-                    achievement={ach}
-                    isDark={isDark}
-                  />
-                ))}
+              <BlurView intensity={isDark ? 20 : 35} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+              <LinearGradient
+                colors={isDark ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"] : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <LinearGradient
+                colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 0.6 }}
+                style={[StyleSheet.absoluteFill, { height: "60%" }]}
+              />
+              <View style={{ padding: 18 }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  {achievements.slice(0, 3).map((ach) => (
+                    <AchievementBadge
+                      key={ach.id}
+                      achievement={ach}
+                      isDark={isDark}
+                    />
+                  ))}
+                </View>
               </View>
             </View>
           </TouchableOpacity>
@@ -807,66 +854,79 @@ export default function ProfileScreen() {
 
             <View
               style={{
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "rgba(255, 255, 255, 0.7)",
                 borderRadius: 18,
-                padding: 18,
-                borderWidth: 0.5,
-                borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
+                overflow: "hidden",
+                borderWidth: 1,
+                borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
               }}
             >
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
-                  marginBottom: 18,
-                }}
-              >
-                {t('profile.dailyGoalQuestion')}
-              </Text>
-
-              {/* Current Value Display */}
-              <View style={{ alignItems: 'center', marginBottom: 20 }}>
-                <View style={{
-                  backgroundColor: isDark ? 'rgba(16, 185, 129, 0.15)' : 'rgba(16, 185, 129, 0.1)',
-                  borderRadius: 16,
-                  paddingVertical: 12,
-                  paddingHorizontal: 24,
-                  borderWidth: 1,
-                  borderColor: 'rgba(16, 185, 129, 0.3)',
-                }}>
-                  <Text style={{
-                    fontSize: 32,
-                    fontWeight: '800',
-                    color: '#10b981',
-                    textAlign: 'center',
-                  }}>
-                    {dailyGoal >= 60
-                      ? `${Math.floor(dailyGoal / 60)}h ${dailyGoal % 60 > 0 ? `${dailyGoal % 60}m` : ''}`
-                      : `${dailyGoal}m`}
-                  </Text>
-                </View>
-              </View>
-
-              {/* Smooth Slider */}
-              <SmoothSlider
-                value={dailyGoal}
-                minValue={15}
-                maxValue={180}
-                onValueChange={setDailyGoal}
-                onSlidingComplete={async (val) => {
-                  await SecureStore.setItemAsync("dailyGoal", val.toString());
-                  Toast.show({
-                    type: "success",
-                    text1: t('profile.dailyGoalUpdated'),
-                    position: "top",
-                    visibilityTime: 1500,
-                  });
-                }}
-                gradientColors={['#10b981', '#059669']}
-                isDark={isDark}
-                minLabel={t('profile.minLabel')}
-                maxLabel={t('profile.maxLabel')}
+              <BlurView intensity={isDark ? 20 : 35} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+              <LinearGradient
+                colors={isDark ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"] : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={StyleSheet.absoluteFill}
               />
+              <LinearGradient
+                colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 0.6 }}
+                style={[StyleSheet.absoluteFill, { height: "60%" }]}
+              />
+              <View style={{ padding: 18 }}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+                    marginBottom: 18,
+                  }}
+                >
+                  {t('profile.dailyGoalQuestion')}
+                </Text>
+
+                {/* Current Value Display */}
+                <View style={{ alignItems: 'center', marginBottom: 20 }}>
+                  <View style={{
+                    backgroundColor: isDark ? 'rgba(16, 185, 129, 0.15)' : 'rgba(16, 185, 129, 0.1)',
+                    borderRadius: 16,
+                    paddingVertical: 12,
+                    paddingHorizontal: 24,
+                    borderWidth: 1,
+                    borderColor: 'rgba(16, 185, 129, 0.3)',
+                  }}>
+                    <Text style={{
+                      fontSize: 32,
+                      fontWeight: '800',
+                      color: '#10b981',
+                      textAlign: 'center',
+                    }}>
+                      {formatTime(totalDailyLimit)}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Smooth Slider */}
+                <SmoothSlider
+                  value={totalDailyLimit}
+                  minValue={15}
+                  maxValue={180}
+                  step={5}
+                  onValueChange={(val) => setTotalDailyLimit(val)}
+                  onSlidingComplete={async (val) => {
+                    await setTotalDailyLimit(val);
+                    Toast.show({
+                      type: "success",
+                      text1: t('profile.dailyGoalUpdated'),
+                      position: "top",
+                      visibilityTime: 1500,
+                    });
+                  }}
+                  gradientColors={['#10b981', '#059669']}
+                  isDark={isDark}
+                  minLabel={t('profile.minLabel')}
+                  maxLabel={t('profile.maxLabel')}
+                />
+              </View>
             </View>
           </View>
 
@@ -921,55 +981,67 @@ export default function ProfileScreen() {
               onPress={() => setShowBlockedItemsModal(true)}
               activeOpacity={0.7}
               style={{
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "rgba(255, 255, 255, 0.7)",
                 borderRadius: 18,
-                padding: 18,
-                flexDirection: "row",
-                alignItems: "center",
-                borderWidth: 0.5,
-                borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
+                overflow: "hidden",
+                borderWidth: 1,
+                borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
               }}
             >
-              <View
-                style={{
-                  width: 52,
-                  height: 52,
-                  borderRadius: 16,
-                  backgroundColor: isDark ? "rgba(59, 130, 246, 0.12)" : "rgba(59, 130, 246, 0.08)",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginRight: 16,
-                }}
-              >
-                <ShieldCheck size={24} color="#3b82f6" strokeWidth={1.5} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text
+              <BlurView intensity={isDark ? 20 : 35} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+              <LinearGradient
+                colors={isDark ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"] : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <LinearGradient
+                colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 0.6 }}
+                style={[StyleSheet.absoluteFill, { height: "60%" }]}
+              />
+              <View style={{ padding: 18, flexDirection: "row", alignItems: "center" }}>
+                <View
                   style={{
-                    fontSize: 16,
-                    fontWeight: "600",
-                    color: isDark ? "#ffffff" : "#0f172a",
-                    marginBottom: 6,
+                    width: 52,
+                    height: 52,
+                    borderRadius: 16,
+                    backgroundColor: isDark ? "rgba(59, 130, 246, 0.12)" : "rgba(59, 130, 246, 0.08)",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginRight: 16,
                   }}
                 >
-                  {t('profile.defaultBlockedItems') || "Default Blocked Items"}
-                </Text>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Shield size={14} color={isDark ? "rgba(255,255,255,0.4)" : "#94a3b8"} style={{ marginRight: 5 }} strokeWidth={1.5} />
-                    <Text style={{ fontSize: 14, color: isDark ? "rgba(255,255,255,0.5)" : "#64748b", fontWeight: "500" }}>
-                      {defaultAppsCount} {t('profile.apps') || "apps"}
-                    </Text>
-                  </View>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Globe size={14} color={isDark ? "rgba(255,255,255,0.4)" : "#94a3b8"} style={{ marginRight: 5 }} strokeWidth={1.5} />
-                    <Text style={{ fontSize: 14, color: isDark ? "rgba(255,255,255,0.5)" : "#64748b", fontWeight: "500" }}>
+                  <ShieldCheck size={24} color="#3b82f6" strokeWidth={1.5} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "600",
+                      color: isDark ? "#ffffff" : "#0f172a",
+                      marginBottom: 6,
+                    }}
+                  >
+                    {t('profile.defaultBlockedItems') || "Default Blocked Items"}
+                  </Text>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                      <Shield size={14} color={isDark ? "rgba(255,255,255,0.4)" : "#94a3b8"} style={{ marginRight: 5 }} strokeWidth={1.5} />
+                      <Text style={{ fontSize: 14, color: isDark ? "rgba(255,255,255,0.5)" : "#64748b", fontWeight: "500" }}>
+                        {defaultAppsCount} {t('profile.apps') || "apps"}
+                      </Text>
+                    </View>
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                      <Globe size={14} color={isDark ? "rgba(255,255,255,0.4)" : "#94a3b8"} style={{ marginRight: 5 }} strokeWidth={1.5} />
+                      <Text style={{ fontSize: 14, color: isDark ? "rgba(255,255,255,0.5)" : "#64748b", fontWeight: "500" }}>
                       {defaultWebsitesCount} {t('profile.websites') || "websites"}
                     </Text>
                   </View>
                 </View>
+                </View>
+                <ChevronRight size={20} color={isDark ? "rgba(255,255,255,0.3)" : "#cbd5e1"} strokeWidth={1.5} />
               </View>
-              <ChevronRight size={20} color={isDark ? "rgba(255,255,255,0.3)" : "#cbd5e1"} strokeWidth={1.5} />
             </TouchableOpacity>
 
             <Text
@@ -1033,66 +1105,79 @@ export default function ProfileScreen() {
 
             <View
               style={{
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "rgba(255, 255, 255, 0.7)",
                 borderRadius: 18,
-                padding: 18,
-                borderWidth: 0.5,
-                borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
+                overflow: "hidden",
+                borderWidth: 1,
+                borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
               }}
             >
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
-                  marginBottom: 18,
-                }}
-              >
-                {t('profile.defaultAppLimitDesc') || "New apps will use this time limit by default"}
-              </Text>
-
-              {/* Current Value Display */}
-              <View style={{ alignItems: 'center', marginBottom: 20 }}>
-                <View style={{
-                  backgroundColor: isDark ? 'rgba(245, 158, 11, 0.15)' : 'rgba(245, 158, 11, 0.1)',
-                  borderRadius: 16,
-                  paddingVertical: 12,
-                  paddingHorizontal: 24,
-                  borderWidth: 1,
-                  borderColor: 'rgba(245, 158, 11, 0.3)',
-                }}>
-                  <Text style={{
-                    fontSize: 32,
-                    fontWeight: '800',
-                    color: '#f59e0b',
-                    textAlign: 'center',
-                  }}>
-                    {defaultAppLimit >= 60
-                      ? `${Math.floor(defaultAppLimit / 60)}h ${defaultAppLimit % 60 > 0 ? `${defaultAppLimit % 60}m` : ''}`
-                      : `${defaultAppLimit}m`}
-                  </Text>
-                </View>
-              </View>
-
-              {/* Smooth Slider */}
-              <SmoothSlider
-                value={defaultAppLimit}
-                minValue={1}
-                maxValue={120}
-                onValueChange={setDefaultAppLimit}
-                onSlidingComplete={async (val) => {
-                  await setDefaultAppLimitMinutes(val);
-                  Toast.show({
-                    type: "success",
-                    text1: t('profile.limitUpdated') || "Default limit updated",
-                    position: "top",
-                    visibilityTime: 1500,
-                  });
-                }}
-                gradientColors={['#f59e0b', '#d97706']}
-                isDark={isDark}
-                minLabel="1 min"
-                maxLabel="2 hours"
+              <BlurView intensity={isDark ? 20 : 35} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+              <LinearGradient
+                colors={isDark ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"] : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={StyleSheet.absoluteFill}
               />
+              <LinearGradient
+                colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 0.6 }}
+                style={[StyleSheet.absoluteFill, { height: "60%" }]}
+              />
+              <View style={{ padding: 18 }}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: isDark ? "rgba(255,255,255,0.5)" : "#64748b",
+                    marginBottom: 18,
+                  }}
+                >
+                  {t('profile.defaultAppLimitDesc') || "New apps will use this time limit by default"}
+                </Text>
+
+                {/* Current Value Display */}
+                <View style={{ alignItems: 'center', marginBottom: 20 }}>
+                  <View style={{
+                    backgroundColor: isDark ? 'rgba(245, 158, 11, 0.15)' : 'rgba(245, 158, 11, 0.1)',
+                    borderRadius: 16,
+                    paddingVertical: 12,
+                    paddingHorizontal: 24,
+                    borderWidth: 1,
+                    borderColor: 'rgba(245, 158, 11, 0.3)',
+                  }}>
+                    <Text style={{
+                      fontSize: 32,
+                      fontWeight: '800',
+                      color: '#f59e0b',
+                      textAlign: 'center',
+                    }}>
+                      {formatTime(defaultAppLimit)}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Smooth Slider */}
+                <SmoothSlider
+                  value={defaultAppLimit}
+                  minValue={5}
+                  maxValue={120}
+                  step={5}
+                  onValueChange={setDefaultAppLimit}
+                  onSlidingComplete={async (val) => {
+                    await setDefaultAppLimitMinutes(val);
+                    Toast.show({
+                      type: "success",
+                      text1: t('profile.limitUpdated') || "Default limit updated",
+                      position: "top",
+                      visibilityTime: 1500,
+                    });
+                  }}
+                  gradientColors={['#f59e0b', '#d97706']}
+                  isDark={isDark}
+                  minLabel={t('profile.minLimitLabel')}
+                  maxLabel={t('profile.maxLimitLabel')}
+                />
+              </View>
             </View>
           </View>
 

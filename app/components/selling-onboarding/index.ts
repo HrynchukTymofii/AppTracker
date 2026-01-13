@@ -32,6 +32,7 @@ export {
   GlassCard,
   GradientText,
   GradientButton,
+  WhiteGlassButton,
   GradientBarChart,
   VideoPlaceholder,
   ToggleButton,

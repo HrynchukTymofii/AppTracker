@@ -29,6 +29,22 @@ export interface UserType {
   createdAt: string;
 }
 
+// Helper: SecureStore operation with timeout (prevents hanging)
+const secureStoreWithTimeout = async <T,>(
+  operation: () => Promise<T>,
+  timeoutMs: number = 3000
+): Promise<T | null> => {
+  return Promise.race([
+    operation(),
+    new Promise<null>((resolve) => {
+      setTimeout(() => {
+        console.warn('[AuthContext] SecureStore operation timed out');
+        resolve(null);
+      }, timeoutMs);
+    }),
+  ]);
+};
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [token, setTokenState] = useState<string | null>(null);
   const [user, setUserState] = useState<UserType | null>(null);
@@ -37,8 +53,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const loadAuthData = async () => {
       try {
-        const storedToken = await SecureStore.getItemAsync("token");
-        const storedUser = await SecureStore.getItemAsync("user");
+        // Use timeout to prevent hanging on SecureStore read
+        const [storedToken, storedUser] = await Promise.all([
+          secureStoreWithTimeout(() => SecureStore.getItemAsync("token")),
+          secureStoreWithTimeout(() => SecureStore.getItemAsync("user")),
+        ]);
 
         if (storedToken) {
           setTokenState(storedToken);
@@ -48,13 +67,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setUserState(JSON.parse(storedUser));
           } catch (err) {
             console.error("Failed to parse stored user", err);
-            // Clear corrupted user data
-            await SecureStore.deleteItemAsync("user");
           }
         }
       } catch (error) {
         console.error("Failed to load auth data from SecureStore:", error);
-        // SecureStore might fail in release builds - gracefully handle
       } finally {
         setIsLoading(false);
       }
@@ -63,43 +79,61 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const setToken = async (newToken: string | null): Promise<void> => {
-    try {
-      setTokenState(newToken);
-      if (newToken) {
-        await SecureStore.setItemAsync("token", newToken);
-      } else {
-        await SecureStore.deleteItemAsync("token");
+    // IMPORTANT: Set state FIRST (this is what the app uses immediately)
+    console.log('[AuthContext] setToken called, setting state immediately...');
+    setTokenState(newToken);
+    console.log('[AuthContext] state set, token is now available to app');
+
+    // Save to SecureStore in background (non-blocking)
+    // This ensures the app continues even if SecureStore is slow/broken
+    (async () => {
+      try {
+        if (newToken) {
+          await secureStoreWithTimeout(() => SecureStore.setItemAsync("token", newToken));
+          console.log('[AuthContext] token saved to SecureStore (background)');
+        } else {
+          await secureStoreWithTimeout(() => SecureStore.deleteItemAsync("token"));
+          console.log('[AuthContext] token deleted from SecureStore (background)');
+        }
+      } catch (error) {
+        console.error("[AuthContext] Failed to save token to SecureStore:", error);
       }
-    } catch (error) {
-      console.error("Failed to save token to SecureStore:", error);
-      // Still update state even if storage fails
-    }
+    })();
   };
 
   const setUser = async (newUser: UserType | null): Promise<void> => {
-    try {
-      setUserState(newUser);
-      if (newUser) {
-        await SecureStore.setItemAsync("user", JSON.stringify(newUser));
-      } else {
-        await SecureStore.deleteItemAsync("user");
+    // Set state FIRST
+    setUserState(newUser);
+
+    // Save to SecureStore in background (non-blocking)
+    (async () => {
+      try {
+        if (newUser) {
+          await secureStoreWithTimeout(() => SecureStore.setItemAsync("user", JSON.stringify(newUser)));
+        } else {
+          await secureStoreWithTimeout(() => SecureStore.deleteItemAsync("user"));
+        }
+      } catch (error) {
+        console.error("Failed to save user to SecureStore:", error);
       }
-    } catch (error) {
-      console.error("Failed to save user to SecureStore:", error);
-      // Still update state even if storage fails
-    }
+    })();
   };
 
   // Proper logout function that clears everything
   const logout = async (): Promise<void> => {
-    try {
-      setTokenState(null);
-      setUserState(null);
-      await SecureStore.deleteItemAsync("token");
-      await SecureStore.deleteItemAsync("user");
-    } catch (error) {
-      console.error("Failed to clear auth data:", error);
-    }
+    // Clear state FIRST
+    setTokenState(null);
+    setUserState(null);
+
+    // Clear SecureStore in background
+    (async () => {
+      try {
+        await secureStoreWithTimeout(() => SecureStore.deleteItemAsync("token"));
+        await secureStoreWithTimeout(() => SecureStore.deleteItemAsync("user"));
+      } catch (error) {
+        console.error("Failed to clear auth data:", error);
+      }
+    })();
   };
 
   return (

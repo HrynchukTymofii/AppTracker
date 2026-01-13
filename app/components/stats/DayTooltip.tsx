@@ -119,7 +119,7 @@ export const DayTooltip = ({
 
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
               <Text style={{ fontSize: 14, color: isDark ? "#9ca3af" : "#6b7280" }}>
-                {t("stats.pickups")}
+                {t("stats.unlocks")}
               </Text>
               <Text style={{ fontSize: 14, fontWeight: "bold", color: isDark ? "#ffffff" : "#111827" }}>
                 {day.pickups}

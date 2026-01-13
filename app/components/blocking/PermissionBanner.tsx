@@ -74,7 +74,7 @@ export const PermissionBanner = ({
           }}
         >
           <Text style={{ color: "#78350f", fontWeight: "600" }}>
-            {t("blocking.usageDataAccess") || "Usage Data Access"}
+            {t("blocking.usageDataAccess")}
           </Text>
           <ChevronRight size={20} color="#78350f" />
         </TouchableOpacity>

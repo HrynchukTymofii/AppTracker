@@ -11,7 +11,7 @@ export interface AppUsageData {
 export interface UsageStatsData {
   apps: AppUsageData[];
   totalScreenTime: number;
-  pickups: number;
+  unlocks: number;
 }
 
 /**
@@ -161,7 +161,7 @@ const processUsageData = (rawData: any): UsageStatsData => {
   return {
     apps: sortedApps,
     totalScreenTime,
-    pickups: rawData.pickups || 0,
+    unlocks: rawData.unlocks || 0,
   };
 };
 
@@ -203,7 +203,7 @@ const getMockUsageData = (): UsageStatsData => {
       },
     ],
     totalScreenTime: 88500000, // Total in milliseconds
-    pickups: 142,
+    unlocks: 142,
   };
 };
 
@@ -224,15 +224,15 @@ export const formatDuration = (milliseconds: number): string => {
  * Calculate health score based on usage
  * Lower usage = higher health score
  */
-export const calculateHealthScore = (totalScreenTimeMs: number, pickups: number): number => {
-  // Target: < 2 hours screen time, < 50 pickups per day
+export const calculateHealthScore = (totalScreenTimeMs: number, unlocks: number): number => {
+  // Target: < 2 hours screen time, < 50 unlocks per day
   const targetScreenTime = 2 * 60 * 60 * 1000; // 2 hours in ms
   const targetPickups = 50;
 
   const screenTimeScore = Math.max(0, 100 - ((totalScreenTimeMs / targetScreenTime) * 50));
-  const pickupsScore = Math.max(0, 100 - ((pickups / targetPickups) * 50));
+  const unlocksScore = Math.max(0, 100 - ((unlocks / targetPickups) * 50));
 
-  return Math.round((screenTimeScore + pickupsScore) / 2);
+  return Math.round((screenTimeScore + unlocksScore) / 2);
 };
 
 /**

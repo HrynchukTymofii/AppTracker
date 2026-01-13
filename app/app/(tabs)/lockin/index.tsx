@@ -14,6 +14,7 @@ import {
 } from "@/components/lockin";
 import { VerifiedLockInModal } from "@/components/lockin/modals/VerifiedLockInModal";
 import { ConfirmationModal } from "@/components/modals/ConfirmationModal";
+import { StreakModal } from "@/components/modals/StreakModal";
 import { ExerciseModal } from "@/components/exercise";
 import { ThemedBackground } from "@/components/ui/ThemedBackground";
 import { ExerciseType } from "@/lib/poseUtils";
@@ -33,7 +34,11 @@ export default function LockInScreen() {
   const [showVerifiedModal, setShowVerifiedModal] = useState(false);
   const [showGiveUpConfirm, setShowGiveUpConfirm] = useState(false);
   const [showExerciseModal, setShowExerciseModal] = useState(false);
+  const [showStreakModal, setShowStreakModal] = useState(false);
   const [selectedExerciseType, setSelectedExerciseType] = useState<ExerciseType | undefined>(undefined);
+
+  // Get streak data for the streak modal
+  const { streak, markStreakShown } = useEarnedTime();
 
   // Handle URL params to auto-open modals
   useEffect(() => {
@@ -91,7 +96,13 @@ export default function LockInScreen() {
   };
 
   const handleComplete = async (afterPhotoUri?: string) => {
-    await completeSession(afterPhotoUri);
+    const isFirstActivityToday = await completeSession(afterPhotoUri);
+    // Show streak modal if this was the first activity of the day
+    if (isFirstActivityToday) {
+      setTimeout(() => {
+        setShowStreakModal(true);
+      }, 500);
+    }
   };
 
   // If there's an active session, show the session view
@@ -116,6 +127,17 @@ export default function LockInScreen() {
             type="danger"
             onConfirm={handleConfirmGiveUp}
             onCancel={() => setShowGiveUpConfirm(false)}
+          />
+
+          {/* Streak Celebration Modal */}
+          <StreakModal
+            isVisible={showStreakModal}
+            onClose={async () => {
+              setShowStreakModal(false);
+              await markStreakShown();
+            }}
+            currentStreak={streak.currentStreak}
+            longestStreak={streak.longestStreak}
           />
         </SafeAreaView>
       </ThemedBackground>
@@ -179,7 +201,7 @@ export default function LockInScreen() {
         <SessionHistory
           sessions={sessionHistory}
           isDark={isDark}
-          onSeeAll={() => {}}
+          onSeeAll={() => router.push("/activities")}
         />
       </ScrollView>
 

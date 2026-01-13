@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, Animated, Easing } from "react-native";
+import { View, Text, TouchableOpacity, Animated, Easing, Image } from "react-native";
 import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { X, Zap, Target, Camera, Dumbbell } from "lucide-react-native";
@@ -8,7 +8,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { ExerciseType } from "@/lib/poseUtils";
 import { getFavorites } from "@/lib/exerciseFavorites";
-import { getExerciseDisplayInfo, EXERCISE_COLORS } from "@/lib/exerciseIcons";
+import { getExerciseDisplayInfo, getExerciseIcon, EXERCISE_COLORS } from "@/lib/exerciseIcons";
 
 interface QuickActionMenuProps {
   isOpen: boolean;
@@ -27,6 +27,7 @@ interface MenuItemProps {
   gradientColors: readonly [string, string, ...string[]];
   shadowColor: string;
   icon: React.ReactNode;
+  isImage?: boolean;
   onPress: () => void;
 }
 
@@ -40,6 +41,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
   gradientColors,
   shadowColor,
   icon,
+  isImage,
   onPress,
 }) => {
   const iconScale = iconAnim.interpolate({
@@ -109,20 +111,28 @@ const MenuItem: React.FC<MenuItemProps> = ({
           shadowOpacity: 0.5,
           shadowRadius: 12,
           elevation: 8,
+          borderWidth: isImage ? 2 : 0,
+          borderColor: isImage ? gradientColors[0] : "transparent",
         }}
       >
-        <LinearGradient
-          colors={gradientColors}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={{
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {icon}
-        </LinearGradient>
+        {isImage ? (
+          <View style={{ flex: 1 }}>
+            {icon}
+          </View>
+        ) : (
+          <LinearGradient
+            colors={gradientColors}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {icon}
+          </LinearGradient>
+        )}
       </TouchableOpacity>
     </Animated.View>
   );
@@ -171,6 +181,7 @@ export const QuickActionMenu: React.FC<QuickActionMenuProps> = ({
   // Helper to create exercise menu item with translations
   const createExerciseMenuItem = (type: ExerciseType, index: number, totalExercises: number) => {
     const info = getExerciseDisplayInfo(type);
+    const iconInfo = getExerciseIcon(type);
     const colors = EXERCISE_COLORS[type];
     const translationKey = exerciseTypeToTranslationKey[type];
 
@@ -181,12 +192,24 @@ export const QuickActionMenu: React.FC<QuickActionMenuProps> = ({
     const bottomPosition = baseBottom + (exerciseIndex + 2) * spacing; // +2 for Photo Task and Focus Mode
     const translateYStart = 40 + (exerciseIndex + 2) * 60;
 
+    // Use image if available, otherwise use Dumbbell icon
+    const iconElement = iconInfo.image ? (
+      <Image
+        source={iconInfo.image}
+        style={{ width: "100%", height: "100%", borderRadius: 12 }}
+        resizeMode="cover"
+      />
+    ) : (
+      <Dumbbell size={24} color="#ffffff" />
+    );
+
     return {
-      title: `${info?.emoji || ''} ${t(`exercise.${translationKey}.name`)}`,
+      title: iconInfo.image ? t(`exercise.${translationKey}.name`) : `${info?.emoji || ''} ${t(`exercise.${translationKey}.name`)}`,
       subtitle: t(`exercise.${translationKey}.description`),
       gradientColors: [colors[0], colors[0], colors[1]] as const,
       shadowColor: colors[0],
-      icon: <Dumbbell size={24} color="#ffffff" />,
+      icon: iconElement,
+      isImage: !!iconInfo.image,
       route: `/(tabs)/lockin?exercise=${type}`,
       bottomPosition,
       translateYStart,
@@ -209,6 +232,7 @@ export const QuickActionMenu: React.FC<QuickActionMenuProps> = ({
       gradientColors: ["#60a5fa", "#3b82f6", "#2563eb"] as const,
       shadowColor: "#3b82f6",
       icon: <Camera size={24} color="#ffffff" />,
+      isImage: false,
       route: "/(tabs)/lockin?openVerified=true",
       bottomPosition: 285,
       translateYStart: 100,
@@ -219,6 +243,7 @@ export const QuickActionMenu: React.FC<QuickActionMenuProps> = ({
       gradientColors: ["#fbbf24", "#f59e0b", "#d97706"] as const,
       shadowColor: "#f59e0b",
       icon: <Target size={24} color="#ffffff" />,
+      isImage: false,
       route: "/(tabs)/detox",
       bottomPosition: 220,
       translateYStart: 40,
@@ -268,6 +293,7 @@ export const QuickActionMenu: React.FC<QuickActionMenuProps> = ({
             gradientColors={item.gradientColors}
             shadowColor={item.shadowColor}
             icon={item.icon}
+            isImage={item.isImage}
             onPress={() => handleMenuItemPress(item.route)}
           />
         ))}

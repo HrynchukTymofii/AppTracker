@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import { View, Animated } from "react-native";
+import { View, Animated, Text, StyleSheet } from "react-native";
+import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 
 // Shimmer Animation Component
 export const ShimmerEffect = ({ isDark, style }: { isDark: boolean; style?: any }) => {
@@ -72,16 +74,29 @@ export const SkeletonStatCard = ({ isDark }: { isDark: boolean }) => {
     <View
       style={{
         flex: 1,
-        alignItems: "center",
-        backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f9fafb",
         borderRadius: 12,
-        padding: 12,
+        overflow: "hidden",
         borderWidth: 1,
-        borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
+        borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
       }}
     >
-      <ShimmerEffect isDark={isDark} style={{ width: 50, height: 10, marginBottom: 6 }} />
-      <ShimmerEffect isDark={isDark} style={{ width: 40, height: 18 }} />
+      <BlurView intensity={isDark ? 20 : 35} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+      <LinearGradient
+        colors={isDark ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"] : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      <LinearGradient
+        colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 0.6 }}
+        style={[StyleSheet.absoluteFill, { height: "60%" }]}
+      />
+      <View style={{ alignItems: "center", padding: 12 }}>
+        <ShimmerEffect isDark={isDark} style={{ width: 50, height: 10, marginBottom: 6 }} />
+        <ShimmerEffect isDark={isDark} style={{ width: 40, height: 18 }} />
+      </View>
     </View>
   );
 };

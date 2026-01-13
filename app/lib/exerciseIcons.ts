@@ -38,22 +38,20 @@ export const EXERCISE_COLORS: Record<ExerciseType, [string, string]> = {
 let exerciseIconsLoaded: Partial<Record<ExerciseType, ImageSourcePropType>> = {};
 
 try {
-  // Attempt to load icons if they exist
-  // These will fail silently if files don't exist
+  // Load exercise icons
   exerciseIconsLoaded = {
-    // Uncomment and add require statements when icons are available:
-    // 'pushups': require('@/assets/icons/exercises/pushups.png'),
-    // 'squats': require('@/assets/icons/exercises/squats.png'),
-    // 'plank': require('@/assets/icons/exercises/plank.png'),
-    // 'jumping-jacks': require('@/assets/icons/exercises/jumping-jacks.png'),
-    // 'lunges': require('@/assets/icons/exercises/lunges.png'),
-    // 'crunches': require('@/assets/icons/exercises/crunches.png'),
-    // 'shoulder-press': require('@/assets/icons/exercises/shoulder-press.png'),
-    // 'leg-raises': require('@/assets/icons/exercises/leg-raises.png'),
-    // 'high-knees': require('@/assets/icons/exercises/high-knees.png'),
-    // 'pull-ups': require('@/assets/icons/exercises/pull-ups.png'),
-    // 'wall-sit': require('@/assets/icons/exercises/wall-sit.png'),
-    // 'side-plank': require('@/assets/icons/exercises/side-plank.png'),
+    'pushups': require('@/assets/icons/exercises/push-ups.jpg'),
+    'squats': require('@/assets/icons/exercises/squats.jpg'),
+    'plank': require('@/assets/icons/exercises/planck.jpg'),
+    'jumping-jacks': require('@/assets/icons/exercises/jamping-jacks.jpg'),
+    'lunges': require('@/assets/icons/exercises/lunges.jpg'),
+    'crunches': require('@/assets/icons/exercises/crunches.jpg'),
+    'shoulder-press': require('@/assets/icons/exercises/shoulder-press.jpg'),
+    'leg-raises': require('@/assets/icons/exercises/leg-raises.jpg'),
+    'high-knees': require('@/assets/icons/exercises/high-knees.jpg'),
+    'pull-ups': require('@/assets/icons/exercises/pull-ups.jpg'),
+    'wall-sit': require('@/assets/icons/exercises/wall-sit.jpg'),
+    'side-plank': require('@/assets/icons/exercises/side-plank.jpg'),
   };
 } catch (e) {
   // Icons not available, will use emoji fallback
@@ -101,5 +99,13 @@ export const EXERCISE_DISPLAY_INFO: ExerciseDisplayInfo[] = [
 ];
 
 export function getExerciseDisplayInfo(type: ExerciseType): ExerciseDisplayInfo | undefined {
-  return EXERCISE_DISPLAY_INFO.find(e => e.type === type);
+  const info = EXERCISE_DISPLAY_INFO.find(e => e.type === type);
+  if (info) {
+    // Return with actual loaded image if available
+    return {
+      ...info,
+      image: EXERCISE_ICONS[type] || null,
+    };
+  }
+  return undefined;
 }

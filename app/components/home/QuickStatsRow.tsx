@@ -1,7 +1,9 @@
 import React from "react";
-import { View, Text } from "react-native";
-import { TrendingUp, TrendingDown } from "lucide-react-native";
+import { View, Text, StyleSheet } from "react-native";
+import { TrendingUp, TrendingDown, Flame } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
+import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 import { formatDuration } from "@/lib/usageTracking";
 
 interface QuickStatsRowProps {
@@ -10,6 +12,61 @@ interface QuickStatsRowProps {
   averageScreenTime: number;
   isDark: boolean;
 }
+
+const GlassStatCard = ({
+  children,
+  isDark,
+  glowColor,
+  flex = 1,
+}: {
+  children: React.ReactNode;
+  isDark: boolean;
+  glowColor?: string;
+  flex?: number;
+}) => (
+  <View
+    style={{
+      flex,
+      borderRadius: 16,
+      overflow: "hidden",
+      borderWidth: 1,
+      borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
+    }}
+  >
+    <BlurView
+      intensity={isDark ? 25 : 40}
+      tint={isDark ? "dark" : "light"}
+      style={StyleSheet.absoluteFill}
+    />
+    <LinearGradient
+      colors={
+        isDark
+          ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"]
+          : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]
+      }
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={StyleSheet.absoluteFill}
+    />
+    {/* Top shine */}
+    <LinearGradient
+      colors={isDark ? ["rgba(255, 255, 255, 0.08)", "transparent"] : ["rgba(255, 255, 255, 0.5)", "transparent"]}
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 0.6 }}
+      style={[StyleSheet.absoluteFill, { height: "60%" }]}
+    />
+    {/* Optional glow */}
+    {glowColor && (
+      <LinearGradient
+        colors={[`${glowColor}10`, "transparent"]}
+        start={{ x: 0.5, y: 1 }}
+        end={{ x: 0.5, y: 0 }}
+        style={StyleSheet.absoluteFill}
+      />
+    )}
+    <View style={{ padding: 14, alignItems: "center" }}>{children}</View>
+  </View>
+);
 
 export const QuickStatsRow: React.FC<QuickStatsRowProps> = ({
   streak,
@@ -20,39 +77,38 @@ export const QuickStatsRow: React.FC<QuickStatsRowProps> = ({
   const { t } = useTranslation();
 
   const getTimeComparison = () => {
-    if (averageScreenTime === 0) return { isLess: true, diff: "0m" };
+    if (averageScreenTime === 0) return { isLess: true, diff: `0${t("common.timeUnits.m")}` };
     const diff = totalScreenTime - averageScreenTime;
     const isLess = diff < 0;
     return {
       isLess,
-      diff: formatDuration(Math.abs(diff)),
+      diff: formatDuration(Math.abs(diff), t),
     };
   };
 
   const timeComparison = getTimeComparison();
 
-  const cardStyle = {
-    flex: 1,
-    backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f9fafb",
-    borderRadius: 12,
-    padding: 12,
-    alignItems: "center" as const,
-    borderWidth: 1,
-    borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
+  // Dynamic font size based on text length
+  const getDynamicFontSize = (text: string, baseSize: number = 20) => {
+    const length = text.length;
+    if (length <= 6) return baseSize;
+    if (length <= 8) return baseSize - 2;
+    if (length <= 10) return baseSize - 4;
+    return baseSize - 6;
   };
 
   const labelStyle = {
     fontSize: 10,
     fontWeight: "600" as const,
-    color: isDark ? "#6b7280" : "#9ca3af",
+    color: isDark ? "rgba(255, 255, 255, 0.5)" : "#9ca3af",
     letterSpacing: 0.5,
-    marginBottom: 6,
+    marginBottom: 8,
     textTransform: "uppercase" as const,
   };
 
   const valueStyle = {
-    fontSize: 18,
-    fontWeight: "bold" as const,
+    fontSize: 20,
+    fontWeight: "700" as const,
     color: isDark ? "#ffffff" : "#111827",
   };
 
@@ -66,41 +122,43 @@ export const QuickStatsRow: React.FC<QuickStatsRowProps> = ({
       }}
     >
       {/* Streak Card */}
-      <View style={cardStyle}>
+      <GlassStatCard isDark={isDark} glowColor="#f97316" flex={0.8}>
         <Text style={labelStyle}>{t("home.streak") || "STREAK"}</Text>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={{ fontSize: 14, marginRight: 4 }}>🔥</Text>
+          <Flame size={18} color="#f97316" fill="#f97316" style={{ marginRight: 6 }} />
           <Text style={valueStyle}>{streak}</Text>
         </View>
-      </View>
+      </GlassStatCard>
 
       {/* Today Card */}
-      <View style={cardStyle}>
+      <GlassStatCard isDark={isDark}>
         <Text style={labelStyle}>{t("home.today") || "TODAY"}</Text>
-        <Text style={valueStyle}>{formatDuration(totalScreenTime)}</Text>
-      </View>
+        <Text style={[valueStyle, { fontSize: getDynamicFontSize(formatDuration(totalScreenTime, t)) }]}>
+          {formatDuration(totalScreenTime, t)}
+        </Text>
+      </GlassStatCard>
 
       {/* vs Average Card */}
-      <View style={cardStyle}>
+      <GlassStatCard isDark={isDark} glowColor={timeComparison.isLess ? "#10b981" : "#ef4444"} flex={1.2}>
         <Text style={labelStyle}>{t("home.vsAverage") || "VS AVG"}</Text>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           {timeComparison.isLess ? (
-            <TrendingDown size={14} color="#10b981" style={{ marginRight: 3 }} />
+            <TrendingDown size={16} color="#10b981" style={{ marginRight: 4 }} />
           ) : (
-            <TrendingUp size={14} color="#ef4444" style={{ marginRight: 3 }} />
+            <TrendingUp size={16} color="#ef4444" style={{ marginRight: 4 }} />
           )}
           <Text
             style={{
-              fontSize: 18,
-              fontWeight: "bold",
+              fontSize: getDynamicFontSize(timeComparison.diff),
+              fontWeight: "700",
               color: timeComparison.isLess ? "#10b981" : "#ef4444",
             }}
           >
-            {timeComparison.isLess ? "-" : "+"}
+            {timeComparison.isLess ? "-" : ""}
             {timeComparison.diff}
           </Text>
         </View>
-      </View>
+      </GlassStatCard>
     </View>
   );
 };

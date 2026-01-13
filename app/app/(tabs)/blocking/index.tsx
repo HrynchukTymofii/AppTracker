@@ -6,7 +6,9 @@ import {
   View,
   Platform,
   Share,
+  StyleSheet,
 } from "react-native";
+import { BlurView } from "expo-blur";
 import {
   Plus,
   Calendar,
@@ -107,6 +109,21 @@ export default function BlockingPage() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
+  // Helper to format time with localized units
+  const formatTime = (minutes: number, includeMinutes = true): string => {
+    const h = t("common.timeUnits.h");
+    const m = t("common.timeUnits.m");
+    if (minutes >= 60) {
+      const hours = Math.floor(minutes / 60);
+      const mins = minutes % 60;
+      if (includeMinutes && mins > 0) {
+        return `${hours}${h} ${mins}${m}`;
+      }
+      return `${hours}${h}`;
+    }
+    return `${minutes}${m}`;
+  };
+
   const {
     schedules,
     dailyLimits,
@@ -125,6 +142,7 @@ export default function BlockingPage() {
   const {
     totalDailyLimit,
     setTotalDailyLimit,
+    refreshData: refreshEarnedTimeData,
   } = useEarnedTime();
 
   const [showTotalLimitOptions, setShowTotalLimitOptions] = useState(false);
@@ -141,6 +159,7 @@ export default function BlockingPage() {
   const [accessibilityEnabled, setAccessibilityEnabled] = useState(false);
   const [overlayEnabled, setOverlayEnabled] = useState(false);
   const [usageStatsEnabled, setUsageStatsEnabled] = useState(false);
+  const [permissionsChecked, setPermissionsChecked] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [scheduleToDelete, setScheduleToDelete] = useState<string | null>(null);
   const [showLimitDeleteConfirm, setShowLimitDeleteConfirm] = useState(false);
@@ -223,12 +242,17 @@ export default function BlockingPage() {
 
   // Fetch real usage stats from device
   const fetchUsageStats = useCallback(async () => {
+    const fetchStart = Date.now();
+    console.log('[Blocking] fetchUsageStats START, dailyLimits:', dailyLimits.length);
     try {
       // Get blocked app package names
       const blockedPackages = dailyLimits.map(l => l.packageName);
+      console.log('[Blocking] blockedPackages:', blockedPackages.length);
 
       // Get today's usage
+      console.log('[Blocking] calling getTodayUsageStats...');
       const todayStats = await UsageStats.getTodayUsageStats();
+      console.log('[Blocking] getTodayUsageStats done', `(${Date.now() - fetchStart}ms)`);
       let todayTotalScreenTime = 0;
 
       if (todayStats.hasPermission && todayStats.apps) {
@@ -257,7 +281,7 @@ export default function BlockingPage() {
           await saveDailyUsage(
             todayDate,
             todayTotalScreenTime,
-            todayStats.pickups || 0,
+            todayStats.unlocks || 0,
             50, // default health score
             1,  // default orb level
             todayStats.apps
@@ -267,57 +291,36 @@ export default function BlockingPage() {
         }
       }
 
-      // Get weekly usage - fetch last 7 days (TOTAL screen time for bar chart)
-      const weekData: number[] = [];
+      // Get weekly usage - fetch last 7 days in parallel (only apps with limits)
       const today = new Date();
-
-      // Get data from local database as fallback (wrapped in try-catch for safety)
-      let dbDataMap = new Map<string, any>();
-      try {
-        const { startDate, endDate } = getWeekDateRange(0);
-        const dbWeekData = await getWeekUsage(startDate, endDate);
-        dbDataMap = new Map(dbWeekData.map(d => [d.date, d]));
-      } catch (dbError) {
-        console.warn('Failed to read week usage from database:', dbError);
-      }
+      const weekPromises = [];
 
       for (let i = 6; i >= 0; i--) {
         const dayStart = new Date(today);
         dayStart.setDate(today.getDate() - i);
         dayStart.setHours(0, 0, 0, 0);
-        const dateStr = formatDate(dayStart);
 
         const dayEnd = new Date(dayStart);
         dayEnd.setHours(23, 59, 59, 999);
 
-        const dayStats = await UsageStats.getUsageStats(dayStart.getTime(), dayEnd.getTime());
-        if (dayStats.hasPermission && dayStats.apps) {
-          // Use TOTAL screen time for the weekly bar chart (all apps)
-          const totalDayUsage = dayStats.apps
-            .reduce((sum, app) => sum + app.timeInForeground, 0);
-
-          if (totalDayUsage > 0) {
-            weekData.push(Math.round(totalDayUsage / (1000 * 60))); // minutes
-          } else {
-            // Try database fallback for this day
-            const dbDay = dbDataMap.get(dateStr);
-            if (dbDay && dbDay.total_screen_time > 0) {
-              weekData.push(Math.round(dbDay.total_screen_time / (1000 * 60)));
-            } else {
-              weekData.push(0);
-            }
-          }
-        } else {
-          // Try database fallback
-          const dbDay = dbDataMap.get(dateStr);
-          if (dbDay && dbDay.total_screen_time > 0) {
-            weekData.push(Math.round(dbDay.total_screen_time / (1000 * 60)));
-          } else {
-            weekData.push(0);
-          }
-        }
+        weekPromises.push(
+          UsageStats.getUsageStats(dayStart.getTime(), dayEnd.getTime())
+            .then(dayStats => {
+              if (dayStats.hasPermission && dayStats.apps) {
+                const limitedAppsUsage = dayStats.apps
+                  .filter(app => blockedPackages.includes(app.packageName))
+                  .reduce((sum, app) => sum + app.timeInForeground, 0);
+                return Math.round(limitedAppsUsage / (1000 * 60));
+              }
+              return 0;
+            })
+            .catch(() => 0)
+        );
       }
+
+      const weekData = await Promise.all(weekPromises);
       setWeeklyUsage(weekData);
+      console.log('[Blocking] fetchUsageStats DONE', `(${Date.now() - fetchStart}ms)`);
     } catch (error) {
       console.error('Error fetching usage stats:', error);
     }
@@ -337,20 +340,17 @@ export default function BlockingPage() {
     cleanupOldCache();
   }, []);
 
-  // Populate icons for existing daily limits that don't have them
+  // Populate icons for existing daily limits that don't have them (run once when limits load)
   useEffect(() => {
     const populateMissingIcons = async () => {
       if (dailyLimits.length === 0) return;
-
       const limitsNeedingIcons = dailyLimits.filter(l => !l.iconUrl);
       if (limitsNeedingIcons.length === 0) return;
 
+      console.log('[Blocking] Populating icons for', limitsNeedingIcons.length, 'apps');
       try {
-        // Fetch all installed apps to get icons
         const apps = await UsageStats.getInstalledApps();
         installedAppsRef.current = apps;
-
-        // Update limits with icons
         for (const limit of limitsNeedingIcons) {
           const app = apps.find(a => a.packageName === limit.packageName);
           if (app?.iconUrl) {
@@ -358,25 +358,31 @@ export default function BlockingPage() {
           }
         }
       } catch (error) {
-        console.error("Error populating icons:", error);
+        console.error("[Blocking] Error populating icons:", error);
       }
     };
     populateMissingIcons();
-  }, [dailyLimits.length]);
+  }, [dailyLimits.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Refresh data when screen comes into focus
+  // Note: Empty dependency array to prevent re-running on every render
   useFocusEffect(
     useCallback(() => {
+      console.log('[Blocking] useFocusEffect triggered, totalDailyLimit:', totalDailyLimit);
       refreshData();
+      refreshEarnedTimeData(); // Refresh goal from storage when page gains focus
       checkPermissions();
       refreshAppsCache();
       fetchUsageStats();
-    }, [refreshData, refreshAppsCache, fetchUsageStats]),
+    }, [totalDailyLimit]), // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   // Refresh usage stats whenever daily limits change (new apps added/removed)
   useEffect(() => {
-    fetchUsageStats();
+    console.log('[Blocking] dailyLimits.length changed:', dailyLimits.length);
+    if (dailyLimits.length > 0) {
+      fetchUsageStats();
+    }
   }, [dailyLimits.length]);
 
   // Computed values for the card
@@ -407,6 +413,7 @@ export default function BlockingPage() {
     setAccessibilityEnabled(accessibility);
     setOverlayEnabled(overlay);
     setUsageStatsEnabled(usageStats);
+    setPermissionsChecked(true);
   };
 
   // Handle schedule creation/edit and refresh
@@ -478,8 +485,8 @@ export default function BlockingPage() {
           </Text>
         </View>
 
-        {/* Permission Warning Banner */}
-        {Platform.OS === "android" && (
+        {/* Permission Warning Banner - only show after permissions have been checked */}
+        {Platform.OS === "android" && permissionsChecked && (
           <PermissionBanner
             accessibilityEnabled={accessibilityEnabled}
             overlayEnabled={overlayEnabled}
@@ -494,13 +501,26 @@ export default function BlockingPage() {
         <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
           <View
             style={{
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "rgba(255, 255, 255, 0.7)",
               borderRadius: 24,
-              padding: 20,
-              borderWidth: 0.5,
-              borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.04)",
+              overflow: "hidden",
+              borderWidth: 1,
+              borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
             }}
           >
+            <BlurView intensity={isDark ? 20 : 35} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+            <LinearGradient
+              colors={isDark ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"] : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={StyleSheet.absoluteFill}
+            />
+            <LinearGradient
+              colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 0.5 }}
+              style={[StyleSheet.absoluteFill, { height: "50%" }]}
+            />
+            <View style={{ padding: 20 }}>
             {/* Header Row */}
             <View
               style={{
@@ -521,7 +541,7 @@ export default function BlockingPage() {
                     marginBottom: 4,
                   }}
                 >
-                  {t("blocking.todaysProgress")}
+                  {t("blocking.usageToday")}
                 </Text>
                 <TouchableOpacity
                   onPress={() => setShowTotalLimitOptions(!showTotalLimitOptions)}
@@ -534,9 +554,7 @@ export default function BlockingPage() {
                       color: isDark ? "#ffffff" : "#0f172a",
                     }}
                   >
-                    {totalDailyLimit >= 60
-                      ? `${Math.floor(totalDailyLimit / 60)}h`
-                      : `${totalDailyLimit}m`}
+                    {formatTime(totalDailyLimit)}
                     <Text
                       style={{
                         fontSize: 16,
@@ -549,18 +567,13 @@ export default function BlockingPage() {
                   </Text>
                 </TouchableOpacity>
               </View>
+              {/* Share button commented out
               <TouchableOpacity
                 onPress={async () => {
                   try {
-                    const usedFormatted = todayUsage >= 60
-                      ? `${Math.floor(todayUsage / 60)}h ${todayUsage % 60}m`
-                      : `${todayUsage}m`;
-                    const remainingFormatted = remainingLimit >= 60
-                      ? `${Math.floor(remainingLimit / 60)}h ${remainingLimit % 60}m`
-                      : `${remainingLimit}m`;
-                    const goalFormatted = totalDailyLimit >= 60
-                      ? `${Math.floor(totalDailyLimit / 60)}h`
-                      : `${totalDailyLimit}m`;
+                    const usedFormatted = formatTime(todayUsage);
+                    const remainingFormatted = formatTime(remainingLimit);
+                    const goalFormatted = formatTime(totalDailyLimit, false);
 
                     const message = `${t("blocking.share.header")}\n\n` +
                       `${t("blocking.share.goal", { time: goalFormatted })}\n` +
@@ -589,6 +602,7 @@ export default function BlockingPage() {
               >
                 <Share2 size={18} color="#3b82f6" />
               </TouchableOpacity>
+              */}
             </View>
 
             {/* Progress Section */}
@@ -619,9 +633,7 @@ export default function BlockingPage() {
                       color: "#10b981",
                     }}
                   >
-                    {remainingLimit >= 60
-                      ? `${Math.floor(remainingLimit / 60)}h`
-                      : `${remainingLimit}m`}
+                    {formatTime(remainingLimit, false)}
                   </Text>
                   <Text
                     style={{
@@ -648,7 +660,15 @@ export default function BlockingPage() {
                 </Text>
                 <View style={{ flexDirection: "row", alignItems: "flex-end", gap: 6 }}>
                   {(() => {
-                    const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+                    const days = [
+                      t("common.dayLetters.sun"),
+                      t("common.dayLetters.mon"),
+                      t("common.dayLetters.tue"),
+                      t("common.dayLetters.wed"),
+                      t("common.dayLetters.thu"),
+                      t("common.dayLetters.fri"),
+                      t("common.dayLetters.sat"),
+                    ];
                     // Get day labels for last 7 days ending with today
                     const orderedDays = [];
                     for (let i = 6; i >= 0; i--) {
@@ -724,9 +744,7 @@ export default function BlockingPage() {
                     color: "#10b981",
                   }}
                 >
-                  {todayUsage >= 60
-                    ? `${Math.floor(todayUsage / 60)}h${todayUsage % 60}m`
-                    : `${todayUsage}m`}
+                  {formatTime(todayUsage)}
                 </Text>
                 <Text
                   style={{
@@ -756,9 +774,7 @@ export default function BlockingPage() {
                     color: isDark ? "#ffffff" : "#0f172a",
                   }}
                 >
-                  {remainingLimit >= 60
-                    ? `${Math.floor(remainingLimit / 60)}h${remainingLimit % 60}m`
-                    : `${remainingLimit}m`}
+                  {formatTime(remainingLimit)}
                 </Text>
                 <Text
                   style={{
@@ -818,7 +834,7 @@ export default function BlockingPage() {
                 <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
                   {[30, 60, 90, 120, 180, 240].map((mins) => {
                     const isSelected = totalDailyLimit === mins;
-                    const label = mins >= 60 ? `${mins / 60}h` : `${mins}m`;
+                    const label = formatTime(mins, false);
                     return (
                       <TouchableOpacity
                         key={mins}
@@ -879,6 +895,7 @@ export default function BlockingPage() {
                 </Text>
               </View>
             )}
+            </View>
           </View>
         </View>
 
@@ -1077,49 +1094,60 @@ export default function BlockingPage() {
           {enhancedDailyLimits.length === 0 ? (
             <View
               style={{
-                backgroundColor: isDark
-                  ? "rgba(255, 255, 255, 0.03)"
-                  : "rgba(255, 255, 255, 0.7)",
                 borderRadius: 20,
-                padding: 32,
-                alignItems: "center",
-                borderWidth: 0.5,
-                borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.04)",
+                overflow: "hidden",
+                borderWidth: 1,
+                borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
               }}
             >
-              <View
-                style={{
-                  width: 64,
-                  height: 64,
-                  borderRadius: 20,
-                  backgroundColor: isDark ? "rgba(245, 158, 11, 0.1)" : "rgba(245, 158, 11, 0.08)",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: 16,
-                }}
-              >
-                <Timer size={28} color="#f59e0b" strokeWidth={1.5} />
+              <BlurView intensity={isDark ? 20 : 35} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+              <LinearGradient
+                colors={isDark ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"] : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <LinearGradient
+                colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 0.6 }}
+                style={[StyleSheet.absoluteFill, { height: "60%" }]}
+              />
+              <View style={{ padding: 32, alignItems: "center" }}>
+                <View
+                  style={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: 20,
+                    backgroundColor: isDark ? "rgba(245, 158, 11, 0.1)" : "rgba(245, 158, 11, 0.08)",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: 16,
+                  }}
+                >
+                  <Timer size={28} color="#f59e0b" strokeWidth={1.5} />
+                </View>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "600",
+                    color: isDark ? "#ffffff" : "#0f172a",
+                    marginBottom: 6,
+                  }}
+                >
+                  {t("blocking.noLimitsSet") || "No app limits set"}
+                </Text>
+                <Text
+                  style={{
+                    color: isDark ? "rgba(255,255,255,0.4)" : "#94a3b8",
+                    textAlign: "center",
+                    fontSize: 14,
+                    lineHeight: 20,
+                  }}
+                >
+                  {t("blocking.addLimitsHint") || "Add apps to set daily usage limits"}
+                </Text>
               </View>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontWeight: "600",
-                  color: isDark ? "#ffffff" : "#0f172a",
-                  marginBottom: 6,
-                }}
-              >
-                {t("blocking.noLimitsSet") || "No app limits set"}
-              </Text>
-              <Text
-                style={{
-                  color: isDark ? "rgba(255,255,255,0.4)" : "#94a3b8",
-                  textAlign: "center",
-                  fontSize: 14,
-                  lineHeight: 20,
-                }}
-              >
-                {t("blocking.addLimitsHint") || "Add apps to set daily usage limits"}
-              </Text>
             </View>
           ) : (
             enhancedDailyLimits.map((limit) => (

@@ -11,12 +11,12 @@ const db = SQLite.openDatabaseSync('usage_history.db');
 let isInitialized = false;
 let initPromise: Promise<void> | null = null;
 
-// Type for database row
+// Type for database row (note: column still called 'pickups' for backward compatibility)
 interface DailyUsageRow {
   id: number;
   date: string;
   total_screen_time: number;
-  pickups: number;
+  pickups: number; // maps to 'unlocks' in the app
   health_score: number;
   orb_level: number;
   apps_data: string;
@@ -60,7 +60,10 @@ export const initUsageDatabase = async () => {
 // Ensure DB is initialized before any operation
 const ensureInitialized = async () => {
   if (!isInitialized) {
+    console.log('[UsageDB] ensureInitialized: DB not ready, initializing...');
+    const start = Date.now();
     await initUsageDatabase();
+    console.log('[UsageDB] ensureInitialized: done', `(${Date.now() - start}ms)`);
   }
 };
 
@@ -134,17 +137,21 @@ export const getWeekUsage = async (startDate: string, endDate: string) => {
 
 // Check if data exists for a date range
 export const hasDataForRange = async (startDate: string, endDate: string): Promise<boolean> => {
+  const fnStart = Date.now();
+  console.log('[UsageDB] hasDataForRange START', startDate, '-', endDate);
   try {
     await ensureInitialized();
+    console.log('[UsageDB] hasDataForRange: querying...', `(${Date.now() - fnStart}ms)`);
     const result = await db.getFirstAsync(
       `SELECT COUNT(*) as count FROM daily_usage
        WHERE date >= ? AND date <= ?`,
       [startDate, endDate]
     ) as { count: number };
 
+    console.log('[UsageDB] hasDataForRange DONE, count:', result?.count, `(${Date.now() - fnStart}ms)`);
     return result?.count > 0;
   } catch (error) {
-    console.error('Error checking data range:', error);
+    console.error('[UsageDB] hasDataForRange ERROR:', error);
     return false;
   }
 };

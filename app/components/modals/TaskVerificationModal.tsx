@@ -259,6 +259,7 @@ export const TaskVerificationModal = ({
         {/* Header */}
         <View
           style={{
+            position: 'relative',
             paddingTop: insets.top + 10,
             paddingHorizontal: 20,
             paddingBottom: 16,
@@ -267,56 +268,57 @@ export const TaskVerificationModal = ({
             backgroundColor: isDark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.05)',
           }}
         >
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <View
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 22,
-                  backgroundColor: '#3b82f6',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginRight: 12,
-                }}
-              >
-                <Sparkles size={22} color="#ffffff" />
-              </View>
-              <View>
-                <Text
-                  style={{
-                    fontSize: 18,
-                    fontWeight: 'bold',
-                    color: isDark ? '#ffffff' : '#111827',
-                  }}
-                >
-                  Task Verification
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 13,
-                    color: isDark ? '#9ca3af' : '#6b7280',
-                    marginTop: 2,
-                  }}
-                >
-                  AI-powered progress check
-                </Text>
-              </View>
-            </View>
-            <TouchableOpacity
-              onPress={onClose}
+          <View style={{ flexDirection: 'row', alignItems: 'center', paddingRight: 50 }}>
+            <View
               style={{
-                width: 36,
-                height: 36,
-                borderRadius: 18,
-                backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                width: 44,
+                height: 44,
+                borderRadius: 22,
+                backgroundColor: '#3b82f6',
                 alignItems: 'center',
                 justifyContent: 'center',
+                marginRight: 12,
               }}
             >
-              <X size={20} color={isDark ? '#ffffff' : '#111827'} />
-            </TouchableOpacity>
+              <Sparkles size={22} color="#ffffff" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: 'bold',
+                  color: isDark ? '#ffffff' : '#111827',
+                }}
+              >
+                Task Verification
+              </Text>
+              <Text
+                style={{
+                  fontSize: 13,
+                  color: isDark ? '#9ca3af' : '#6b7280',
+                  marginTop: 2,
+                }}
+              >
+                AI-powered progress check
+              </Text>
+            </View>
           </View>
+          <TouchableOpacity
+            onPress={onClose}
+            style={{
+              position: 'absolute',
+              top: insets.top + 10,
+              right: 20,
+              width: 36,
+              height: 36,
+              borderRadius: 18,
+              backgroundColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <X size={20} color={isDark ? '#ffffff' : '#111827'} />
+          </TouchableOpacity>
         </View>
 
         {/* Messages */}

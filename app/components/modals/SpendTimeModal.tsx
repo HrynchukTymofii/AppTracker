@@ -38,6 +38,7 @@ interface SpendTimeModalProps {
   realUsedMinutes: number; // Actual usage from device stats
   isScheduleFreeTime: boolean;
   forceCoachChat?: boolean; // Force showing coach chat (from native urgent access button)
+  nativeWalletBalance?: number | null; // Direct from native, overrides context if provided
   onClose: () => void;
   onSpend: (minutes: number) => void;
   onEarnTime: () => void;
@@ -52,6 +53,7 @@ export const SpendTimeModal = ({
   realUsedMinutes,
   isScheduleFreeTime,
   forceCoachChat,
+  nativeWalletBalance,
   onClose,
   onSpend,
   onEarnTime,
@@ -166,8 +168,12 @@ export const SpendTimeModal = ({
   const isLimitReached = realUsedMinutes >= dailyLimitMinutes;
   const totalRemaining = getTotalRemainingLimit();
   const isTotalLimitReached = totalRemaining <= 0;
-  const availableMinutes = wallet.availableMinutes;
-  const hasNoBalance = availableMinutes <= 0;
+  // Use native wallet balance if provided (single source of truth), otherwise fall back to context
+  const availableMinutes = nativeWalletBalance !== null && nativeWalletBalance !== undefined
+    ? nativeWalletBalance
+    : wallet.availableMinutes;
+  // Match native logic: need at least 0.5 min for one deduction cycle
+  const hasNoBalance = availableMinutes < 0.5;
 
   // Calculate max usable time (minimum of remaining limit and available balance)
   const maxUsableTime = isScheduleFreeTime

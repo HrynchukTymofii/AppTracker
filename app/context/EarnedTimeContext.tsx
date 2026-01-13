@@ -12,6 +12,14 @@ export interface EarnedTimeWallet {
   lastUpdated: number;
 }
 
+// Streak tracking - counts days where user earned ANY time (exercises or photo tasks)
+export interface StreakData {
+  currentStreak: number;      // Current consecutive days with earnings
+  longestStreak: number;      // All-time longest streak
+  lastEarningDate: string;    // YYYY-MM-DD of last earning
+  streakShownToday: boolean;  // Whether streak modal was shown today
+}
+
 export interface EarningRecord {
   id: string;
   type: ExerciseType | 'photo_task' | 'custom';
@@ -40,6 +48,10 @@ interface EarnedTimeContextType {
   earningHistory: EarningRecord[];
   spendingHistory: SpendingRecord[];
   todayUsage: DailyUsage;
+
+  // Native values (Android - updated every 5s)
+  nativeSpentToday: number;
+  nativeEarnedToday: number;
 
   // Total daily limit
   totalDailyLimit: number;
@@ -94,16 +106,28 @@ interface EarnedTimeContextType {
   getTodaySpent: () => number;
   getWeekStats: () => { earned: number; spent: number };
   getDayStats: (date: Date) => { earned: number; spent: number };
-  getWeeklyDailyStats: () => { day: string; earned: number; spent: number; isToday: boolean }[];
+  getWeeklyDailyStats: (t?: (key: string) => string) => { day: string; earned: number; spent: number; isToday: boolean }[];
 
   // Sync real usage with wallet
   syncUsageWithWallet: (realUsageMap: Record<string, number>) => Promise<number>;
+
+  // Sync website usage with wallet
+  syncWebsiteUsageWithWallet: (websiteUsageMap: Record<string, number>) => Promise<number>;
+
+  // Sync native app usage (from AccessibilityService session tracking) with wallet
+  syncNativeAppUsageWithWallet: () => Promise<number>;
 
   // Reset wallet to a specific amount (for fixing issues)
   resetWallet: (minutes: number) => Promise<void>;
 
   // Refresh data
   refreshData: () => Promise<void>;
+
+  // Streak tracking
+  streak: StreakData;
+  isFirstEarningToday: () => boolean;
+  markStreakShown: () => Promise<void>;
+  recordActivity: () => Promise<boolean>; // Returns true if it was the first activity of the day
 }
 
 const EarnedTimeContext = createContext<EarnedTimeContextType | undefined>(undefined);
@@ -114,6 +138,7 @@ const STORAGE_KEYS = {
   SPENDING_HISTORY: '@earned_time_spending_history',
   DAILY_USAGE: '@earned_time_daily_usage',
   LAST_SYNCED_USAGE: '@earned_time_last_synced_usage',
+  STREAK: '@earned_time_streak',
 };
 
 const MAX_HISTORY_ITEMS = 100;
@@ -136,21 +161,58 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
   });
   const [totalDailyLimit, setTotalDailyLimitState] = useState<number>(60); // Default 1 hour
   const [lastSyncedUsage, setLastSyncedUsage] = useState<Record<string, number>>({}); // packageName -> last synced minutes
+  const [streak, setStreak] = useState<StreakData>({
+    currentStreak: 0,
+    longestStreak: 0,
+    lastEarningDate: '',
+    streakShownToday: false,
+  });
 
   // Load data on mount
   const loadData = useCallback(async () => {
     try {
-      const [walletData, earningData, spendingData, usageData, storedTotalLimit, syncedUsageData] = await Promise.all([
+      const [walletData, earningData, spendingData, usageData, storedTotalLimit, syncedUsageData, streakData] = await Promise.all([
         AsyncStorage.getItem(STORAGE_KEYS.WALLET),
         AsyncStorage.getItem(STORAGE_KEYS.EARNING_HISTORY),
         AsyncStorage.getItem(STORAGE_KEYS.SPENDING_HISTORY),
         AsyncStorage.getItem(STORAGE_KEYS.DAILY_USAGE),
         SecureStore.getItemAsync('totalDailyLimit'),
         AsyncStorage.getItem(STORAGE_KEYS.LAST_SYNCED_USAGE),
+        AsyncStorage.getItem(STORAGE_KEYS.STREAK),
       ]);
 
       if (walletData) {
-        setWallet(JSON.parse(walletData));
+        const storedWallet = JSON.parse(walletData);
+        // On Android, get balance from native (single source of truth)
+        if (Platform.OS === 'android') {
+          try {
+            const nativeBalance = await AppBlocker.getWalletBalance();
+            console.log('[EarnedTime] loadData: native balance =', nativeBalance, 'type:', typeof nativeBalance);
+            setWallet({
+              ...storedWallet,
+              availableMinutes: nativeBalance ?? 0,
+              lastUpdated: Date.now(),
+            });
+          } catch (error) {
+            console.error('[EarnedTime] Error getting wallet balance:', error);
+            setWallet(storedWallet);
+          }
+        } else {
+          setWallet(storedWallet);
+        }
+      } else if (Platform.OS === 'android') {
+        // No stored wallet, but check native for any existing balance
+        try {
+          const nativeBalance = await AppBlocker.getWalletBalance();
+          console.log('[EarnedTime] loadData (no stored): native balance =', nativeBalance, 'type:', typeof nativeBalance);
+          setWallet({
+            totalEarned: 0,
+            availableMinutes: nativeBalance ?? 0,
+            lastUpdated: Date.now(),
+          });
+        } catch (error) {
+          console.error('[EarnedTime] Error getting wallet balance (no stored):', error);
+        }
       }
 
       if (earningData) {
@@ -168,9 +230,12 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
           const newUsage = { date: getTodayDateString(), appUsage: {} };
           setTodayUsage(newUsage);
           await AsyncStorage.setItem(STORAGE_KEYS.DAILY_USAGE, JSON.stringify(newUsage));
-          // Also reset synced usage for new day
+          // Also reset synced usage for new day (both apps and websites)
           setLastSyncedUsage({});
           await AsyncStorage.setItem(STORAGE_KEYS.LAST_SYNCED_USAGE, JSON.stringify({}));
+          // Reset website synced usage as well
+          await AsyncStorage.setItem('@earned_time_last_synced_website_usage', JSON.stringify({}));
+          console.log('[EarnedTime] Day changed, reset app and website sync data');
         } else {
           setTodayUsage(usage);
         }
@@ -178,12 +243,14 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
 
       if (storedTotalLimit) {
         const limit = parseInt(storedTotalLimit, 10);
+        console.log('[EarnedTime] Loaded totalDailyLimit from storage:', limit);
         setTotalDailyLimitState(limit);
         // Sync to native for Android blocking screen
         if (Platform.OS === 'android') {
           AppBlocker.setTotalDailyLimit(limit);
         }
       } else {
+        console.log('[EarnedTime] No stored totalDailyLimit, using default 60');
         // Sync default limit to native
         if (Platform.OS === 'android') {
           AppBlocker.setTotalDailyLimit(60); // Default 1 hour
@@ -192,6 +259,31 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
 
       if (syncedUsageData) {
         setLastSyncedUsage(JSON.parse(syncedUsageData));
+      }
+
+      // Load streak data
+      if (streakData) {
+        const loadedStreak = JSON.parse(streakData) as StreakData;
+        const today = getTodayDateString();
+
+        // Reset streakShownToday if it's a new day
+        if (loadedStreak.lastEarningDate !== today) {
+          loadedStreak.streakShownToday = false;
+        }
+
+        // Check if streak is broken (more than 1 day since last earning)
+        if (loadedStreak.lastEarningDate) {
+          const lastDate = new Date(loadedStreak.lastEarningDate);
+          const todayDate = new Date(today);
+          const diffDays = Math.floor((todayDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+
+          // If more than 1 day has passed without earning, reset streak
+          if (diffDays > 1) {
+            loadedStreak.currentStreak = 0;
+          }
+        }
+
+        setStreak(loadedStreak);
       }
     } catch (error) {
       console.error('Error loading earned time data:', error);
@@ -237,20 +329,63 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
       timestamp: Date.now(),
     };
 
+    let newAvailableMinutes = wallet.availableMinutes + minutes;
+
+    // Update native (single source of truth) on Android
+    if (Platform.OS === 'android') {
+      console.log('[EarnedTime] earnTime: adding', minutes, 'minutes to wallet');
+      const result = AppBlocker.addToWalletBalance(minutes);
+      console.log('[EarnedTime] earnTime: addToWalletBalance returned', result, 'type:', typeof result);
+      newAvailableMinutes = result ?? (wallet.availableMinutes + minutes);
+      AppBlocker.addToEarnedToday(minutes);
+      console.log('[EarnedTime] earnTime: new balance =', newAvailableMinutes);
+    }
+
     const newWallet: EarnedTimeWallet = {
       totalEarned: wallet.totalEarned + minutes,
-      availableMinutes: wallet.availableMinutes + minutes,
+      availableMinutes: newAvailableMinutes,
       lastUpdated: Date.now(),
     };
 
     const newHistory = [record, ...earningHistory].slice(0, MAX_HISTORY_ITEMS);
 
+    // Update streak
+    const today = getTodayDateString();
+    let newStreak = { ...streak };
+
+    if (streak.lastEarningDate !== today) {
+      // First earning of the day - check if continuing streak
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+      if (streak.lastEarningDate === yesterdayStr) {
+        // Continuing streak from yesterday
+        newStreak.currentStreak = streak.currentStreak + 1;
+      } else if (streak.lastEarningDate === '') {
+        // First ever earning
+        newStreak.currentStreak = 1;
+      } else {
+        // Streak broken, start fresh
+        newStreak.currentStreak = 1;
+      }
+
+      newStreak.lastEarningDate = today;
+      // Update longest streak if needed
+      if (newStreak.currentStreak > newStreak.longestStreak) {
+        newStreak.longestStreak = newStreak.currentStreak;
+      }
+    }
+    // If already earned today, streak stays the same
+
     setWallet(newWallet);
     setEarningHistory(newHistory);
+    setStreak(newStreak);
 
     await Promise.all([
       saveWallet(newWallet),
       AsyncStorage.setItem(STORAGE_KEYS.EARNING_HISTORY, JSON.stringify(newHistory)),
+      AsyncStorage.setItem(STORAGE_KEYS.STREAK, JSON.stringify(newStreak)),
     ]);
   };
 
@@ -260,7 +395,13 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
     appName: string,
     minutes: number
   ): Promise<boolean> => {
-    if (wallet.availableMinutes < minutes) {
+    // Check balance - use native on Android
+    let currentBalance = wallet.availableMinutes;
+    if (Platform.OS === 'android') {
+      currentBalance = await AppBlocker.getWalletBalance();
+    }
+
+    if (currentBalance < minutes) {
       return false;
     }
 
@@ -273,9 +414,15 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
       timestamp: Date.now(),
     };
 
+    // Update native (single source of truth) on Android
+    let newAvailableMinutes = wallet.availableMinutes - minutes;
+    if (Platform.OS === 'android') {
+      newAvailableMinutes = AppBlocker.deductFromWalletBalance(minutes);
+    }
+
     const newWallet: EarnedTimeWallet = {
       ...wallet,
-      availableMinutes: wallet.availableMinutes - minutes,
+      availableMinutes: newAvailableMinutes,
       lastUpdated: Date.now(),
     };
 
@@ -318,10 +465,16 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
       timestamp: Date.now(),
     };
 
+    // Update native (single source of truth) on Android - can go negative
+    let newAvailableMinutes = wallet.availableMinutes - minutes;
+    if (Platform.OS === 'android') {
+      newAvailableMinutes = AppBlocker.deductFromWalletBalance(minutes);
+    }
+
     // Allow going negative
     const newWallet: EarnedTimeWallet = {
       ...wallet,
-      availableMinutes: wallet.availableMinutes - minutes, // Can be negative
+      availableMinutes: newAvailableMinutes, // Can be negative
       lastUpdated: Date.now(),
     };
 
@@ -401,8 +554,10 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
 
   // Set total daily limit
   const setTotalDailyLimit = async (minutes: number) => {
+    console.log('[EarnedTime] setTotalDailyLimit called with:', minutes);
     setTotalDailyLimitState(minutes);
     await SecureStore.setItemAsync('totalDailyLimit', minutes.toString());
+    console.log('[EarnedTime] Saved totalDailyLimit to SecureStore:', minutes);
     // Sync to native for Android blocking screen
     if (Platform.OS === 'android') {
       AppBlocker.setTotalDailyLimit(minutes);
@@ -457,21 +612,53 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
     };
   };
 
-  // Get today's earnings
+  // State for native values (updated periodically)
+  const [nativeSpentToday, setNativeSpentToday] = useState<number>(0);
+  const [nativeEarnedToday, setNativeEarnedToday] = useState<number>(0);
+
+  // Refresh native stats periodically
+  useEffect(() => {
+    const refreshNativeStats = async () => {
+      if (Platform.OS === 'android') {
+        try {
+          const [spent, earned] = await Promise.all([
+            AppBlocker.getTotalSpentToday(),
+            AppBlocker.getTotalEarnedToday(),
+          ]);
+          setNativeSpentToday(spent);
+          setNativeEarnedToday(earned);
+        } catch (e) {
+          console.error('[EarnedTime] Error refreshing native stats:', e);
+        }
+      }
+    };
+
+    refreshNativeStats();
+    const interval = setInterval(refreshNativeStats, 5000); // Refresh every 5 seconds
+    return () => clearInterval(interval);
+  }, []);
+
+  // Get today's earnings - from native on Android
   const getTodayEarned = (): number => {
+    if (Platform.OS === 'android') {
+      return nativeEarnedToday;
+    }
+    // iOS fallback: use history
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
-
     return earningHistory
       .filter(r => r.timestamp >= todayStart.getTime())
       .reduce((sum, r) => sum + r.minutesEarned, 0);
   };
 
-  // Get today's spending
+  // Get today's spending - from native on Android
   const getTodaySpent = (): number => {
+    if (Platform.OS === 'android') {
+      return nativeSpentToday;
+    }
+    // iOS fallback: use history
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
-
     return spendingHistory
       .filter(r => r.timestamp >= todayStart.getTime() && !r.wasScheduleFree)
       .reduce((sum, r) => sum + r.minutesSpent, 0);
@@ -511,8 +698,17 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
   };
 
   // Get daily stats for the current week (Mon-Sun)
-  const getWeeklyDailyStats = (): { day: string; earned: number; spent: number; isToday: boolean }[] => {
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  // Uses native values for today on Android
+  const getWeeklyDailyStats = (t?: (key: string) => string): { day: string; earned: number; spent: number; isToday: boolean }[] => {
+    const days = t ? [
+      t("common.dayNames.mon"),
+      t("common.dayNames.tue"),
+      t("common.dayNames.wed"),
+      t("common.dayNames.thu"),
+      t("common.dayNames.fri"),
+      t("common.dayNames.sat"),
+      t("common.dayNames.sun"),
+    ] : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const today = new Date();
     const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
     const mondayOffset = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Days since Monday
@@ -527,8 +723,19 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
       date.setDate(monday.getDate() + index);
 
       const isToday = index === mondayOffset;
-      const stats = getDayStats(date);
 
+      // For today, use native values on Android
+      if (isToday && Platform.OS === 'android') {
+        return {
+          day,
+          earned: nativeEarnedToday,
+          spent: nativeSpentToday,
+          isToday: true,
+        };
+      }
+
+      // For other days, use history
+      const stats = getDayStats(date);
       return {
         day,
         earned: stats.earned,
@@ -538,83 +745,109 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  // Sync real device usage with wallet - deducts actual usage from earned time
-  // Also updates todayUsage so native blocking screen can see real usage for limit checks
+  // Sync React state with native - simplified, native is source of truth
   const syncUsageWithWallet = async (realUsageMap: Record<string, number>): Promise<number> => {
-    let totalDeducted = 0;
-    const newSyncedUsage = { ...lastSyncedUsage };
-    let hasChanges = false;
+    if (Platform.OS !== 'android') return 0;
 
-    // Calculate delta for each app
-    for (const [packageName, realMinutes] of Object.entries(realUsageMap)) {
-      const lastSynced = lastSyncedUsage[packageName];
+    try {
+      // Just sync React wallet state with native
+      const nativeBalance = await AppBlocker.getWalletBalance();
+      setWallet(prev => ({
+        ...prev,
+        availableMinutes: nativeBalance,
+        lastUpdated: Date.now(),
+      }));
 
-      // If this is the first time seeing this app, just record current usage (don't deduct)
-      if (lastSynced === undefined) {
-        newSyncedUsage[packageName] = realMinutes;
-        hasChanges = true;
-        console.log(`[EarnedTime] First sync for ${packageName}: initialized at ${realMinutes} min`);
-        continue;
-      }
-
-      // Calculate delta from last sync
-      const delta = Math.max(0, realMinutes - lastSynced);
-
-      if (delta > 0) {
-        totalDeducted += delta;
-        newSyncedUsage[packageName] = realMinutes;
-        hasChanges = true;
-        console.log(`[EarnedTime] Sync: ${packageName} used ${delta} more minutes (${lastSynced} -> ${realMinutes})`);
-      }
-    }
-
-    if (hasChanges) {
-      setLastSyncedUsage(newSyncedUsage);
-      await AsyncStorage.setItem(STORAGE_KEYS.LAST_SYNCED_USAGE, JSON.stringify(newSyncedUsage));
-
-      // Update todayUsage with real usage values so native blocking screen can check limits
+      // Update todayUsage for display
       const newUsage: DailyUsage = {
         date: getTodayDateString(),
-        appUsage: { ...realUsageMap }, // Use real usage directly
+        appUsage: { ...realUsageMap },
       };
       setTodayUsage(newUsage);
-      await AsyncStorage.setItem(STORAGE_KEYS.DAILY_USAGE, JSON.stringify(newUsage));
-    }
 
-    if (totalDeducted > 0) {
-      // Deduct from wallet
-      const newWallet: EarnedTimeWallet = {
-        ...wallet,
-        availableMinutes: wallet.availableMinutes - totalDeducted,
+      return 0; // Native handles deductions
+    } catch (error) {
+      console.error('[EarnedTime] Error syncing with native:', error);
+      return 0;
+    }
+  };
+
+  // Sync website usage - simplified, native is source of truth
+  const syncWebsiteUsageWithWallet = async (websiteUsageMap: Record<string, number>): Promise<number> => {
+    if (Platform.OS !== 'android') return 0;
+
+    try {
+      // Just sync React wallet state with native
+      const nativeBalance = await AppBlocker.getWalletBalance();
+      setWallet(prev => ({
+        ...prev,
+        availableMinutes: nativeBalance,
         lastUpdated: Date.now(),
+      }));
+
+      // Update todayUsage with website data for display
+      const updatedUsage: DailyUsage = {
+        ...todayUsage,
+        appUsage: { ...todayUsage.appUsage },
       };
+      for (const [website, minutes] of Object.entries(websiteUsageMap)) {
+        if (minutes > 0) {
+          updatedUsage.appUsage[`website:${website}`] = minutes;
+        }
+      }
+      setTodayUsage(updatedUsage);
 
-      setWallet(newWallet);
-      await saveWallet(newWallet);
-
-      // Add to spending history so it shows in "spent" stats
-      // Create a combined record for all synced apps
-      const newSpendRecord: SpendingRecord = {
-        id: `sync_${Date.now()}`,
-        packageName: 'sync',
-        appName: 'Real Usage Sync',
-        minutesSpent: totalDeducted,
-        timestamp: Date.now(),
-        wasScheduleFree: false,
-      };
-
-      const updatedSpendingHistory = [...spendingHistory, newSpendRecord].slice(0, MAX_HISTORY_ITEMS);
-      setSpendingHistory(updatedSpendingHistory);
-      await AsyncStorage.setItem(STORAGE_KEYS.SPENDING_HISTORY, JSON.stringify(updatedSpendingHistory));
-
-      console.log(`[EarnedTime] Synced: deducted ${totalDeducted} minutes, new balance: ${newWallet.availableMinutes}`);
+      return 0; // Native handles deductions
+    } catch (error) {
+      console.error('[EarnedTime] Error syncing website usage:', error);
+      return 0;
     }
+  };
 
-    return totalDeducted;
+  // Sync native app usage - simplified, native is source of truth
+  const syncNativeAppUsageWithWallet = async (): Promise<number> => {
+    if (Platform.OS !== 'android') return 0;
+
+    try {
+      // Get native app usage for display
+      const nativeUsageMap = await AppBlocker.getNativeAppUsageToday();
+
+      // Sync React wallet state with native
+      const nativeBalance = await AppBlocker.getWalletBalance();
+      setWallet(prev => ({
+        ...prev,
+        availableMinutes: nativeBalance,
+        lastUpdated: Date.now(),
+      }));
+
+      // Update todayUsage with native app usage for display
+      if (Object.keys(nativeUsageMap).length > 0) {
+        const updatedUsage: DailyUsage = {
+          ...todayUsage,
+          appUsage: { ...todayUsage.appUsage },
+        };
+        for (const [packageName, minutes] of Object.entries(nativeUsageMap)) {
+          if (minutes > 0) {
+            updatedUsage.appUsage[packageName] = minutes;
+          }
+        }
+        setTodayUsage(updatedUsage);
+      }
+
+      return 0; // Native handles deductions
+    } catch (error) {
+      console.error('[EarnedTime] Error syncing native app usage:', error);
+      return 0;
+    }
   };
 
   // Reset wallet to a specific amount and clear synced usage
   const resetWallet = async (minutes: number) => {
+    // Update native (single source of truth) on Android
+    if (Platform.OS === 'android') {
+      AppBlocker.setWalletBalance(minutes);
+    }
+
     const newWallet: EarnedTimeWallet = {
       totalEarned: minutes,
       availableMinutes: minutes,
@@ -634,6 +867,60 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
 
   const refreshData = loadData;
 
+  // Check if this is the first earning of the day (for streak modal)
+  const isFirstEarningToday = (): boolean => {
+    const today = getTodayDateString();
+    // It's the first earning if we haven't shown the streak today AND
+    // the last earning date is not today (meaning earnTime will update streak)
+    return !streak.streakShownToday && streak.lastEarningDate !== today;
+  };
+
+  // Mark streak modal as shown for today
+  const markStreakShown = async (): Promise<void> => {
+    const newStreak = { ...streak, streakShownToday: true };
+    setStreak(newStreak);
+    await AsyncStorage.setItem(STORAGE_KEYS.STREAK, JSON.stringify(newStreak));
+  };
+
+  // Record activity for streak purposes (used by photo tasks that don't earn time)
+  // Returns true if it was the first activity of the day (to trigger streak modal)
+  const recordActivity = async (): Promise<boolean> => {
+    const today = getTodayDateString();
+
+    // If already recorded activity today, return false
+    if (streak.lastEarningDate === today) {
+      return false;
+    }
+
+    // Update streak
+    let newStreak = { ...streak };
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+    if (streak.lastEarningDate === yesterdayStr) {
+      // Continuing streak from yesterday
+      newStreak.currentStreak = streak.currentStreak + 1;
+    } else if (streak.lastEarningDate === '') {
+      // First ever activity
+      newStreak.currentStreak = 1;
+    } else {
+      // Streak broken, start fresh
+      newStreak.currentStreak = 1;
+    }
+
+    newStreak.lastEarningDate = today;
+    // Update longest streak if needed
+    if (newStreak.currentStreak > newStreak.longestStreak) {
+      newStreak.longestStreak = newStreak.currentStreak;
+    }
+
+    setStreak(newStreak);
+    await AsyncStorage.setItem(STORAGE_KEYS.STREAK, JSON.stringify(newStreak));
+
+    return true; // This was the first activity of the day
+  };
+
   return (
     <EarnedTimeContext.Provider
       value={{
@@ -641,6 +928,8 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
         earningHistory,
         spendingHistory,
         todayUsage,
+        nativeSpentToday,
+        nativeEarnedToday,
         totalDailyLimit,
         setTotalDailyLimit,
         earnTime,
@@ -657,8 +946,14 @@ export function EarnedTimeProvider({ children }: { children: ReactNode }) {
         getDayStats,
         getWeeklyDailyStats,
         syncUsageWithWallet,
+        syncWebsiteUsageWithWallet,
+        syncNativeAppUsageWithWallet,
         resetWallet,
         refreshData,
+        streak,
+        isFirstEarningToday,
+        markStreakShown,
+        recordActivity,
       }}
     >
       {children}

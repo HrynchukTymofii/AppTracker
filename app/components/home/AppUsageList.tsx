@@ -1,9 +1,11 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { Lock, Smartphone, ChevronRight } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { formatDuration } from "@/lib/usageTracking";
+import { BlurView } from "expo-blur";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface AppUsage {
   packageName: string;
@@ -68,28 +70,54 @@ export const AppUsageList: React.FC<AppUsageListProps> = ({
       {isLoading ? (
         <View
           style={{
-            backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f9fafb",
             borderRadius: 16,
-            padding: 40,
-            alignItems: "center",
+            overflow: "hidden",
+            borderWidth: 1,
+            borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
           }}
         >
-          <Text style={{ color: isDark ? "#9ca3af" : "#6b7280", fontSize: 14 }}>
-            {t("home.loadingApps")}
-          </Text>
+          <BlurView intensity={isDark ? 20 : 35} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+          <LinearGradient
+            colors={isDark ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"] : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          <LinearGradient
+            colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 0.6 }}
+            style={[StyleSheet.absoluteFill, { height: "60%" }]}
+          />
+          <View style={{ padding: 40, alignItems: "center" }}>
+            <Text style={{ color: isDark ? "#9ca3af" : "#6b7280", fontSize: 14 }}>
+              {t("home.loadingApps")}
+            </Text>
+          </View>
         </View>
       ) : appsUsage.length > 0 ? (
         <View
           style={{
-            backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#ffffff",
             borderRadius: 16,
-            padding: 12,
+            overflow: "hidden",
             borderWidth: 1,
-            borderColor: isDark
-              ? "rgba(255, 255, 255, 0.08)"
-              : "rgba(0, 0, 0, 0.05)",
+            borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
           }}
         >
+          <BlurView intensity={isDark ? 20 : 35} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+          <LinearGradient
+            colors={isDark ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"] : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+          <LinearGradient
+            colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 0.5 }}
+            style={[StyleSheet.absoluteFill, { height: "50%" }]}
+          />
+          <View style={{ padding: 12 }}>
           {appsUsage.map((app, index) => (
             <View
               key={app.packageName || index}
@@ -209,34 +237,50 @@ export const AppUsageList: React.FC<AppUsageListProps> = ({
                   marginLeft: 12,
                 }}
               >
-                {formatDuration(app.usageTime)}
+                {formatDuration(app.usageTime, t)}
               </Text>
             </View>
           ))}
+          </View>
         </View>
       ) : (
         <View
           style={{
-            backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#f9fafb",
             borderRadius: 16,
-            padding: 40,
-            alignItems: "center",
+            overflow: "hidden",
+            borderWidth: 1,
+            borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.6)",
           }}
         >
-          <Smartphone
-            size={40}
-            color={isDark ? "#4b5563" : "#9ca3af"}
-            style={{ marginBottom: 12 }}
+          <BlurView intensity={isDark ? 20 : 35} tint={isDark ? "dark" : "light"} style={StyleSheet.absoluteFill} />
+          <LinearGradient
+            colors={isDark ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"] : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
           />
-          <Text
-            style={{
-              color: isDark ? "#9ca3af" : "#6b7280",
-              fontSize: 14,
-              textAlign: "center",
-            }}
-          >
-            {t("stats.noUsageData")}
-          </Text>
+          <LinearGradient
+            colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 0.6 }}
+            style={[StyleSheet.absoluteFill, { height: "60%" }]}
+          />
+          <View style={{ padding: 40, alignItems: "center" }}>
+            <Smartphone
+              size={40}
+              color={isDark ? "#4b5563" : "#9ca3af"}
+              style={{ marginBottom: 12 }}
+            />
+            <Text
+              style={{
+                color: isDark ? "#9ca3af" : "#6b7280",
+                fontSize: 14,
+                textAlign: "center",
+              }}
+            >
+              {t("stats.noUsageData")}
+            </Text>
+          </View>
         </View>
       )}
     </View>

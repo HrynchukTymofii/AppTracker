@@ -19,8 +19,9 @@ import {
   initializeTracking,
   getDailyUsageForWeek,
 } from "@/lib/usageTracking";
+import { fetchAppIcons, getAppIcon } from "@/lib/iconCache";
 import { useBlocking } from "@/context/BlockingContext";
-import { getAchievementStats } from "@/lib/achievementTracking";
+import { useEarnedTime } from "@/context/EarnedTimeContext";
 import AnimatedOrb from "@/components/AnimatedOrb";
 import { HelpCarousel } from "@/components/modals/HelpCarousel";
 import { getHelpCards } from "@/lib/helpContent";
@@ -40,13 +41,13 @@ export default function HomeScreen() {
   const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { streak: earnedTimeStreak } = useEarnedTime();
   const [refreshing, setRefreshing] = useState(false);
   const [healthScore, setHealthScore] = useState(75);
   const [totalScreenTime, setTotalScreenTime] = useState(0);
   const [pickups, setPickups] = useState(0);
   const [orbLevel, setOrbLevel] = useState(3);
   const [previousOrbLevel, setPreviousOrbLevel] = useState(3);
-  const [streak, setStreak] = useState(0);
   const [averageScreenTime, setAverageScreenTime] = useState(0);
   const [quickMenuOpen, setQuickMenuOpen] = useState(false);
   const [appsUsage, setAppsUsage] = useState<any[]>([]);
@@ -168,16 +169,6 @@ export default function HomeScreen() {
     }
   };
 
-  // Load streak from achievement stats
-  const loadStreak = async () => {
-    try {
-      const stats = await getAchievementStats();
-      setStreak(stats.currentStreak || 0);
-    } catch (error) {
-      console.error("Error loading streak:", error);
-      setStreak(0);
-    }
-  };
 
   // Load weekly average
   const loadWeeklyAverage = async () => {
@@ -202,10 +193,10 @@ export default function HomeScreen() {
       await initializeTracking();
       const stats = await getTodayUsageStats();
 
-      const score = calculateHealthScore(stats.totalScreenTime, stats.pickups);
+      const score = calculateHealthScore(stats.totalScreenTime, stats.unlocks);
       setHealthScore(score);
       setTotalScreenTime(stats.totalScreenTime);
-      setPickups(stats.pickups);
+      setPickups(stats.unlocks);
       setOrbLevel(getOrbLevel(score));
 
       if (stats.apps && stats.apps.length > 0) {
@@ -215,11 +206,20 @@ export default function HomeScreen() {
           .map((app) => ({
             ...app,
             usageTime: app.timeInForeground,
+            iconUrl: getAppIcon(app.packageName) || app.iconUrl || null,
           }));
         setAppsUsage(formattedApps);
+
+        // Fetch icons in background and update when ready
+        fetchAppIcons().then(() => {
+          const updatedApps = formattedApps.map(app => ({
+            ...app,
+            iconUrl: getAppIcon(app.packageName) || app.iconUrl || null,
+          }));
+          setAppsUsage(updatedApps);
+        });
       }
 
-      await loadStreak();
       await loadWeeklyAverage();
     } catch (error) {
       console.error("Error fetching usage data:", error);
@@ -325,7 +325,7 @@ export default function HomeScreen() {
 
           {/* Quick Stats Row */}
           <QuickStatsRow
-            streak={streak}
+            streak={earnedTimeStreak.currentStreak}
             totalScreenTime={totalScreenTime}
             averageScreenTime={averageScreenTime}
             isDark={isDark}

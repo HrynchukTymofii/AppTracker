@@ -19,6 +19,7 @@ import {
   Zap,
 } from 'lucide-react-native';
 import Purchases, { PurchasesPackage } from 'react-native-purchases';
+import { useTranslation } from 'react-i18next';
 import { COLORS, GRADIENT_COLORS, useOnboardingTheme } from './designSystem';
 import { GlassCard, GradientButton } from './UIComponents';
 import AnimatedOrb from '@/components/AnimatedOrb';
@@ -116,6 +117,7 @@ export const AccessibilityReassuranceModal = ({
   onDecline: () => void;
 }) => {
   const { isDark } = useOnboardingTheme();
+  const { t } = useTranslation();
 
   return (
     <Modal visible={visible} animationType="fade" transparent>
@@ -163,7 +165,7 @@ export const AccessibilityReassuranceModal = ({
             marginBottom: 12,
             letterSpacing: -0.3,
           }}>
-            Your Phone May Show a Warning
+            {t('sellingOnboarding.accessibilityReassurance.title')}
           </Text>
 
           <Text style={{
@@ -173,7 +175,7 @@ export const AccessibilityReassuranceModal = ({
             lineHeight: 22,
             marginBottom: 24,
           }}>
-            This is normal! Android shows this for all apps that use accessibility. We only use it to detect when you open blocked apps.
+            {t('sellingOnboarding.accessibilityReassurance.description')}
           </Text>
 
           <View style={{
@@ -187,23 +189,23 @@ export const AccessibilityReassuranceModal = ({
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
               <Lock size={18} color={COLORS.success} style={{ marginRight: 10 }} />
               <Text style={{ fontSize: 14, fontWeight: '600', color: COLORS.success }}>
-                Your data stays on your device
+                {t('sellingOnboarding.accessibilityReassurance.dataStaysOnDevice')}
               </Text>
             </View>
             <Text style={{ fontSize: 13, color: isDark ? 'rgba(255,255,255,0.6)' : '#64748b', lineHeight: 18 }}>
-              We never collect, store, or transmit your personal information. Everything happens locally.
+              {t('sellingOnboarding.accessibilityReassurance.neverCollect')}
             </Text>
           </View>
 
           <GradientButton
             onPress={onContinue}
-            title="I Understand, Continue"
+            title={t('sellingOnboarding.accessibilityReassurance.iUnderstand')}
             colors={GRADIENT_COLORS.success}
             style={{ marginBottom: 12 }}
           />
 
           <TouchableOpacity onPress={onDecline} style={{ padding: 12, alignItems: 'center' }}>
-            <Text style={{ fontSize: 15, color: isDark ? 'rgba(255,255,255,0.5)' : '#94a3b8' }}>Decline</Text>
+            <Text style={{ fontSize: 15, color: isDark ? 'rgba(255,255,255,0.5)' : '#94a3b8' }}>{t('sellingOnboarding.accessibilityReassurance.decline')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -225,6 +227,7 @@ export const DeclineWarningModal = ({
   onGoBack: () => void;
 }) => {
   const { isDark } = useOnboardingTheme();
+  const { t } = useTranslation();
 
   return (
     <Modal visible={visible} animationType="fade" transparent>
@@ -269,7 +272,7 @@ export const DeclineWarningModal = ({
             textAlign: 'center',
             marginBottom: 12,
           }}>
-            App Blocking Won't Work
+            {t('sellingOnboarding.declineWarning.title')}
           </Text>
 
           <Text style={{
@@ -279,18 +282,18 @@ export const DeclineWarningModal = ({
             lineHeight: 22,
             marginBottom: 24,
           }}>
-            Without this permission, LockIn cannot block distracting apps. You'll lose the main feature of the app.
+            {t('sellingOnboarding.declineWarning.description')}
           </Text>
 
           <GradientButton
             onPress={onGoBack}
-            title="Go Back & Enable"
+            title={t('sellingOnboarding.declineWarning.goBackEnable')}
             colors={GRADIENT_COLORS.success}
             style={{ marginBottom: 12 }}
           />
 
           <TouchableOpacity onPress={onContinue} style={{ padding: 12, alignItems: 'center' }}>
-            <Text style={{ fontSize: 15, color: COLORS.error }}>Continue Without Blocking</Text>
+            <Text style={{ fontSize: 15, color: COLORS.error }}>{t('sellingOnboarding.declineWarning.continueWithout')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -316,6 +319,7 @@ export const PaywallModal = ({
   savedHours: number;
 }) => {
   const { colors, isDark } = useOnboardingTheme();
+  const { t } = useTranslation();
   const [selectedPlan, setSelectedPlan] = useState<'yearly' | 'monthly'>('yearly');
   const [trialMode, setTrialMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -465,7 +469,7 @@ export const PaywallModal = ({
         }}>
           <TouchableOpacity onPress={handleRestore} disabled={isRestoring}>
             <Text style={{ fontSize: 15, color: colors.textSecondary }}>
-              {isRestoring ? 'Restoring...' : 'Restore'}
+              {isRestoring ? t('sellingOnboarding.paywall.restoring') : t('sellingOnboarding.paywall.restore')}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -500,7 +504,7 @@ export const PaywallModal = ({
               textAlign: 'center',
               letterSpacing: -0.5,
             }}>
-              Unlock LockIn Pro
+              {t('sellingOnboarding.paywall.title')}
             </Text>
             <Text style={{
               fontSize: 15,
@@ -508,7 +512,7 @@ export const PaywallModal = ({
               textAlign: 'center',
               marginTop: 8,
             }}>
-              Get <Text style={{ color: COLORS.success, fontWeight: '700' }}>{savedHours}+ hours</Text> back every week
+              {t('sellingOnboarding.paywall.subtitle', { hours: savedHours })}
             </Text>
           </View>
 
@@ -524,11 +528,11 @@ export const PaywallModal = ({
               {[1,2,3,4,5].map((star) => (
                 <Star key={star} size={14} color="#FBBF24" fill="#FBBF24" style={{ marginRight: 1 }} />
               ))}
-              <Text style={{ fontSize: 13, color: colors.textSecondary, marginLeft: 6, fontWeight: '600' }}>4.8</Text>
+              <Text style={{ fontSize: 13, color: colors.textSecondary, marginLeft: 6, fontWeight: '600' }}>{t('sellingOnboarding.paywall.rating')}</Text>
             </View>
             <View style={{ width: 1, height: 14, backgroundColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)' }} />
             <Text style={{ fontSize: 13, color: colors.textSecondary }}>
-              <Text style={{ fontWeight: '700', color: COLORS.success }}>92%</Text> complete tasks
+              {t('sellingOnboarding.paywall.completeTasks')}
             </Text>
           </View>
 
@@ -553,7 +557,7 @@ export const PaywallModal = ({
             <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
               <Shield size={20} color={trialMode ? COLORS.success : colors.textSecondary} style={{ marginRight: 10 }} />
               <Text style={{ fontSize: 15, fontWeight: '600', color: trialMode ? COLORS.success : colors.textPrimary }}>
-                Not sure? Start free trial
+                {t('sellingOnboarding.paywall.notSure')}
               </Text>
             </View>
             <View style={{
@@ -614,7 +618,7 @@ export const PaywallModal = ({
                   <View style={{ flex: 1 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
                       <Text style={{ fontSize: 16, fontWeight: '700', color: colors.textPrimary }}>
-                        Yearly
+                        {t('sellingOnboarding.paywall.yearly')}
                       </Text>
                       <View style={{
                         backgroundColor: COLORS.success,
@@ -629,7 +633,7 @@ export const PaywallModal = ({
                       </View>
                     </View>
                     <Text style={{ fontSize: 12, color: colors.textSecondary }}>
-                      {yearlyMonthlyPrice}/mo
+                      {yearlyMonthlyPrice}{t('sellingOnboarding.paywall.perMonth')}
                     </Text>
                   </View>
                   <Text style={{ fontSize: 17, fontWeight: '800', color: colors.textPrimary }}>
@@ -668,10 +672,10 @@ export const PaywallModal = ({
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: colors.textPrimary, marginBottom: 2 }}>
-                      Monthly
+                      {t('sellingOnboarding.paywall.monthly')}
                     </Text>
                     <Text style={{ fontSize: 12, color: colors.textSecondary }}>
-                      Billed monthly
+                      {t('sellingOnboarding.paywall.billedMonthly')}
                     </Text>
                   </View>
                   <Text style={{ fontSize: 17, fontWeight: '800', color: colors.textPrimary }}>
@@ -693,9 +697,14 @@ export const PaywallModal = ({
               borderColor: 'rgba(16, 185, 129, 0.2)',
             }}>
               <Text style={{ fontSize: 15, fontWeight: '600', color: COLORS.success, marginBottom: 10 }}>
-                3-day free trial includes:
+                {t('sellingOnboarding.paywall.trialIncludes')}
               </Text>
-              {['Full access to all features', 'Smart task verification', 'Focus sessions & blocking', 'Cancel anytime'].map((item, i) => (
+              {[
+                t('sellingOnboarding.paywall.trialFeature1'),
+                t('sellingOnboarding.paywall.trialFeature2'),
+                t('sellingOnboarding.paywall.trialFeature3'),
+                t('sellingOnboarding.paywall.trialFeature4')
+              ].map((item, i) => (
                 <View key={i} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
                   <Check size={14} color={COLORS.success} style={{ marginRight: 8 }} />
                   <Text style={{ fontSize: 13, color: colors.textSecondary }}>{item}</Text>
@@ -710,7 +719,7 @@ export const PaywallModal = ({
                 borderTopColor: 'rgba(16, 185, 129, 0.2)',
               }}>
                 <Text style={{ fontSize: 13, color: colors.textSecondary, marginBottom: 8 }}>
-                  After trial ends:
+                  {t('sellingOnboarding.paywall.afterTrial')}
                 </Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                   <TouchableOpacity
@@ -726,7 +735,7 @@ export const PaywallModal = ({
                       alignItems: 'center',
                     }}
                   >
-                    <Text style={{ fontSize: 12, color: colors.textSecondary, marginBottom: 2 }}>Yearly</Text>
+                    <Text style={{ fontSize: 12, color: colors.textSecondary, marginBottom: 2 }}>{t('sellingOnboarding.paywall.yearly')}</Text>
                     <Text style={{ fontSize: 14, fontWeight: '700', color: selectedPlan === 'yearly' ? COLORS.success : colors.textPrimary }}>
                       {yearlyPrice}
                     </Text>
@@ -744,7 +753,7 @@ export const PaywallModal = ({
                       alignItems: 'center',
                     }}
                   >
-                    <Text style={{ fontSize: 12, color: colors.textSecondary, marginBottom: 2 }}>Monthly</Text>
+                    <Text style={{ fontSize: 12, color: colors.textSecondary, marginBottom: 2 }}>{t('sellingOnboarding.paywall.monthly')}</Text>
                     <Text style={{ fontSize: 14, fontWeight: '700', color: selectedPlan === 'monthly' ? COLORS.success : colors.textPrimary }}>
                       {monthlyPrice}
                     </Text>
@@ -775,7 +784,7 @@ export const PaywallModal = ({
                 <ActivityIndicator color="#FFFFFF" />
               ) : (
                 <Text style={{ fontSize: 18, fontWeight: '700', color: '#FFFFFF' }}>
-                  {trialMode ? 'Start 3-Day Free Trial' : 'Continue'}
+                  {trialMode ? t('sellingOnboarding.paywall.startTrial') : t('sellingOnboarding.paywall.continue')}
                 </Text>
               )}
             </LinearGradient>
@@ -784,10 +793,10 @@ export const PaywallModal = ({
           {/* Legal Links */}
           <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 20, marginBottom: 12 }}>
             <TouchableOpacity onPress={() => Linking.openURL('https://lockin.app/terms')}>
-              <Text style={{ fontSize: 13, color: colors.textTertiary }}>Terms of Service</Text>
+              <Text style={{ fontSize: 13, color: colors.textTertiary }}>{t('sellingOnboarding.paywall.termsOfService')}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => Linking.openURL('https://lockin.app/privacy')}>
-              <Text style={{ fontSize: 13, color: colors.textTertiary }}>Privacy Policy</Text>
+              <Text style={{ fontSize: 13, color: colors.textTertiary }}>{t('sellingOnboarding.paywall.privacyPolicy')}</Text>
             </TouchableOpacity>
           </View>
 
@@ -798,7 +807,7 @@ export const PaywallModal = ({
             textAlign: 'center',
             lineHeight: 16,
           }}>
-            3-day free trial. Cancel anytime. Subscription auto-renews unless cancelled 24 hours before the trial ends.
+            {t('sellingOnboarding.paywall.trialDisclaimer')}
           </Text>
         </ScrollView>
       </View>

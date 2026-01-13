@@ -12,6 +12,7 @@ import { useEarnedTime } from "@/context/EarnedTimeContext";
 import { useLockIn } from "@/context/LockInContext";
 import { ExerciseCamera } from "./ExerciseCamera";
 import { getExerciseIcon } from "@/lib/exerciseIcons";
+import { StreakModal } from "@/components/modals/StreakModal";
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -57,7 +58,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
 }) => {
   const insets = useSafeAreaInsets();
   const { accentColor } = useTheme();
-  const { earnTime, wallet } = useEarnedTime();
+  const { earnTime, wallet, streak, isFirstEarningToday, markStreakShown } = useEarnedTime();
   const { addExerciseActivity } = useLockIn();
   const { t } = useTranslation();
 
@@ -68,6 +69,9 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
   const [earnedMinutes, setEarnedMinutes] = useState(0);
   const [showInfoPopup, setShowInfoPopup] = useState(false);
   const [showFirstRunModal, setShowFirstRunModal] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+  const [showStreakModal, setShowStreakModal] = useState(false);
+  const [isFinishing, setIsFinishing] = useState(false); // Prevent double-tap on finish button
 
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
@@ -145,8 +149,26 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
       }
       setEarnedMinutes(0);
       setShowInfoPopup(false);
+      setIsClosing(false);
+      setIsFinishing(false);
     }
   }, [visible, initialExercise]);
+
+  // Auto-close when exercise is complete
+  // If streak modal is showing, wait longer (5 seconds) so user can see it
+  // Otherwise close after 2 seconds
+  useEffect(() => {
+    if (step === 'complete' && !isClosing) {
+      const closeDelay = showStreakModal ? 5000 : 2000;
+      const timer = setTimeout(() => {
+        if (!isClosing) {
+          setIsClosing(true);
+          onClose();
+        }
+      }, closeDelay);
+      return () => clearTimeout(timer);
+    }
+  }, [step, onClose, isClosing, showStreakModal]);
 
   const handleSelectExercise = (type: ExerciseType) => {
     setSelectedExercise(type);
@@ -175,6 +197,10 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
   };
 
   const handleFinishExercise = async () => {
+    // Prevent double-tap from earning multiple times
+    if (isFinishing) return;
+    setIsFinishing(true);
+
     setIsExerciseActive(false);
     const minutes = calculateEarnedMinutes(exerciseState);
     setEarnedMinutes(minutes);
@@ -182,6 +208,9 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
     const details = exerciseState.type === 'plank'
       ? `${Math.floor(exerciseState.holdTime)}s hold`
       : `${exerciseState.repCount} reps`;
+
+    // Check if this is the first earning of the day BEFORE earnTime updates the streak
+    const shouldShowStreak = minutes > 0 && isFirstEarningToday();
 
     if (minutes > 0) {
       await earnTime(exerciseState.type, minutes, details);
@@ -191,6 +220,13 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
     await addExerciseActivity(exerciseState.type, minutes, details);
 
     setStep('complete');
+
+    // Show streak modal after a short delay if this was the first earning today
+    if (shouldShowStreak) {
+      setTimeout(() => {
+        setShowStreakModal(true);
+      }, 600);
+    }
   };
 
   const handleClose = () => {
@@ -202,6 +238,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
   };
 
   const exerciseInfo = getExerciseInfo(selectedExercise);
+  const exerciseIconInfo = getExerciseIcon(selectedExercise);
   const rewards = DEFAULT_EXERCISE_REWARDS[selectedExercise];
 
   const renderSelectStep = () => (
@@ -289,7 +326,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
               elevation: 3,
             }}
           >
-            {/* Icon with gradient */}
+            {/* Icon with gradient border */}
             <View
               style={{
                 width: 56,
@@ -299,28 +336,32 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                 justifyContent: "center",
                 marginRight: 16,
                 overflow: "hidden",
+                borderWidth: iconInfo.image ? 2 : 0,
+                borderColor: gradientColors[0],
               }}
             >
-              <LinearGradient
-                colors={gradientColors}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                }}
-              />
               {iconInfo.image ? (
                 <Image
                   source={iconInfo.image}
-                  style={{ width: 36, height: 36 }}
-                  resizeMode="contain"
+                  style={{ width: "100%", height: "100%", borderRadius: 16 }}
+                  resizeMode="cover"
                 />
               ) : (
-                <Text style={{ fontSize: 28 }}>{iconInfo.emoji}</Text>
+                <>
+                  <LinearGradient
+                    colors={gradientColors}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                    }}
+                  />
+                  <Text style={{ fontSize: 28 }}>{iconInfo.emoji}</Text>
+                </>
               )}
             </View>
 
@@ -402,7 +443,17 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
     >
       {/* Exercise Header */}
       <View style={{ alignItems: "center", marginBottom: 24 }}>
-        <Text style={{ fontSize: 64 }}>{exerciseInfo.icon}</Text>
+        {exerciseIconInfo.image ? (
+          <View style={{ borderWidth: 3, borderColor: exerciseIconInfo.colors[0], borderRadius: 20, overflow: "hidden" }}>
+            <Image
+              source={exerciseIconInfo.image}
+              style={{ width: 80, height: 80 }}
+              resizeMode="cover"
+            />
+          </View>
+        ) : (
+          <Text style={{ fontSize: 64 }}>{exerciseIconInfo.emoji}</Text>
+        )}
         <Text
           style={{
             fontSize: 28,
@@ -751,8 +802,14 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
       case 'complete':
         return (
           <TouchableOpacity
-            onPress={onClose}
+            onPress={() => {
+              if (!isClosing) {
+                setIsClosing(true);
+                onClose();
+              }
+            }}
             activeOpacity={0.8}
+            disabled={isClosing}
             style={{
               backgroundColor: earnedMinutes > 0 ? "#10b981" : "#6b7280",
               paddingVertical: 18,
@@ -760,6 +817,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
+              opacity: isClosing ? 0.6 : 1,
             }}
           >
             <Check size={22} color="#ffffff" />
@@ -822,11 +880,11 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
               paddingHorizontal: 20,
               paddingTop: 16,
               paddingBottom: 16,
-              borderBottomWidth: 1,
+              borderBottomWidth: (step === 'ready' || step === 'exercise' || step === 'complete') ? 0 : 1,
               borderBottomColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.05)",
             }}
           >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: "row", alignItems: "center", flex: 1, marginRight: 12 }}>
               <View
                 style={{
                   width: 44,
@@ -836,17 +894,20 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                   alignItems: "center",
                   justifyContent: "center",
                   marginRight: 12,
+                  flexShrink: 0,
                 }}
               >
                 <Dumbbell size={22} color="#10b981" />
               </View>
-              <View>
+              <View style={{ flex: 1 }}>
                 <Text
                   style={{
                     fontSize: 20,
                     fontWeight: "700",
                     color: isDark ? "#ffffff" : "#111827",
                   }}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
                 >
                   {step === 'select' ? t("lockin.earnTime") : exerciseInfo.name}
                 </Text>
@@ -856,6 +917,8 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                     color: isDark ? "#6b7280" : "#9ca3af",
                     marginTop: 2,
                   }}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
                 >
                   {step === 'select'
                     ? t("lockin.selectStep")
@@ -869,7 +932,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                 </Text>
               </View>
             </View>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: "row", alignItems: "center", flexShrink: 0 }}>
               {/* Info button - show during ready and exercise */}
               {(step === 'ready' || step === 'exercise') && (
                 <TouchableOpacity
@@ -916,10 +979,10 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                   onStateUpdate={handleExerciseStateUpdate}
                   isActive={isExerciseActive}
                   cameraActive={step === 'ready' || step === 'exercise' || step === 'complete'}
-                  hideStats={step === 'complete'}
+                  hideStats={step === 'complete' || step === 'ready'}
                 />
 
-                {/* Ready state overlay - frosted glass card */}
+                {/* Ready state overlay - full blur background */}
                 {step === 'ready' && (
                   <View
                     style={{
@@ -927,67 +990,23 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                       top: 0,
                       left: 0,
                       right: 0,
-                      bottom: 0,
+                      bottom: -100,
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}
                   >
-                    <BlurView
-                      intensity={80}
-                      tint="dark"
+                    {/* Dark overlay for blur effect */}
+                    <View
                       style={{
-                        borderRadius: 24,
-                        overflow: 'hidden',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
                       }}
-                    >
-                      <View
-                        style={{
-                          padding: 28,
-                          alignItems: 'center',
-                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                        }}
-                      >
-                        <Text style={{ fontSize: 52 }}>{exerciseInfo.icon}</Text>
-                        <Text
-                          style={{
-                            fontSize: 20,
-                            fontWeight: '700',
-                            color: '#ffffff',
-                            marginTop: 14,
-                            textAlign: 'center',
-                          }}
-                        >
-                          {t("lockin.positionCamera")}
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            color: 'rgba(255, 255, 255, 0.7)',
-                            marginTop: 8,
-                            textAlign: 'center',
-                          }}
-                        >
-                          {t("lockin.fullBodyVisible")}
-                        </Text>
-                      </View>
-                    </BlurView>
-                  </View>
-                )}
-
-                {/* Complete state overlay - heavy blur background + frosted glass card */}
-                {step === 'complete' && (
-                  <View
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    {/* Full-screen heavy blur to disconnect from camera */}
+                    />
+                    {/* Full-screen blur */}
                     <BlurView
                       intensity={100}
                       tint="dark"
@@ -999,46 +1018,105 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                         bottom: 0,
                       }}
                     />
-                    {/* Frosted glass card */}
-                    <BlurView
-                      intensity={60}
-                      tint="dark"
-                      style={{
-                        borderRadius: 28,
-                        overflow: 'hidden',
-                        minWidth: 280,
-                      }}
-                    >
-                      <View
+                    {/* Content centered on blur */}
+                    <View style={{ alignItems: 'center', paddingHorizontal: 40 }}>
+                      {exerciseIconInfo.image ? (
+                        <View style={{ borderWidth: 3, borderColor: exerciseIconInfo.colors[0], borderRadius: 24, overflow: "hidden" }}>
+                          <Image
+                            source={exerciseIconInfo.image}
+                            style={{ width: 120, height: 120 }}
+                            resizeMode="cover"
+                          />
+                        </View>
+                      ) : (
+                        <Text style={{ fontSize: 90 }}>{exerciseIconInfo.emoji}</Text>
+                      )}
+                      <Text
                         style={{
-                          padding: 32,
-                          alignItems: 'center',
-                          backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                          fontSize: 24,
+                          fontWeight: '800',
+                          color: '#ffffff',
+                          marginTop: 24,
+                          textAlign: 'center',
                         }}
                       >
+                        {t("lockin.positionCamera")}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          color: 'rgba(255, 255, 255, 0.7)',
+                          marginTop: 10,
+                          textAlign: 'center',
+                        }}
+                      >
+                        {t("lockin.fullBodyVisible")}
+                      </Text>
+                    </View>
+                  </View>
+                )}
+
+                {/* Complete state overlay - full blur background */}
+                {step === 'complete' && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: -100,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {/* Dark overlay for blur effect */}
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                      }}
+                    />
+                    {/* Full-screen blur */}
+                    <BlurView
+                      intensity={100}
+                      tint="dark"
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                      }}
+                    />
+                    {/* Content centered on blur */}
+                    <View style={{ alignItems: 'center', paddingHorizontal: 40 }}>
                       {/* Success/Fail Icon */}
                       <View
                         style={{
-                          width: 80,
-                          height: 80,
-                          borderRadius: 40,
+                          width: 100,
+                          height: 100,
+                          borderRadius: 50,
                           backgroundColor: earnedMinutes > 0 ? '#10b981' : '#ef4444',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          marginBottom: 20,
+                          marginBottom: 24,
                           shadowColor: earnedMinutes > 0 ? '#10b981' : '#ef4444',
                           shadowOffset: { width: 0, height: 8 },
-                          shadowOpacity: 0.4,
-                          shadowRadius: 16,
+                          shadowOpacity: 0.5,
+                          shadowRadius: 20,
                         }}
                       >
-                        <Check size={40} color="#ffffff" strokeWidth={3} />
+                        <Check size={50} color="#ffffff" strokeWidth={3} />
                       </View>
 
                       {/* Result Text */}
                       <Text
                         style={{
-                          fontSize: 22,
+                          fontSize: 28,
                           fontWeight: '800',
                           color: '#ffffff',
                           textAlign: 'center',
@@ -1049,10 +1127,10 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
 
                       <Text
                         style={{
-                          fontSize: 14,
+                          fontSize: 15,
                           color: 'rgba(255, 255, 255, 0.7)',
                           textAlign: 'center',
-                          marginTop: 6,
+                          marginTop: 8,
                         }}
                       >
                         {exerciseState.type === 'plank'
@@ -1064,11 +1142,11 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                       {earnedMinutes > 0 ? (
                         <View
                           style={{
-                            backgroundColor: 'rgba(16, 185, 129, 0.2)',
-                            borderRadius: 16,
-                            paddingHorizontal: 28,
-                            paddingVertical: 16,
-                            marginTop: 20,
+                            backgroundColor: 'rgba(16, 185, 129, 0.25)',
+                            borderRadius: 20,
+                            paddingHorizontal: 36,
+                            paddingVertical: 20,
+                            marginTop: 28,
                             alignItems: 'center',
                             borderWidth: 2,
                             borderColor: '#10b981',
@@ -1076,7 +1154,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                         >
                           <Text
                             style={{
-                              fontSize: 12,
+                              fontSize: 13,
                               color: '#10b981',
                               fontWeight: '600',
                               textTransform: 'uppercase',
@@ -1087,17 +1165,17 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                           </Text>
                           <Text
                             style={{
-                              fontSize: 40,
+                              fontSize: 48,
                               fontWeight: '800',
                               color: '#10b981',
-                              marginTop: 2,
+                              marginTop: 4,
                             }}
                           >
                             +{earnedMinutes.toFixed(1)}
                           </Text>
                           <Text
                             style={{
-                              fontSize: 14,
+                              fontSize: 16,
                               color: '#10b981',
                               fontWeight: '600',
                             }}
@@ -1108,11 +1186,11 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                       ) : (
                         <Text
                           style={{
-                            fontSize: 13,
+                            fontSize: 14,
                             color: 'rgba(255, 255, 255, 0.6)',
                             textAlign: 'center',
-                            marginTop: 16,
-                            lineHeight: 20,
+                            marginTop: 20,
+                            lineHeight: 22,
                           }}
                         >
                           {exerciseState.type === 'plank'
@@ -1120,8 +1198,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                             : t("lockin.doAtLeast", { count: DEFAULT_EXERCISE_REWARDS[exerciseState.type].minimumReps })}
                         </Text>
                       )}
-                      </View>
-                    </BlurView>
+                    </View>
                   </View>
                 )}
               </View>
@@ -1134,7 +1211,7 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
               style={{
                 paddingHorizontal: 20,
                 paddingTop: 12,
-                borderTopWidth: 1,
+                borderTopWidth: (step === 'ready' || step === 'exercise' || step === 'complete') ? 0 : 1,
                 borderTopColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.05)",
               }}
             >
@@ -1157,8 +1234,8 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
             padding: 20,
           }}
         >
-          <TouchableOpacity
-            activeOpacity={1}
+          <View
+            onStartShouldSetResponder={() => true}
             style={{
               backgroundColor: isDark ? "#1a1a1a" : "#ffffff",
               borderRadius: 20,
@@ -1168,10 +1245,20 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
               maxHeight: "80%",
             }}
           >
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
               {/* Header */}
               <View style={{ alignItems: "center", marginBottom: 20 }}>
-                <Text style={{ fontSize: 40 }}>{exerciseInfo.icon}</Text>
+                {exerciseIconInfo.image ? (
+                  <View style={{ borderWidth: 2, borderColor: exerciseIconInfo.colors[0], borderRadius: 14, overflow: "hidden" }}>
+                    <Image
+                      source={exerciseIconInfo.image}
+                      style={{ width: 60, height: 60 }}
+                      resizeMode="cover"
+                    />
+                  </View>
+                ) : (
+                  <Text style={{ fontSize: 40 }}>{exerciseIconInfo.emoji}</Text>
+                )}
                 <Text
                   style={{
                     fontSize: 22,
@@ -1348,9 +1435,20 @@ export const ExerciseModal: React.FC<ExerciseModalProps> = ({
                 </Text>
               </TouchableOpacity>
             </ScrollView>
-          </TouchableOpacity>
+          </View>
         </TouchableOpacity>
       </Modal>
+
+      {/* Streak Celebration Modal */}
+      <StreakModal
+        isVisible={showStreakModal}
+        onClose={async () => {
+          setShowStreakModal(false);
+          await markStreakShown();
+        }}
+        currentStreak={streak.currentStreak}
+        longestStreak={streak.longestStreak}
+      />
 
       {/* First Run Introduction Modal */}
       <Modal visible={showFirstRunModal} animationType="fade" transparent>

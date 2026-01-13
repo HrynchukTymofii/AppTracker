@@ -271,9 +271,7 @@ export const AppSelectionModal = ({
         >
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
+              position: "relative",
               marginBottom: 16,
             }}
           >
@@ -282,6 +280,7 @@ export const AppSelectionModal = ({
                 fontSize: 24,
                 fontWeight: "bold",
                 color: isDark ? "#ffffff" : "#111827",
+                paddingRight: 50,
               }}
             >
               {t("blocking.modals.selectApps")}
@@ -289,6 +288,9 @@ export const AppSelectionModal = ({
             <TouchableOpacity
               onPress={onClose}
               style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
                 width: 36,
                 height: 36,
                 borderRadius: 18,

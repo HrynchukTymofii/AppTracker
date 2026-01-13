@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, BackHandler } from 'react-native';
+import { View, BackHandler, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SpendTimeModal } from '@/components/modals/SpendTimeModal';
 import { useEarnedTime } from '@/context/EarnedTimeContext';
@@ -12,8 +12,10 @@ export default function BlockedAppScreen() {
   const params = useLocalSearchParams<{ packageName: string; appName: string; showCoachChat?: string }>();
   const [visible, setVisible] = useState(true);
   const [realUsedMinutes, setRealUsedMinutes] = useState(0);
+  const [nativeWalletBalance, setNativeWalletBalance] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { urgentSpend, syncUsageWithWallet } = useEarnedTime();
+  const { urgentSpend, syncUsageWithWallet, spendTime } = useEarnedTime();
   const { dailyLimits } = useBlocking();
 
   const packageName = params.packageName || '';
@@ -39,11 +41,20 @@ export default function BlockedAppScreen() {
   // Get list of blocked app package names
   const blockedPackages = dailyLimits.map(l => l.packageName);
 
-  // Fetch real device usage for this app and sync with wallet
+  // Fetch all required data on mount before showing modal
   useEffect(() => {
-    const fetchRealUsage = async () => {
+    const fetchAllData = async () => {
+      setIsLoading(true);
       try {
-        const todayStats = await UsageStats.getTodayUsageStats();
+        // Fetch wallet balance and usage stats in parallel
+        const [balance, todayStats] = await Promise.all([
+          AppBlocker.getWalletBalance(),
+          UsageStats.getTodayUsageStats(),
+        ]);
+
+        console.log('[BlockedApp] Native wallet balance:', balance);
+        setNativeWalletBalance(balance);
+
         if (todayStats.hasPermission && todayStats.apps) {
           // Build usage map for ONLY blocked apps
           const usageMap: Record<string, number> = {};
@@ -63,14 +74,17 @@ export default function BlockedAppScreen() {
           // Get this app's usage
           const thisAppUsage = usageMap[packageName] || 0;
           setRealUsedMinutes(thisAppUsage);
-          console.log(`[BlockedApp] Real usage for ${appName}: ${thisAppUsage} minutes`);
+          console.log(`[BlockedApp] Real usage for ${appName}: ${thisAppUsage} minutes, limit: ${dailyLimitMinutes}`);
         }
       } catch (error) {
-        console.error('[BlockedApp] Error fetching usage stats:', error);
+        console.error('[BlockedApp] Error fetching data:', error);
+        setNativeWalletBalance(0);
+      } finally {
+        setIsLoading(false);
       }
     };
-    fetchRealUsage();
-  }, [packageName, appName, syncUsageWithWallet, blockedPackages]);
+    fetchAllData();
+  }, [packageName, appName, dailyLimitMinutes, syncUsageWithWallet, blockedPackages]);
 
   // Prevent back button from bypassing the block
   useEffect(() => {
@@ -94,24 +108,41 @@ export default function BlockedAppScreen() {
   };
 
   const handleSpend = async (minutes: number) => {
-    console.log(`[BlockedApp] Opening ${appName} (single entry - time tracked automatically)`);
+    console.log(`[BlockedApp] Spending ${minutes} min on ${appName}`);
 
     try {
-      // Set a short temp unblock just to allow app to launch (10 seconds)
-      // Time is tracked automatically via UsageStats sync
-      // Shield will show again on every re-entry
-      AppBlocker.setTempUnblock(packageName, 1); // ~1 minute buffer for launch
-      console.log('[BlockedApp] Single entry pass set');
+      // Get actual available minutes from native (single source of truth)
+      const availableMinutes = await AppBlocker.getWalletBalance();
 
-      // Launch the app
-      const launched = AppBlocker.launchApp(packageName);
-      console.log('[BlockedApp] App launch result:', launched);
+      // Calculate how much to actually spend (min of requested and available)
+      const actualSpend = Math.min(minutes, availableMinutes);
 
-      if (!launched) {
-        console.log('[BlockedApp] Could not launch app directly');
+      if (actualSpend > 0) {
+        // Record spending in context (this updates spendingHistory and native values)
+        const success = await spendTime(packageName, appName, actualSpend);
+        if (!success) {
+          console.warn('[BlockedApp] spendTime returned false - insufficient balance');
+        }
+        console.log(`[BlockedApp] Recorded ${actualSpend} min spend for ${appName}`);
+      }
+
+      // Set temp unblock for actual available time (minimum 1 minute for launch)
+      const unblockMinutes = Math.max(1, availableMinutes);
+
+      if (packageName.startsWith('website:')) {
+        const website = packageName.replace('website:', '');
+        AppBlocker.setTempUnblockWebsite(website, unblockMinutes);
+        console.log(`[BlockedApp] Website temp unblock set for ${unblockMinutes} minutes:`, website);
+      } else {
+        AppBlocker.setTempUnblock(packageName, unblockMinutes);
+        console.log(`[BlockedApp] App temp unblock set for ${unblockMinutes} minutes`);
+
+        // Launch the app
+        const launched = AppBlocker.launchApp(packageName);
+        console.log('[BlockedApp] App launch result:', launched);
       }
     } catch (error) {
-      console.error('[BlockedApp] Error opening app:', error);
+      console.error('[BlockedApp] Error spending time:', error);
     }
 
     setVisible(false);
@@ -125,20 +156,25 @@ export default function BlockedAppScreen() {
   };
 
   const handleUrgentAccess = async (minutes: number) => {
-    console.log(`[BlockedApp] Urgent access for ${appName}`);
+    console.log(`[BlockedApp] Urgent access for ${appName} - ${minutes} minutes`);
 
     try {
       // Deduct from wallet (can go negative for urgent access)
       await urgentSpend(packageName, appName, minutes);
 
-      // Set a short temp unblock just to allow app to launch
-      // Shield will show again on every re-entry
-      AppBlocker.setTempUnblock(packageName, 1); // ~1 minute buffer for launch
-      console.log('[BlockedApp] Urgent single entry pass set');
+      // Set temp unblock for the requested urgent access time
+      if (packageName.startsWith('website:')) {
+        const website = packageName.replace('website:', '');
+        AppBlocker.setTempUnblockWebsite(website, minutes);
+        console.log(`[BlockedApp] Urgent website pass set for ${minutes} minutes:`, website);
+      } else {
+        AppBlocker.setTempUnblock(packageName, minutes);
+        console.log(`[BlockedApp] Urgent app pass set for ${minutes} minutes`);
 
-      // Launch the app
-      const launched = AppBlocker.launchApp(packageName);
-      console.log('[BlockedApp] Urgent app launch result:', launched);
+        // Launch the app
+        const launched = AppBlocker.launchApp(packageName);
+        console.log('[BlockedApp] Urgent app launch result:', launched);
+      }
     } catch (error) {
       console.error('[BlockedApp] Error with urgent access:', error);
     }
@@ -146,6 +182,15 @@ export default function BlockedAppScreen() {
     setVisible(false);
     router.back(); // Remove blocked-app screen from navigation stack
   };
+
+  // Show loading while fetching data to avoid showing wrong screen
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#000000', justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: '#000000' }}>
@@ -157,6 +202,7 @@ export default function BlockedAppScreen() {
         realUsedMinutes={forceCoachChat ? dailyLimitMinutes : realUsedMinutes}
         isScheduleFreeTime={isScheduleFreeTime}
         forceCoachChat={forceCoachChat}
+        nativeWalletBalance={nativeWalletBalance}
         onClose={handleClose}
         onSpend={handleSpend}
         onEarnTime={handleEarnTime}

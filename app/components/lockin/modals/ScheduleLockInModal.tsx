@@ -15,6 +15,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useLockIn, ScheduledLockIn } from "@/context/LockInContext";
 import { DEFAULT_BLOCKED_APPS } from "@/lib/blockingConstants";
 import { AppSelectionModal } from "./AppSelectionModal";
+import { useTranslation } from "react-i18next";
 
 interface ScheduleLockInModalProps {
   visible: boolean;
@@ -23,21 +24,21 @@ interface ScheduleLockInModalProps {
   onClose: () => void;
 }
 
-const DURATION_OPTIONS = [
-  { value: 30, label: "30m" },
-  { value: 60, label: "1h" },
-  { value: 90, label: "1.5h" },
-  { value: 120, label: "2h" },
+const getDurationOptions = (t: (key: string) => string) => [
+  { value: 30, label: `30${t("common.timeUnits.m")}` },
+  { value: 60, label: `1${t("common.timeUnits.h")}` },
+  { value: 90, label: `1.5${t("common.timeUnits.h")}` },
+  { value: 120, label: `2${t("common.timeUnits.h")}` },
 ];
 
-const DAYS = [
-  { value: 0, label: "Sun" },
-  { value: 1, label: "Mon" },
-  { value: 2, label: "Tue" },
-  { value: 3, label: "Wed" },
-  { value: 4, label: "Thu" },
-  { value: 5, label: "Fri" },
-  { value: 6, label: "Sat" },
+const getDays = (t: (key: string) => string) => [
+  { value: 0, label: t("common.dayNames.sun") },
+  { value: 1, label: t("common.dayNames.mon") },
+  { value: 2, label: t("common.dayNames.tue") },
+  { value: 3, label: t("common.dayNames.wed") },
+  { value: 4, label: t("common.dayNames.thu") },
+  { value: 5, label: t("common.dayNames.fri") },
+  { value: 6, label: t("common.dayNames.sat") },
 ];
 
 export const ScheduleLockInModal: React.FC<ScheduleLockInModalProps> = ({
@@ -46,8 +47,12 @@ export const ScheduleLockInModal: React.FC<ScheduleLockInModalProps> = ({
   scheduled,
   onClose,
 }) => {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { addScheduledLockIn, updateScheduledLockIn, deleteScheduledLockIn } = useLockIn();
+
+  const DURATION_OPTIONS = getDurationOptions(t);
+  const DAYS = getDays(t);
 
   const [taskName, setTaskName] = useState("");
   const [selectedTime, setSelectedTime] = useState(new Date());
@@ -181,9 +186,7 @@ export const ScheduleLockInModal: React.FC<ScheduleLockInModalProps> = ({
           {/* Header */}
           <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
+              position: "relative",
               paddingHorizontal: 20,
               paddingTop: 16,
               paddingBottom: 16,
@@ -191,7 +194,7 @@ export const ScheduleLockInModal: React.FC<ScheduleLockInModalProps> = ({
               borderBottomColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.05)",
             }}
           >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: "row", alignItems: "center", paddingRight: 50 }}>
               <View
                 style={{
                   width: 44,
@@ -205,7 +208,7 @@ export const ScheduleLockInModal: React.FC<ScheduleLockInModalProps> = ({
               >
                 <Calendar size={22} color="#3b82f6" />
               </View>
-              <View>
+              <View style={{ flex: 1 }}>
                 <Text
                   style={{
                     fontSize: 20,
@@ -229,6 +232,9 @@ export const ScheduleLockInModal: React.FC<ScheduleLockInModalProps> = ({
             <TouchableOpacity
               onPress={handleClose}
               style={{
+                position: "absolute",
+                top: 16,
+                right: 16,
                 width: 38,
                 height: 38,
                 borderRadius: 19,

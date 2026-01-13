@@ -29,7 +29,7 @@ const ACHIEVEMENT_DEFINITIONS = [
   { id: 'screenTimeSavior', title: 'Screen Time Savior', condition: (s: AchievementStats) => s.screenTimeReduction >= 50 },
   { id: 'morningRoutine', title: 'Morning Routine', condition: (s: AchievementStats) => s.morningBlockingStreak >= 3 },
   { id: 'productivityBeast', title: 'Productivity Beast', condition: (s: AchievementStats) => s.tasksCompleted >= 5 },
-  { id: 'appBlockerPro', title: 'App Blocker Pro', condition: (s: AchievementStats) => s.totalAppsBlocked >= 20 },
+  { id: 'appBlockerPro', title: 'LockIn Pro', condition: (s: AchievementStats) => s.totalAppsBlocked >= 20 },
   { id: 'focusFlow', title: 'Focus Flow', condition: (s: AchievementStats) => s.focusSessionsToday >= 3 },
   { id: 'selfControl', title: 'Self Control', condition: (s: AchievementStats) => s.resistedUnblockCount >= 10 },
 ];
@@ -150,7 +150,7 @@ async function updateDailyStats(stats: AchievementStats): Promise<void> {
 
     // Update health score
     const usageStats = await getTodayUsageStats();
-    stats.healthScore = calculateHealthScore(usageStats.totalScreenTime, usageStats.pickups);
+    stats.healthScore = calculateHealthScore(usageStats.totalScreenTime, usageStats.unlocks);
 
     await saveAchievementStats(stats);
   } catch (error) {
@@ -301,7 +301,7 @@ async function updateStreaks(hadActivity: boolean, hadMorning: boolean): Promise
     const todayStreak = streaks.find(s => s.date === today);
     if (!todayStreak) {
       const usageStats = await getTodayUsageStats();
-      const healthScore = calculateHealthScore(usageStats.totalScreenTime, usageStats.pickups);
+      const healthScore = calculateHealthScore(usageStats.totalScreenTime, usageStats.unlocks);
 
       streaks.push({
         date: today,

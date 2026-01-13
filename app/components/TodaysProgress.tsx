@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Clock, Dumbbell, ChevronRight, Target, TrendingUp, Wallet } from 'lucide-react-native';
 import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from 'react-native-svg';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import { useTranslation } from 'react-i18next';
 import { useEarnedTime } from '@/context/EarnedTimeContext';
 import { useTheme } from '@/context/ThemeContext';
@@ -93,6 +94,84 @@ const WeeklyChart = ({
   );
 };
 
+// Glass Mini Card Component
+const GlassMiniCard = ({
+  children,
+  isDark,
+  glowColor,
+}: {
+  children: React.ReactNode;
+  isDark: boolean;
+  glowColor?: string;
+}) => (
+  <View
+    style={{
+      flex: 1,
+      borderRadius: 14,
+      overflow: 'hidden',
+      borderWidth: 1,
+      borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.6)',
+    }}
+  >
+    <BlurView
+      intensity={isDark ? 20 : 35}
+      tint={isDark ? 'dark' : 'light'}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      }}
+    />
+    <LinearGradient
+      colors={
+        isDark
+          ? ['rgba(255, 255, 255, 0.06)', 'rgba(255, 255, 255, 0.02)']
+          : ['rgba(255, 255, 255, 0.9)', 'rgba(255, 255, 255, 0.7)']
+      }
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      }}
+    />
+    {/* Top shine */}
+    <LinearGradient
+      colors={isDark ? ['rgba(255, 255, 255, 0.08)', 'transparent'] : ['rgba(255, 255, 255, 0.5)', 'transparent']}
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 0.6 }}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '60%',
+      }}
+    />
+    {/* Optional glow */}
+    {glowColor && (
+      <LinearGradient
+        colors={[`${glowColor}15`, 'transparent']}
+        start={{ x: 0.5, y: 1 }}
+        end={{ x: 0.5, y: 0 }}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
+      />
+    )}
+    <View style={{ padding: 12, alignItems: 'center' }}>{children}</View>
+  </View>
+);
+
 // Circular Progress Component with gradient ring
 const CircularProgress = ({
   progress,
@@ -150,7 +229,7 @@ const CircularProgress = ({
 export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { wallet, getTodayEarned, getTodaySpent, getWeeklyDailyStats } = useEarnedTime();
+  const { wallet, nativeSpentToday, nativeEarnedToday, getWeeklyDailyStats } = useEarnedTime();
   const { accentColor } = useTheme();
   const [dailyGoal, setDailyGoal] = useState(60); // Default 1 hour
 
@@ -169,22 +248,28 @@ export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
     loadGoal();
   }, []);
 
-  const todayEarned = getTodayEarned();
-  const todaySpent = getTodaySpent();
+  // Use native values directly for real-time updates
+  const todayEarned = nativeEarnedToday;
+  const todaySpent = nativeSpentToday;
 
   // Get real weekly data from context (includes isToday flag)
   const weeklyData = useMemo(() => {
-    return getWeeklyDailyStats();
-  }, [getWeeklyDailyStats]);
+    return getWeeklyDailyStats(t);
+  }, [getWeeklyDailyStats, t]);
 
-  // Format minutes to readable string
+  // Format minutes to readable string - show decimal if fractional part exists
   const formatMinutes = (minutes: number): string => {
+    const hUnit = t("common.timeUnits.h");
+    const mUnit = t("common.timeUnits.m");
     if (minutes >= 60) {
       const hours = Math.floor(minutes / 60);
-      const mins = Math.round(minutes % 60);
-      return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+      const mins = minutes % 60;
+      const minsDisplay = mins % 1 === 0 ? mins.toFixed(0) : mins.toFixed(1);
+      return mins > 0 ? `${hours}${hUnit} ${minsDisplay}${mUnit}` : `${hours}${hUnit}`;
     }
-    return `${Math.round(minutes)}m`;
+    // Show decimal only if there's a fractional part
+    const display = minutes % 1 === 0 ? minutes.toFixed(0) : minutes.toFixed(1);
+    return `${display}${mUnit}`;
   };
 
   return (
@@ -211,15 +296,55 @@ export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
           }}
         />
 
-        {/* Inner card content - transparent bg */}
+        {/* Inner card content with blur */}
         <View
           style={{
             margin: 1.5,
             borderRadius: 23,
-            backgroundColor: 'transparent',
-            padding: 20,
+            overflow: 'hidden',
           }}
         >
+          <BlurView
+            intensity={isDark ? 25 : 40}
+            tint={isDark ? 'dark' : 'light'}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+          />
+          <LinearGradient
+            colors={
+              isDark
+                ? ['rgba(255, 255, 255, 0.06)', 'rgba(255, 255, 255, 0.02)']
+                : ['rgba(255, 255, 255, 0.9)', 'rgba(255, 255, 255, 0.7)']
+            }
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+          />
+          {/* Top shine for depth */}
+          <LinearGradient
+            colors={isDark ? ['rgba(255, 255, 255, 0.08)', 'transparent'] : ['rgba(255, 255, 255, 0.5)', 'transparent']}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 0.5 }}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '50%',
+            }}
+          />
+          <View style={{ padding: 20 }}>
 
           {/* Header */}
           <View
@@ -260,7 +385,7 @@ export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
                 >
                   {t("progress.todaysProgress")}
                 </Text>
-                <Text
+                {/* <Text
                   style={{
                     fontSize: 11,
                     color: isDark ? '#6b7280' : '#9ca3af',
@@ -268,7 +393,7 @@ export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
                   }}
                 >
                   {t("progress.goal")}: {formatMinutes(dailyGoal)}
-                </Text>
+                </Text> */}
               </View>
             </View>
             <TouchableOpacity
@@ -291,22 +416,12 @@ export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
           {/* Stats Row - 3 glassy cards */}
           <View style={{ flexDirection: 'row', gap: 10, marginBottom: 16 }}>
             {/* Spent */}
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#f9fafb',
-                borderRadius: 12,
-                padding: 12,
-                alignItems: 'center',
-                borderWidth: 1,
-                borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.04)',
-              }}
-            >
+            <GlassMiniCard isDark={isDark} glowColor={accentColor.primary}>
               <Text
                 style={{
                   fontSize: 10,
                   fontWeight: '600',
-                  color: isDark ? '#6b7280' : '#9ca3af',
+                  color: isDark ? 'rgba(255, 255, 255, 0.5)' : '#9ca3af',
                   letterSpacing: 0.5,
                   marginBottom: 6,
                   textTransform: 'uppercase',
@@ -320,25 +435,15 @@ export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
                   {formatMinutes(todaySpent)}
                 </Text>
               </View>
-            </View>
+            </GlassMiniCard>
 
             {/* Earned */}
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#f9fafb',
-                borderRadius: 12,
-                padding: 12,
-                alignItems: 'center',
-                borderWidth: 1,
-                borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.04)',
-              }}
-            >
+            <GlassMiniCard isDark={isDark} glowColor="#10b981">
               <Text
                 style={{
                   fontSize: 10,
                   fontWeight: '600',
-                  color: isDark ? '#6b7280' : '#9ca3af',
+                  color: isDark ? 'rgba(255, 255, 255, 0.5)' : '#9ca3af',
                   letterSpacing: 0.5,
                   marginBottom: 6,
                   textTransform: 'uppercase',
@@ -352,25 +457,15 @@ export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
                   {formatMinutes(todayEarned)}
                 </Text>
               </View>
-            </View>
+            </GlassMiniCard>
 
             {/* Balance */}
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : '#f9fafb',
-                borderRadius: 12,
-                padding: 12,
-                alignItems: 'center',
-                borderWidth: 1,
-                borderColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.04)',
-              }}
-            >
+            <GlassMiniCard isDark={isDark} glowColor="#8b5cf6">
               <Text
                 style={{
                   fontSize: 10,
                   fontWeight: '600',
-                  color: isDark ? '#6b7280' : '#9ca3af',
+                  color: isDark ? 'rgba(255, 255, 255, 0.5)' : '#9ca3af',
                   letterSpacing: 0.5,
                   marginBottom: 6,
                   textTransform: 'uppercase',
@@ -384,23 +479,65 @@ export const TodaysProgress: React.FC<TodaysProgressProps> = ({ isDark }) => {
                   {formatMinutes(wallet.availableMinutes)}
                 </Text>
               </View>
-            </View>
+            </GlassMiniCard>
           </View>
 
           {/* Weekly Chart */}
           <View
             style={{
-              backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : '#f8fafc',
               borderRadius: 16,
-              padding: 14,
+              overflow: 'hidden',
               borderWidth: 1,
-              borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
+              borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.6)',
             }}
           >
-            <Text style={{ fontSize: 12, fontWeight: '700', color: isDark ? '#ffffff' : '#111827', marginBottom: 4 }}>
-              {t("progress.thisWeek")}
-            </Text>
-            <WeeklyChart data={weeklyData} isDark={isDark} accentColor={accentColor.primary} t={t} />
+            <BlurView
+              intensity={isDark ? 20 : 35}
+              tint={isDark ? 'dark' : 'light'}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            />
+            <LinearGradient
+              colors={
+                isDark
+                  ? ['rgba(255, 255, 255, 0.06)', 'rgba(255, 255, 255, 0.02)']
+                  : ['rgba(255, 255, 255, 0.9)', 'rgba(255, 255, 255, 0.7)']
+              }
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }}
+            />
+            {/* Top shine */}
+            <LinearGradient
+              colors={isDark ? ['rgba(255, 255, 255, 0.06)', 'transparent'] : ['rgba(255, 255, 255, 0.4)', 'transparent']}
+              start={{ x: 0.5, y: 0 }}
+              end={{ x: 0.5, y: 0.5 }}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '50%',
+              }}
+            />
+            <View style={{ padding: 14 }}>
+              <Text style={{ fontSize: 12, fontWeight: '700', color: isDark ? '#ffffff' : '#111827', marginBottom: 4 }}>
+                {t("progress.thisWeek")}
+              </Text>
+              <WeeklyChart data={weeklyData} isDark={isDark} accentColor={accentColor.primary} t={t} />
+            </View>
+          </View>
           </View>
         </View>
       </View>

@@ -14,7 +14,7 @@ export interface UsageStatsResult {
   hasPermission: boolean;
   apps: AppUsage[];
   totalScreenTime: number;
-  pickups: number;
+  unlocks: number;
 }
 
 export interface AppUsage {
@@ -46,7 +46,7 @@ try {
 }
 
 // Default empty result for error cases
-const EMPTY_RESULT: UsageStatsResult = { hasPermission: false, apps: [], totalScreenTime: 0, pickups: 0 };
+const EMPTY_RESULT: UsageStatsResult = { hasPermission: false, apps: [], totalScreenTime: 0, unlocks: 0 };
 
 export async function hasUsageStatsPermission(): Promise<boolean> {
   if (!UsageStats) return false;

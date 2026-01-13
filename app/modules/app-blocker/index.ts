@@ -32,6 +32,20 @@ interface AppBlockerModule extends NativeModule {
   clearNavigationFlags?(): void;
   setDailyLimits?(limitsJson: string): void;
   setTotalDailyLimit?(minutes: number): void;
+  getWebsiteUsageToday?(): Promise<Record<string, number>>;
+  clearWebsiteUsageToday?(): void;
+  clearAppBlockData?(packageName: string): void;
+  getNativeAppUsageToday?(): Promise<Record<string, number>>;
+  getTotalSpentToday?(): Promise<number>;
+  debugDumpAllPrefs?(): Promise<Record<string, any>>;
+
+  // Wallet methods (SharedPreferences - single source of truth)
+  getWalletBalance?(): Promise<number>;
+  setWalletBalance?(minutes: number): void;
+  addToWalletBalance?(minutes: number): number;
+  deductFromWalletBalance?(minutes: number): number;
+  getTotalEarnedToday?(): Promise<number>;
+  addToEarnedToday?(minutes: number): number;
 
   // iOS-specific methods (Family Controls)
   requestAuthorization?(): Promise<boolean>;
@@ -317,6 +331,208 @@ export function setTotalDailyLimit(minutes: number): void {
   }
 }
 
+/**
+ * Get website usage for today (Android only)
+ * Returns a map of website domain -> minutes used
+ */
+export async function getWebsiteUsageToday(): Promise<Record<string, number>> {
+  if (!AppBlocker || Platform.OS === 'ios') return {};
+  try {
+    if (AppBlocker.getWebsiteUsageToday) {
+      return await AppBlocker.getWebsiteUsageToday();
+    }
+    return {};
+  } catch (error) {
+    console.error('Error getting website usage:', error);
+    return {};
+  }
+}
+
+/**
+ * Clear website usage for today (Android only)
+ * Call after syncing to wallet
+ */
+export function clearWebsiteUsageToday(): void {
+  if (!AppBlocker || Platform.OS === 'ios') return;
+  try {
+    if (AppBlocker.clearWebsiteUsageToday) {
+      AppBlocker.clearWebsiteUsageToday();
+    }
+  } catch (error) {
+    console.error('Error clearing website usage:', error);
+  }
+}
+
+/**
+ * Clear all blocking data for a specific app (Android only)
+ * Removes from blocked_apps set and clears temp_unblock entry
+ * Call this when unblocking an app to ensure complete cleanup
+ */
+export function clearAppBlockData(packageName: string): void {
+  if (!AppBlocker || Platform.OS === 'ios') return;
+  try {
+    if ((AppBlocker as any).clearAppBlockData) {
+      (AppBlocker as any).clearAppBlockData(packageName);
+    }
+  } catch (error) {
+    console.error('Error clearing app block data:', error);
+  }
+}
+
+/**
+ * Get native app usage for today (Android only)
+ * This tracks usage from the AccessibilityService session tracking
+ * Returns a map of packageName -> minutes used
+ */
+export async function getNativeAppUsageToday(): Promise<Record<string, number>> {
+  if (!AppBlocker || Platform.OS === 'ios') return {};
+  try {
+    if ((AppBlocker as any).getNativeAppUsageToday) {
+      return await (AppBlocker as any).getNativeAppUsageToday();
+    }
+    return {};
+  } catch (error) {
+    console.error('Error getting native app usage:', error);
+    return {};
+  }
+}
+
+/**
+ * Get total spent today (Android only)
+ * Sum of all app_usage_today_* values from native SharedPreferences
+ */
+export async function getTotalSpentToday(): Promise<number> {
+  if (!AppBlocker || Platform.OS === 'ios') return 0;
+  try {
+    if ((AppBlocker as any).getTotalSpentToday) {
+      return await (AppBlocker as any).getTotalSpentToday();
+    }
+    return 0;
+  } catch (error) {
+    console.error('Error getting total spent today:', error);
+    return 0;
+  }
+}
+
+/**
+ * Debug: Dump all SharedPreferences values (Android only)
+ * Logs to both console and logcat for debugging
+ */
+export async function debugDumpAllPrefs(): Promise<Record<string, any>> {
+  if (!AppBlocker || Platform.OS === 'ios') return {};
+  try {
+    if ((AppBlocker as any).debugDumpAllPrefs) {
+      const data = await (AppBlocker as any).debugDumpAllPrefs();
+      console.log('[DEBUG] SharedPreferences dump:', JSON.stringify(data, null, 2));
+      return data;
+    }
+    return {};
+  } catch (error) {
+    console.error('Error dumping prefs:', error);
+    return {};
+  }
+}
+
+// ==================== Wallet Balance (SharedPreferences - Single Source of Truth) ====================
+
+/**
+ * Get current wallet balance (with automatic day reset)
+ * If it's a new day and balance > 0, automatically resets to 0
+ */
+export async function getWalletBalance(): Promise<number> {
+  if (!AppBlocker || Platform.OS !== 'android') return 0;
+  try {
+    if (AppBlocker.getWalletBalance) {
+      return await AppBlocker.getWalletBalance();
+    }
+    return 0;
+  } catch (error) {
+    console.error('Error getting wallet balance:', error);
+    return 0;
+  }
+}
+
+/**
+ * Set wallet balance directly
+ */
+export function setWalletBalance(minutes: number): void {
+  if (!AppBlocker || Platform.OS !== 'android') return;
+  try {
+    if (AppBlocker.setWalletBalance) {
+      AppBlocker.setWalletBalance(minutes);
+    }
+  } catch (error) {
+    console.error('Error setting wallet balance:', error);
+  }
+}
+
+/**
+ * Add minutes to wallet (for earning time)
+ * Returns new balance
+ */
+export function addToWalletBalance(minutes: number): number {
+  if (!AppBlocker || Platform.OS !== 'android') return 0;
+  try {
+    if (AppBlocker.addToWalletBalance) {
+      return AppBlocker.addToWalletBalance(minutes);
+    }
+    return 0;
+  } catch (error) {
+    console.error('Error adding to wallet:', error);
+    return 0;
+  }
+}
+
+/**
+ * Deduct minutes from wallet (for spending time)
+ * Can go negative for urgent access
+ * Returns new balance
+ */
+export function deductFromWalletBalance(minutes: number): number {
+  if (!AppBlocker || Platform.OS !== 'android') return 0;
+  try {
+    if (AppBlocker.deductFromWalletBalance) {
+      return AppBlocker.deductFromWalletBalance(minutes);
+    }
+    return 0;
+  } catch (error) {
+    console.error('Error deducting from wallet:', error);
+    return 0;
+  }
+}
+
+/**
+ * Get total minutes earned today (for stats)
+ */
+export async function getTotalEarnedToday(): Promise<number> {
+  if (!AppBlocker || Platform.OS !== 'android') return 0;
+  try {
+    if (AppBlocker.getTotalEarnedToday) {
+      return await AppBlocker.getTotalEarnedToday();
+    }
+    return 0;
+  } catch (error) {
+    console.error('Error getting earned today:', error);
+    return 0;
+  }
+}
+
+/**
+ * Add to today's earned total (for stats)
+ */
+export function addToEarnedToday(minutes: number): number {
+  if (!AppBlocker || Platform.OS !== 'android') return 0;
+  try {
+    if (AppBlocker.addToEarnedToday) {
+      return AppBlocker.addToEarnedToday(minutes);
+    }
+    return 0;
+  } catch (error) {
+    console.error('Error adding to earned today:', error);
+    return 0;
+  }
+}
+
 // ==================== Temp Unblock (Platform-aware) ====================
 
 /**
@@ -591,6 +807,20 @@ export default {
   clearNavigationFlags,
   setDailyLimits,
   setTotalDailyLimit,
+  getWebsiteUsageToday,
+  clearWebsiteUsageToday,
+  clearAppBlockData,
+  getNativeAppUsageToday,
+  getTotalSpentToday,
+  debugDumpAllPrefs,
+
+  // Wallet (SharedPreferences - single source of truth)
+  getWalletBalance,
+  setWalletBalance,
+  addToWalletBalance,
+  deductFromWalletBalance,
+  getTotalEarnedToday,
+  addToEarnedToday,
 
   // Platform-aware
   setTempUnblock,
