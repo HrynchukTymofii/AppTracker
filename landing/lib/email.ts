@@ -19,7 +19,7 @@ function getTransporter() {
 export async function sendWaitlistEmail(email: string, name?: string | null): Promise<void> {
   const transporter = getTransporter();
   const displayName = name || 'there';
-  const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://lockin.app';
+  const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://lockin.fibipals.com';
 
   const html = `
 <!DOCTYPE html>
