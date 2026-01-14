@@ -4,7 +4,7 @@ import { ExpoConfig } from "expo/config";
 const config: ExpoConfig = {
   name: "LockIn",
   slug: "app-blocker",
-  version: "1.0.3",
+  version: "1.0.4",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "appblocker",

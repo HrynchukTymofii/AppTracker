@@ -23,7 +23,7 @@ import {
 } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
-import { verifyTaskWithPhotos } from "@/lib/openai";
+import { verifyTaskWithPhotos, verifyTaskWithPhoto } from "@/lib/openai";
 
 interface Message {
   id: string;
@@ -39,9 +39,9 @@ interface PhotoVerificationModalProps {
   visible: boolean;
   isDark: boolean;
   taskDescription: string;
-  beforePhotoUri: string;
+  beforePhotoUri?: string; // Optional - some tasks don't have before photo
   onClose: () => void;
-  onVerified: () => void;
+  onVerified: (earnedMinutes: number) => void;
   onForceUnlock: () => void;
 }
 
@@ -63,10 +63,12 @@ export const PhotoVerificationModal: React.FC<PhotoVerificationModalProps> = ({
   const [afterPhotoUri, setAfterPhotoUri] = useState<string | null>(null);
   const [messageCount, setMessageCount] = useState(0);
   const [showForceUnlock, setShowForceUnlock] = useState(false);
+  const [earnedMinutesResult, setEarnedMinutesResult] = useState<number | null>(null);
 
   // Reset state when modal opens
   useEffect(() => {
     if (visible) {
+      const hasBeforePhoto = !!beforePhotoUri;
       setMessages([
         {
           id: "1",
@@ -76,15 +78,18 @@ export const PhotoVerificationModal: React.FC<PhotoVerificationModalProps> = ({
         {
           id: "2",
           type: "coach",
-          text: `Great job getting to this point! Ready to verify your progress? Take an "after" photo and I'll compare it with your before photo to see what you've accomplished.`,
+          text: hasBeforePhoto
+            ? `Great job getting to this point! Ready to verify your progress? Take an "after" photo and I'll compare it with your before photo to see what you've accomplished.`
+            : `Nice work! Ready to verify? Take a photo showing you completed the task and I'll check it out.`,
         },
       ]);
       setAfterPhotoUri(null);
       setMessageCount(0);
       setShowForceUnlock(false);
       setInputText("");
+      setEarnedMinutesResult(null);
     }
-  }, [visible, taskDescription]);
+  }, [visible, taskDescription, beforePhotoUri]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -144,12 +149,24 @@ export const PhotoVerificationModal: React.FC<PhotoVerificationModalProps> = ({
       {
         id: thinkingId,
         type: "coach",
-        text: "Analyzing your photos...",
+        text: beforePhotoUri ? "Analyzing your photos..." : "Checking your photo...",
       },
     ]);
 
     try {
-      const result = await verifyTaskWithPhotos(beforePhotoUri, afterUri, taskDescription);
+      // Use different verification based on whether we have a before photo
+      const result = beforePhotoUri
+        ? await verifyTaskWithPhotos(beforePhotoUri, afterUri, taskDescription)
+        : await verifyTaskWithPhoto(afterUri, taskDescription);
+
+      // Calculate earned minutes (default to 5 if not provided, cap at 15)
+      const earnedMinutes = Math.min(Math.max(result.earnedMinutes || 5, 5), 15);
+      setEarnedMinutesResult(earnedMinutes);
+
+      // Build success message with earned minutes
+      const successMessage = result.isTaskCompleted && result.confidence >= 70
+        ? `${result.message}\n\n+${earnedMinutes} minutes earned! 🎉`
+        : result.message;
 
       // Remove thinking message and add result
       setMessages((prev) => {
@@ -157,9 +174,8 @@ export const PhotoVerificationModal: React.FC<PhotoVerificationModalProps> = ({
         const coachMessage: Message = {
           id: Date.now().toString(),
           type: "coach",
-          text: result.explanation,
+          text: successMessage,
           isVerification: true,
-          confidence: result.confidence,
           isCompleted: result.isTaskCompleted,
         };
         return [...filtered, coachMessage];
@@ -168,7 +184,7 @@ export const PhotoVerificationModal: React.FC<PhotoVerificationModalProps> = ({
       if (result.isTaskCompleted && result.confidence >= 70) {
         // Auto-unlock after a short delay for good verification
         setTimeout(() => {
-          onVerified();
+          onVerified(earnedMinutes);
         }, 2500);
       }
     } catch (error: any) {
@@ -179,7 +195,7 @@ export const PhotoVerificationModal: React.FC<PhotoVerificationModalProps> = ({
           {
             id: Date.now().toString(),
             type: "coach",
-            text: `I had trouble analyzing the photos. ${error.message || "Please try again or take another photo."}`,
+            text: `I had trouble analyzing the photo. ${error.message || "Please try again or take another photo."}`,
           },
         ];
       });
@@ -383,29 +399,6 @@ export const PhotoVerificationModal: React.FC<PhotoVerificationModalProps> = ({
               >
                 {message.isCompleted ? "Task Verified!" : "Keep Going"}
               </Text>
-              {message.confidence && (
-                <View
-                  style={{
-                    marginLeft: "auto",
-                    backgroundColor: message.isCompleted
-                      ? "rgba(16, 185, 129, 0.15)"
-                      : "rgba(239, 68, 68, 0.15)",
-                    paddingHorizontal: 8,
-                    paddingVertical: 4,
-                    borderRadius: 8,
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 11,
-                      fontWeight: "600",
-                      color: message.isCompleted ? "#10b981" : "#ef4444",
-                    }}
-                  >
-                    {message.confidence}%
-                  </Text>
-                </View>
-              )}
             </View>
           )}
           <Text
@@ -501,53 +494,91 @@ export const PhotoVerificationModal: React.FC<PhotoVerificationModalProps> = ({
           contentContainerStyle={{ paddingBottom: 20 }}
           showsVerticalScrollIndicator={false}
         >
-          {/* Before Photo Preview */}
-          <View
-            style={{
-              backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#f9fafb",
-              borderRadius: 16,
-              padding: 14,
-              marginBottom: 16,
-              flexDirection: "row",
-              alignItems: "center",
-              borderWidth: 1,
-              borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.05)",
-            }}
-          >
-            <Image
-              source={{ uri: beforePhotoUri }}
+          {/* Before Photo Preview (only if we have one) */}
+          {beforePhotoUri ? (
+            <View
               style={{
-                width: 56,
-                height: 56,
-                borderRadius: 12,
-                marginRight: 12,
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#f9fafb",
+                borderRadius: 16,
+                padding: 14,
+                marginBottom: 16,
+                flexDirection: "row",
+                alignItems: "center",
+                borderWidth: 1,
+                borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.05)",
               }}
-            />
-            <View style={{ flex: 1 }}>
+            >
+              <Image
+                source={{ uri: beforePhotoUri }}
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: 12,
+                  marginRight: 12,
+                }}
+              />
+              <View style={{ flex: 1 }}>
+                <Text
+                  style={{
+                    fontSize: 11,
+                    fontWeight: "700",
+                    color: isDark ? "#6b7280" : "#9ca3af",
+                    textTransform: "uppercase",
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  Before Photo
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: isDark ? "#ffffff" : "#111827",
+                    marginTop: 4,
+                    fontWeight: "500",
+                  }}
+                  numberOfLines={2}
+                >
+                  {taskDescription}
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <View
+              style={{
+                backgroundColor: isDark ? "rgba(16, 185, 129, 0.08)" : "rgba(16, 185, 129, 0.05)",
+                borderRadius: 16,
+                padding: 14,
+                marginBottom: 16,
+                alignItems: "center",
+                borderWidth: 1,
+                borderColor: "rgba(16, 185, 129, 0.15)",
+              }}
+            >
               <Text
                 style={{
                   fontSize: 11,
                   fontWeight: "700",
-                  color: isDark ? "#6b7280" : "#9ca3af",
+                  color: "#10b981",
                   textTransform: "uppercase",
                   letterSpacing: 0.5,
+                  marginBottom: 4,
                 }}
               >
-                Before Photo
+                Your Task
               </Text>
               <Text
                 style={{
                   fontSize: 14,
                   color: isDark ? "#ffffff" : "#111827",
-                  marginTop: 4,
-                  fontWeight: "500",
+                  fontWeight: "600",
+                  textAlign: "center",
                 }}
                 numberOfLines={2}
               >
                 {taskDescription}
               </Text>
             </View>
-          </View>
+          )}
 
           {/* Chat Messages */}
           {messages.map(renderMessage)}

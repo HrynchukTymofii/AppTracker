@@ -130,9 +130,9 @@ const makeOpenAIRequest = async (
 
 export interface TaskVerificationResult {
   isTaskCompleted: boolean;
-  confidence: number; // 0-100
-  explanation: string;
-  detectedChanges: string[];
+  confidence: number; // 0-100 (internal use for 70% threshold)
+  message: string; // Short friendly response (1-2 sentences)
+  earnedMinutes: number; // 5-15 based on task difficulty
 }
 
 /**
@@ -153,19 +153,28 @@ export const verifyTaskWithPhotos = async (
     const messages: OpenAIMessage[] = [
       {
         role: 'system',
-        content: `You are a task verification assistant. Your job is to compare two photos (before and after) and determine if a task has been completed.
+        content: `You are a friendly coach verifying if someone completed their task. Compare the before and after photos.
 
 IMPORTANT: Respond in ${userLanguage} language.
 
-You must respond with a JSON object in this exact format:
+Be natural and encouraging! Like a supportive friend, not a robot.
+
+Respond with JSON:
 {
   "isTaskCompleted": boolean,
-  "confidence": number (0-100),
-  "explanation": "string explaining your reasoning in ${userLanguage}",
-  "detectedChanges": ["list", "of", "observed", "changes", "in ${userLanguage}"]
+  "confidence": number (0-100, for internal use only),
+  "message": "Short friendly response (1-2 sentences max) in ${userLanguage}. Examples:
+    - Success: 'Nice work! Your desk looks so much cleaner now 🎉'
+    - Success: 'Great job getting that done! 💪'
+    - Failed: 'Hmm, I don't see much change yet. Give it another try?'
+    - Failed: 'Almost there! Finish up and show me again.'",
+  "earnedMinutes": number (5-15 based on task difficulty):
+    - 5: Simple tasks (making bed, quick tidy)
+    - 8-10: Medium tasks (cleaning room, dishes, organizing)
+    - 12-15: Hard tasks (deep cleaning, physical work, big projects)
 }
 
-Be strict but fair in your assessment. Look for meaningful changes that indicate the task was actually done.`,
+Keep "message" SHORT and HUMAN. No formal language. No mentioning confidence scores or percentages.`,
       },
       {
         role: 'user',
@@ -174,9 +183,9 @@ Be strict but fair in your assessment. Look for meaningful changes that indicate
             type: 'text',
             text: `Task to verify: "${taskDescription}"
 
-Please compare the BEFORE and AFTER photos and determine if this task has been completed. The first image is BEFORE, the second is AFTER.
+Compare the BEFORE (first image) and AFTER (second image) photos. Did they complete it?
 
-Respond in ${userLanguage}.`,
+Respond in ${userLanguage} with a short, friendly message.`,
           },
           {
             type: 'image_url',
@@ -208,6 +217,87 @@ Respond in ${userLanguage}.`,
     return result;
   } catch (error) {
     console.error('Error verifying task with photos:', error);
+    throw error;
+  }
+};
+
+/**
+ * Verify task completion with just an "after" photo (no before photo comparison)
+ * Used for tasks like cooking, homework, workouts where no "before" state is needed
+ */
+export const verifyTaskWithPhoto = async (
+  photoUri: string,
+  taskDescription: string
+): Promise<TaskVerificationResult> => {
+  try {
+    const userLanguage = getCurrentLanguage();
+
+    // Convert image to base64
+    const photoBase64 = await imageToBase64(photoUri);
+
+    const messages: OpenAIMessage[] = [
+      {
+        role: 'system',
+        content: `You are a friendly coach verifying if someone completed their task. Look at the photo they took.
+
+IMPORTANT: Respond in ${userLanguage} language.
+
+Be natural and encouraging! Like a supportive friend, not a robot.
+
+The user will show you a photo of their completed task. Verify that the photo shows evidence of the task being done.
+
+Respond with JSON:
+{
+  "isTaskCompleted": boolean,
+  "confidence": number (0-100, for internal use only),
+  "message": "Short friendly response (1-2 sentences max) in ${userLanguage}. Examples:
+    - Success: 'Looks delicious! Great job cooking that meal 🍳'
+    - Success: 'Nice work getting that homework done! 📚'
+    - Success: 'Great workout session! 💪'
+    - Failed: 'Hmm, I can't quite see the completed task. Can you take another photo?'
+    - Failed: 'This doesn't look like the task was finished. Show me the result!'",
+  "earnedMinutes": number (5-15 based on task difficulty):
+    - 5: Simple tasks (quick tidy, basic meal)
+    - 8-10: Medium tasks (homework, cooking proper meal, moderate workout)
+    - 12-15: Hard tasks (complex cooking, long study session, intense workout)
+}
+
+Keep "message" SHORT and HUMAN. No formal language. No mentioning confidence scores or percentages.`,
+      },
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'text',
+            text: `Task to verify: "${taskDescription}"
+
+Here's my photo showing I completed the task. Does it look like I did it?
+
+Respond in ${userLanguage} with a short, friendly message.`,
+          },
+          {
+            type: 'image_url',
+            image_url: {
+              url: `data:image/jpeg;base64,${photoBase64}`,
+              detail: 'high',
+            },
+          },
+        ],
+      },
+    ];
+
+    const response = await makeOpenAIRequest(messages, 0.3, 1000);
+
+    // Parse JSON from response
+    const jsonMatch = response.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('Invalid response format from OpenAI');
+    }
+
+    const result: TaskVerificationResult = JSON.parse(jsonMatch[0]);
+    return result;
+  } catch (error) {
+    console.error('Error verifying task with photo:', error);
     throw error;
   }
 };
@@ -515,6 +605,7 @@ export const pregenerateNotifications = async (
 
 export default {
   verifyTaskWithPhotos,
+  verifyTaskWithPhoto,
   analyzeIntention,
   analyzeIntentionChat,
   generateCoachingResponse,

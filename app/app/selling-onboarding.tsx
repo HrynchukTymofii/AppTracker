@@ -176,10 +176,10 @@ export default function SellingOnboarding() {
       case 13:
         return <Step12Projection userAnswers={userAnswers} onContinue={nextStep} />;
       case 14:
-        return <Step13Comparison userAnswers={userAnswers} onContinue={nextStep} />;
-      case 15:
+        //return <Step13Comparison userAnswers={userAnswers} onContinue={nextStep} />;
         return <Step14Notifications onContinue={nextStep} />;
-      case 16:
+      case 15:
+        //return <Step14Notifications onContinue={nextStep} />;
         return (
           <Step15DailyGoal
             onSelect={(minutes) => {
@@ -188,7 +188,15 @@ export default function SellingOnboarding() {
             }}
           />
         );
-      case 17:
+      case 16:
+        // return (
+        //   <Step15DailyGoal
+        //     onSelect={(minutes) => {
+        //       setUserAnswers({ ...userAnswers, dailyGoal: minutes });
+        //       nextStep();
+        //     }}
+        //   />
+        // );
         return (
           <Step16AppSelection
             preloadedApps={preloadedApps}
@@ -198,6 +206,16 @@ export default function SellingOnboarding() {
             }}
           />
         );
+      // case 17:
+      //   return (
+      //     <Step16AppSelection
+      //       preloadedApps={preloadedApps}
+      //       appsLoading={appsLoading}
+      //       onConfirm={(apps, websites) => {
+      //         finishOnboarding(apps, websites);
+      //       }}
+      //     />
+      //   );
       default:
         return null;
     }

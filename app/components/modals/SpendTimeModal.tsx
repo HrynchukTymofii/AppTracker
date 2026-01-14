@@ -78,8 +78,9 @@ export const SpendTimeModal = ({
   const healthScore = Math.max(0, Math.min(100, Math.round((1 - realUsedMinutes / Math.max(dailyLimitMinutes, 1)) * 100)));
 
   // Initialize coach messages when limit is reached or forceCoachChat is true
+  // Only initialize once when modal becomes visible
   useEffect(() => {
-    if (visible && (realUsedMinutes >= dailyLimitMinutes || forceCoachChat)) {
+    if (visible && (realUsedMinutes >= dailyLimitMinutes || forceCoachChat) && coachMessages.length === 0) {
       setCoachMessages([
         {
           id: '1',
@@ -93,7 +94,7 @@ export const SpendTimeModal = ({
         },
       ]);
     }
-  }, [visible, realUsedMinutes, dailyLimitMinutes, appName, forceCoachChat, t]);
+  }, [visible, forceCoachChat]); // Reduced dependencies - only check when visibility changes
 
   // Auto scroll to bottom
   useEffect(() => {

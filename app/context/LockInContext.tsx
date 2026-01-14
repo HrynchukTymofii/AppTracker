@@ -59,7 +59,7 @@ interface LockInContextType {
   activeSession: LockInSession | null;
   sessionHistory: LockInSession[];
   startSession: (session: Omit<LockInSession, "id" | "startedAt" | "status">) => Promise<void>;
-  completeSession: (afterPhotoUri?: string) => Promise<boolean>; // Returns true if first activity of day (for streak modal)
+  completeSession: (afterPhotoUri?: string, earnedMinutes?: number) => Promise<boolean>; // Returns true if first activity of day (for streak modal)
   cancelSession: () => Promise<void>;
   addExerciseActivity: (exerciseType: string, earnedMinutes: number, details: string) => Promise<void>;
 
@@ -86,7 +86,7 @@ const STORAGE_KEYS = {
 };
 
 export function LockInProvider({ children }: { children: ReactNode }) {
-  const { recordActivity } = useEarnedTime();
+  const { recordActivity, earnTime } = useEarnedTime();
   const [tasks, setTasks] = useState<LockInTask[]>([]);
   const [activeSession, setActiveSession] = useState<LockInSession | null>(null);
   const [sessionHistory, setSessionHistory] = useState<LockInSession[]>([]);
@@ -161,7 +161,7 @@ export function LockInProvider({ children }: { children: ReactNode }) {
     await AsyncStorage.setItem(STORAGE_KEYS.ACTIVE_SESSION, JSON.stringify(newSession));
   };
 
-  const completeSession = async (afterPhotoUri?: string): Promise<boolean> => {
+  const completeSession = async (afterPhotoUri?: string, earnedMinutes?: number): Promise<boolean> => {
     if (!activeSession) return false;
 
     const completedSession: LockInSession = {
@@ -191,6 +191,11 @@ export function LockInProvider({ children }: { children: ReactNode }) {
       activeSession.blockedApps || [],
       true // taskCompleted
     );
+
+    // Earn time for photo-verified tasks
+    if (earnedMinutes && earnedMinutes > 0 && activeSession.type === 'verified') {
+      await earnTime('photo_task', earnedMinutes, activeSession.taskDescription || 'Photo task');
+    }
 
     // Record activity for the unified streak system (shared with exercises)
     // Returns true if this was the first activity of the day

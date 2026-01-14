@@ -198,7 +198,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
   };
 
   const handlePhotoToggle = (value: boolean) => {
-    if (value && !user.isPro) {
+    if (value && !user?.isPro) {
       // User wants to enable photo verification but is not Pro
       handleClose();
       router.push("/payment");
@@ -592,7 +592,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
             {/* Photo Verification Toggle */}
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => !user.isPro && handlePhotoToggle(true)}
+              onPress={() => !user?.isPro && handlePhotoToggle(true)}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -615,7 +615,7 @@ export const AddTaskModal: React.FC<AddTaskModalProps> = ({
                 >
                   📸 Require before/after photos
                 </Text>
-                {!user.isPro && (
+                {!user?.isPro && (
                   <View
                     style={{
                       flexDirection: "row",

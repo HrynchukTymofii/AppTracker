@@ -7,7 +7,7 @@ import { PhotoVerificationModal } from "./modals/PhotoVerificationModal";
 interface ActiveSessionProps {
   session: LockInSession;
   isDark: boolean;
-  onComplete: (afterPhotoUri?: string) => void;
+  onComplete: (afterPhotoUri?: string, earnedMinutes?: number) => void;
   onGiveUp: () => void;
 }
 
@@ -70,21 +70,23 @@ export const ActiveSession: React.FC<ActiveSessionProps> = ({
   const hasBeforePhoto = !!session.beforePhotoUri;
 
   const handleCompletePress = () => {
-    if (isVerified && hasBeforePhoto) {
+    // All verified tasks require photo verification (with or without before photo)
+    if (isVerified) {
       setShowVerification(true);
     } else {
       onComplete();
     }
   };
 
-  const handleVerified = () => {
+  const handleVerified = (earnedMinutes: number) => {
     setShowVerification(false);
-    onComplete();
+    onComplete(undefined, earnedMinutes);
   };
 
   const handleForceUnlock = () => {
     setShowVerification(false);
-    onComplete();
+    // Force unlock gives minimal time (5 minutes)
+    onComplete(undefined, 5);
   };
 
   return (
@@ -157,7 +159,7 @@ export const ActiveSession: React.FC<ActiveSessionProps> = ({
               borderRadius: 110,
               borderWidth: 8,
               borderColor: "transparent",
-              borderTopColor: "#10b981",
+              borderTopColor: progress > 0 ? "#10b981" : "transparent",
               borderRightColor: progress > 0.25 ? "#10b981" : "transparent",
               borderBottomColor: progress > 0.5 ? "#10b981" : "transparent",
               borderLeftColor: progress > 0.75 ? "#10b981" : "transparent",
@@ -483,7 +485,7 @@ export const ActiveSession: React.FC<ActiveSessionProps> = ({
       </View>
 
       {/* Photo Verification Modal */}
-      {isVerified && hasBeforePhoto && session.beforePhotoUri && (
+      {isVerified && (
         <PhotoVerificationModal
           visible={showVerification}
           isDark={isDark}

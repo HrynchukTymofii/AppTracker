@@ -370,16 +370,15 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
         </View>
       </View>
 
-      {/* Photo Task Button */}
-      <TouchableOpacity
-        onPress={onVerifiedStart}
-        activeOpacity={0.7}
+      {/* Photo Task Button - Coming Soon */}
+      <View
         style={{
           borderRadius: 16,
           marginBottom: 12,
           overflow: "hidden",
           borderWidth: 1,
-          borderColor: isDark ? "rgba(59, 130, 246, 0.4)" : "rgba(59, 130, 246, 0.3)",
+          borderColor: isDark ? "rgba(107, 114, 128, 0.3)" : "rgba(107, 114, 128, 0.2)",
+          opacity: 0.6,
         }}
       >
         <BlurView
@@ -390,25 +389,11 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
         <LinearGradient
           colors={
             isDark
-              ? ["rgba(255, 255, 255, 0.06)", "rgba(255, 255, 255, 0.02)"]
-              : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]
+              ? ["rgba(255, 255, 255, 0.04)", "rgba(255, 255, 255, 0.01)"]
+              : ["rgba(255, 255, 255, 0.7)", "rgba(255, 255, 255, 0.5)"]
           }
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
-        {/* Top shine */}
-        <LinearGradient
-          colors={isDark ? ["rgba(255, 255, 255, 0.06)", "transparent"] : ["rgba(255, 255, 255, 0.4)", "transparent"]}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 0.6 }}
-          style={[StyleSheet.absoluteFill, { height: "60%" }]}
-        />
-        {/* Blue glow */}
-        <LinearGradient
-          colors={["rgba(59, 130, 246, 0.15)", "transparent"]}
-          start={{ x: 0.5, y: 1 }}
-          end={{ x: 0.5, y: 0 }}
           style={StyleSheet.absoluteFill}
         />
         <View style={{ padding: 16, flexDirection: "row", alignItems: "center" }}>
@@ -421,42 +406,61 @@ export const EarnTimeSection: React.FC<EarnTimeSectionProps> = ({
               justifyContent: "center",
               marginRight: 14,
               overflow: "hidden",
+              backgroundColor: isDark ? "rgba(107, 114, 128, 0.3)" : "rgba(107, 114, 128, 0.2)",
             }}
           >
-            <LinearGradient
-              colors={["#3b82f6", "#2563eb"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
-            <Camera size={24} color="#ffffff" strokeWidth={2} />
+            <Camera size={24} color={isDark ? "#6b7280" : "#9ca3af"} strokeWidth={2} />
           </View>
 
           <View style={{ flex: 1 }}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: "700",
-                color: isDark ? "#ffffff" : "#0f172a",
-                letterSpacing: -0.3,
-              }}
-            >
-              {t("lockin.photoTask")}
-            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "700",
+                  color: isDark ? "#6b7280" : "#9ca3af",
+                  letterSpacing: -0.3,
+                }}
+              >
+                {t("lockin.photoTask")}
+              </Text>
+              {/* Coming Soon Badge */}
+              <View
+                style={{
+                  backgroundColor: isDark ? "rgba(251, 191, 36, 0.2)" : "rgba(251, 191, 36, 0.15)",
+                  paddingHorizontal: 8,
+                  paddingVertical: 3,
+                  borderRadius: 6,
+                  marginLeft: 8,
+                  borderWidth: 1,
+                  borderColor: "rgba(251, 191, 36, 0.3)",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 10,
+                    fontWeight: "700",
+                    color: "#f59e0b",
+                    textTransform: "uppercase",
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  Coming Soon
+                </Text>
+              </View>
+            </View>
             <Text
               style={{
                 fontSize: 13,
-                color: isDark ? "rgba(255,255,255,0.5)" : "#94a3b8",
+                color: isDark ? "rgba(255,255,255,0.35)" : "#b0b8c4",
                 marginTop: 2,
               }}
             >
               {t("lockin.photoTaskDesc")}
             </Text>
           </View>
-
-          <ChevronRight size={20} color="#3b82f6" strokeWidth={2} />
         </View>
-      </TouchableOpacity>
+      </View>
 
       {/* Favorites Section */}
       {favoriteExercises.length > 0 && (

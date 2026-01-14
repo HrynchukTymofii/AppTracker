@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { View, BackHandler, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SpendTimeModal } from '@/components/modals/SpendTimeModal';
@@ -38,12 +38,15 @@ export default function BlockedAppScreen() {
     forceCoachChat,
   });
 
-  // Get list of blocked app package names
-  const blockedPackages = dailyLimits.map(l => l.packageName);
+  // Get list of blocked app package names - memoized to prevent infinite re-renders
+  const blockedPackages = useMemo(() => dailyLimits.map(l => l.packageName), [dailyLimits]);
 
-  // Fetch all required data on mount before showing modal
+  // Fetch all required data on mount - only run once
   useEffect(() => {
+    let isMounted = true;
+
     const fetchAllData = async () => {
+      if (!isMounted) return;
       setIsLoading(true);
       try {
         // Fetch wallet balance and usage stats in parallel
@@ -51,6 +54,8 @@ export default function BlockedAppScreen() {
           AppBlocker.getWalletBalance(),
           UsageStats.getTodayUsageStats(),
         ]);
+
+        if (!isMounted) return;
 
         console.log('[BlockedApp] Native wallet balance:', balance);
         setNativeWalletBalance(balance);
@@ -71,6 +76,8 @@ export default function BlockedAppScreen() {
           // Sync with wallet to deduct actual usage (only for blocked apps)
           await syncUsageWithWallet(usageMap);
 
+          if (!isMounted) return;
+
           // Get this app's usage
           const thisAppUsage = usageMap[packageName] || 0;
           setRealUsedMinutes(thisAppUsage);
@@ -78,13 +85,17 @@ export default function BlockedAppScreen() {
         }
       } catch (error) {
         console.error('[BlockedApp] Error fetching data:', error);
-        setNativeWalletBalance(0);
+        if (isMounted) setNativeWalletBalance(0);
       } finally {
-        setIsLoading(false);
+        if (isMounted) setIsLoading(false);
       }
     };
     fetchAllData();
-  }, [packageName, appName, dailyLimitMinutes, syncUsageWithWallet, blockedPackages]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [packageName]); // Only depend on packageName to run once per app
 
   // Prevent back button from bypassing the block
   useEffect(() => {

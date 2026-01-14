@@ -95,8 +95,8 @@ export default function LockInScreen() {
     setShowGiveUpConfirm(false);
   };
 
-  const handleComplete = async (afterPhotoUri?: string) => {
-    const isFirstActivityToday = await completeSession(afterPhotoUri);
+  const handleComplete = async (afterPhotoUri?: string, earnedMinutes?: number) => {
+    const isFirstActivityToday = await completeSession(afterPhotoUri, earnedMinutes);
     // Show streak modal if this was the first activity of the day
     if (isFirstActivityToday) {
       setTimeout(() => {

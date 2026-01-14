@@ -29,6 +29,8 @@ interface MenuItemProps {
   icon: React.ReactNode;
   isImage?: boolean;
   onPress: () => void;
+  disabled?: boolean;
+  comingSoon?: boolean;
 }
 
 const MenuItem: React.FC<MenuItemProps> = ({
@@ -43,6 +45,8 @@ const MenuItem: React.FC<MenuItemProps> = ({
   icon,
   isImage,
   onPress,
+  disabled,
+  comingSoon,
 }) => {
   const iconScale = iconAnim.interpolate({
     inputRange: [0, 1],
@@ -52,6 +56,9 @@ const MenuItem: React.FC<MenuItemProps> = ({
     inputRange: [0, 1],
     outputRange: [translateYStart, 0],
   });
+
+  const ButtonComponent = disabled ? View : TouchableOpacity;
+  const buttonProps = disabled ? {} : { onPress, activeOpacity: 0.8 };
 
   return (
     <Animated.View
@@ -72,22 +79,47 @@ const MenuItem: React.FC<MenuItemProps> = ({
           alignItems: "flex-end",
         }}
       >
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+          {comingSoon && (
+            <View
+              style={{
+                backgroundColor: "rgba(251, 191, 36, 0.3)",
+                paddingHorizontal: 6,
+                paddingVertical: 2,
+                borderRadius: 4,
+                borderWidth: 1,
+                borderColor: "rgba(251, 191, 36, 0.5)",
+              }}
+            >
+              <Text
+                style={{
+                  color: "#fbbf24",
+                  fontSize: 9,
+                  fontWeight: "700",
+                  textTransform: "uppercase",
+                }}
+              >
+                Soon
+              </Text>
+            </View>
+          )}
+          <Text
+            style={{
+              color: disabled ? "rgba(255, 255, 255, 0.4)" : "#ffffff",
+              fontWeight: "700",
+              fontSize: 16,
+              marginBottom: 2,
+              textShadowColor: "rgba(0, 0, 0, 0.5)",
+              textShadowOffset: { width: 0, height: 1 },
+              textShadowRadius: 4,
+            }}
+          >
+            {title}
+          </Text>
+        </View>
         <Text
           style={{
-            color: "#ffffff",
-            fontWeight: "700",
-            fontSize: 16,
-            marginBottom: 2,
-            textShadowColor: "rgba(0, 0, 0, 0.5)",
-            textShadowOffset: { width: 0, height: 1 },
-            textShadowRadius: 4,
-          }}
-        >
-          {title}
-        </Text>
-        <Text
-          style={{
-            color: "rgba(255, 255, 255, 0.7)",
+            color: disabled ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.7)",
             fontSize: 12,
             textShadowColor: "rgba(0, 0, 0, 0.5)",
             textShadowOffset: { width: 0, height: 1 },
@@ -98,21 +130,21 @@ const MenuItem: React.FC<MenuItemProps> = ({
         </Text>
       </Animated.View>
 
-      <TouchableOpacity
-        onPress={onPress}
-        activeOpacity={0.8}
+      <ButtonComponent
+        {...buttonProps}
         style={{
           width: 52,
           height: 52,
           borderRadius: 14,
           overflow: "hidden",
-          shadowColor: shadowColor,
+          shadowColor: disabled ? "transparent" : shadowColor,
           shadowOffset: { width: 0, height: 6 },
-          shadowOpacity: 0.5,
+          shadowOpacity: disabled ? 0 : 0.5,
           shadowRadius: 12,
-          elevation: 8,
+          elevation: disabled ? 0 : 8,
           borderWidth: isImage ? 2 : 0,
           borderColor: isImage ? gradientColors[0] : "transparent",
+          opacity: disabled ? 0.4 : 1,
         }}
       >
         {isImage ? (
@@ -121,7 +153,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
           </View>
         ) : (
           <LinearGradient
-            colors={gradientColors}
+            colors={disabled ? ["#6b7280", "#4b5563", "#374151"] as const : gradientColors}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={{
@@ -133,7 +165,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
             {icon}
           </LinearGradient>
         )}
-      </TouchableOpacity>
+      </ButtonComponent>
     </Animated.View>
   );
 };
@@ -213,6 +245,8 @@ export const QuickActionMenu: React.FC<QuickActionMenuProps> = ({
       route: `/(tabs)/lockin?exercise=${type}`,
       bottomPosition,
       translateYStart,
+      disabled: false,
+      comingSoon: false,
     };
   };
 
@@ -233,9 +267,11 @@ export const QuickActionMenu: React.FC<QuickActionMenuProps> = ({
       shadowColor: "#3b82f6",
       icon: <Camera size={24} color="#ffffff" />,
       isImage: false,
-      route: "/(tabs)/lockin?openVerified=true",
+      route: "",
       bottomPosition: 285,
       translateYStart: 100,
+      disabled: true,
+      comingSoon: true,
     },
     {
       title: t("home.quickActions.focusMode"),
@@ -295,6 +331,8 @@ export const QuickActionMenu: React.FC<QuickActionMenuProps> = ({
             icon={item.icon}
             isImage={item.isImage}
             onPress={() => handleMenuItemPress(item.route)}
+            disabled={item.disabled}
+            comingSoon={item.comingSoon}
           />
         ))}
 
