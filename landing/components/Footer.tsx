@@ -1,6 +1,7 @@
 'use client';
 
 import { useTheme } from '@/context/ThemeContext';
+import Link from 'next/link';
 
 export default function Footer() {
   const { colors } = useTheme();
@@ -43,20 +44,20 @@ export default function Footer() {
 
           {/* Links */}
           <div className="flex items-center gap-6">
-            <a
-              href="#"
+            <Link
+              href="/privacy-policy"
               className="text-sm transition-colors animated-underline"
               style={{ color: colors.textSecondary }}
             >
               Privacy Policy
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              href="/terms-of-service"
               className="text-sm transition-colors animated-underline"
               style={{ color: colors.textSecondary }}
             >
               Terms of Service
-            </a>
+            </Link>
           </div>
         </div>
       </div>
