@@ -2,11 +2,13 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useLanguage } from "@/context/LanguageContext";
 
 const SUPPORT_EMAIL = "lockin@fibipals.com";
 const API_BASE_URL = "https://www.fibipals.com/api/apps/appBlocker";
 
 const SupportPage: React.FC = () => {
+  const { t } = useLanguage();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -18,7 +20,7 @@ const SupportPage: React.FC = () => {
     e.preventDefault();
 
     if (!name.trim() || !email.trim() || !message.trim()) {
-      setError("Please fill in all fields");
+      setError(t('support.form.error'));
       return;
     }
 
@@ -43,11 +45,11 @@ const SupportPage: React.FC = () => {
         setEmail("");
         setMessage("");
       } else {
-        setError("Failed to send message. Please try again.");
+        setError(t('support.form.errorSend'));
       }
     } catch (err) {
       console.error("Send message error:", err);
-      setError("Failed to send message. Please try again.");
+      setError(t('support.form.errorSend'));
     } finally {
       setLoading(false);
     }
@@ -67,7 +69,7 @@ const SupportPage: React.FC = () => {
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Back to Home
+          {t('common.backToHome')}
         </Link>
 
         <div className="glass-card rounded-3xl p-8 sm:p-12">
@@ -78,12 +80,12 @@ const SupportPage: React.FC = () => {
               </svg>
             </div>
             <div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-gradient">Support</h1>
+              <h1 className="text-3xl sm:text-4xl font-bold text-gradient">{t('support.title')}</h1>
             </div>
           </div>
 
           <p className="text-[var(--text-secondary)] mb-8 mt-4">
-            Have a question, feedback, or need help? We&apos;re here for you. Send us a message and we&apos;ll get back to you as soon as possible.
+            {t('support.description')}
           </p>
 
           {submitted ? (
@@ -93,8 +95,8 @@ const SupportPage: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-[var(--text-color)] mb-2">Message Sent!</h3>
-              <p className="text-[var(--text-secondary)]">Thank you for reaching out. We&apos;ll get back to you soon.</p>
+              <h3 className="text-xl font-semibold text-[var(--text-color)] mb-2">{t('support.success.title')}</h3>
+              <p className="text-[var(--text-secondary)]">{t('support.success.description')}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -106,41 +108,41 @@ const SupportPage: React.FC = () => {
 
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-[var(--text-color)] mb-2">
-                  Your Name
+                  {t('support.form.name')}
                 </label>
                 <input
                   type="text"
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="John Doe"
+                  placeholder={t('support.form.namePlaceholder')}
                   className="w-full px-4 py-3 rounded-xl bg-[var(--card-bg)] border border-[var(--border-color)] text-[var(--text-color)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent transition-all"
                 />
               </div>
 
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-[var(--text-color)] mb-2">
-                  Your Email
+                  {t('support.form.email')}
                 </label>
                 <input
                   type="email"
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="john@example.com"
+                  placeholder={t('support.form.emailPlaceholder')}
                   className="w-full px-4 py-3 rounded-xl bg-[var(--card-bg)] border border-[var(--border-color)] text-[var(--text-color)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent transition-all"
                 />
               </div>
 
               <div>
                 <label htmlFor="message" className="block text-sm font-medium text-[var(--text-color)] mb-2">
-                  Message
+                  {t('support.form.message')}
                 </label>
                 <textarea
                   id="message"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="How can we help you?"
+                  placeholder={t('support.form.messagePlaceholder')}
                   rows={5}
                   className="w-full px-4 py-3 rounded-xl bg-[var(--card-bg)] border border-[var(--border-color)] text-[var(--text-color)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent transition-all resize-none"
                 />
@@ -162,7 +164,7 @@ const SupportPage: React.FC = () => {
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
-                    Send Message
+                    {t('support.form.send')}
                   </>
                 )}
               </button>
@@ -172,7 +174,7 @@ const SupportPage: React.FC = () => {
           {/* Divider */}
           <div className="flex items-center my-8">
             <div className="flex-1 h-px bg-[var(--border-color)]" />
-            <span className="px-4 text-sm text-[var(--text-secondary)]">or</span>
+            <span className="px-4 text-sm text-[var(--text-secondary)]">{t('support.or')}</span>
             <div className="flex-1 h-px bg-[var(--border-color)]" />
           </div>
 
@@ -184,38 +186,38 @@ const SupportPage: React.FC = () => {
             <svg className="w-5 h-5 text-[var(--accent-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
-            <span>Email Us Directly</span>
+            <span>{t('support.emailDirect')}</span>
             <span className="text-[var(--text-secondary)]">{SUPPORT_EMAIL}</span>
           </button>
 
           {/* Additional Info */}
           <div className="mt-8 p-6 rounded-xl bg-[var(--card-bg)] border border-[var(--border-color)]">
-            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-3">What to expect</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-color)] mb-3">{t('support.whatToExpect.title')}</h3>
             <ul className="space-y-2 text-[var(--text-secondary)] text-sm">
               <li className="flex items-start gap-2">
                 <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                We typically respond within 24-48 hours
+                {t('support.whatToExpect.response')}
               </li>
               <li className="flex items-start gap-2">
                 <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                We read and consider all feedback
+                {t('support.whatToExpect.feedback')}
               </li>
               <li className="flex items-start gap-2">
                 <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Your data is handled securely and privately
+                {t('support.whatToExpect.privacy')}
               </li>
             </ul>
           </div>
         </div>
 
         <p className="text-center text-sm text-[var(--text-secondary)] mt-8">
-          &copy; {new Date().getFullYear()} LockIn. All rights reserved.
+          {t('common.copyright', { year: new Date().getFullYear() })}
         </p>
       </div>
     </div>

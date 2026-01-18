@@ -102,4 +102,180 @@ export default {
     pricing: 'Precios',
     about: 'Acerca de',
   },
+  common: {
+    backToHome: 'Volver al inicio',
+    copyright: '© {{year}} LockIn. Todos los derechos reservados.',
+    lastUpdated: 'Última actualización: 14 de enero de 2025',
+    contactEmail: 'lockin@fibipals.com',
+  },
+  support: {
+    title: 'Soporte',
+    description: '¿Tienes una pregunta, comentario o necesitas ayuda? Estamos aquí para ti. Envíanos un mensaje y te responderemos lo antes posible.',
+    form: {
+      name: 'Tu nombre',
+      namePlaceholder: 'Juan García',
+      email: 'Tu correo electrónico',
+      emailPlaceholder: 'juan@ejemplo.com',
+      message: 'Mensaje',
+      messagePlaceholder: '¿Cómo podemos ayudarte?',
+      send: 'Enviar mensaje',
+      sending: 'Enviando...',
+      error: 'Por favor completa todos los campos',
+      errorSend: 'Error al enviar el mensaje. Por favor intenta de nuevo.',
+    },
+    success: {
+      title: '¡Mensaje enviado!',
+      description: 'Gracias por contactarnos. Te responderemos pronto.',
+    },
+    or: 'o',
+    emailDirect: 'Envíanos un correo directamente',
+    whatToExpect: {
+      title: 'Qué esperar',
+      response: 'Normalmente respondemos en 24-48 horas',
+      feedback: 'Leemos y consideramos todos los comentarios',
+      privacy: 'Tus datos se manejan de forma segura y privada',
+    },
+  },
+  privacyPolicy: {
+    title: 'Política de Privacidad',
+    intro: 'LockIn: Screen Time Control ("LockIn", "nosotros", "nuestro") respeta tu privacidad y está comprometido a proteger tus datos personales. Esta Política de Privacidad explica cómo recopilamos, usamos y protegemos tu información cuando utilizas nuestra aplicación móvil y servicios relacionados.',
+    sections: {
+      infoCollect: {
+        title: '1. Información que recopilamos',
+        account: {
+          title: '1.1 Información de cuenta e inicio de sesión',
+          intro: 'Cuando creas una cuenta o inicias sesión, podemos recopilar:',
+          items: ['Dirección de correo electrónico', 'Información relacionada con la autenticación (como tokens de inicio de sesión)'],
+          note: 'Esta información se utiliza únicamente para autenticarte y administrar tu cuenta.',
+        },
+        subscription: {
+          title: '1.2 Información de suscripción',
+          text: 'LockIn ofrece planes de suscripción mensuales y anuales. Los pagos son procesados por plataformas de terceros (como Google Play o Apple App Store). No recopilamos ni almacenamos los datos de tu tarjeta de crédito o pagos.',
+        },
+        usage: {
+          title: '1.3 Datos de uso de la aplicación (solo en el dispositivo)',
+          intro: 'Para proporcionar funciones de monitoreo de tiempo de pantalla y bloqueo de aplicaciones, LockIn accede a ciertos datos de uso en tu dispositivo. Estos datos:',
+          items: ['Se procesan localmente en tu dispositivo', 'No se venden ni comparten con terceros', 'No se utilizan para publicidad o seguimiento'],
+        },
+      },
+      permissions: {
+        title: '2. Permisos que utilizamos',
+        intro: 'LockIn requiere permisos específicos del sistema para funcionar correctamente:',
+        items: [
+          { name: 'Permiso de acceso de uso:', desc: 'Se utiliza para monitorear el uso de aplicaciones y estadísticas de tiempo de pantalla.' },
+          { name: 'Mostrar sobre otras aplicaciones:', desc: 'Se utiliza para mostrar pantallas de bloqueo y recordatorios cuando se alcanzan los límites de uso.' },
+          { name: 'Permisos de accesibilidad / Control de aplicaciones:', desc: 'Se utiliza para restringir o bloquear el acceso a aplicaciones seleccionadas y limitar el desplazamiento donde corresponda.' },
+        ],
+        note: 'Estos permisos se utilizan estrictamente para la funcionalidad principal de la aplicación y nunca se utilizan para recopilar contenido personal o datos sensibles del usuario.',
+      },
+      howWeUse: {
+        title: '3. Cómo usamos tu información',
+        intro: 'Utilizamos la información recopilada para:',
+        items: ['Proporcionar y mantener las funciones principales de la aplicación', 'Autenticar usuarios y administrar cuentas', 'Habilitar suscripciones y funciones premium', 'Mejorar el rendimiento y la confiabilidad de la aplicación'],
+      },
+      dataSharing: {
+        title: '4. Compartir datos',
+        intro: 'No vendemos, alquilamos ni comerciamos con tus datos personales. Podemos compartir información limitada solo cuando:',
+        items: ['Sea requerido por ley o proceso legal', 'Sea necesario para proteger nuestros derechos o prevenir abusos'],
+      },
+      dataSecurity: {
+        title: '5. Seguridad de datos',
+        text: 'Implementamos medidas técnicas y organizativas apropiadas para proteger tus datos contra acceso no autorizado, pérdida o mal uso.',
+      },
+      dataRetention: {
+        title: '6. Retención de datos',
+        text: 'Retenemos los datos personales solo el tiempo necesario para proporcionar el servicio o cumplir con obligaciones legales. Puedes solicitar la eliminación de tu cuenta y datos asociados en cualquier momento.',
+      },
+      children: {
+        title: '7. Privacidad de los niños',
+        text: 'LockIn no está destinado para uso de niños menores de 13 años sin consentimiento de los padres. No recopilamos conscientemente datos personales de niños sin la autorización apropiada.',
+      },
+      rights: {
+        title: '8. Tus derechos',
+        intro: 'Dependiendo de tu ubicación, puedes tener derecho a:',
+        items: ['Acceder a tus datos personales', 'Solicitar la corrección o eliminación de tus datos', 'Retirar el consentimiento donde corresponda'],
+      },
+      changes: {
+        title: '9. Cambios a esta política',
+        text: 'Podemos actualizar esta Política de Privacidad de vez en cuando. Los cambios se publicarán en esta página con una fecha de revisión actualizada.',
+      },
+      contact: {
+        title: '10. Contáctanos',
+        text: 'Si tienes preguntas o inquietudes sobre esta Política de Privacidad, contáctanos en:',
+      },
+    },
+  },
+  termsOfService: {
+    title: 'Términos de Servicio',
+    intro: 'Bienvenido a LockIn: Screen Time Control ("LockIn", "nosotros", "nuestro"). Al descargar, instalar o usar nuestra aplicación móvil, aceptas estar sujeto a estos Términos de Servicio. Por favor léelos cuidadosamente antes de usar la aplicación.',
+    sections: {
+      acceptance: {
+        title: '1. Aceptación de los términos',
+        text: 'Al acceder o usar LockIn, reconoces que has leído, entendido y aceptas estar sujeto a estos Términos de Servicio y nuestra Política de Privacidad. Si no estás de acuerdo con estos términos, por favor no uses la aplicación.',
+      },
+      description: {
+        title: '2. Descripción del servicio',
+        intro: 'LockIn es una aplicación de gestión de tiempo de pantalla diseñada para ayudar a los usuarios a:',
+        items: ['Monitorear y rastrear el uso de aplicaciones y tiempo de pantalla', 'Establecer límites en aplicaciones o categorías específicas', 'Bloquear el acceso a aplicaciones distractoras', 'Mejorar el bienestar digital y la productividad'],
+      },
+      eligibility: {
+        title: '3. Elegibilidad',
+        text: 'Debes tener al menos 13 años de edad para usar LockIn. Si eres menor de 18 años, debes tener permiso de un padre o tutor legal para usar esta aplicación. Al usar LockIn, declaras y garantizas que cumples con estos requisitos de elegibilidad.',
+      },
+      accounts: {
+        title: '4. Cuentas de usuario',
+        intro: 'Para acceder a ciertas funciones, es posible que necesites crear una cuenta. Aceptas:',
+        items: ['Proporcionar información de registro precisa y completa', 'Mantener la seguridad de las credenciales de tu cuenta', 'Notificarnos inmediatamente sobre cualquier uso no autorizado de tu cuenta', 'Aceptar la responsabilidad de todas las actividades bajo tu cuenta'],
+      },
+      subscriptions: {
+        title: '5. Suscripciones y pagos',
+        intro: 'LockIn ofrece planes de suscripción gratuitos y premium:',
+        items: ['Las suscripciones premium se facturan mensual o anualmente', 'El pago se procesa a través de Google Play Store o Apple App Store', 'Las suscripciones se renuevan automáticamente a menos que se cancelen antes de la fecha de renovación', 'Puedes administrar o cancelar tu suscripción a través de la configuración de la tienda de aplicaciones de tu dispositivo'],
+        note: 'Los reembolsos están sujetos a las políticas de las respectivas tiendas de aplicaciones. No procesamos pagos directamente ni emitimos reembolsos.',
+      },
+      permissions: {
+        title: '6. Permisos y acceso al dispositivo',
+        intro: 'LockIn requiere ciertos permisos del dispositivo para funcionar correctamente, incluyendo:',
+        items: ['Permiso de acceso de uso para monitorear el tiempo de pantalla', 'Mostrar sobre otras aplicaciones para mostrar pantallas de bloqueo', 'Permisos de accesibilidad para funciones de control de aplicaciones'],
+        note: 'Al otorgar estos permisos, autorizas a LockIn a acceder y usar estas funciones del dispositivo únicamente para proporcionar la funcionalidad prevista.',
+      },
+      acceptableUse: {
+        title: '7. Uso aceptable',
+        intro: 'Aceptas no:',
+        items: ['Usar la aplicación para cualquier propósito ilegal', 'Intentar eludir, deshabilitar o interferir con las funciones de seguridad', 'Realizar ingeniería inversa, descompilar o desensamblar la aplicación', 'Usar la aplicación para acosar, abusar o dañar a otros', 'Distribuir virus o código malicioso a través de la aplicación', 'Usar sistemas automatizados para acceder a la aplicación sin permiso'],
+      },
+      ip: {
+        title: '8. Propiedad intelectual',
+        text: 'Todo el contenido, características y funcionalidad de LockIn, incluyendo pero no limitado a texto, gráficos, logotipos, iconos, imágenes y software, son propiedad nuestra o de nuestros licenciantes y están protegidos por derechos de autor, marcas comerciales y otras leyes de propiedad intelectual. No puedes reproducir, distribuir o crear obras derivadas sin nuestro consentimiento expreso por escrito.',
+      },
+      disclaimer: {
+        title: '9. Descargo de garantías',
+        text: 'LockIn se proporciona "tal cual" y "según disponibilidad" sin garantías de ningún tipo, ya sean expresas o implícitas. No garantizamos que la aplicación será ininterrumpida, libre de errores o completamente segura. El uso de la aplicación es bajo tu propio riesgo.',
+      },
+      liability: {
+        title: '10. Limitación de responsabilidad',
+        text: 'En la máxima medida permitida por la ley, LockIn y sus afiliados no serán responsables por ningún daño indirecto, incidental, especial, consecuente o punitivo derivado de tu uso de la aplicación, incluyendo pero no limitado a pérdida de datos, productividad o ganancias.',
+      },
+      indemnification: {
+        title: '11. Indemnización',
+        text: 'Aceptas indemnizar y mantener indemne a LockIn, sus funcionarios, directores, empleados y agentes de cualquier reclamo, daño, pérdida o gasto derivado de tu uso de la aplicación o violación de estos Términos de Servicio.',
+      },
+      termination: {
+        title: '12. Terminación',
+        text: 'Nos reservamos el derecho de suspender o terminar tu acceso a LockIn en cualquier momento, sin previo aviso, por conducta que creamos que viola estos Términos de Servicio o es perjudicial para otros usuarios, nosotros o terceros. Tras la terminación, tu derecho a usar la aplicación cesará inmediatamente.',
+      },
+      changes: {
+        title: '13. Cambios a los términos',
+        text: 'Podemos actualizar estos Términos de Servicio de vez en cuando. Te notificaremos de cualquier cambio material publicando los nuevos términos en esta página con una fecha de revisión actualizada. Tu uso continuado de la aplicación después de que se publiquen los cambios constituye tu aceptación de los términos modificados.',
+      },
+      governingLaw: {
+        title: '14. Ley aplicable',
+        text: 'Estos Términos de Servicio se regirán e interpretarán de acuerdo con las leyes aplicables, sin tener en cuenta los principios de conflicto de leyes. Cualquier disputa derivada de estos términos se resolverá en los tribunales apropiados.',
+      },
+      contact: {
+        title: '15. Contáctanos',
+        text: 'Si tienes preguntas sobre estos Términos de Servicio, contáctanos en:',
+      },
+    },
+  },
 };
