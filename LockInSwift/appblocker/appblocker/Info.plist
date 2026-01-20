@@ -20,6 +20,10 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>NSCameraUsageDescription</key>
 	<string>LockIn needs camera access to track your exercises and verify photo tasks.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>LockIn uses speech recognition to create tasks from your voice commands.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>LockIn needs microphone access to hear your voice commands for task creation.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
