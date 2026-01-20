@@ -28,6 +28,7 @@
 "tab.lockin" = "LockIn";
 "tab.stats" = "Stats";
 "tab.profile" = "Profile";
+"tab.schedule" = "Schedule";
 
 // MARK: - Home
 "home.greeting" = "Good %@";
@@ -983,3 +984,15 @@
 "paywall.review2_author" = "James K.";
 "paywall.review3_text" = "Best focus app I've ever used";
 "paywall.review3_author" = "Emily R.";
+
+// MARK: - Schedule
+"schedule.title" = "Schedule";
+"schedule.no_tasks" = "No tasks for today";
+"schedule.add_task_hint" = "Tap the buttons below to add tasks using voice or text";
+"schedule.voice_input_title" = "Add Task";
+"schedule.voice_input_hint" = "Tap the mic and describe your task";
+"schedule.listening" = "Listening...";
+"schedule.processing" = "Processing...";
+"schedule.tap_to_speak" = "Tap to speak";
+"schedule.offline_message" = "Voice input requires internet connection";
+"schedule.create_task" = "Create Task";

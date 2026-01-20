@@ -33,6 +33,7 @@ enum L10n {
         static let lockin = "tab.lockin".localized
         static let stats = "tab.stats".localized
         static let profile = "tab.profile".localized
+        static let schedule = "tab.schedule".localized
     }
 
     // Home

@@ -3,6 +3,8 @@ import SwiftUI
 import UIKit
 import Observation
 
+// MARK: - Theme Mode
+
 enum ThemeMode: String, CaseIterable {
     case light
     case dark
@@ -17,6 +19,8 @@ enum ThemeMode: String, CaseIterable {
     }
 }
 
+// MARK: - Accent Color Option
+
 enum AccentColorOption: String, CaseIterable {
     case blue
     case purple
@@ -29,27 +33,40 @@ enum AccentColorOption: String, CaseIterable {
 
     var color: Color {
         switch self {
-        case .blue: return Color(red: 59/255, green: 130/255, blue: 246/255)
-        case .purple: return Color(red: 139/255, green: 92/255, blue: 246/255)
-        case .green: return Color(red: 16/255, green: 185/255, blue: 129/255)
-        case .orange: return Color(red: 249/255, green: 115/255, blue: 22/255)
-        case .pink: return Color(red: 236/255, green: 72/255, blue: 153/255)
-        case .red: return Color(red: 239/255, green: 68/255, blue: 68/255)
-        case .teal: return Color(red: 20/255, green: 184/255, blue: 166/255)
-        case .indigo: return Color(red: 99/255, green: 102/255, blue: 241/255)
+        case .blue: return Color(hex: "#0d7ff2")
+        case .purple: return Color(hex: "#8B5CF6")
+        case .green: return Color(hex: "#10B981")
+        case .orange: return Color(hex: "#F97316")
+        case .pink: return Color(hex: "#EC4899")
+        case .red: return Color(hex: "#EF4444")
+        case .teal: return Color(hex: "#14B8A6")
+        case .indigo: return Color(hex: "#6366F1")
+        }
+    }
+
+    var hexValue: String {
+        switch self {
+        case .blue: return "#0d7ff2"
+        case .purple: return "#8B5CF6"
+        case .green: return "#10B981"
+        case .orange: return "#F97316"
+        case .pink: return "#EC4899"
+        case .red: return "#EF4444"
+        case .teal: return "#14B8A6"
+        case .indigo: return "#6366F1"
         }
     }
 
     var darkVariant: Color {
         switch self {
-        case .blue: return Color(red: 37/255, green: 99/255, blue: 235/255)
-        case .purple: return Color(red: 124/255, green: 58/255, blue: 237/255)
-        case .green: return Color(red: 5/255, green: 150/255, blue: 105/255)
-        case .orange: return Color(red: 234/255, green: 88/255, blue: 12/255)
-        case .pink: return Color(red: 219/255, green: 39/255, blue: 119/255)
-        case .red: return Color(red: 220/255, green: 38/255, blue: 38/255)
-        case .teal: return Color(red: 13/255, green: 148/255, blue: 136/255)
-        case .indigo: return Color(red: 79/255, green: 70/255, blue: 229/255)
+        case .blue: return Color(hex: "#0a66c2")
+        case .purple: return Color(hex: "#7C3AED")
+        case .green: return Color(hex: "#059669")
+        case .orange: return Color(hex: "#EA580C")
+        case .pink: return Color(hex: "#DB2777")
+        case .red: return Color(hex: "#DC2626")
+        case .teal: return Color(hex: "#0D9488")
+        case .indigo: return Color(hex: "#4F46E5")
         }
     }
 
@@ -154,7 +171,109 @@ final class ThemeService {
         accentColorOption.darkVariant
     }
 
-    // MARK: - Color Helpers
+    // MARK: - Liquid Glass Background Colors
+
+    /// Main background color - #050505 for dark, #FAF9F6 for light
+    func backgroundColor(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color(hex: "#050505") : Color(hex: "#FAF9F6")
+    }
+
+    /// Secondary background color
+    func secondaryBackgroundColor(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color(hex: "#0a0a0a") : Color(hex: "#F5F4F0")
+    }
+
+    // MARK: - Liquid Glass Effect Colors
+
+    /// Glass background - white at 3% for dark, 60% for light
+    func glassBackground(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color.white.opacity(0.03) : Color.white.opacity(0.6)
+    }
+
+    /// Glass border - white at 8% for dark, 40% for light
+    func glassBorder(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.4)
+    }
+
+    /// Glass card background with tint
+    func glassCardBackground(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color(hex: "#182634").opacity(0.4) : Color.white.opacity(0.6)
+    }
+
+    // MARK: - Text Colors (Liquid Glass)
+
+    func textPrimary(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? .white : Color(hex: "#333333")
+    }
+
+    func textSecondary(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color(hex: "#a1a1aa") : Color(hex: "#7D7A74")
+    }
+
+    func textMuted(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color(hex: "#71717a") : Color(hex: "#7D7A74")
+    }
+
+    // MARK: - Accent Derived Colors
+
+    /// Glow color - accent at 40% for dark, 25% for light
+    func glowColor(for colorScheme: ColorScheme) -> Color {
+        accentColor.opacity(colorScheme == .dark ? 0.4 : 0.25)
+    }
+
+    /// Glow intensity based on theme
+    func glowIntensity(for colorScheme: ColorScheme) -> CGFloat {
+        colorScheme == .dark ? 0.4 : 0.25
+    }
+
+    /// Accent background at 10% opacity
+    var accentBackground: Color {
+        accentColor.opacity(0.1)
+    }
+
+    /// Accent background at 20% opacity
+    var accentBackgroundStrong: Color {
+        accentColor.opacity(0.2)
+    }
+
+    /// Accent border at 20% opacity
+    var accentBorder: Color {
+        accentColor.opacity(0.2)
+    }
+
+    /// Subtle accent tint at 5% opacity
+    var subtleAccentTint: Color {
+        accentColor.opacity(0.05)
+    }
+
+    /// Glass accent background at 8% opacity
+    var glassAccentBackground: Color {
+        accentColor.opacity(0.08)
+    }
+
+    // MARK: - Component-Specific Colors
+
+    func progressBarBackground(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color(hex: "#27272a").opacity(0.5) : Color(hex: "#e7e5e4").opacity(0.6)
+    }
+
+    func blockedAppBackground(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color(hex: "#27272a").opacity(0.8) : Color.white.opacity(0.5)
+    }
+
+    func cardShadowColor(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark ? Color.black.opacity(0.37) : Color.black.opacity(0.04)
+    }
+
+    // MARK: - Legacy Card Background (kept for compatibility)
+
+    func cardBackground(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark
+            ? Color(white: 0.1)
+            : Color(white: 0.97)
+    }
+
+    // MARK: - Gradients
 
     var primaryGradient: LinearGradient {
         LinearGradient(
@@ -164,27 +283,68 @@ final class ThemeService {
         )
     }
 
-    // Dynamic colors based on color scheme
-    func cardBackground(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark
-            ? Color(white: 0.1)
-            : Color(white: 0.97)
+    /// Navigation bar gradient for dark mode
+    var navBarGradient: LinearGradient {
+        LinearGradient(
+            colors: [
+                accentColor.opacity(0.25),
+                accentColor.opacity(0.15)
+            ],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
     }
 
-    func textPrimary(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark
-            ? .white
-            : Color(red: 17/255, green: 24/255, blue: 39/255)
-    }
-
-    func textSecondary(for colorScheme: ColorScheme) -> Color {
-        colorScheme == .dark
-            ? Color(white: 0.6)
-            : Color(white: 0.4)
+    /// Radial glow gradient
+    var glowGradient: RadialGradient {
+        RadialGradient(
+            colors: [accentColor.opacity(0.3), accentColor.opacity(0)],
+            center: .center,
+            startRadius: 0,
+            endRadius: 100
+        )
     }
 }
 
-// MARK: - Color Extensions
+// MARK: - Color Extensions for Hex Support
+
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (255, 0, 0, 0)
+        }
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue: Double(b) / 255,
+            opacity: Double(a) / 255
+        )
+    }
+
+    func toHex() -> String {
+        guard let components = UIColor(self).cgColor.components, components.count >= 3 else {
+            return "#000000"
+        }
+        let r = Int(components[0] * 255)
+        let g = Int(components[1] * 255)
+        let b = Int(components[2] * 255)
+        return String(format: "#%02X%02X%02X", r, g, b)
+    }
+}
+
+// MARK: - Legacy Color Extensions (kept for backward compatibility)
 
 extension Color {
     static let appBackground = Color(UIColor.systemBackground)
@@ -192,11 +352,11 @@ extension Color {
     static let appTertiaryBackground = Color(UIColor.tertiarySystemBackground)
 
     // Health score colors
-    static let healthExcellent = Color(red: 16/255, green: 185/255, blue: 129/255)
-    static let healthGood = Color(red: 34/255, green: 197/255, blue: 94/255)
-    static let healthAverage = Color(red: 234/255, green: 179/255, blue: 8/255)
-    static let healthPoor = Color(red: 249/255, green: 115/255, blue: 22/255)
-    static let healthCritical = Color(red: 239/255, green: 68/255, blue: 68/255)
+    static let healthExcellent = Color(hex: "#10B981")
+    static let healthGood = Color(hex: "#22C55E")
+    static let healthAverage = Color(hex: "#EAB308")
+    static let healthPoor = Color(hex: "#F97316")
+    static let healthCritical = Color(hex: "#EF4444")
 
     static func healthColor(for score: Int) -> Color {
         switch score {
@@ -207,4 +367,41 @@ extension Color {
         default: return .healthCritical
         }
     }
+}
+
+// MARK: - Design Tokens
+
+struct DesignTokens {
+    // Spacing
+    static let paddingPage: CGFloat = 24
+    static let paddingCard: CGFloat = 20
+    static let paddingSmall: CGFloat = 8
+    static let paddingMedium: CGFloat = 16
+
+    // Corner Radius
+    static let cornerRadiusSmall: CGFloat = 8
+    static let cornerRadiusMedium: CGFloat = 12
+    static let cornerRadiusCard: CGFloat = 16
+    static let cornerRadiusLarge: CGFloat = 20
+    static let cornerRadiusPill: CGFloat = 9999
+
+    // Typography Sizes
+    static let fontSizeXs: CGFloat = 10
+    static let fontSizeSm: CGFloat = 12
+    static let fontSizeBase: CGFloat = 14
+    static let fontSizeLg: CGFloat = 18
+    static let fontSizeXl: CGFloat = 20
+    static let fontSize2xl: CGFloat = 24
+    static let fontSize3xl: CGFloat = 30
+    static let fontSize4xl: CGFloat = 36
+
+    // Shadows
+    static let shadowRadiusSmall: CGFloat = 8
+    static let shadowRadiusMedium: CGFloat = 15
+    static let shadowRadiusLarge: CGFloat = 24
+
+    // Animation
+    static let animationDuration: Double = 0.3
+    static let springResponse: Double = 0.3
+    static let springDamping: Double = 0.7
 }

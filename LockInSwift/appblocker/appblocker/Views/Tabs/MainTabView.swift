@@ -114,32 +114,44 @@ struct MainTabView: View {
         .padding(.bottom, 16)
         .background(
             ZStack {
-                // Solid base matching app background
+                // Solid base matching app background with Liquid Glass effect
                 RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .fill(isDark ? Color.black : Color.white)
+                    .fill(isDark ? themeService.backgroundColor(for: colorScheme) : Color.white)
 
-                // Subtle inner gradient for depth
-                RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .fill(
-                        LinearGradient(
-                            colors: isDark
-                                ? [Color.white.opacity(0.06), Color.white.opacity(0.02)]
-                                : [Color.black.opacity(0.02), Color.black.opacity(0.04)],
-                            startPoint: .top,
-                            endPoint: .bottom
+                // Grassy glass gradient for dark mode
+                if isDark {
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    themeService.accentColor.opacity(0.15),
+                                    themeService.accentColor.opacity(0.08)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
                         )
-                    )
+                        .background(.ultraThinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                } else {
+                    // Light mode: clean glass effect
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(Color.white.opacity(0.7))
+                        .background(.regularMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                }
 
                 // Border
                 RoundedRectangle(cornerRadius: 24, style: .continuous)
                     .stroke(
                         isDark
-                            ? Color.white.opacity(0.1)
-                            : Color.black.opacity(0.08),
-                        lineWidth: 0.5
+                            ? themeService.accentColor.opacity(0.2)
+                            : Color.white.opacity(0.4),
+                        lineWidth: 1
                     )
             }
-            .shadow(color: .black.opacity(isDark ? 0.3 : 0.08), radius: 12, y: -2)
+            .shadow(color: .black.opacity(isDark ? 0.37 : 0.04), radius: isDark ? 16 : 24, y: isDark ? 8 : 4)
+            .shadow(color: isDark ? themeService.accentColor.opacity(0.15) : .clear, radius: 20, y: 0)
         )
         .padding(.horizontal, 12)
     }
