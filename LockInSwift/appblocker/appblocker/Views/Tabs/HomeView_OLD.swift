@@ -1,7 +1,7 @@
 import SwiftUI
 import DeviceActivity
 
-struct HomeView: View {
+struct HomeView_OLD: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(ThemeService.self) private var themeService
     @Environment(TimeBankService.self) private var timeBank
@@ -2405,7 +2405,7 @@ struct WeeklyDualBarChart: View {
 }
 
 #Preview {
-    HomeView(selectedTab: .constant(0))
+    HomeView_OLD(selectedTab: .constant(0))
         .environment(ThemeService())
         .environment(TimeBankService())
         .environment(StatsService())

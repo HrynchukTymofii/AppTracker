@@ -1,7 +1,7 @@
 import SwiftUI
 import DeviceActivity
 
-struct StatsView: View {
+struct StatsView_OLD: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(ThemeService.self) private var themeService
 
@@ -667,6 +667,6 @@ struct StatsPageSkeletonLoader: View {
 }
 
 #Preview {
-    StatsView()
+    StatsView_OLD()
         .environment(ThemeService())
 }

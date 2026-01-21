@@ -753,12 +753,6 @@ struct StatsView: View {
     }
 }
 
-// MARK: - DeviceActivityReport Context Extension
-
-extension DeviceActivityReport.Context {
-    static let totalActivity = Self("TotalActivity")
-}
-
 #Preview {
     StatsView()
         .environment(ThemeService())
