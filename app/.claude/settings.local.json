@@ -33,7 +33,10 @@
       "Bash(node -c:*)",
       "Bash(/usr/bin/env node:*)",
       "Bash(./android/gradlew.bat:*)",
-      "Bash(./gradlew.bat:*)"
+      "Bash(./gradlew.bat:*)",
+      "WebFetch(domain:forums.developer.apple.com)",
+      "WebFetch(domain:letvar.medium.com)",
+      "WebFetch(domain:crunchybagel.com)"
     ]
   }
 }

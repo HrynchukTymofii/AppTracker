@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Clock, Dumbbell, ChevronRight, Target, TrendingUp, Wallet } from 'lucide-react-native';
-import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from 'react-native-svg';
-import { LinearGradient } from 'expo-linear-gradient';
-import { BlurView } from 'expo-blur';
-import { useTranslation } from 'react-i18next';
 import { useEarnedTime } from '@/context/EarnedTimeContext';
 import { useTheme } from '@/context/ThemeContext';
-import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { Clock, Dumbbell, Target, TrendingUp, Wallet } from 'lucide-react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Text, TouchableOpacity, View } from 'react-native';
+import Svg, { Circle, Defs, Stop, LinearGradient as SvgLinearGradient } from 'react-native-svg';
 
 interface TodaysProgressProps {
   isDark: boolean;

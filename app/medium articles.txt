@@ -1,0 +1,825 @@
+📌 What is Device Activity Monitoring?
+The **Device Activity Monitoring** feature enables developers to monitor and analyze device usage patterns. With this tool, you can collect data on which apps are being used, how long they’re being used, and set up triggers for enforcing restrictions.
+
+Common Use Cases:
+- Tracking daily and weekly app usage.
+- Setting daily limits for specific apps.
+- Monitoring activity patterns for productivity or parental control purposes.
+
+🔐 Setting Up Device Activity Monitor as a Separate Target
+To properly implement `DeviceActivityMonitor`, you need to add a new target to your Xcode project. Follow these steps:
+
+✅ Adding Device Activity Monitor Extension
+1. Create a New Target:
+— In Xcode, select your project from the Project Navigator.
+— Click the “+” button under the **Targets** section.
+— Choose `Device Activity Monitor Extension` and click **Next**.
+— Give your extension a unique name (e.g., `ActivityMonitorExtension`) and click **Finish**.
+
+2. Enable Family Controls Capability:
+— Go to your extension’s target settings.
+— Navigate to **Signing & Capabilities**.
+— Click the “+ Capability” button and add **Family Controls**.
+
+📲 Implementing the Monitoring Code in the Extension
+
+📌 Understanding Threshold
+The `threshold` defines the maximum allowed usage time before the `eventDidReachThreshold()` method is triggered. It is specified in seconds as a `TimeInterval`.
+
+For example, to set a daily usage limit of **1 hour**, the threshold would be:
+
+let threshold: TimeInterval = 3600 // 1 hour in seconds
+You can adjust this value as needed to implement different time limits.
+
+Get Manish Yadav’s stories in your inbox
+Join Medium for free to get updates from this writer.
+
+Enter your email
+Subscribe
+📌 Where to Use `FamilyActivityPicker`
+The `FamilyActivityPicker` should be used in your **main app**, not the extension. This is because the picker UI is meant for user interaction, which isn’t possible within an extension. Once the user selects the apps to monitor, their tokens can be stored and passed to your extension for monitoring purposes.
+
+To start monitoring, we need to pass the apps selected by the user. Here’s how to obtain the selected apps:
+
+import FamilyControls
+
+ @State private var selectedApps = FamilyActivitySelection()
+
+.familyActivityPicker(isPresented: $isPresented, selection: $selectedApps)
+The `selectedApps()` function uses the **FamilyActivityPicker** to allow the user to choose which apps they want to monitor.
+
+In your main app (not the extension), add the following code to start monitoring:
+
+import DeviceActivity
+import FamilyControls
+
+let activityMonitor = DeviceActivityMonitor()
+
+func startMonitoring(selectedApps: FamilyActivitySelection, threshold: TimeInterval) {
+    let event = DeviceActivityEvent(
+        applications: selectedApps.applicationTokens,
+        threshold: threshold
+    )
+
+    let events: [DeviceActivityEvent.Name: DeviceActivityEvent] = [
+        .init("daily_limit"): event
+    ]
+
+    let allDaySchedule = DeviceActivitySchedule(
+        intervalStart: DateComponents(hour: 0, minute: 0),
+        intervalEnd: DateComponents(hour: 23, minute: 59),
+        repeats: true
+    )
+
+    do {
+        try activityMonitor.startMonitoring(
+            .init(rawValue: "com.yourapp.activity"),
+            during: allDaySchedule,
+            events: events
+        )
+        print("Device activity monitoring started successfully.")
+    } catch {
+        print("Error starting monitoring: \(error)")
+    }
+}
+📌 Explanation of Code
+- DeviceActivityEvent: Defines the applications to monitor with a specified time threshold.
+- DeviceActivityEvent.Name: A unique name to identify the event. (Avoid using `time_limit` as per your request.)
+- DeviceActivitySchedule: Defines the monitoring interval and whether it repeats daily.
+- activityMonitor.startMonitoring(): Starts the monitoring process.
+
+📌 Handling Monitoring Events
+You need to implement methods to respond when intervals start, end, or when activities are detected. Here are the main methods:
+
+func intervalDidStart(for activity: DeviceActivityName) {
+ print("Monitoring interval started for: \(activity.rawValue)")
+}
+func intervalDidEnd(for activity: DeviceActivityName) {
+ print("Monitoring interval ended for: \(activity.rawValue)")
+}
+func eventDidReachThreshold(_ event: DeviceActivityEvent.Name, for activity: DeviceActivityName) {
+ print("Threshold reached for event: \(event.rawValue)")
+}
+📌 Explanation of Methods
+- `intervalDidStart()`: Called when the monitoring interval begins.
+- `intervalDidEnd()`: Called when the monitoring interval ends.
+- `eventDidReachThreshold()`: Called when the event threshold is reached (e.g., daily limit exceeded).
+
+📌 Stopping Monitoring
+To stop monitoring from your extension:
+
+func stopMonitoring() {
+ activityMonitor.stopMonitoring()
+ print("Device activity monitoring stopped.")
+}
+📖 Summary
+In this part, we’ve covered how to set up a **Device Activity Monitor Extension** as a separate target and start monitoring device activity with detailed code explanations. In the next part, we’ll explore how to visualize this data with **Device Activity Graphs**.
+
+If you found this guide helpful, make sure to check out the next part! Also, feel free to leave a comment if you have any questions or suggestions. 😊
+
+In the previous parts, we discussed setting up the Screen Time API, requesting authorization, and implementing Device Activity Monitoring. Now, let’s move forward to implementing **Shields** and customizing their behavior.
+
+Press enter or click to view image in full size
+
+🔐 What are Shields?
+
+Shields are an essential feature of Apple’s Screen Time API that allows developers to **restrict access to specific apps or categories** by displaying a blocking interface. This is highly useful for parental control apps and productivity tools where limiting access is necessary.
+
+Common Use Cases:
+- Blocking social media apps during focus hours.
+- Creating time-limited app usage sessions.
+- Restricting access to specific apps for child accounts.
+
+— -
+
+📲 Setting Up Shields
+
+The code to update app restrictions using Shields is straightforward. You can **activate and deactivate shields** using the `ManagedSettingsStore` API.
+
+✅ Applying Shields
+
+Here’s how to apply shields to selected apps:
+
+
+import ManagedSettings
+func updateRestrictions(for selectedApps: FamilyActivitySelection) {
+ let store = ManagedSettingsStore()
+ 
+ // Apply shields to selected applications
+ if store.shield.applications == nil {
+ store.shield.applications = selectedApps.applicationTokens
+ }
+}
+In the above code:
+- `ManagedSettingsStore`: Provides access to the current shield settings.
+- `store.shield.applications`: Specifies the list of apps to be restricted by their tokens.
+
+✅ Removing Shields (Unblocking Apps)
+
+Get Manish Yadav’s stories in your inbox
+Join Medium for free to get updates from this writer.
+
+Enter your email
+Subscribe
+If you want to remove shields and restore access to the previously blocked apps, use the following code:
+
+
+func unblockApps() {
+ let store = ManagedSettingsStore()
+ 
+ // Clear all app restrictions
+ store.shield.applications = nil
+ print(“All restrictions have been cleared.”)
+}
+This code effectively clears all restrictions applied through `store.shield`.
+
+📲 Creating Custom Shield UI
+
+To customize the shield UI, you need to create a **Shield Extension**. This allows you to provide a tailored interface when a user attempts to open a blocked app.
+
+✅ Adding a Shield Extension
+1. In Xcode, select your project from the Project Navigator.
+2. Click the “+” button under the **Targets** section.
+3. Choose `Shield Extension` and click **Next**.
+4. Give your extension a unique name (e.g., `CustomShieldExtension`) and click **Finish**.
+5. Enable **Family Controls Capability** under **Signing & Capabilities**.
+
+🔨 Implementing `ShieldConfigurationExtension`
+
+When you create a Shield Extension, a default file called `ShieldConfigurationExtension.swift` is generated. This file allows you to customize how the shield behaves.
+
+Example:
+
+import ManagedSettings
+
+class ShieldConfigurationExtension: ShieldConfigurationDataSource {
+    override func configuration(shielding application: Application) -> ShieldConfiguration {
+        let appName = application.localizedDisplayName ?? "" // Fetching the blocked app name
+        
+        return ShieldConfiguration(
+            backgroundBlurStyle: .dark,
+            backgroundColor: .black,
+            icon: UIImage(named: "applogo.png"),
+            title: ShieldConfiguration.Label(
+                text: "\(appName) is Restricted",
+                color: .white
+            ),
+            subtitle: ShieldConfiguration.Label(
+                text: "You have reached your time limit for this app.",
+                color: .white
+            ),
+            primaryButtonLabel: ShieldConfiguration.Label(
+                text: "Close",
+                color: .black
+            ),
+            primaryButtonBackgroundColor: .white,
+            secondaryButtonLabel: nil
+        )
+    }
+}
+📌 Where to Customize Shield UI
+- The above code is part of your **Shield Extension**, specifically in the `ShieldConfigurationExtension.swift` file.
+- This customization happens in your **extension target** and not the main app target.
+- You can modify the UI by adjusting parameters such as `backgroundBlurStyle`, `backgroundColor`, `icon`, `title`, and `subtitle`.
+
+📖 Summary
+
+In this part, we’ve covered how to implement and customize Shields using the `ManagedSettingsStore` API. Additionally, we’ve shown how to create a **Custom Shield Extension** to personalize the blocking interface.
+
+In the next part, we’ll focus on how to visualize and manage activity data effectively. Stay tuned!
+
+If you found this guide helpful, make sure to check out the next part! Also, feel free to leave a comment if you have any questions or suggestions. 😊
+
+
+Welcome back to our in-depth exploration of Apple’s Screen Time API! So far, we’ve covered the fundamentals — setting up time limits and monitoring app usage. Now, in Part 4, we’ll tackle one of the most exciting and valuable aspects: **visualizing and managing activity data** through Apple’s powerful **Device Activity Report extension**.
+
+Why is this important? Because presenting usage data in a clear, interactive format transforms raw information into something meaningful. Whether you’re a parent monitoring your child’s digital habits or an individual aiming to better understand your screen time patterns, this feature is your key to turning data into insights.
+
+— -
+
+## 📌 What is the Device Activity Report Extension?
+
+Apple’s **Device Activity framework** offers a specialized extension point known as `DeviceActivityReportExtension`. This tool allows developers to generate custom reports based on collected screen time data. With it, you can:
+
+✅ Data Retrieval: Access detailed usage stats for apps and categories.
+✅ Custom Visuals: Build tailored UIs to display trends and patterns.
+✅ Privacy Focus: Process everything on-device, respecting user control.
+✅ Insight Generation: Analyze historical data for meaningful takeaways
+
+Now, let’s dive into implementing this powerful feature in your SwiftUI app!
+
+— -
+
+## 🔨 Setting Up the Device Activity Report Extension
+
+The first step is to add a new target to your Xcode project for the report extension. Follow these steps:
+
+Go to File > New > Target in Xcode.
+Choose Device Activity Report Extension under the iOS tab.
+Name it (e.g., “ScreenTimeReportExtension”) and embed it in your main app.
+4. Ensure it’s embedded in your main application.
+
+Now, configure your `Info.plist` file by adding the following keys:
+
+<key>DeviceActivityReportExtensionCategories</key>
+<array>
+ <string>daily</string>
+ <string>weekly</string>
+</array>
+This setup specifies the reporting periods your extension will support.
+
+— -
+
+## 💡 Implementing the Device Activity Report Extension
+
+At the core of your extension is a class conforming to the `DeviceActivityReportExtension` protocol. Here’s a basic implementation:
+
+import DeviceActivity
+import SwiftUI
+
+class ScreenTimeReportExtension: NSObject, DeviceActivityReportExtension {
+    func report(for context: DeviceActivityReport.Context) -> some DeviceActivityReportScene {
+        switch context.categoryToken {
+        case "daily":
+            return DailyReportView(context: context)
+        case "weekly":
+            return WeeklyReportView(context: context)
+        default:
+            return EmptyReportView()
+        }
+    }
+}
+
+struct EmptyReportView: DeviceActivityReportScene {
+    let context: DeviceActivityReport.Context
+    
+    var body: some View {
+        Text("No report available")
+    }
+}
+The report(for:) method returns a SwiftUI view based on the report type (daily or weekly).
+We’ve added a fallback EmptyReportView for unsupported contexts.
+This is the backbone — next, we’ll flesh it out with custom report views.
+
+— -
+
+## Building the Daily Report View
+
+Get Manish Yadav’s stories in your inbox
+Join Medium for free to get updates from this writer.
+
+Enter your email
+Subscribe
+To make our data visually appealing, let’s build a simple SwiftUI view to display daily usage:
+
+import DeviceActivity
+import SwiftUI
+
+struct DailyReportView: DeviceActivityReportScene {
+    let context: DeviceActivityReport.Context
+    
+    @State private var appUsageData: [AppUsageData] = []
+    @State private var selectedApp: String?
+    
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 20) {
+                Text("Today’s App Usage")
+                    .font(.title2.bold())
+                
+                if appUsageData.isEmpty {
+                    ProgressView("Loading...")
+                } else {
+                    UsagePieChartView(data: appUsageData, selectedApp: $selectedApp)
+                        .frame(height: 250)
+                    
+                    List(appUsageData, id: \.appName) { app in
+                        AppUsageRow(app: app, isSelected: app.appName == selectedApp)
+                            .onTapGesture {
+                                selectedApp = app.appName
+                            }
+                    }
+                    .listStyle(.plain)
+                }
+            }
+            .padding()
+            .task {
+                await loadActivityData()
+            }
+        }
+    }
+    
+    private func loadActivityData() async {
+        do {
+            let center = DeviceActivityCenter()
+            let data = try await center.activityReport(for: context)
+            appUsageData = processActivityData(data)
+        } catch {
+            print("Failed to load activity data: \(error)")
+        }
+    }
+    
+    private func processActivityData(_ data: DeviceActivityReport) -> [AppUsageData] {
+        var result: [AppUsageData] = []
+        for activity in data.activitySegments {
+            for app in activity.applicationActivity {
+                let minutes = app.totalActivityDuration / 60
+                result.append(AppUsageData(
+                    appName: app.applicationName ?? app.bundleIdentifier,
+                    usageTime: minutes,
+                    category: activity.category ?? "Other"
+                ))
+            }
+        }
+        return result.sorted { $0.usageTime > $1.usageTime }
+    }
+}
+
+struct AppUsageData {
+    let appName: String
+    let usageTime: Double
+    let category: String
+    
+    var formattedTime: String {
+        let hours = Int(usageTime) / 60
+        let minutes = Int(usageTime) % 60
+        return hours > 0 ? "\(hours)h \(minutes)m" : "\(minutes)m"
+    }
+}
+Let’s take it a step further to visualize app usage data .
+
+— -
+
+## 📈 Building the Usage Pie Chart
+
+Here’s the UsagePieChartView to display app usage distribution:
+
+struct UsagePieChartView: View {
+    let data: [AppUsageData]
+    @Binding var selectedApp: String?
+    
+    private var totalUsage: Double {
+        data.reduce(0) { $0 + $1.usageTime }
+    }
+    
+    var body: some View {
+        ZStack {
+            ForEach(data.indices, id: \.self) { index in
+                PieSliceView(
+                    startAngle: startAngle(for: index),
+                    endAngle: endAngle(for: index),
+                    color: sliceColor(for: index),
+                    isSelected: data[index].appName == selectedApp
+                )
+                .onTapGesture {
+                    withAnimation(.easeInOut) {
+                        selectedApp = selectedApp == data[index].appName ? nil : data[index].appName
+                    }
+                }
+            }
+            
+            if let selected = selectedApp, let app = data.first(where: { $0.appName == selected }) {
+                VStack {
+                    Text(app.appName)
+                        .font(.headline)
+                    Text(app.formattedTime)
+                        .font(.subheadline)
+                    Text("\(Int((app.usageTime / totalUsage) * 100))%")
+                        .font(.caption)
+                }
+            } else {
+                let hours = Int(totalUsage) / 60
+                let minutes = Int(totalUsage) % 60
+                Text("Total: \(hours)h \(minutes)m")
+                    .font(.headline)
+            }
+        }
+    }
+    
+    private func startAngle(for index: Int) -> Angle {
+        let precedingTotal = data.prefix(index).reduce(0) { $0 + $1.usageTime }
+        return .degrees((precedingTotal / totalUsage) * 360)
+    }
+    
+    private func endAngle(for index: Int) -> Angle {
+        let precedingTotal = data.prefix(index + 1).reduce(0) { $0 + $1.usageTime }
+        return .degrees((precedingTotal / totalUsage) * 360)
+    }
+    
+    private func sliceColor(for index: Int) -> Color {
+        [.blue, .green, .orange, .red, .purple, .pink][index % 6]
+    }
+}
+
+struct PieSliceView: View {
+    let startAngle: Angle
+    let endAngle: Angle
+    let color: Color
+    let isSelected: Bool
+    
+    var body: some View {
+        GeometryReader { geometry in
+            Path { path in
+                let center = CGPoint(x: geometry.size.width / 2, y: geometry.size.height / 2)
+                let radius = min(geometry.size.width, geometry.size.height) / 2
+                path.move(to: center)
+                path.addArc(center: center, radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: false)
+                path.closeSubpath()
+            }
+            .fill(color)
+            .scaleEffect(isSelected ? 1.05 : 1.0)
+            .shadow(radius: isSelected ? 5 : 0)
+        }
+    }
+}
+## Detailing App Usage with Rows
+
+The AppUsageRow provides a clean list entry:
+
+struct AppUsageRow: View {
+    let app: AppUsageData
+    let isSelected: Bool
+    
+    var body: some View {
+        HStack {
+            Circle()
+                .fill(categoryColor(for: app.category))
+                .frame(width: 12, height: 12)
+            Text(app.appName)
+                .font(.headline)
+            Spacer()
+            Text(app.formattedTime)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+        }
+        .padding(.vertical, 8)
+        .background(isSelected ? Color.gray.opacity(0.2) : .clear)
+        .cornerRadius(8)
+    }
+    
+    private func categoryColor(for category: String) -> Color {
+        switch category.lowercased() {
+        case "social": return .blue
+        case "entertainment": return .red
+        case "productivity": return .green
+        case "games": return .orange
+        default: return .gray
+        }
+    }
+}
+— -
+
+### Building the Weekly Report View
+
+For a broader view, here’s the WeeklyReportView with a bar chart:
+
+struct WeeklyReportView: DeviceActivityReportScene {
+    let context: DeviceActivityReport.Context
+    
+    @State private var weeklyData: [Date: [AppUsageData]] = [:]
+    @State private var selectedDay: Date?
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Weekly Activity Report")
+                .font(.title2.bold())
+            
+            if weeklyData.isEmpty {
+                ProgressView("Loading...")
+            } else {
+                WeeklyBarChartView(data: weeklyData, selectedDay: $selectedDay)
+                    .frame(height: 200)
+                
+                if let day = selectedDay, let dayData = weeklyData[day] {
+                    VStack(alignment: .leading) {
+                        Text(day, style: .date)
+                            .font(.headline)
+                        List(dayData, id: \.appName) { app in
+                            AppUsageRow(app: app, isSelected: false)
+                        }
+                        .listStyle(.plain)
+                    }
+                } else {
+                    Text("Tap a day to see details")
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+        .padding()
+        .task { await loadWeeklyData() }
+    }
+    
+    private func loadWeeklyData() async {
+        let calendar = Calendar.current
+        let endDate = context.intervalOfInterest.end
+        
+        do {
+            let center = DeviceActivityCenter()
+            for day in 0..<7 {
+                guard let start = calendar.date(byAdding: .day, value: -day, to: endDate),
+                      let end = calendar.date(byAdding: .day, value: 1, to: start) else { continue }
+                let interval = DateInterval(start: start, end: end)
+                let data = try await center.activityReport(for: .init(intervalOfInterest: interval, categoryToken: "daily"))
+                weeklyData[start] = processActivityData(data)
+            }
+            selectedDay = weeklyData.keys.max()
+        } catch {
+            print("Error loading weekly data: \(error)")
+        }
+    }
+    
+    private func processActivityData(_ data: DeviceActivityReport) -> [AppUsageData] {
+        // Same as DailyReportView
+        var result: [AppUsageData] = []
+        for activity in data.activitySegments {
+            for app in activity.applicationActivity {
+                let minutes = app.totalActivityDuration / 60
+                result.append(AppUsageData(
+                    appName: app.applicationName ?? app.bundleIdentifier,
+                    usageTime: minutes,
+                    category: activity.category ?? "Other"
+                ))
+            }
+        }
+        return result.sorted { $0.usageTime > $1.usageTime }
+    }
+}
+
+struct WeeklyBarChartView: View {
+    let data: [Date: [AppUsageData]]
+    @Binding var selectedDay: Date?
+    
+    private var sortedDays: [Date] { data.keys.sorted() }
+    private func totalUsage(for day: Date) -> Double { data[day]?.reduce(0) { $0 + $1.usageTime } ?? 0 }
+    private var maxUsage: Double { sortedDays.map { totalUsage(for: $0) }.max() ?? 1 }
+    
+    var body: some View {
+        HStack(alignment: .bottom, spacing: 10) {
+            ForEach(sortedDays, id: \.self) { day in
+                let usage = totalUsage(for: day)
+                let height = (usage / maxUsage) * 150
+                VStack {
+                    Text("\(Int(usage / 60))h")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                    Rectangle()
+                        .fill(day == selectedDay ? .blue : .blue.opacity(0.6))
+                        .frame(width: 30, height: max(CGFloat(height), 10))
+                        .cornerRadius(4)
+                    Text(day, format: .dateTime.weekday(.abbreviated))
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+                .onTapGesture {
+                    withAnimation { selectedDay = day }
+                }
+            }
+        }
+    }
+}
+Storing Data Efficiently
+Here’s an improved ActivityDataManager using UserDefaults with an app group for sharing:
+
+class ActivityDataManager {
+    static let shared = ActivityDataManager()
+    private let userDefaults: UserDefaults?
+    private let dataKey = "StoredActivityData"
+    
+    init() {
+        userDefaults = UserDefaults(suiteName: "group.com.yourapp.screentime")
+    }
+    
+    func saveActivityData(_ data: [Date: [AppUsageData]], for date: Date) {
+        guard let userDefaults else { return }
+        var allData = userDefaults.dictionary(forKey: dataKey) as? [String: Any] ?? [:]
+        let dateKey = ISO8601DateFormatter().string(from: date)
+        allData[dateKey] = data.mapValues { $0.map { ["name": $0.appName, "time": $0.usageTime, "category": $0.category] } }
+        userDefaults.set(allData, forKey: dataKey)
+    }
+    
+    func loadActivityData(for date: Date) -> [Date: [AppUsageData]]? {
+        guard let userDefaults,
+              let allData = userDefaults.dictionary(forKey: dataKey) as? [String: Any],
+              let dateData = allData[ISO8601DateFormatter().string(from: date)] as? [String: [[String: Any]]] else { return nil }
+        
+        return Dictionary(uniqueKeysWithValues: dateData.map { key, value in
+            (ISO8601DateFormatter().date(from: key)!, value.compactMap {
+                guard let name = $0["name"] as? String, let time = $0["time"] as? Double, let category = $0["category"] as? String else { return nil }
+                return AppUsageData(appName: name, usageTime: time, category: category)
+            })
+        })
+    }
+    
+    func clearOldData(olderThan days: Int) {
+        guard let userDefaults,
+              var allData = userDefaults.dictionary(forKey: dataKey) as? [String: Any],
+              let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: Date()) else { return }
+        let cutoffKey = ISO8601DateFormatter().string(from: cutoff)
+        allData = allData.filter { $0.key >= cutoffKey }
+        userDefaults.set(allData, forKey: dataKey)
+    }
+}
+Adding Insights and Recommendations
+
+Here’s an enhanced InsightsView:
+
+struct InsightsView: View {
+    let weeklyData: [Date: [AppUsageData]]
+    
+    @State private var mostUsedApp = ""
+    @State private var avgDailyUsage: Double = 0
+    @State private var trend: Trend = .stable
+    
+    enum Trend { case increasing, decreasing, stable }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("Your Screen Time Insights")
+                .font(.title2.bold())
+            
+            InsightCard(title: "Most Used App", value: mostUsedApp, icon: "app.badge", color: .blue)
+            InsightCard(title: "Avg. Daily Usage", value: formatTime(avgDailyUsage), icon: "clock", color: .green)
+            InsightCard(title: "Weekly Trend", value: trend.rawValue.capitalized, icon: trendIcon, color: trendColor)
+            
+            recommendationView
+        }
+        .padding()
+        .task { calculateInsights() }
+    }
+    
+    private var trendIcon: String {
+        switch trend {
+        case .increasing: return "arrow.up.right"
+        case .decreasing: return "arrow.down.right"
+        case .stable: return "equal"
+        }
+    }
+    
+    private var trendColor: Color {
+        switch trend {
+        case .increasing: return .red
+        case .decreasing: return .green
+        case .stable: return .blue
+        }
+    }
+    
+    private var recommendationView: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Recommendations")
+                .font(.headline)
+            Text(recommendationText)
+                .font(.subheadline)
+        }
+        .padding()
+        .background(Color.gray.opacity(0.1))
+        .cornerRadius(12)
+    }
+    
+    private var recommendationText: String {
+        if trend == .increasing { return "Your screen time is rising. Try limiting \(mostUsedApp)." }
+        else if avgDailyUsage > 180 { return "Over 3h daily—schedule some breaks!" }
+        else { return "Great job maintaining healthy habits!" }
+    }
+    
+    private func calculateInsights() {
+        guard !weeklyData.isEmpty else { return }
+        
+        // Most used app
+        var appTotals: [String: Double] = [:]
+        weeklyData.values.forEach { $0.forEach { appTotals[$0.appName, default: 0] += $0.usageTime } }
+        mostUsedApp = appTotals.max(by: { $0.value < $1.value })?.key ?? "None"
+        
+        // Average daily usage
+        let totalUsage = weeklyData.values.reduce(0) { $0 + $1.reduce(0) { $0 + $1.usageTime } }
+        avgDailyUsage = totalUsage / Double(weeklyData.count)
+        
+        // Trend
+        let sortedDays = weeklyData.keys.sorted()
+        if sortedDays.count >= 3 {
+            let recent = sortedDays.suffix(3).map { weeklyData[$0]?.reduce(0) { $0 + $1.usageTime } ?? 0 }
+            if recent[2] > recent[0] * 1.2 { trend = .increasing }
+            else if recent[0] > recent[2] * 1.2 { trend = .decreasing }
+            else { trend = .stable }
+        }
+    }
+    
+    private func formatTime(_ minutes: Double) -> String {
+        let hours = Int(minutes) / 60
+        let mins = Int(minutes) % 60
+        return hours > 0 ? "\(hours)h \(mins)m" : "\(mins)m"
+    }
+}
+
+struct InsightCard: View {
+    let title: String
+    let value: String
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .foregroundColor(color)
+                .frame(width: 30)
+            VStack(alignment: .leading) {
+                Text(title)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                Text(value)
+                    .font(.headline)
+            }
+            Spacer()
+        }
+        .padding()
+        .background(Color.gray.opacity(0.1))
+        .cornerRadius(12)
+    }
+}
+Integrating into Your App
+Display the report in your main app:
+
+struct ScreenTimeReportView: View {
+    @State private var reportType = "daily"
+    
+    var body: some View {
+        VStack {
+            Picker("Report Type", selection: $reportType) {
+                Text("Daily").tag("daily")
+                Text("Weekly").tag("weekly")
+            }
+            .pickerStyle(.segmented)
+            .padding()
+            
+            if let start = intervalStart {
+                DeviceActivityReport(.init(
+                    intervalOfInterest: DateInterval(start: start, end: .now),
+                    categoryToken: reportType
+                ))
+                .frame(maxHeight: 400)
+            } else {
+                Text("Error calculating interval")
+                    .foregroundColor(.secondary)
+            }
+        }
+        .navigationTitle("Screen Time")
+    }
+    
+    private var intervalStart: Date? {
+        let calendar = Calendar.current
+        switch reportType {
+        case "daily": return calendar.startOfDay(for: .now)
+        case "weekly": return calendar.date(byAdding: .day, value: -6, to: calendar.startOfDay(for: .now))
+        default: return nil
+        }
+    }
+}
+Using the Device Activity Report extension, you’ve transformed raw Screen Time data into a meaningful narrative — from daily breakdowns with pie charts to weekly trends with bar charts, all paired with insights that promote healthier usage. Your app is now more than a tool; it’s a trusted guide for digital wellness.
+
+Resources
+
+Device Activity Report Extension Docs
+WWDC22: Screen Time API
+Human Interface Guidelines: Screen Time
+🚀 Wrapping Up
+
+Well done! You’ve successfully implemented a powerful approach to visualize screen time data with the Device Activity Report Extension. 📚
