@@ -5,37 +5,58 @@ struct StatsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(ThemeService.self) private var themeService
 
-    // @State private var showShareSheet = false  // Disabled for now
     @State private var isLoadingStats = true
     @State private var reportRefreshId = UUID()
     @State private var lastReportLoadTime: Date?
     @State private var hasLoadedReportOnce = false
+    @State private var selectedPeriod = "Week"
 
-    // Cache duration - only reload if 30+ minutes passed
     private let cacheMinutes: TimeInterval = 30 * 60
-
     private var isDark: Bool { colorScheme == .dark }
 
-    // Fetch stats from shared container for sharing (disabled for now)
-    /*
-    private var weekStats: WeekStatsData {
-        guard let defaults = UserDefaults(suiteName: "group.com.hrynchuk.appblocker") else {
-            return WeekStatsData()
-        }
+    // Sample data for demo
+    private let streakDays = 12
+    private let focusHours = 4.5
+    private let focusMinutes = 32
+    private let efficiencyPercent = 87
+    private let tasksCompleted = 24
+    private let totalTasks = 28
 
-        let thisWeekTotal = defaults.double(forKey: "stats.thisWeekTotal")
-        let lastWeekTotal = defaults.double(forKey: "stats.lastWeekTotal")
-        let todayDuration = defaults.double(forKey: "totalScreenTime")
+    // Weekly activity data (hours per day)
+    private let weeklyActivity: [(day: String, hours: Double)] = [
+        ("Mon", 3.2),
+        ("Tue", 4.5),
+        ("Wed", 2.8),
+        ("Thu", 5.1),
+        ("Fri", 4.2),
+        ("Sat", 1.5),
+        ("Sun", 2.0)
+    ]
 
-        return WeekStatsData(
-            thisWeekTotal: thisWeekTotal,
-            lastWeekTotal: lastWeekTotal,
-            todayDuration: todayDuration
-        )
-    }
-    */
+    // Heatmap data (4 weeks x 7 days)
+    private let heatmapData: [[Int]] = [
+        [2, 3, 1, 4, 2, 1, 0],
+        [3, 4, 2, 3, 4, 2, 1],
+        [1, 2, 3, 4, 3, 2, 1],
+        [4, 3, 2, 4, 5, 3, 2]
+    ]
 
-    // Request 30 days of data
+    // Milestones
+    private let milestones: [(icon: String, title: String, achieved: Bool)] = [
+        ("flame.fill", "7 Day Streak", true),
+        ("star.fill", "First Focus Session", true),
+        ("trophy.fill", "100 Tasks", false),
+        ("bolt.fill", "Power User", false)
+    ]
+
+    // Top apps (mock data)
+    private let topApps: [(name: String, icon: String, time: String, percent: Double)] = [
+        ("Instagram", "camera.fill", "2h 15m", 0.45),
+        ("TikTok", "play.fill", "1h 48m", 0.36),
+        ("YouTube", "play.rectangle.fill", "1h 12m", 0.24),
+        ("Twitter", "bird", "45m", 0.15)
+    ]
+
     private var deviceActivityFilter: DeviceActivityFilter {
         let calendar = Calendar.current
         let today = Date()
@@ -52,43 +73,46 @@ struct StatsView: View {
     }
 
     var body: some View {
-        ThemedBackground {
-            VStack(spacing: 0) {
-                // Header
-                headerSection
+        ZStack {
+            themeService.backgroundColor(for: colorScheme).ignoresSafeArea()
 
-                // ZStack with both report and skeleton
-                // Both are ALWAYS rendered, controlled by opacity
-                ZStack {
-                    // Skeleton - visible while loading
-                    StatsPageSkeletonLoader()
-                        .padding(.horizontal, 20)
-                        .padding(.top, 4)
-                        .opacity(isLoadingStats ? 1 : 0)
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 24) {
+                    // Header
+                    headerSection
 
-                    // Report - visible after loading
-                    DeviceActivityReport(
-                        DeviceActivityReport.Context.totalActivity,
-                        filter: deviceActivityFilter
-                    )
-                    .id(reportRefreshId)
-                    .opacity(isLoadingStats ? 0 : 1)
+                    // Hero Streak Card
+                    heroStreakCard
+
+                    // Stats Grid (Focus Time + Efficiency)
+                    statsGridSection
+
+                    // Activity Chart
+                    activityChartCard
+
+                    // Activity Heatmap
+                    heatmapCard
+
+                    // Milestones
+                    milestonesCard
+
+                    // App Usage (from DeviceActivity)
+                    appUsageCard
                 }
+                .padding(.horizontal, 20)
+                .padding(.top, 16)
+                .padding(.bottom, 120)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .animation(.easeInOut(duration: 0.3), value: isLoadingStats)
         }
         .onAppear {
-            // Check if we need to reload (first load OR 30+ minutes passed)
             let shouldReload: Bool
             if let lastLoad = lastReportLoadTime {
                 shouldReload = Date().timeIntervalSince(lastLoad) > cacheMinutes
             } else {
-                shouldReload = true  // First load
+                shouldReload = true
             }
 
             if shouldReload && !hasLoadedReportOnce {
-                // First load - show skeleton
                 isLoadingStats = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     withAnimation {
@@ -98,348 +122,634 @@ struct StatsView: View {
                     }
                 }
             } else if shouldReload && hasLoadedReportOnce {
-                // Subsequent reload after 30 min - just refresh in background
                 lastReportLoadTime = Date()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     reportRefreshId = UUID()
                 }
             }
-            // If cache is fresh, do nothing - keep showing existing data
         }
-        // Share sheet disabled for now
-        /*
-        .sheet(isPresented: $showShareSheet) {
-            StatsShareSheet(stats: weekStats)
-        }
-        */
     }
 
     // MARK: - Header Section
 
     private var headerSection: some View {
         HStack {
-            Text(L10n.Tab.stats)
+            Text("Stats")
                 .font(.system(size: 32, weight: .bold))
-                .foregroundStyle(isDark ? .white : Color(hex: "111827"))
+                .foregroundStyle(themeService.textPrimary(for: colorScheme))
 
             Spacer()
 
-            // Share button - glassy style (disabled for now)
-            // TODO: Fix share functionality
-            /*
-            Button {
-                showShareSheet = true
-            } label: {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(
-                            LinearGradient(
-                                colors: isDark
-                                    ? [Color.white.opacity(0.12), Color.white.opacity(0.06)]
-                                    : [Color.white.opacity(0.6), Color.white.opacity(0.4)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
+            // Period Selector
+            HStack(spacing: 4) {
+                ForEach(["Week", "Month"], id: \.self) { period in
+                    Button {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                            selectedPeriod = period
+                        }
+                    } label: {
+                        Text(period)
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(
+                                selectedPeriod == period
+                                    ? (isDark ? .white : themeService.accentColor)
+                                    : themeService.textSecondary(for: colorScheme)
                             )
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(
-                                    LinearGradient(
-                                        colors: [
-                                            Color(hex: "3b82f6").opacity(0.4),
-                                            Color(hex: "8b5cf6").opacity(0.2)
-                                        ],
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    ),
-                                    lineWidth: 1
-                                )
-                        )
-                        .shadow(color: Color(hex: "3b82f6").opacity(isDark ? 0.2 : 0.1), radius: 8, y: 2)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(
+                                Group {
+                                    if selectedPeriod == period {
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .fill(
+                                                isDark
+                                                    ? themeService.accentColor.opacity(0.3)
+                                                    : themeService.accentColor.opacity(0.15)
+                                            )
+                                    }
+                                }
+                            )
+                    }
+                }
+            }
+            .padding(4)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(themeService.glassBackground(for: colorScheme))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(themeService.glassBorder(for: colorScheme), lineWidth: 1)
+            )
+        }
+    }
 
-                    Image(systemName: "square.and.arrow.up")
-                        .font(.system(size: 16, weight: .semibold))
+    // MARK: - Hero Streak Card
+
+    private var heroStreakCard: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 8) {
+                    Image(systemName: "flame.fill")
+                        .font(.system(size: 24))
                         .foregroundStyle(
                             LinearGradient(
-                                colors: [Color(hex: "3b82f6"), Color(hex: "8b5cf6")],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
+                                colors: [Color.orange, Color.red],
+                                startPoint: .top,
+                                endPoint: .bottom
                             )
                         )
+
+                    Text("\(streakDays)")
+                        .font(.system(size: 48, weight: .bold))
+                        .foregroundStyle(themeService.textPrimary(for: colorScheme))
                 }
-                .frame(width: 40, height: 40)
+
+                Text("Day Streak")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundStyle(themeService.textSecondary(for: colorScheme))
+
+                Text("Keep going! You're on fire!")
+                    .font(.system(size: 13))
+                    .foregroundStyle(themeService.textMuted(for: colorScheme))
             }
-            */
 
-            // Period badge
-            Text(L10n.Stats.thisWeek)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(isDark ? Color.white.opacity(0.6) : Color(hex: "64748b"))
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(isDark ? Color.white.opacity(0.08) : Color.white.opacity(0.5))
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(isDark ? Color.white.opacity(0.1) : Color.black.opacity(0.04), lineWidth: 0.5)
-                )
-        }
-        .padding(.horizontal, 20)
-        .padding(.top, 16)
-        .padding(.bottom, 12)
-    }
-}
+            Spacer()
 
-// MARK: - Week Stats Data
-
-struct WeekStatsData {
-    var thisWeekTotal: TimeInterval = 0
-    var lastWeekTotal: TimeInterval = 0
-    var todayDuration: TimeInterval = 0
-
-    var weekChange: Double {
-        guard lastWeekTotal > 0 else { return 0 }
-        return ((thisWeekTotal - lastWeekTotal) / lastWeekTotal) * 100
-    }
-
-    var improved: Bool { weekChange < 0 }
-
-    var dailyAverage: TimeInterval {
-        thisWeekTotal / 7
-    }
-
-    func formatHours(_ duration: TimeInterval) -> String {
-        let hours = duration / 3600
-        if hours >= 1 {
-            return String(format: "%.1fh", hours)
-        }
-        let minutes = Int(duration / 60)
-        return "\(minutes)m"
-    }
-}
-
-// MARK: - Stats Share Sheet
-
-struct StatsShareSheet: View {
-    let stats: WeekStatsData
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.colorScheme) private var colorScheme
-
-    private var isDark: Bool { colorScheme == .dark }
-
-    var body: some View {
-        NavigationStack {
+            // Streak flame visualization
             ZStack {
-                Color.appBackground.ignoresSafeArea()
-
-                VStack(spacing: 24) {
-                    Text(L10n.Stats.shareProgress)
-                        .font(.system(size: 20, weight: .bold))
-                        .foregroundStyle(isDark ? .white : Color(hex: "111827"))
-                        .padding(.top, 8)
-
-                    // Preview card
-                    ShareableStatsCard(stats: stats, isDark: true)
-                        .frame(width: 320)
-                        .padding(20)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(isDark ? Color.white.opacity(0.05) : Color.white.opacity(0.5))
-                        )
-
-                    // Share button
-                    Button {
-                        shareStats()
-                    } label: {
-                        HStack(spacing: 10) {
-                            Image(systemName: "square.and.arrow.up")
-                                .font(.system(size: 18, weight: .semibold))
-                            Text(L10n.Stats.share)
-                                .font(.system(size: 17, weight: .bold))
-                        }
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 16)
-                        .background(
-                            RoundedRectangle(cornerRadius: 14)
-                                .fill(
-                                    LinearGradient(
-                                        colors: [Color(hex: "3b82f6"), Color(hex: "1d4ed8")],
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
-                                )
-                        )
-                        .shadow(color: Color(hex: "3b82f6").opacity(0.4), radius: 12, y: 4)
-                    }
-                    .padding(.horizontal, 40)
-
-                    Spacer()
-                }
-                .padding(.top, 20)
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.system(size: 24))
-                            .foregroundStyle(isDark ? Color.white.opacity(0.3) : Color.black.opacity(0.2))
-                    }
-                }
-            }
-        }
-    }
-
-    @MainActor
-    private func shareStats() {
-        let cardView = ShareableStatsCard(stats: stats, isDark: true)
-            .frame(width: 340)
-            .padding(24)
-            .background(Color.black)
-
-        let renderer = ImageRenderer(content: cardView)
-        renderer.scale = 3.0
-
-        guard let image = renderer.uiImage else { return }
-
-        let improved = stats.improved
-        let changePercent = abs(Int(stats.weekChange))
-        let message = improved
-            ? "Down \(changePercent)% this week! Tracking my screen time with LockIn"
-            : "Tracking my screen time with LockIn"
-
-        let activityItems: [Any] = [image, message]
-        let activityVC = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let window = windowScene.windows.first {
-            var topController = window.rootViewController
-            while let presented = topController?.presentedViewController {
-                topController = presented
-            }
-            topController?.present(activityVC, animated: true)
-        }
-    }
-}
-
-// MARK: - Shareable Stats Card
-
-struct ShareableStatsCard: View {
-    let stats: WeekStatsData
-    let isDark: Bool
-
-    private var improved: Bool { stats.improved }
-    private var changePercent: Int { abs(Int(stats.weekChange)) }
-
-    private var bgColor: Color { isDark ? Color.black : .white }
-    private var textColor: Color { isDark ? .white : Color(hex: "111827") }
-    private var mutedColor: Color { isDark ? Color(hex: "9ca3af") : Color(hex: "6b7280") }
-    private var cardBg: Color { isDark ? Color.white.opacity(0.05) : Color.white.opacity(0.5) }
-    private var cardBorder: Color { isDark ? Color.white.opacity(0.08) : Color.black.opacity(0.06) }
-
-    var body: some View {
-        VStack(spacing: 20) {
-            // App branding
-            HStack(spacing: 8) {
-                Image(systemName: "chart.bar.fill")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(
+                Circle()
+                    .fill(
                         LinearGradient(
-                            colors: [Color(hex: "3b82f6"), Color(hex: "8b5cf6")],
-                            startPoint: .leading,
-                            endPoint: .trailing
+                            colors: [
+                                Color.orange.opacity(0.3),
+                                Color.red.opacity(0.1)
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
                         )
                     )
-                Text(L10n.Stats.weeklyStats)
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(textColor)
+                    .frame(width: 80, height: 80)
+                    .blur(radius: 10)
+
+                Image(systemName: "flame.fill")
+                    .font(.system(size: 44))
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [Color.orange, Color.red],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+            }
+        }
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(themeService.glassBackground(for: colorScheme))
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(
+                    LinearGradient(
+                        colors: [
+                            Color.orange.opacity(0.4),
+                            Color.red.opacity(0.2),
+                            Color.clear
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1
+                )
+        )
+        .shadow(color: Color.orange.opacity(isDark ? 0.2 : 0.1), radius: 20, y: 8)
+    }
+
+    // MARK: - Stats Grid Section
+
+    private var statsGridSection: some View {
+        HStack(spacing: 16) {
+            // Focus Time Card
+            focusTimeCard
+
+            // Efficiency Card
+            efficiencyCard
+        }
+    }
+
+    private var focusTimeCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(themeService.accentColor.opacity(0.2))
+                        .frame(width: 36, height: 36)
+
+                    Image(systemName: "clock.fill")
+                        .font(.system(size: 18))
+                        .foregroundStyle(themeService.accentColor)
+                }
 
                 Spacer()
 
-                Text("LockIn")
+                Text("+12%")
                     .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(mutedColor)
+                    .foregroundStyle(Color.green)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(
+                        Capsule()
+                            .fill(Color.green.opacity(0.15))
+                    )
             }
 
-            // Main comparison card
-            VStack(spacing: 16) {
-                // Week comparison
-                HStack {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(L10n.Stats.vsLastWeek)
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundStyle(mutedColor)
-                            .tracking(0.5)
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(alignment: .firstTextBaseline, spacing: 2) {
+                    Text("\(Int(focusHours))")
+                        .font(.system(size: 32, weight: .bold))
+                        .foregroundStyle(themeService.textPrimary(for: colorScheme))
 
-                        HStack(spacing: 10) {
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .fill(improved
-                                          ? Color(hex: "10b981").opacity(0.15)
-                                          : Color(hex: "ef4444").opacity(0.15))
-                                    .frame(width: 36, height: 36)
+                    Text("h")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundStyle(themeService.textSecondary(for: colorScheme))
 
-                                Image(systemName: improved ? "arrow.down.right" : "arrow.up.right")
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundStyle(improved ? Color(hex: "10b981") : Color(hex: "ef4444"))
-                            }
+                    Text("\(focusMinutes)")
+                        .font(.system(size: 32, weight: .bold))
+                        .foregroundStyle(themeService.textPrimary(for: colorScheme))
 
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("\(changePercent)%")
-                                    .font(.system(size: 32, weight: .heavy))
-                                    .foregroundStyle(improved ? Color(hex: "10b981") : Color(hex: "ef4444"))
+                    Text("m")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundStyle(themeService.textSecondary(for: colorScheme))
+                }
 
-                                Text(improved ? L10n.Stats.lessScreenTime : L10n.Stats.moreScreenTime)
-                                    .font(.system(size: 12))
-                                    .foregroundStyle(mutedColor)
-                            }
-                        }
+                Text("Focus Time")
+                    .font(.system(size: 13))
+                    .foregroundStyle(themeService.textMuted(for: colorScheme))
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(themeService.glassBackground(for: colorScheme))
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(themeService.glassBorder(for: colorScheme), lineWidth: 1)
+        )
+    }
+
+    private var efficiencyCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color.purple.opacity(0.2))
+                        .frame(width: 36, height: 36)
+
+                    Image(systemName: "bolt.fill")
+                        .font(.system(size: 18))
+                        .foregroundStyle(Color.purple)
+                }
+
+                Spacer()
+
+                // Circular progress
+                ZStack {
+                    Circle()
+                        .stroke(
+                            themeService.glassBorder(for: colorScheme),
+                            lineWidth: 4
+                        )
+                        .frame(width: 36, height: 36)
+
+                    Circle()
+                        .trim(from: 0, to: CGFloat(efficiencyPercent) / 100)
+                        .stroke(
+                            Color.purple,
+                            style: StrokeStyle(lineWidth: 4, lineCap: .round)
+                        )
+                        .frame(width: 36, height: 36)
+                        .rotationEffect(.degrees(-90))
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(alignment: .firstTextBaseline, spacing: 2) {
+                    Text("\(efficiencyPercent)")
+                        .font(.system(size: 32, weight: .bold))
+                        .foregroundStyle(themeService.textPrimary(for: colorScheme))
+
+                    Text("%")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundStyle(themeService.textSecondary(for: colorScheme))
+                }
+
+                Text("Efficiency")
+                    .font(.system(size: 13))
+                    .foregroundStyle(themeService.textMuted(for: colorScheme))
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(themeService.glassBackground(for: colorScheme))
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(themeService.glassBorder(for: colorScheme), lineWidth: 1)
+        )
+    }
+
+    // MARK: - Activity Chart Card
+
+    private var activityChartCard: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Text("Activity")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(themeService.textPrimary(for: colorScheme))
+
+                Spacer()
+
+                Text("This Week")
+                    .font(.system(size: 13))
+                    .foregroundStyle(themeService.textMuted(for: colorScheme))
+            }
+
+            // Bar Chart
+            HStack(alignment: .bottom, spacing: 12) {
+                ForEach(Array(weeklyActivity.enumerated()), id: \.offset) { index, data in
+                    VStack(spacing: 8) {
+                        // Bar
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(
+                                LinearGradient(
+                                    colors: [
+                                        themeService.accentColor.opacity(0.8),
+                                        themeService.accentColor.opacity(0.4)
+                                    ],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            )
+                            .frame(height: CGFloat(data.hours) * 20)
+                            .frame(maxWidth: .infinity)
+
+                        // Day label
+                        Text(data.day)
+                            .font(.system(size: 11, weight: .medium))
+                            .foregroundStyle(themeService.textMuted(for: colorScheme))
+                    }
+                }
+            }
+            .frame(height: 140)
+        }
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(themeService.glassBackground(for: colorScheme))
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(themeService.glassBorder(for: colorScheme), lineWidth: 1)
+        )
+    }
+
+    // MARK: - Heatmap Card
+
+    private var heatmapCard: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Text("Focus Heatmap")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(themeService.textPrimary(for: colorScheme))
+
+                Spacer()
+
+                // Legend
+                HStack(spacing: 4) {
+                    Text("Less")
+                        .font(.system(size: 10))
+                        .foregroundStyle(themeService.textMuted(for: colorScheme))
+
+                    ForEach(0..<5) { level in
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(heatmapColor(for: level))
+                            .frame(width: 12, height: 12)
                     }
 
-                    Spacer()
-                }
-
-                // Divider
-                Rectangle()
-                    .fill(cardBorder)
-                    .frame(height: 1)
-
-                // Stats row
-                HStack(spacing: 0) {
-                    statItem(title: L10n.Stats.thisWeek, value: stats.formatHours(stats.thisWeekTotal))
-                    statItem(title: L10n.Stats.lastWeek, value: stats.formatHours(stats.lastWeekTotal))
-                    statItem(title: L10n.Stats.dailyAvg, value: stats.formatHours(stats.dailyAverage))
+                    Text("More")
+                        .font(.system(size: 10))
+                        .foregroundStyle(themeService.textMuted(for: colorScheme))
                 }
             }
-            .padding(16)
-            .background(
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(cardBg)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 14)
-                    .stroke(improved ? Color(hex: "10b981").opacity(0.3) : Color(hex: "ef4444").opacity(0.3), lineWidth: 1)
-            )
+
+            // Heatmap Grid
+            VStack(spacing: 4) {
+                ForEach(0..<4, id: \.self) { week in
+                    HStack(spacing: 4) {
+                        ForEach(0..<7, id: \.self) { day in
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(heatmapColor(for: heatmapData[week][day]))
+                                .frame(height: 24)
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+                }
+            }
+
+            // Day labels
+            HStack(spacing: 4) {
+                ForEach(["S", "M", "T", "W", "T", "F", "S"], id: \.self) { day in
+                    Text(day)
+                        .font(.system(size: 10, weight: .medium))
+                        .foregroundStyle(themeService.textMuted(for: colorScheme))
+                        .frame(maxWidth: .infinity)
+                }
+            }
+        }
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(themeService.glassBackground(for: colorScheme))
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(themeService.glassBorder(for: colorScheme), lineWidth: 1)
+        )
+    }
+
+    private func heatmapColor(for level: Int) -> Color {
+        switch level {
+        case 0: return themeService.glassBorder(for: colorScheme)
+        case 1: return themeService.accentColor.opacity(0.25)
+        case 2: return themeService.accentColor.opacity(0.5)
+        case 3: return themeService.accentColor.opacity(0.75)
+        default: return themeService.accentColor
         }
     }
 
-    private func statItem(title: String, value: String) -> some View {
-        VStack(spacing: 4) {
-            Text(title.uppercased())
-                .font(.system(size: 9, weight: .bold))
-                .foregroundStyle(mutedColor)
-                .tracking(0.3)
+    // MARK: - Milestones Card
 
-            Text(value)
-                .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(textColor)
+    private var milestonesCard: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Milestones")
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundStyle(themeService.textPrimary(for: colorScheme))
+
+            LazyVGrid(columns: [
+                GridItem(.flexible(), spacing: 12),
+                GridItem(.flexible(), spacing: 12)
+            ], spacing: 12) {
+                ForEach(milestones.indices, id: \.self) { index in
+                    let milestone = milestones[index]
+                    milestoneItem(
+                        icon: milestone.icon,
+                        title: milestone.title,
+                        achieved: milestone.achieved
+                    )
+                }
+            }
         }
-        .frame(maxWidth: .infinity)
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(themeService.glassBackground(for: colorScheme))
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(themeService.glassBorder(for: colorScheme), lineWidth: 1)
+        )
+    }
+
+    private func milestoneItem(icon: String, title: String, achieved: Bool) -> some View {
+        HStack(spacing: 12) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(
+                        achieved
+                            ? themeService.accentColor.opacity(0.2)
+                            : themeService.glassBorder(for: colorScheme)
+                    )
+                    .frame(width: 40, height: 40)
+
+                Image(systemName: icon)
+                    .font(.system(size: 18))
+                    .foregroundStyle(
+                        achieved
+                            ? themeService.accentColor
+                            : themeService.textMuted(for: colorScheme)
+                    )
+            }
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(
+                        achieved
+                            ? themeService.textPrimary(for: colorScheme)
+                            : themeService.textMuted(for: colorScheme)
+                    )
+
+                if achieved {
+                    Text("Achieved")
+                        .font(.system(size: 11))
+                        .foregroundStyle(Color.green)
+                } else {
+                    Text("Locked")
+                        .font(.system(size: 11))
+                        .foregroundStyle(themeService.textMuted(for: colorScheme))
+                }
+            }
+
+            Spacer()
+
+            if achieved {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.system(size: 20))
+                    .foregroundStyle(Color.green)
+            } else {
+                Image(systemName: "lock.fill")
+                    .font(.system(size: 16))
+                    .foregroundStyle(themeService.textMuted(for: colorScheme))
+            }
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(
+                    achieved
+                        ? themeService.accentColor.opacity(0.05)
+                        : Color.clear
+                )
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(
+                    achieved
+                        ? themeService.accentColor.opacity(0.2)
+                        : themeService.glassBorder(for: colorScheme),
+                    lineWidth: 1
+                )
+        )
+    }
+
+    // MARK: - App Usage Card
+
+    private var appUsageCard: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Text("App Usage")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(themeService.textPrimary(for: colorScheme))
+
+                Spacer()
+
+                Text("Today")
+                    .font(.system(size: 13))
+                    .foregroundStyle(themeService.textMuted(for: colorScheme))
+            }
+
+            VStack(spacing: 0) {
+                ForEach(topApps.indices, id: \.self) { index in
+                    let app = topApps[index]
+
+                    HStack(spacing: 12) {
+                        // App icon placeholder
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(
+                                    LinearGradient(
+                                        colors: appGradient(for: index),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .frame(width: 44, height: 44)
+
+                            Image(systemName: app.icon)
+                                .font(.system(size: 20))
+                                .foregroundStyle(.white)
+                        }
+
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(app.name)
+                                .font(.system(size: 15, weight: .medium))
+                                .foregroundStyle(themeService.textPrimary(for: colorScheme))
+
+                            // Progress bar
+                            GeometryReader { geo in
+                                ZStack(alignment: .leading) {
+                                    RoundedRectangle(cornerRadius: 3)
+                                        .fill(themeService.glassBorder(for: colorScheme))
+                                        .frame(height: 6)
+
+                                    RoundedRectangle(cornerRadius: 3)
+                                        .fill(
+                                            LinearGradient(
+                                                colors: appGradient(for: index),
+                                                startPoint: .leading,
+                                                endPoint: .trailing
+                                            )
+                                        )
+                                        .frame(width: geo.size.width * app.percent, height: 6)
+                                }
+                            }
+                            .frame(height: 6)
+                        }
+
+                        Spacer()
+
+                        Text(app.time)
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(themeService.textSecondary(for: colorScheme))
+                    }
+                    .padding(.vertical, 12)
+
+                    if index < topApps.count - 1 {
+                        Divider()
+                            .background(themeService.glassBorder(for: colorScheme))
+                            .padding(.leading, 56)
+                    }
+                }
+            }
+        }
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(themeService.glassBackground(for: colorScheme))
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(themeService.glassBorder(for: colorScheme), lineWidth: 1)
+        )
+    }
+
+    private func appGradient(for index: Int) -> [Color] {
+        let gradients: [[Color]] = [
+            [Color(hex: "#E1306C"), Color(hex: "#F77737")], // Instagram
+            [Color(hex: "#000000"), Color(hex: "#00f2ea")], // TikTok
+            [Color(hex: "#FF0000"), Color(hex: "#FF4444")], // YouTube
+            [Color(hex: "#1DA1F2"), Color(hex: "#0077B5")]  // Twitter
+        ]
+        return gradients[index % gradients.count]
     }
 }
 
@@ -447,223 +757,6 @@ struct ShareableStatsCard: View {
 
 extension DeviceActivityReport.Context {
     static let totalActivity = Self("TotalActivity")
-}
-
-// MARK: - Stats Page Skeleton Loader
-
-struct StatsPageSkeletonLoader: View {
-    @Environment(\.colorScheme) private var colorScheme
-    @State private var isAnimating = false
-
-    private var isDark: Bool { colorScheme == .dark }
-
-    private var shimmerGradient: LinearGradient {
-        LinearGradient(
-            colors: [
-                isDark ? Color.white.opacity(0.03) : Color.white.opacity(0.3),
-                isDark ? Color.white.opacity(0.08) : Color.white.opacity(0.6),
-                isDark ? Color.white.opacity(0.03) : Color.white.opacity(0.3)
-            ],
-            startPoint: .leading,
-            endPoint: .trailing
-        )
-    }
-
-    private var skeletonBg: Color {
-        isDark ? Color.white.opacity(0.05) : Color.white.opacity(0.5)
-    }
-
-    private var cardBg: Color {
-        isDark ? Color.white.opacity(0.05) : Color.white.opacity(0.5)
-    }
-
-    var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 24) {
-                // Week Comparison Card Skeleton
-                weekComparisonSkeleton
-
-                // 2x2 Stats Grid Skeleton
-                statsGridSkeleton
-
-                // Chart Section Skeleton
-                chartSectionSkeleton
-
-                // Top Apps Section Skeleton
-                topAppsSkeleton
-            }
-            .padding(.bottom, 100)
-        }
-        .onAppear {
-            withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) {
-                isAnimating = true
-            }
-        }
-    }
-
-    private var weekComparisonSkeleton: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            skeletonPill(width: 80, height: 12)
-
-            HStack(spacing: 10) {
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(skeletonBg)
-                    .frame(width: 40, height: 40)
-                    .overlay(shimmerOverlay)
-
-                VStack(alignment: .leading, spacing: 4) {
-                    skeletonPill(width: 60, height: 28)
-                    skeletonPill(width: 100, height: 12)
-                }
-
-                Spacer()
-
-                VStack(alignment: .trailing, spacing: 4) {
-                    skeletonPill(width: 80, height: 18)
-                    skeletonPill(width: 60, height: 12)
-                }
-            }
-        }
-        .padding(20)
-        .background(cardBg)
-        .cornerRadius(14)
-    }
-
-    private var statsGridSkeleton: some View {
-        VStack(spacing: 12) {
-            HStack(spacing: 12) {
-                statCardSkeleton
-                statCardSkeleton
-            }
-            HStack(spacing: 12) {
-                statCardSkeleton
-                statCardSkeleton
-            }
-        }
-    }
-
-    private var statCardSkeleton: some View {
-        VStack(spacing: 6) {
-            skeletonPill(width: 60, height: 10)
-            skeletonPill(width: 50, height: 24)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 16)
-        .background(cardBg)
-        .cornerRadius(14)
-    }
-
-    private var chartSectionSkeleton: some View {
-        VStack(spacing: 20) {
-            // Header
-            HStack(spacing: 10) {
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(skeletonBg)
-                    .frame(width: 32, height: 32)
-                    .overlay(shimmerOverlay)
-
-                skeletonPill(width: 100, height: 16)
-                Spacer()
-            }
-
-            // Bar chart skeleton
-            HStack(alignment: .bottom, spacing: 8) {
-                ForEach(0..<7, id: \.self) { index in
-                    VStack(spacing: 4) {
-                        RoundedRectangle(cornerRadius: 6)
-                            .fill(skeletonBg)
-                            .frame(height: CGFloat([60, 90, 45, 100, 75, 55, 80][index]))
-                            .overlay(shimmerOverlay)
-
-                        skeletonPill(width: 24, height: 10)
-                        skeletonPill(width: 28, height: 8)
-                    }
-                    .frame(maxWidth: .infinity)
-                }
-            }
-            .frame(height: 150)
-        }
-        .padding(20)
-        .background(cardBg)
-        .cornerRadius(14)
-    }
-
-    private var topAppsSkeleton: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            // Header
-            HStack(spacing: 10) {
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(skeletonBg)
-                    .frame(width: 32, height: 32)
-                    .overlay(shimmerOverlay)
-
-                skeletonPill(width: 120, height: 18)
-            }
-
-            // App rows
-            VStack(spacing: 0) {
-                ForEach(0..<5, id: \.self) { index in
-                    appRowSkeleton
-                    if index < 4 {
-                        Rectangle()
-                            .fill(isDark ? Color.white.opacity(0.06) : Color.black.opacity(0.06))
-                            .frame(height: 1)
-                            .padding(.leading, 72)
-                    }
-                }
-            }
-            .background(cardBg)
-            .cornerRadius(14)
-        }
-    }
-
-    private var appRowSkeleton: some View {
-        HStack(spacing: 12) {
-            RoundedRectangle(cornerRadius: 10)
-                .fill(skeletonBg)
-                .frame(width: 44, height: 44)
-                .overlay(shimmerOverlay)
-
-            VStack(alignment: .leading, spacing: 4) {
-                skeletonPill(width: 100, height: 14)
-
-                RoundedRectangle(cornerRadius: 3)
-                    .fill(skeletonBg)
-                    .frame(height: 6)
-                    .overlay(
-                        GeometryReader { geo in
-                            RoundedRectangle(cornerRadius: 3)
-                                .fill(shimmerGradient)
-                                .frame(width: geo.size.width * 0.5)
-                                .opacity(isAnimating ? 1 : 0.5)
-                        }
-                    )
-            }
-
-            Spacer()
-
-            skeletonPill(width: 40, height: 14)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 14)
-    }
-
-    private var shimmerOverlay: some View {
-        RoundedRectangle(cornerRadius: 10)
-            .fill(shimmerGradient)
-            .opacity(isAnimating ? 1 : 0.5)
-    }
-
-    private func skeletonPill(width: CGFloat, height: CGFloat) -> some View {
-        RoundedRectangle(cornerRadius: height / 2)
-            .fill(skeletonBg)
-            .frame(width: width, height: height)
-            .overlay(
-                RoundedRectangle(cornerRadius: height / 2)
-                    .fill(shimmerGradient)
-                    .opacity(isAnimating ? 1 : 0.5)
-            )
-    }
 }
 
 #Preview {

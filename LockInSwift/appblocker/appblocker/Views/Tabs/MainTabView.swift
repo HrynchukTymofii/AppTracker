@@ -21,17 +21,11 @@ struct MainTabView: View {
                 ScheduleView()
                     .tag(1)
 
-                BlockingView()
+                StatsView()
                     .tag(2)
 
-                LockInView()
-                    .tag(3)
-
-                StatsView()
-                    .tag(4)
-
                 ProfileView()
-                    .tag(5)
+                    .tag(3)
             }
 
             // Custom Liquid Glass Tab Bar
@@ -70,7 +64,7 @@ struct MainTabView: View {
 
             // Schedule
             LiquidGlassTabButton(
-                icon: "calendar",
+                icon: selectedTab == 1 ? "calendar.badge.clock" : "calendar",
                 title: L10n.Tab.schedule,
                 isSelected: selectedTab == 1
             ) {
@@ -79,28 +73,25 @@ struct MainTabView: View {
                 }
             }
 
-            // LockIn - Center floating button
-            liquidGlassLockInButton
-
             // Stats
             LiquidGlassTabButton(
-                icon: selectedTab == 4 ? "chart.bar.fill" : "chart.bar",
+                icon: selectedTab == 2 ? "chart.bar.fill" : "chart.bar",
                 title: L10n.Tab.stats,
-                isSelected: selectedTab == 4
+                isSelected: selectedTab == 2
             ) {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                    selectedTab = 4
+                    selectedTab = 2
                 }
             }
 
             // Profile
             LiquidGlassTabButton(
-                icon: selectedTab == 5 ? "person.fill" : "person",
+                icon: selectedTab == 3 ? "person.fill" : "person",
                 title: L10n.Tab.profile,
-                isSelected: selectedTab == 5
+                isSelected: selectedTab == 3
             ) {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                    selectedTab = 5
+                    selectedTab = 3
                 }
             }
         }
@@ -147,58 +138,6 @@ struct MainTabView: View {
         .padding(.bottom, 24)
     }
 
-    // MARK: - Liquid Glass LockIn Center Button
-
-    private var liquidGlassLockInButton: some View {
-        Button {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                selectedTab = 3
-            }
-        } label: {
-            ZStack {
-                // Glow effect
-                Circle()
-                    .fill(themeService.accentColor.opacity(0.3))
-                    .frame(width: 56, height: 56)
-                    .blur(radius: 8)
-
-                // Main button
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                themeService.accentColor.opacity(0.9),
-                                themeService.accentColor,
-                                themeService.accentColorDark
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 52, height: 52)
-                    .overlay(
-                        Circle()
-                            .fill(
-                                LinearGradient(
-                                    colors: [Color.white.opacity(0.4), Color.clear],
-                                    startPoint: .topLeading,
-                                    endPoint: .center
-                                )
-                            )
-                    )
-                    .shadow(color: themeService.accentColor.opacity(0.6), radius: 12, y: 4)
-
-                // Icon
-                Image(systemName: "scope")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundStyle(.white)
-            }
-            .scaleEffect(selectedTab == 3 ? 1.1 : 1.0)
-        }
-        .frame(maxWidth: .infinity)
-        .buttonStyle(ScaleButtonStyle())
-        .offset(y: -12)
-    }
 }
 
 // MARK: - Liquid Glass Tab Button
