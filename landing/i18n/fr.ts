@@ -102,4 +102,180 @@ export default {
     pricing: 'Tarifs',
     about: 'À propos',
   },
+  common: {
+    backToHome: 'Retour à l\'accueil',
+    copyright: '© {{year}} LockIn. Tous droits réservés.',
+    lastUpdated: 'Dernière mise à jour : 14 janvier 2025',
+    contactEmail: 'lockin@fibipals.com',
+  },
+  support: {
+    title: 'Support',
+    description: 'Vous avez une question, un commentaire ou besoin d\'aide ? Nous sommes là pour vous. Envoyez-nous un message et nous vous répondrons dès que possible.',
+    form: {
+      name: 'Votre nom',
+      namePlaceholder: 'Jean Dupont',
+      email: 'Votre e-mail',
+      emailPlaceholder: 'jean@exemple.fr',
+      message: 'Message',
+      messagePlaceholder: 'Comment pouvons-nous vous aider ?',
+      send: 'Envoyer le message',
+      sending: 'Envoi en cours...',
+      error: 'Veuillez remplir tous les champs',
+      errorSend: 'Échec de l\'envoi du message. Veuillez réessayer.',
+    },
+    success: {
+      title: 'Message envoyé !',
+      description: 'Merci de nous avoir contactés. Nous vous répondrons bientôt.',
+    },
+    or: 'ou',
+    emailDirect: 'Envoyez-nous un e-mail directement',
+    whatToExpect: {
+      title: 'À quoi s\'attendre',
+      response: 'Nous répondons généralement sous 24 à 48 heures',
+      feedback: 'Nous lisons et prenons en compte tous les commentaires',
+      privacy: 'Vos données sont traitées de manière sécurisée et privée',
+    },
+  },
+  privacyPolicy: {
+    title: 'Politique de confidentialité',
+    intro: 'LockIn: Screen Time Control ("LockIn", "nous", "notre") respecte votre vie privée et s\'engage à protéger vos données personnelles. Cette politique de confidentialité explique comment nous collectons, utilisons et protégeons vos informations lorsque vous utilisez notre application mobile et services associés.',
+    sections: {
+      infoCollect: {
+        title: '1. Informations que nous collectons',
+        account: {
+          title: '1.1 Informations de compte et de connexion',
+          intro: 'Lorsque vous créez un compte ou vous connectez, nous pouvons collecter :',
+          items: ['Adresse e-mail', 'Informations liées à l\'authentification (comme les jetons de connexion)'],
+          note: 'Ces informations sont utilisées uniquement pour vous authentifier et gérer votre compte.',
+        },
+        subscription: {
+          title: '1.2 Informations d\'abonnement',
+          text: 'LockIn propose des plans d\'abonnement mensuels et annuels. Les paiements sont traités par des plateformes tierces (comme Google Play ou Apple App Store). Nous ne collectons ni ne stockons vos informations de carte de crédit ou de paiement.',
+        },
+        usage: {
+          title: '1.3 Données d\'utilisation de l\'application (sur l\'appareil uniquement)',
+          intro: 'Pour fournir des fonctionnalités de surveillance du temps d\'écran et de blocage d\'applications, LockIn accède à certaines données d\'utilisation sur votre appareil. Ces données :',
+          items: ['Sont traitées localement sur votre appareil', 'Ne sont pas vendues ni partagées avec des tiers', 'Ne sont pas utilisées pour la publicité ou le suivi'],
+        },
+      },
+      permissions: {
+        title: '2. Autorisations que nous utilisons',
+        intro: 'LockIn nécessite des autorisations système spécifiques pour fonctionner correctement :',
+        items: [
+          { name: 'Autorisation d\'accès à l\'utilisation :', desc: 'Utilisée pour surveiller l\'utilisation des applications et les statistiques de temps d\'écran.' },
+          { name: 'Affichage par-dessus d\'autres applications :', desc: 'Utilisé pour afficher des écrans de blocage et des rappels lorsque les limites d\'utilisation sont atteintes.' },
+          { name: 'Autorisations d\'accessibilité / Contrôle des applications :', desc: 'Utilisées pour restreindre ou bloquer l\'accès aux applications sélectionnées et limiter le défilement le cas échéant.' },
+        ],
+        note: 'Ces autorisations sont utilisées strictement pour la fonctionnalité principale de l\'application et ne sont jamais utilisées pour collecter du contenu personnel ou des données utilisateur sensibles.',
+      },
+      howWeUse: {
+        title: '3. Comment nous utilisons vos informations',
+        intro: 'Nous utilisons les informations collectées pour :',
+        items: ['Fournir et maintenir les fonctionnalités principales de l\'application', 'Authentifier les utilisateurs et gérer les comptes', 'Activer les abonnements et les fonctionnalités premium', 'Améliorer les performances et la fiabilité de l\'application'],
+      },
+      dataSharing: {
+        title: '4. Partage des données',
+        intro: 'Nous ne vendons, ne louons ni n\'échangeons vos données personnelles. Nous pouvons partager des informations limitées uniquement lorsque :',
+        items: ['Requis par la loi ou une procédure judiciaire', 'Nécessaire pour protéger nos droits ou prévenir les abus'],
+      },
+      dataSecurity: {
+        title: '5. Sécurité des données',
+        text: 'Nous mettons en œuvre des mesures techniques et organisationnelles appropriées pour protéger vos données contre tout accès non autorisé, perte ou mauvaise utilisation.',
+      },
+      dataRetention: {
+        title: '6. Conservation des données',
+        text: 'Nous conservons les données personnelles uniquement aussi longtemps que nécessaire pour fournir le service ou respecter les obligations légales. Vous pouvez demander la suppression de votre compte et des données associées à tout moment.',
+      },
+      children: {
+        title: '7. Confidentialité des enfants',
+        text: 'LockIn n\'est pas destiné aux enfants de moins de 13 ans sans le consentement parental. Nous ne collectons pas sciemment de données personnelles d\'enfants sans autorisation appropriée.',
+      },
+      rights: {
+        title: '8. Vos droits',
+        intro: 'Selon votre localisation, vous pouvez avoir le droit de :',
+        items: ['Accéder à vos données personnelles', 'Demander la correction ou la suppression de vos données', 'Retirer votre consentement le cas échéant'],
+      },
+      changes: {
+        title: '9. Modifications de cette politique',
+        text: 'Nous pouvons mettre à jour cette politique de confidentialité de temps en temps. Les modifications seront publiées sur cette page avec une date de révision mise à jour.',
+      },
+      contact: {
+        title: '10. Nous contacter',
+        text: 'Si vous avez des questions ou des préoccupations concernant cette politique de confidentialité, veuillez nous contacter à :',
+      },
+    },
+  },
+  termsOfService: {
+    title: 'Conditions d\'utilisation',
+    intro: 'Bienvenue sur LockIn: Screen Time Control ("LockIn", "nous", "notre"). En téléchargeant, installant ou utilisant notre application mobile, vous acceptez d\'être lié par ces conditions d\'utilisation. Veuillez les lire attentivement avant d\'utiliser l\'application.',
+    sections: {
+      acceptance: {
+        title: '1. Acceptation des conditions',
+        text: 'En accédant ou en utilisant LockIn, vous reconnaissez avoir lu, compris et accepté d\'être lié par ces conditions d\'utilisation et notre politique de confidentialité. Si vous n\'acceptez pas ces conditions, veuillez ne pas utiliser l\'application.',
+      },
+      description: {
+        title: '2. Description du service',
+        intro: 'LockIn est une application de gestion du temps d\'écran conçue pour aider les utilisateurs à :',
+        items: ['Surveiller et suivre l\'utilisation des applications et le temps d\'écran', 'Définir des limites sur des applications ou catégories spécifiques', 'Bloquer l\'accès aux applications distrayantes', 'Améliorer le bien-être numérique et la productivité'],
+      },
+      eligibility: {
+        title: '3. Éligibilité',
+        text: 'Vous devez avoir au moins 13 ans pour utiliser LockIn. Si vous avez moins de 18 ans, vous devez avoir l\'autorisation d\'un parent ou tuteur légal pour utiliser cette application. En utilisant LockIn, vous déclarez et garantissez que vous remplissez ces conditions d\'éligibilité.',
+      },
+      accounts: {
+        title: '4. Comptes utilisateur',
+        intro: 'Pour accéder à certaines fonctionnalités, vous devrez peut-être créer un compte. Vous acceptez de :',
+        items: ['Fournir des informations d\'inscription exactes et complètes', 'Maintenir la sécurité de vos identifiants de compte', 'Nous notifier immédiatement de toute utilisation non autorisée de votre compte', 'Accepter la responsabilité de toutes les activités sous votre compte'],
+      },
+      subscriptions: {
+        title: '5. Abonnements et paiements',
+        intro: 'LockIn propose des plans d\'abonnement gratuits et premium :',
+        items: ['Les abonnements premium sont facturés mensuellement ou annuellement', 'Le paiement est traité via Google Play Store ou Apple App Store', 'Les abonnements se renouvellent automatiquement sauf annulation avant la date de renouvellement', 'Vous pouvez gérer ou annuler votre abonnement via les paramètres de l\'App Store de votre appareil'],
+        note: 'Les remboursements sont soumis aux politiques des magasins d\'applications respectifs. Nous ne traitons pas directement les paiements et n\'émettons pas de remboursements.',
+      },
+      permissions: {
+        title: '6. Autorisations et accès à l\'appareil',
+        intro: 'LockIn nécessite certaines autorisations d\'appareil pour fonctionner correctement, notamment :',
+        items: ['Autorisation d\'accès à l\'utilisation pour surveiller le temps d\'écran', 'Affichage par-dessus d\'autres applications pour afficher les écrans de blocage', 'Autorisations d\'accessibilité pour les fonctions de contrôle des applications'],
+        note: 'En accordant ces autorisations, vous autorisez LockIn à accéder et utiliser ces fonctionnalités de l\'appareil uniquement pour fournir la fonctionnalité prévue.',
+      },
+      acceptableUse: {
+        title: '7. Utilisation acceptable',
+        intro: 'Vous acceptez de ne pas :',
+        items: ['Utiliser l\'application à des fins illégales', 'Tenter de contourner, désactiver ou interférer avec les fonctionnalités de sécurité', 'Faire de l\'ingénierie inverse, décompiler ou désassembler l\'application', 'Utiliser l\'application pour harceler, abuser ou nuire à autrui', 'Distribuer des virus ou du code malveillant via l\'application', 'Utiliser des systèmes automatisés pour accéder à l\'application sans autorisation'],
+      },
+      ip: {
+        title: '8. Propriété intellectuelle',
+        text: 'Tout le contenu, les fonctionnalités et la fonctionnalité de LockIn, y compris mais sans s\'y limiter le texte, les graphiques, les logos, les icônes, les images et les logiciels, sont notre propriété ou celle de nos concédants et sont protégés par le droit d\'auteur, les marques et d\'autres lois sur la propriété intellectuelle. Vous ne pouvez pas reproduire, distribuer ou créer des œuvres dérivées sans notre consentement écrit exprès.',
+      },
+      disclaimer: {
+        title: '9. Exclusion de garanties',
+        text: 'LockIn est fourni "tel quel" et "selon disponibilité" sans garanties d\'aucune sorte, expresses ou implicites. Nous ne garantissons pas que l\'application sera ininterrompue, sans erreur ou entièrement sécurisée. Votre utilisation de l\'application est à vos propres risques.',
+      },
+      liability: {
+        title: '10. Limitation de responsabilité',
+        text: 'Dans toute la mesure permise par la loi, LockIn et ses affiliés ne seront pas responsables des dommages indirects, accessoires, spéciaux, consécutifs ou punitifs découlant de votre utilisation de l\'application, y compris mais sans s\'y limiter la perte de données, de productivité ou de profits.',
+      },
+      indemnification: {
+        title: '11. Indemnisation',
+        text: 'Vous acceptez d\'indemniser et de dégager de toute responsabilité LockIn, ses dirigeants, administrateurs, employés et agents de toute réclamation, dommage, perte ou dépense découlant de votre utilisation de l\'application ou de la violation de ces conditions d\'utilisation.',
+      },
+      termination: {
+        title: '12. Résiliation',
+        text: 'Nous nous réservons le droit de suspendre ou de résilier votre accès à LockIn à tout moment, sans préavis, pour un comportement que nous estimons violer ces conditions d\'utilisation ou nuire à d\'autres utilisateurs, à nous ou à des tiers. À la résiliation, votre droit d\'utiliser l\'application cessera immédiatement.',
+      },
+      changes: {
+        title: '13. Modifications des conditions',
+        text: 'Nous pouvons mettre à jour ces conditions d\'utilisation de temps en temps. Nous vous informerons de tout changement important en publiant les nouvelles conditions sur cette page avec une date de révision mise à jour. Votre utilisation continue de l\'application après la publication des modifications constitue votre acceptation des conditions modifiées.',
+      },
+      governingLaw: {
+        title: '14. Droit applicable',
+        text: 'Ces conditions d\'utilisation seront régies et interprétées conformément aux lois applicables, sans égard aux principes de conflit de lois. Tout litige découlant de ces conditions sera résolu devant les tribunaux compétents.',
+      },
+      contact: {
+        title: '15. Nous contacter',
+        text: 'Si vous avez des questions sur ces conditions d\'utilisation, veuillez nous contacter à :',
+      },
+    },
+  },
 };

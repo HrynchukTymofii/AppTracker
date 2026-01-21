@@ -102,4 +102,180 @@ export default {
     pricing: 'Prijzen',
     about: 'Over ons',
   },
+  common: {
+    backToHome: 'Terug naar home',
+    copyright: '© {{year}} LockIn. Alle rechten voorbehouden.',
+    lastUpdated: 'Laatst bijgewerkt: 14 januari 2025',
+    contactEmail: 'lockin@fibipals.com',
+  },
+  support: {
+    title: 'Ondersteuning',
+    description: 'Heb je een vraag, feedback of hulp nodig? We staan voor je klaar. Stuur ons een bericht en we nemen zo snel mogelijk contact met je op.',
+    form: {
+      name: 'Je naam',
+      namePlaceholder: 'Jan Jansen',
+      email: 'Je e-mail',
+      emailPlaceholder: 'jan@voorbeeld.nl',
+      message: 'Bericht',
+      messagePlaceholder: 'Hoe kunnen we je helpen?',
+      send: 'Bericht versturen',
+      sending: 'Verzenden...',
+      error: 'Vul alsjeblieft alle velden in',
+      errorSend: 'Bericht verzenden mislukt. Probeer het opnieuw.',
+    },
+    success: {
+      title: 'Bericht verzonden!',
+      description: 'Bedankt voor je bericht. We nemen snel contact met je op.',
+    },
+    or: 'of',
+    emailDirect: 'Mail ons direct',
+    whatToExpect: {
+      title: 'Wat te verwachten',
+      response: 'We reageren meestal binnen 24-48 uur',
+      feedback: 'We lezen en overwegen alle feedback',
+      privacy: 'Je gegevens worden veilig en privé behandeld',
+    },
+  },
+  privacyPolicy: {
+    title: 'Privacybeleid',
+    intro: 'LockIn: Screen Time Control ("LockIn", "wij", "ons", "onze") respecteert je privacy en zet zich in om je persoonlijke gegevens te beschermen. Dit privacybeleid legt uit hoe we je informatie verzamelen, gebruiken en beschermen wanneer je onze mobiele applicatie en gerelateerde diensten gebruikt.',
+    sections: {
+      infoCollect: {
+        title: '1. Informatie die we verzamelen',
+        account: {
+          title: '1.1 Account- en inloggegevens',
+          intro: 'Wanneer je een account aanmaakt of inlogt, kunnen we verzamelen:',
+          items: ['E-mailadres', 'Authenticatie-gerelateerde informatie (zoals inlogtokens)'],
+          note: 'Deze informatie wordt uitsluitend gebruikt om je te authenticeren en je account te beheren.',
+        },
+        subscription: {
+          title: '1.2 Abonnementsinformatie',
+          text: 'LockIn biedt maandelijkse en jaarlijkse abonnementsplannen. Betalingen worden verwerkt door externe platforms (zoals Google Play of Apple App Store). We verzamelen of bewaren geen creditcard- of betalingsgegevens.',
+        },
+        usage: {
+          title: '1.3 App-gebruiksgegevens (alleen op apparaat)',
+          intro: 'Om schermtijd-monitoring en app-blokkering te bieden, heeft LockIn toegang tot bepaalde gebruiksgegevens op je apparaat. Deze gegevens:',
+          items: ['Worden lokaal op je apparaat verwerkt', 'Worden niet verkocht of gedeeld met derden', 'Worden niet gebruikt voor advertenties of tracking'],
+        },
+      },
+      permissions: {
+        title: '2. Machtigingen die we gebruiken',
+        intro: 'LockIn vereist specifieke systeemmachtigingen om correct te functioneren:',
+        items: [
+          { name: 'Gebruikstoegang:', desc: 'Gebruikt om app-gebruik en schermtijdstatistieken te monitoren.' },
+          { name: 'Weergeven over andere apps:', desc: 'Gebruikt om blokkerschermen en herinneringen te tonen wanneer gebruikslimieten worden bereikt.' },
+          { name: 'Toegankelijkheid / App-controlemachtigingen:', desc: 'Gebruikt om toegang tot geselecteerde apps te beperken of blokkeren en scrollen te beperken waar van toepassing.' },
+        ],
+        note: 'Deze machtigingen worden strikt gebruikt voor de kernfunctionaliteit van de app en worden nooit gebruikt om persoonlijke inhoud of gevoelige gebruikersgegevens te verzamelen.',
+      },
+      howWeUse: {
+        title: '3. Hoe we je informatie gebruiken',
+        intro: 'We gebruiken de verzamelde informatie om:',
+        items: ['De kernfuncties van de app te bieden en onderhouden', 'Gebruikers te authenticeren en accounts te beheren', 'Abonnementen en premiumfuncties mogelijk te maken', 'App-prestaties en betrouwbaarheid te verbeteren'],
+      },
+      dataSharing: {
+        title: '4. Gegevens delen',
+        intro: 'We verkopen, verhuren of verhandelen je persoonlijke gegevens niet. We delen beperkte informatie alleen wanneer:',
+        items: ['Vereist door wet of juridisch proces', 'Nodig om onze rechten te beschermen of misbruik te voorkomen'],
+      },
+      dataSecurity: {
+        title: '5. Gegevensbeveiliging',
+        text: 'We implementeren passende technische en organisatorische maatregelen om je gegevens te beschermen tegen ongeautoriseerde toegang, verlies of misbruik.',
+      },
+      dataRetention: {
+        title: '6. Gegevensbewaring',
+        text: 'We bewaren persoonlijke gegevens alleen zo lang als nodig is om de dienst te verlenen of aan wettelijke verplichtingen te voldoen. Je kunt op elk moment verzoeken om verwijdering van je account en bijbehorende gegevens.',
+      },
+      children: {
+        title: '7. Privacy van kinderen',
+        text: 'LockIn is niet bedoeld voor gebruik door kinderen onder de 13 jaar zonder toestemming van ouders. We verzamelen niet bewust persoonlijke gegevens van kinderen zonder passende autorisatie.',
+      },
+      rights: {
+        title: '8. Je rechten',
+        intro: 'Afhankelijk van je locatie heb je mogelijk het recht om:',
+        items: ['Toegang te krijgen tot je persoonlijke gegevens', 'Correctie of verwijdering van je gegevens te verzoeken', 'Toestemming in te trekken waar van toepassing'],
+      },
+      changes: {
+        title: '9. Wijzigingen in dit beleid',
+        text: 'We kunnen dit privacybeleid van tijd tot tijd bijwerken. Wijzigingen worden op deze pagina geplaatst met een bijgewerkte revisiedatum.',
+      },
+      contact: {
+        title: '10. Contact',
+        text: 'Als je vragen of zorgen hebt over dit privacybeleid, neem dan contact met ons op via:',
+      },
+    },
+  },
+  termsOfService: {
+    title: 'Gebruiksvoorwaarden',
+    intro: 'Welkom bij LockIn: Screen Time Control ("LockIn", "wij", "ons", "onze"). Door onze mobiele applicatie te downloaden, installeren of gebruiken, ga je akkoord met deze gebruiksvoorwaarden. Lees ze aandachtig door voordat je de app gebruikt.',
+    sections: {
+      acceptance: {
+        title: '1. Acceptatie van voorwaarden',
+        text: 'Door LockIn te openen of gebruiken, erken je dat je deze gebruiksvoorwaarden en ons privacybeleid hebt gelezen, begrepen en ermee akkoord gaat. Als je niet akkoord gaat met deze voorwaarden, gebruik de app dan niet.',
+      },
+      description: {
+        title: '2. Beschrijving van de dienst',
+        intro: 'LockIn is een schermtijdbeheer-applicatie ontworpen om gebruikers te helpen:',
+        items: ['App-gebruik en schermtijd te monitoren en volgen', 'Limieten in te stellen voor specifieke apps of categorieën', 'Toegang tot afleidende applicaties te blokkeren', 'Digitaal welzijn en productiviteit te verbeteren'],
+      },
+      eligibility: {
+        title: '3. Geschiktheid',
+        text: 'Je moet minimaal 13 jaar oud zijn om LockIn te gebruiken. Als je jonger bent dan 18 jaar, moet je toestemming hebben van een ouder of wettelijke voogd om deze app te gebruiken. Door LockIn te gebruiken, verklaar en garandeer je dat je aan deze geschiktheidseisen voldoet.',
+      },
+      accounts: {
+        title: '4. Gebruikersaccounts',
+        intro: 'Om toegang te krijgen tot bepaalde functies, moet je mogelijk een account aanmaken. Je gaat akkoord met:',
+        items: ['Het verstrekken van nauwkeurige en volledige registratie-informatie', 'Het handhaven van de beveiliging van je accountgegevens', 'Ons onmiddellijk op de hoogte stellen van ongeautoriseerd gebruik van je account', 'Het aanvaarden van verantwoordelijkheid voor alle activiteiten onder je account'],
+      },
+      subscriptions: {
+        title: '5. Abonnementen en betalingen',
+        intro: 'LockIn biedt zowel gratis als premium abonnementsplannen:',
+        items: ['Premium abonnementen worden maandelijks of jaarlijks gefactureerd', 'Betaling wordt verwerkt via de Google Play Store of Apple App Store', 'Abonnementen worden automatisch verlengd tenzij geannuleerd vóór de verlengdatum', 'Je kunt je abonnement beheren of annuleren via de app store-instellingen van je apparaat'],
+        note: 'Terugbetalingen zijn onderworpen aan het beleid van de respectieve app stores. We verwerken geen betalingen rechtstreeks en geven geen terugbetalingen.',
+      },
+      permissions: {
+        title: '6. Machtigingen en apparaattoegang',
+        intro: 'LockIn vereist bepaalde apparaatmachtigingen om correct te functioneren, waaronder:',
+        items: ['Gebruikstoegang voor het monitoren van schermtijd', 'Weergeven over andere apps voor het tonen van blokkerschermen', 'Toegankelijkheidsmachtigingen voor app-controlefuncties'],
+        note: 'Door deze machtigingen te verlenen, autoriseer je LockIn om toegang te krijgen tot en gebruik te maken van deze apparaatfuncties uitsluitend voor het leveren van de beoogde functionaliteit.',
+      },
+      acceptableUse: {
+        title: '7. Aanvaardbaar gebruik',
+        intro: 'Je gaat ermee akkoord om niet:',
+        items: ['De app voor onwettige doeleinden te gebruiken', 'Te proberen beveiligingsfuncties te omzeilen, uit te schakelen of te verstoren', 'De app te reverse-engineeren, decompileren of disassembleren', 'De app te gebruiken om anderen te intimideren, misbruiken of schaden', 'Virussen of kwaadaardige code via de app te verspreiden', 'Geautomatiseerde systemen te gebruiken om zonder toestemming toegang te krijgen tot de app'],
+      },
+      ip: {
+        title: '8. Intellectueel eigendom',
+        text: 'Alle inhoud, functies en functionaliteit van LockIn, inclusief maar niet beperkt tot tekst, afbeeldingen, logo\'s, pictogrammen, afbeeldingen en software, zijn eigendom van ons of onze licentiegevers en worden beschermd door auteursrecht, handelsmerk en andere intellectuele eigendomswetten. Je mag niet reproduceren, distribueren of afgeleide werken maken zonder onze uitdrukkelijke schriftelijke toestemming.',
+      },
+      disclaimer: {
+        title: '9. Disclaimer van garanties',
+        text: 'LockIn wordt geleverd "zoals het is" en "zoals beschikbaar" zonder garanties van welke aard dan ook, expliciet of impliciet. We garanderen niet dat de app ononderbroken, foutloos of volledig veilig zal zijn. Je gebruik van de app is op eigen risico.',
+      },
+      liability: {
+        title: '10. Beperking van aansprakelijkheid',
+        text: 'Voor zover maximaal toegestaan door de wet, zijn LockIn en zijn gelieerde ondernemingen niet aansprakelijk voor indirecte, incidentele, speciale, gevolgschade of punitieve schade voortvloeiend uit je gebruik van de app, inclusief maar niet beperkt tot verlies van gegevens, productiviteit of winst.',
+      },
+      indemnification: {
+        title: '11. Vrijwaring',
+        text: 'Je gaat ermee akkoord LockIn, zijn functionarissen, directeuren, werknemers en agenten te vrijwaren en schadeloos te stellen van alle claims, schade, verliezen of kosten die voortvloeien uit je gebruik van de app of schending van deze gebruiksvoorwaarden.',
+      },
+      termination: {
+        title: '12. Beëindiging',
+        text: 'We behouden ons het recht voor om je toegang tot LockIn op elk moment zonder voorafgaande kennisgeving op te schorten of te beëindigen voor gedrag waarvan wij geloven dat het deze gebruiksvoorwaarden schendt of schadelijk is voor andere gebruikers, ons of derden. Bij beëindiging vervalt je recht om de app te gebruiken onmiddellijk.',
+      },
+      changes: {
+        title: '13. Wijzigingen in voorwaarden',
+        text: 'We kunnen deze gebruiksvoorwaarden van tijd tot tijd bijwerken. We zullen je op de hoogte stellen van materiële wijzigingen door de nieuwe voorwaarden op deze pagina te plaatsen met een bijgewerkte revisiedatum. Je voortgezette gebruik van de app na het plaatsen van wijzigingen vormt je acceptatie van de gewijzigde voorwaarden.',
+      },
+      governingLaw: {
+        title: '14. Toepasselijk recht',
+        text: 'Deze gebruiksvoorwaarden worden beheerst door en geïnterpreteerd in overeenstemming met toepasselijk recht, zonder rekening te houden met conflicterende rechtsprincipes. Geschillen die voortvloeien uit deze voorwaarden worden beslecht bij de bevoegde rechtbanken.',
+      },
+      contact: {
+        title: '15. Contact',
+        text: 'Als je vragen hebt over deze gebruiksvoorwaarden, neem dan contact met ons op via:',
+      },
+    },
+  },
 };

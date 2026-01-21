@@ -45,6 +45,13 @@ export default function Footer() {
           {/* Links */}
           <div className="flex items-center gap-6">
             <Link
+              href="/support"
+              className="text-sm transition-colors animated-underline"
+              style={{ color: colors.textSecondary }}
+            >
+              Support
+            </Link>
+            <Link
               href="/privacy-policy"
               className="text-sm transition-colors animated-underline"
               style={{ color: colors.textSecondary }}
