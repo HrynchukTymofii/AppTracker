@@ -49,98 +49,137 @@ struct MainTabView: View {
 
     // MARK: - Liquid Glass Tab Bar
 
+    // Colors from HTML "apple-grassy-glass" style
+    private let emerald500 = Color(red: 16/255, green: 185/255, blue: 129/255)  // #10B981
+    private let emerald600 = Color(red: 5/255, green: 150/255, blue: 105/255)   // #059669
+    private let emerald400 = Color(red: 52/255, green: 211/255, blue: 153/255)  // #34D399
+    private let lime400 = Color(red: 163/255, green: 230/255, blue: 53/255)     // #a3e635
+    private let emerald100 = Color(red: 209/255, green: 250/255, blue: 229/255) // #D1FAE5
+
     private var liquidGlassTabBar: some View {
-        HStack(spacing: 0) {
-            // Home
-            LiquidGlassTabButton(
-                icon: selectedTab == 0 ? "house.fill" : "house",
-                title: L10n.Tab.home,
-                isSelected: selectedTab == 0
-            ) {
-                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                    selectedTab = 0
-                }
-            }
+        ZStack {
+            // Tab bar background - Apple Grassy Glass
+            Capsule()
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            emerald500.opacity(0.25),
+                            emerald600.opacity(0.15)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .background(.ultraThinMaterial)
+                .clipShape(Capsule())
+                .overlay(
+                    Capsule()
+                        .stroke(emerald400.opacity(0.2), lineWidth: 1)
+                )
+                .shadow(color: .black.opacity(0.37), radius: 16, y: 8)
+                .overlay(
+                    // Inner highlight
+                    Capsule()
+                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                        .padding(1)
+                )
 
-            // Schedule
-            LiquidGlassTabButton(
-                icon: selectedTab == 1 ? "calendar.badge.clock" : "calendar",
-                title: L10n.Tab.schedule,
-                isSelected: selectedTab == 1
-            ) {
-                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                    selectedTab = 1
+            // Tab buttons
+            HStack(spacing: 0) {
+                // Home
+                GrassyGlassTabButton(
+                    icon: "house",
+                    isSelected: selectedTab == 0,
+                    lime400: lime400,
+                    emerald100: emerald100
+                ) {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        selectedTab = 0
+                    }
                 }
-            }
 
-            // Stats
-            LiquidGlassTabButton(
-                icon: selectedTab == 2 ? "chart.bar.fill" : "chart.bar",
-                title: L10n.Tab.stats,
-                isSelected: selectedTab == 2
-            ) {
-                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                    selectedTab = 2
+                // Schedule
+                GrassyGlassTabButton(
+                    icon: "calendar",
+                    isSelected: selectedTab == 1,
+                    lime400: lime400,
+                    emerald100: emerald100
+                ) {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        selectedTab = 1
+                    }
                 }
-            }
 
-            // Profile
-            LiquidGlassTabButton(
-                icon: selectedTab == 3 ? "person.fill" : "person",
-                title: L10n.Tab.profile,
-                isSelected: selectedTab == 3
-            ) {
-                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                    selectedTab = 3
+                // Stats
+                GrassyGlassTabButton(
+                    icon: "chart.bar",
+                    isSelected: selectedTab == 2,
+                    lime400: lime400,
+                    emerald100: emerald100
+                ) {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        selectedTab = 2
+                    }
+                }
+
+                // Profile
+                GrassyGlassTabButton(
+                    icon: "person",
+                    isSelected: selectedTab == 3,
+                    lime400: lime400,
+                    emerald100: emerald100
+                ) {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                        selectedTab = 3
+                    }
                 }
             }
+            .padding(.horizontal, 8)
         }
-        .padding(.horizontal, 8)
         .frame(height: 64)
-        .background(
-            Group {
-                if isDark {
-                    // Dark mode: Grassy Glass Nav Bar
-                    Capsule()
-                        .fill(
-                            LinearGradient(
-                                colors: [
-                                    themeService.accentColor.opacity(0.25),
-                                    themeService.accentColor.opacity(0.15)
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                        .background(.ultraThinMaterial)
-                        .clipShape(Capsule())
-                        .overlay(
-                            Capsule()
-                                .stroke(themeService.accentColor.opacity(0.2), lineWidth: 1)
-                        )
-                        .shadow(color: .black.opacity(0.37), radius: 16, y: 8)
-                        .shadow(color: themeService.accentColor.opacity(0.15), radius: 20, y: 0)
-                } else {
-                    // Light mode: Clean Glass Nav Bar
-                    Capsule()
-                        .fill(Color.white.opacity(0.7))
-                        .background(.regularMaterial)
-                        .clipShape(Capsule())
-                        .overlay(
-                            Capsule()
-                                .stroke(Color.white.opacity(0.4), lineWidth: 1)
-                        )
-                        .shadow(color: .black.opacity(0.04), radius: 24, y: 4)
-                }
-            }
-        )
         .padding(.horizontal, 24)
         .padding(.bottom, 24)
     }
 
 }
 
-// MARK: - Liquid Glass Tab Button
+// MARK: - Grassy Glass Tab Button (HTML Style)
+
+struct GrassyGlassTabButton: View {
+    let icon: String
+    let isSelected: Bool
+    let lime400: Color
+    let emerald100: Color
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            ZStack {
+                // Selected indicator - lime glow pill
+                if isSelected {
+                    Capsule()
+                        .fill(lime400.opacity(0.3))
+                        .frame(width: 56, height: 44)
+                        .overlay(
+                            Capsule()
+                                .stroke(lime400.opacity(0.4), lineWidth: 1)
+                        )
+                        .shadow(color: lime400.opacity(0.5), radius: 15)
+                }
+
+                Image(systemName: isSelected ? "\(icon).fill" : icon)
+                    .font(.system(size: 24, weight: isSelected ? .semibold : .regular))
+                    .foregroundStyle(isSelected ? lime400 : emerald100.opacity(0.6))
+                    .symbolRenderingMode(.hierarchical)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 52)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Liquid Glass Tab Button (Legacy)
 
 struct LiquidGlassTabButton: View {
     @Environment(ThemeService.self) private var themeService
