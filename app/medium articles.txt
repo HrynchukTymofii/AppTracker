@@ -823,3 +823,5 @@ Human Interface Guidelines: Screen Time
 🚀 Wrapping Up
 
 Well done! You’ve successfully implemented a powerful approach to visualize screen time data with the Device Activity Report Extension. 📚
+
+
