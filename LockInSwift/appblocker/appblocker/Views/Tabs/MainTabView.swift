@@ -18,21 +18,24 @@ struct MainTabView: View {
                 HomeView(selectedTab: $selectedTab)
                     .tag(0)
 
-                BlockingView()
+                ScheduleView()
                     .tag(1)
 
-                LockInView()
+                BlockingView()
                     .tag(2)
 
-                StatsView()
+                LockInView()
                     .tag(3)
 
-                ProfileView()
+                StatsView()
                     .tag(4)
+
+                ProfileView()
+                    .tag(5)
             }
 
-            // Custom Glassy Tab Bar
-            glassyTabBar
+            // Custom Liquid Glass Tab Bar
+            liquidGlassTabBar
         }
         .onChange(of: deepLinkTab.wrappedValue) { _, newTab in
             if let tab = newTab {
@@ -50,30 +53,26 @@ struct MainTabView: View {
         }
     }
 
-    // MARK: - Glassy Tab Bar
+    // MARK: - Liquid Glass Tab Bar
 
-    private var glassyTabBar: some View {
+    private var liquidGlassTabBar: some View {
         HStack(spacing: 0) {
             // Home
-            GlassyTabButton(
-                icon: "house.fill",
+            LiquidGlassTabButton(
+                icon: selectedTab == 0 ? "house.fill" : "house",
                 title: L10n.Tab.home,
-                isSelected: selectedTab == 0,
-                isDark: isDark,
-                accentColor: themeService.accentColor
+                isSelected: selectedTab == 0
             ) {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                     selectedTab = 0
                 }
             }
 
-            // Goals
-            GlassyTabButton(
-                icon: "target",
-                title: L10n.Tab.goals,
-                isSelected: selectedTab == 1,
-                isDark: isDark,
-                accentColor: themeService.accentColor
+            // Schedule
+            LiquidGlassTabButton(
+                icon: "calendar",
+                title: L10n.Tab.schedule,
+                isSelected: selectedTab == 1
             ) {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                     selectedTab = 1
@@ -81,144 +80,181 @@ struct MainTabView: View {
             }
 
             // LockIn - Center floating button
-            glassyLockInButton
+            liquidGlassLockInButton
 
             // Stats
-            GlassyTabButton(
-                icon: "chart.bar.fill",
+            LiquidGlassTabButton(
+                icon: selectedTab == 4 ? "chart.bar.fill" : "chart.bar",
                 title: L10n.Tab.stats,
-                isSelected: selectedTab == 3,
-                isDark: isDark,
-                accentColor: themeService.accentColor
-            ) {
-                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                    selectedTab = 3
-                }
-            }
-
-            // Profile
-            GlassyTabButton(
-                icon: "person.fill",
-                title: L10n.Tab.profile,
-                isSelected: selectedTab == 4,
-                isDark: isDark,
-                accentColor: themeService.accentColor
+                isSelected: selectedTab == 4
             ) {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                     selectedTab = 4
                 }
             }
-        }
-        .padding(.horizontal, 4)
-        .padding(.top, 6)
-        .padding(.bottom, 16)
-        .background(
-            ZStack {
-                // Solid base matching app background with Liquid Glass effect
-                RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .fill(isDark ? themeService.backgroundColor(for: colorScheme) : Color.white)
 
-                // Grassy glass gradient for dark mode
+            // Profile
+            LiquidGlassTabButton(
+                icon: selectedTab == 5 ? "person.fill" : "person",
+                title: L10n.Tab.profile,
+                isSelected: selectedTab == 5
+            ) {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    selectedTab = 5
+                }
+            }
+        }
+        .padding(.horizontal, 8)
+        .frame(height: 64)
+        .background(
+            Group {
                 if isDark {
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    // Dark mode: Grassy Glass Nav Bar
+                    Capsule()
                         .fill(
                             LinearGradient(
                                 colors: [
-                                    themeService.accentColor.opacity(0.15),
-                                    themeService.accentColor.opacity(0.08)
+                                    themeService.accentColor.opacity(0.25),
+                                    themeService.accentColor.opacity(0.15)
                                 ],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             )
                         )
                         .background(.ultraThinMaterial)
-                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        .clipShape(Capsule())
+                        .overlay(
+                            Capsule()
+                                .stroke(themeService.accentColor.opacity(0.2), lineWidth: 1)
+                        )
+                        .shadow(color: .black.opacity(0.37), radius: 16, y: 8)
+                        .shadow(color: themeService.accentColor.opacity(0.15), radius: 20, y: 0)
                 } else {
-                    // Light mode: clean glass effect
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    // Light mode: Clean Glass Nav Bar
+                    Capsule()
                         .fill(Color.white.opacity(0.7))
                         .background(.regularMaterial)
-                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        .clipShape(Capsule())
+                        .overlay(
+                            Capsule()
+                                .stroke(Color.white.opacity(0.4), lineWidth: 1)
+                        )
+                        .shadow(color: .black.opacity(0.04), radius: 24, y: 4)
                 }
-
-                // Border
-                RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .stroke(
-                        isDark
-                            ? themeService.accentColor.opacity(0.2)
-                            : Color.white.opacity(0.4),
-                        lineWidth: 1
-                    )
             }
-            .shadow(color: .black.opacity(isDark ? 0.37 : 0.04), radius: isDark ? 16 : 24, y: isDark ? 8 : 4)
-            .shadow(color: isDark ? themeService.accentColor.opacity(0.15) : .clear, radius: 20, y: 0)
         )
-        .padding(.horizontal, 12)
+        .padding(.horizontal, 24)
+        .padding(.bottom, 24)
     }
 
-    // MARK: - Glassy LockIn Center Button
+    // MARK: - Liquid Glass LockIn Center Button
 
-    private var glassyLockInButton: some View {
+    private var liquidGlassLockInButton: some View {
         Button {
             withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                selectedTab = 2
+                selectedTab = 3
             }
         } label: {
-            VStack(spacing: 2) {
-                // Floating gradient button
-                ZStack {
-                    // Bright gradient button
-                    Circle()
-                        .fill(
-                            LinearGradient(
-                                colors: [
-                                    themeService.accentColor.opacity(0.9),
-                                    themeService.accentColor,
-                                    themeService.accentColorDark
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                        .frame(width: 48, height: 48)
-                        .overlay(
-                            // Shine highlight
-                            Circle()
-                                .fill(
-                                    LinearGradient(
-                                        colors: [Color.white.opacity(0.5), Color.clear],
-                                        startPoint: .topLeading,
-                                        endPoint: .center
-                                    )
-                                )
-                                .frame(width: 48, height: 48)
-                        )
-                        .shadow(color: themeService.accentColor.opacity(0.6), radius: 10, y: 4)
+            ZStack {
+                // Glow effect
+                Circle()
+                    .fill(themeService.accentColor.opacity(0.3))
+                    .frame(width: 56, height: 56)
+                    .blur(radius: 8)
 
-                    // Icon - brighter
-                    Image(systemName: "scope")
-                        .font(.system(size: 20, weight: .bold))
-                        .foregroundStyle(.white)
-                }
-                .offset(y: -8)
-                .scaleEffect(selectedTab == 2 ? 1.08 : 1.0)
-
-                Text(L10n.Tab.lockin)
-                    .font(.system(size: 9, weight: .bold))
-                    .foregroundStyle(
-                        selectedTab == 2
-                            ? themeService.accentColor
-                            : (isDark ? Color.white.opacity(0.5) : Color(hex: "94a3b8"))
+                // Main button
+                Circle()
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                themeService.accentColor.opacity(0.9),
+                                themeService.accentColor,
+                                themeService.accentColorDark
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
                     )
-                    .offset(y: -4)
+                    .frame(width: 52, height: 52)
+                    .overlay(
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    colors: [Color.white.opacity(0.4), Color.clear],
+                                    startPoint: .topLeading,
+                                    endPoint: .center
+                                )
+                            )
+                    )
+                    .shadow(color: themeService.accentColor.opacity(0.6), radius: 12, y: 4)
+
+                // Icon
+                Image(systemName: "scope")
+                    .font(.system(size: 22, weight: .bold))
+                    .foregroundStyle(.white)
             }
+            .scaleEffect(selectedTab == 3 ? 1.1 : 1.0)
         }
         .frame(maxWidth: .infinity)
         .buttonStyle(ScaleButtonStyle())
+        .offset(y: -12)
     }
 }
 
-// MARK: - Glassy Tab Button
+// MARK: - Liquid Glass Tab Button
+
+struct LiquidGlassTabButton: View {
+    @Environment(ThemeService.self) private var themeService
+    @Environment(\.colorScheme) private var colorScheme
+
+    let icon: String
+    let title: String
+    let isSelected: Bool
+    let action: () -> Void
+
+    private var isDark: Bool { colorScheme == .dark }
+
+    private var inactiveColor: Color {
+        isDark ? Color.white.opacity(0.4) : Color(hex: "#7D7A74").opacity(0.6)
+    }
+
+    var body: some View {
+        Button(action: action) {
+            ZStack {
+                // Selected indicator (capsule background in dark mode)
+                if isSelected && isDark {
+                    Capsule()
+                        .fill(themeService.accentColor.opacity(0.3))
+                        .overlay(
+                            Capsule()
+                                .stroke(themeService.accentColor.opacity(0.4), lineWidth: 1)
+                        )
+                        .shadow(color: themeService.accentColor.opacity(0.5), radius: 10)
+                        .frame(width: 48, height: 36)
+                }
+
+                Image(systemName: icon)
+                    .font(.system(size: 22))
+                    .foregroundColor(isSelected ? themeService.accentColor : inactiveColor)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 48)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Scale Button Style
+
+struct ScaleButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.92 : 1.0)
+            .animation(.spring(response: 0.2, dampingFraction: 0.6), value: configuration.isPressed)
+    }
+}
+
+// MARK: - Legacy Components (kept for compatibility)
 
 struct GlassyTabButton: View {
     let icon: String
@@ -235,7 +271,6 @@ struct GlassyTabButton: View {
     var body: some View {
         Button(action: action) {
             VStack(spacing: 4) {
-                // Icon with subtle pill background when selected
                 ZStack {
                     if isSelected {
                         Capsule()
@@ -259,18 +294,6 @@ struct GlassyTabButton: View {
         .buttonStyle(ScaleButtonStyle())
     }
 }
-
-// MARK: - Scale Button Style
-
-struct ScaleButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.92 : 1.0)
-            .animation(.spring(response: 0.2, dampingFraction: 0.6), value: configuration.isPressed)
-    }
-}
-
-// MARK: - Legacy Tab Button (kept for reference)
 
 struct TabButton: View {
     let icon: String
