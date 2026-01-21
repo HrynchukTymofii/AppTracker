@@ -13,7 +13,7 @@ struct MainTabView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            // Content
+            // Content - using page style to hide default tab bar
             TabView(selection: $selectedTab) {
                 HomeView(selectedTab: $selectedTab)
                     .tag(0)
@@ -27,9 +27,10 @@ struct MainTabView: View {
                 ProfileView()
                     .tag(3)
             }
+            .tabViewStyle(.page(indexDisplayMode: .never))
 
-            // Custom Liquid Glass Tab Bar
-            liquidGlassTabBar
+            // Custom Grassy Glass Tab Bar
+            grassyGlassTabBar
         }
         .onChange(of: deepLinkTab.wrappedValue) { _, newTab in
             if let tab = newTab {
@@ -47,7 +48,7 @@ struct MainTabView: View {
         }
     }
 
-    // MARK: - Liquid Glass Tab Bar
+    // MARK: - Grassy Glass Tab Bar
 
     // Colors from HTML "apple-grassy-glass" style
     private let emerald500 = Color(red: 16/255, green: 185/255, blue: 129/255)  // #10B981
@@ -56,9 +57,59 @@ struct MainTabView: View {
     private let lime400 = Color(red: 163/255, green: 230/255, blue: 53/255)     // #a3e635
     private let emerald100 = Color(red: 209/255, green: 250/255, blue: 229/255) // #D1FAE5
 
-    private var liquidGlassTabBar: some View {
-        ZStack {
-            // Tab bar background - Apple Grassy Glass
+    private var grassyGlassTabBar: some View {
+        HStack(spacing: 0) {
+            // Home
+            GrassyGlassTabButton(
+                icon: "house",
+                isSelected: selectedTab == 0,
+                lime400: lime400,
+                emerald100: emerald100
+            ) {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    selectedTab = 0
+                }
+            }
+
+            // Schedule
+            GrassyGlassTabButton(
+                icon: "calendar",
+                isSelected: selectedTab == 1,
+                lime400: lime400,
+                emerald100: emerald100
+            ) {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    selectedTab = 1
+                }
+            }
+
+            // Stats
+            GrassyGlassTabButton(
+                icon: "chart.bar",
+                isSelected: selectedTab == 2,
+                lime400: lime400,
+                emerald100: emerald100
+            ) {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    selectedTab = 2
+                }
+            }
+
+            // Profile
+            GrassyGlassTabButton(
+                icon: "person",
+                isSelected: selectedTab == 3,
+                lime400: lime400,
+                emerald100: emerald100
+            ) {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    selectedTab = 3
+                }
+            }
+        }
+        .padding(.horizontal, 8)
+        .frame(height: 64)
+        .background(
             Capsule()
                 .fill(
                     LinearGradient(
@@ -72,71 +123,12 @@ struct MainTabView: View {
                 )
                 .background(.ultraThinMaterial)
                 .clipShape(Capsule())
-                .overlay(
-                    Capsule()
-                        .stroke(emerald400.opacity(0.2), lineWidth: 1)
-                )
-                .shadow(color: .black.opacity(0.37), radius: 16, y: 8)
-                .overlay(
-                    // Inner highlight
-                    Capsule()
-                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
-                        .padding(1)
-                )
-
-            // Tab buttons
-            HStack(spacing: 0) {
-                // Home
-                GrassyGlassTabButton(
-                    icon: "house",
-                    isSelected: selectedTab == 0,
-                    lime400: lime400,
-                    emerald100: emerald100
-                ) {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                        selectedTab = 0
-                    }
-                }
-
-                // Schedule
-                GrassyGlassTabButton(
-                    icon: "calendar",
-                    isSelected: selectedTab == 1,
-                    lime400: lime400,
-                    emerald100: emerald100
-                ) {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                        selectedTab = 1
-                    }
-                }
-
-                // Stats
-                GrassyGlassTabButton(
-                    icon: "chart.bar",
-                    isSelected: selectedTab == 2,
-                    lime400: lime400,
-                    emerald100: emerald100
-                ) {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                        selectedTab = 2
-                    }
-                }
-
-                // Profile
-                GrassyGlassTabButton(
-                    icon: "person",
-                    isSelected: selectedTab == 3,
-                    lime400: lime400,
-                    emerald100: emerald100
-                ) {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                        selectedTab = 3
-                    }
-                }
-            }
-            .padding(.horizontal, 8)
-        }
-        .frame(height: 64)
+        )
+        .overlay(
+            Capsule()
+                .stroke(emerald400.opacity(0.2), lineWidth: 1)
+        )
+        .shadow(color: .black.opacity(0.37), radius: 16, y: 8)
         .padding(.horizontal, 24)
         .padding(.bottom, 24)
     }
