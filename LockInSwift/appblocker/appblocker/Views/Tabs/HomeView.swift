@@ -226,15 +226,9 @@ struct HomeView: View {
         )
     }
 
-    // Liquid glass background matching HTML exactly
+    // Liquid glass background - more transparent
     private var liquidGlassBackground: some View {
-        ZStack {
-            // bg-white/5 from HTML
-            Color.white.opacity(0.05)
-            // Blur material
-            Rectangle()
-                .fill(.ultraThinMaterial)
-        }
+        Color.white.opacity(0.03)
     }
 
     // MARK: - Current Task Card
@@ -341,13 +335,11 @@ struct HomeView: View {
         }
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color.white.opacity(0.03))
-                .background(.ultraThinMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .fill(Color.white.opacity(0.02))
         )
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                .stroke(Color.white.opacity(0.06), lineWidth: 1)
         )
     }
 
@@ -394,13 +386,11 @@ struct HomeView: View {
         VStack(spacing: 8) {
             ZStack {
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(zinc800.opacity(0.8))
+                    .fill(zinc800.opacity(0.5))
                     .frame(width: 56, height: 56)
-                    .background(.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
                     .overlay(
                         RoundedRectangle(cornerRadius: 16)
-                            .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                            .stroke(Color.white.opacity(0.08), lineWidth: 1)
                     )
 
                 Image(systemName: icon)
@@ -419,15 +409,13 @@ struct HomeView: View {
         VStack(spacing: 8) {
             ZStack {
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(primary.opacity(0.2))
+                    .fill(primary.opacity(0.15))
                     .frame(width: 56, height: 56)
-                    .background(.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
                     .overlay(
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(primary.opacity(0.3), lineWidth: 1)
                     )
-                    .shadow(color: primary.opacity(0.6), radius: 10)
+                    .shadow(color: primary.opacity(0.5), radius: 10)
 
                 Image(systemName: "lock.open.fill")
                     .font(.system(size: 26))

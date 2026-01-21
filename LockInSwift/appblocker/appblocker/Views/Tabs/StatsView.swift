@@ -181,7 +181,6 @@ struct StatsView: View {
                         )
                     )
                     .frame(width: 96, height: 96)
-                    .background(.ultraThinMaterial)
                     .clipShape(Circle())
                     .overlay(
                         Circle()
@@ -737,15 +736,7 @@ struct StatsView: View {
     // MARK: - Helper Views
 
     private var liquidGlassBackground: some View {
-        ZStack {
-            RadialGradient(
-                colors: [Color.white.opacity(0.04), Color.white.opacity(0.02)],
-                center: .center,
-                startRadius: 0,
-                endRadius: 200
-            )
-            .background(.ultraThinMaterial)
-        }
+        Color.white.opacity(0.03)
     }
 }
 
