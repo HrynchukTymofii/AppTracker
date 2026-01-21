@@ -191,11 +191,15 @@
 		};
 		84813C0F2F0091CD002FC855 /* appblockerTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = appblockerTests;
 			sourceTree = "<group>";
 		};
 		84813C192F0091CD002FC855 /* appblockerUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = appblockerUITests;
 			sourceTree = "<group>";
 		};
@@ -611,13 +615,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-appblocker/Pods-appblocker-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-appblocker/Pods-appblocker-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -654,13 +654,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-appblocker/Pods-appblocker-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-appblocker/Pods-appblocker-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

@@ -1,3 +1,5 @@
+
+
 import Foundation
 import UIKit
 import Observation
@@ -11,17 +13,21 @@ final class OpenAIService {
     private let model = "gpt-4o"
     private let configURL = "https://www.fibipals.com/api/apps/appBlocker/config"
 
-    // Hardcoded fallback key (used if backend fetch fails)
-    private let fallbackKey = ""
-
-    // Get API key with priority: stored > fallback
+    // Get API key with priority: stored > Info.plist > environment
     private var apiKey: String {
         // First check if we have a key from backend (stored in UserDefaults)
         if let storedKey = UserDefaults.standard.string(forKey: "openai_api_key"), !storedKey.isEmpty {
             return storedKey
         }
-        // Fallback to hardcoded key
-        return fallbackKey
+        // Then check Info.plist (set via .xcconfig or build settings)
+        if let plistKey = Bundle.main.object(forInfoDictionaryKey: "OPENAI_API_KEY") as? String, !plistKey.isEmpty {
+            return plistKey
+        }
+        // Finally check environment variable
+        if let envKey = ProcessInfo.processInfo.environment["OPENAI_API_KEY"], !envKey.isEmpty {
+            return envKey
+        }
+        return ""
     }
 
     var isConfigured: Bool {
