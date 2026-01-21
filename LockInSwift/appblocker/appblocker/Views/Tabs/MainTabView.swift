@@ -50,21 +50,14 @@ struct MainTabView: View {
 
     // MARK: - Grassy Glass Tab Bar
 
-    // Colors from HTML "apple-grassy-glass" style
-    private let emerald500 = Color(red: 16/255, green: 185/255, blue: 129/255)  // #10B981
-    private let emerald600 = Color(red: 5/255, green: 150/255, blue: 105/255)   // #059669
-    private let emerald400 = Color(red: 52/255, green: 211/255, blue: 153/255)  // #34D399
-    private let lime400 = Color(red: 163/255, green: 230/255, blue: 53/255)     // #a3e635
-    private let emerald100 = Color(red: 209/255, green: 250/255, blue: 229/255) // #D1FAE5
-
     private var grassyGlassTabBar: some View {
         HStack(spacing: 0) {
             // Home
-            GrassyGlassTabButton(
+            AccentGlassTabButton(
                 icon: "house",
+                filledIcon: "house.fill",
                 isSelected: selectedTab == 0,
-                lime400: lime400,
-                emerald100: emerald100
+                accentColor: themeService.accentColor
             ) {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                     selectedTab = 0
@@ -72,11 +65,11 @@ struct MainTabView: View {
             }
 
             // Schedule
-            GrassyGlassTabButton(
+            AccentGlassTabButton(
                 icon: "calendar",
+                filledIcon: "calendar",
                 isSelected: selectedTab == 1,
-                lime400: lime400,
-                emerald100: emerald100
+                accentColor: themeService.accentColor
             ) {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                     selectedTab = 1
@@ -84,11 +77,11 @@ struct MainTabView: View {
             }
 
             // Stats
-            GrassyGlassTabButton(
+            AccentGlassTabButton(
                 icon: "chart.bar",
+                filledIcon: "chart.bar.fill",
                 isSelected: selectedTab == 2,
-                lime400: lime400,
-                emerald100: emerald100
+                accentColor: themeService.accentColor
             ) {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                     selectedTab = 2
@@ -96,11 +89,11 @@ struct MainTabView: View {
             }
 
             // Profile
-            GrassyGlassTabButton(
+            AccentGlassTabButton(
                 icon: "person",
+                filledIcon: "person.fill",
                 isSelected: selectedTab == 3,
-                lime400: lime400,
-                emerald100: emerald100
+                accentColor: themeService.accentColor
             ) {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                     selectedTab = 3
@@ -114,8 +107,8 @@ struct MainTabView: View {
                 .fill(
                     LinearGradient(
                         colors: [
-                            emerald500.opacity(0.25),
-                            emerald600.opacity(0.15)
+                            themeService.accentColor.opacity(0.25),
+                            themeService.accentColor.opacity(0.15)
                         ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
@@ -126,7 +119,7 @@ struct MainTabView: View {
         )
         .overlay(
             Capsule()
-                .stroke(emerald400.opacity(0.2), lineWidth: 1)
+                .stroke(themeService.accentColor.opacity(0.2), lineWidth: 1)
         )
         .shadow(color: .black.opacity(0.37), radius: 16, y: 8)
         .padding(.horizontal, 24)
@@ -135,34 +128,33 @@ struct MainTabView: View {
 
 }
 
-// MARK: - Grassy Glass Tab Button (HTML Style)
+// MARK: - Accent Glass Tab Button (uses theme accent color)
 
-struct GrassyGlassTabButton: View {
+struct AccentGlassTabButton: View {
     let icon: String
+    let filledIcon: String
     let isSelected: Bool
-    let lime400: Color
-    let emerald100: Color
+    let accentColor: Color
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             ZStack {
-                // Selected indicator - lime glow pill
+                // Selected indicator - accent glow pill
                 if isSelected {
                     Capsule()
-                        .fill(lime400.opacity(0.3))
+                        .fill(accentColor.opacity(0.3))
                         .frame(width: 56, height: 44)
                         .overlay(
                             Capsule()
-                                .stroke(lime400.opacity(0.4), lineWidth: 1)
+                                .stroke(accentColor.opacity(0.4), lineWidth: 1)
                         )
-                        .shadow(color: lime400.opacity(0.5), radius: 15)
+                        .shadow(color: accentColor.opacity(0.5), radius: 15)
                 }
 
-                Image(systemName: isSelected ? "\(icon).fill" : icon)
+                Image(systemName: isSelected ? filledIcon : icon)
                     .font(.system(size: 24, weight: isSelected ? .semibold : .regular))
-                    .foregroundStyle(isSelected ? lime400 : emerald100.opacity(0.6))
-                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(isSelected ? accentColor : .white.opacity(0.6))
             }
             .frame(maxWidth: .infinity)
             .frame(height: 52)
