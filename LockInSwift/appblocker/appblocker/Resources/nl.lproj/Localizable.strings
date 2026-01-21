@@ -1,0 +1,965 @@
+/*
+  Localizable.strings
+  LockIn
+
+  Dutch Localization
+*/
+
+// MARK: - Common
+"common.done" = "Klaar";
+"common.cancel" = "Annuleren";
+"common.save" = "Opslaan";
+"common.edit" = "Bewerken";
+"common.close" = "Sluiten";
+"common.back" = "Terug";
+"common.next" = "Volgende";
+"common.skip" = "Overslaan";
+"common.continue" = "Doorgaan";
+"common.error" = "Fout";
+"common.success" = "Succes";
+"common.loading" = "Laden...";
+"common.retry" = "Opnieuw";
+"common.get_started" = "Aan de slag";
+"common.of" = "van";
+
+// MARK: - Tab Bar
+"tab.home" = "Home";
+"tab.goals" = "Doelen";
+"tab.lockin" = "LockIn";
+"tab.stats" = "Statistieken";
+"tab.profile" = "Profiel";
+
+// MARK: - Home
+"home.greeting" = "Goede %@";
+"home.morning" = "morgen";
+"home.afternoon" = "middag";
+"home.evening" = "avond";
+"home.help" = "Help";
+"home.health_score" = "Gezondheid";
+"home.today_progress" = "Voortgang Vandaag";
+"home.screen_time" = "Schermtijd";
+"home.earned_time" = "Verdiend";
+"home.top_apps" = "Meest Gebruikte Apps";
+"home.daily_goal" = "Dagelijks Doel";
+"home.change" = "Wijzigen";
+"home.upcoming" = "Gepland";
+"home.see_all" = "Alles Bekijken";
+"home.create_schedule" = "Schema Maken";
+"home.set_times_unblocked" = "Stel tijden in wanneer apps gedeblokkeerd zijn";
+"home.unblocked" = "Gedeblokkeerd";
+"home.every_day" = "Elke dag";
+"home.weekdays" = "Werkdagen";
+"home.weekends" = "Weekenden";
+
+// MARK: - Today's Progress
+"progress.todays_progress" = "Voortgang van Vandaag";
+"progress.earn" = "Verdien";
+"progress.spent" = "Besteed";
+"progress.earned" = "Verdiend";
+"progress.balance" = "Saldo";
+"progress.this_week" = "Deze Week";
+
+// MARK: - LockIn (Earn Time)
+"lockin.title" = "Verdien Schermtijd";
+"lockin.subtitle" = "Voltooi oefeningen om app-tijd te ontgrendelen";
+"lockin.balance" = "Schermtijd Saldo";
+"lockin.minutes" = "min";
+"lockin.earn" = "Verdien";
+"lockin.earn_time" = "VERDIEN TIJD";
+"lockin.transaction_history" = "Transactiegeschiedenis";
+"lockin.no_activity" = "Nog geen activiteit";
+"lockin.complete_exercises" = "Voltooi oefeningen om tijd te verdienen";
+"lockin.today" = "Vandaag:";
+"lockin.earned" = "verdiend";
+"lockin.spent" = "besteed";
+"lockin.week" = "Week:";
+"lockin.task_in_progress" = "Taak in Uitvoering";
+"lockin.continue" = "Doorgaan";
+"lockin.recent_activity" = "RECENTE ACTIVITEIT";
+"lockin.resets_in_hours" = "Reset in %du";
+"lockin.favorites" = "Favorieten";
+"lockin.all_exercises" = "Alle oefeningen";
+"lockin.double_tap_add" = "Dubbeltik om toe te voegen";
+"lockin.double_tap_remove" = "Dubbeltik om te verwijderen";
+
+// MARK: - Exercises
+"exercise.pushups" = "Push-ups";
+"exercise.squats" = "Squats";
+"exercise.plank" = "Plank";
+"exercise.jumping_jacks" = "Jumping Jacks";
+"exercise.lunges" = "Lunges";
+"exercise.crunches" = "Crunches";
+"exercise.shoulder_press" = "Schouderpers";
+"exercise.leg_raises" = "Beenheffen";
+"exercise.high_knees" = "Hoge knieën";
+"exercise.pull_ups" = "Pull-ups";
+"exercise.wall_sit" = "Wandzit";
+"exercise.side_plank" = "Zijplank";
+"exercise.photo_task" = "Foto Taak";
+"exercise.focus_mode" = "Focusmodus";
+"exercise.custom" = "Aangepaste Taak";
+"exercise.min_per_rep" = "min/rep";
+"exercise.min_per_sec" = "min/sec";
+"exercise.camera_required" = "Camera Toegang Vereist";
+"exercise.open_settings" = "Open Instellingen";
+"exercise.enable_camera" = "Camera Inschakelen";
+"exercise.great_job" = "Goed Gedaan!";
+"exercise.leg_day_champion" = "Beendag Kampioen!";
+"exercise.core_of_steel" = "Kern van Staal!";
+"exercise.min_earned" = "+%@ min verdiend";
+"exercise.do_pushups" = "Doe Push-ups";
+"exercise.do_squats" = "Doe Squats";
+"exercise.hold_plank" = "Houd Plank";
+"exercise.pushup_instructions" = "Plaats je telefoon zodat de camera je bovenlichaam van opzij kan zien.";
+"exercise.squat_instructions" = "Sta voor je telefoon zodat hij je hele lichaam van opzij kan zien.";
+"exercise.plank_instructions" = "Plaats je telefoon om je hele lichaam van opzij te zien. Houd je lichaam recht!";
+"exercise.start_pushups" = "Start Push-ups";
+"exercise.start_squats" = "Start Squats";
+"exercise.start_plank" = "Start Plank";
+"exercise.do_some_pushups" = "Doe wat push-ups...";
+"exercise.do_some_squats" = "Doe wat squats...";
+"exercise.hold_the_plank" = "Houd de plank...";
+"exercise.pushups_label" = "PUSH-UPS";
+"exercise.squats_label" = "SQUATS";
+"exercise.seconds" = "SECONDEN";
+"exercise.down" = "OMLAAG";
+"exercise.up" = "OMHOOG";
+"exercise.holding" = "VASTHOUDEN";
+"exercise.get_in_position" = "NEEM POSITIE IN";
+"exercise.paused" = "GEPAUZEERD";
+"exercise.paused_get_back" = "GEPAUZEERD - Ga terug in positie";
+"exercise.timer_pauses_info" = "Timer pauzeert als je uit beeld gaat";
+"exercise.camera_tracking_pushups" = "Om je push-ups te volgen, hebben we toegang tot je camera nodig.";
+"exercise.camera_tracking_squats" = "Om je squats te volgen, hebben we toegang tot je camera nodig.";
+"exercise.camera_tracking_plank" = "Om je plank te volgen, hebben we toegang tot je camera nodig.";
+"exercise.did_pushups" = "Je deed %d push-ups!";
+"exercise.did_squats" = "Je deed %d squats!";
+"exercise.held_for_seconds" = "Je hield het %d seconden vol!";
+"exercise.finish_with_reward" = "Voltooien (+%@ min)";
+"exercise.photo_task_desc" = "Voltooi een taak en verifieer met foto's om schermtijd te verdienen";
+"exercise.describe_task" = "BESCHRIJF JE TAAK";
+"exercise.task_placeholder" = "Wat ga je doen? (bijv. Mijn kamer opruimen)";
+"exercise.or_choose_preset" = "OF KIES EEN VOORINSTELLING";
+"exercise.camera_permission_message" = "We hebben camera-toegang nodig om je oefeningen te verifiëren en je voortgang te volgen.";
+"exercise.camera_photo_task_message" = "Om foto's voor taakverificatie te maken, hebben we camera-toegang nodig.";
+"exercise.before_photo" = "Voor Foto";
+"exercise.after_photo" = "Na Foto";
+"exercise.show_completed" = "Toon je voltooide taak";
+"exercise.take_starting_photo" = "Maak een foto van je startpunt";
+"exercise.before" = "Voor";
+"exercise.after" = "Na";
+"exercise.proof" = "Bewijs";
+"exercise.go_complete_task" = "Ga je taak voltooien!";
+"exercise.done_after_photo" = "Klaar - Maak Na Foto";
+"exercise.done_verify_task" = "Klaar - Verifieer Taak";
+"exercise.task_verified" = "Taak geverifieerd!";
+"exercise.type_message" = "Typ een bericht...";
+"exercise.complete_anyway" = "Toch Voltooien (+%d min)";
+"exercise.reps" = "reps";
+"exercise.seconds_unit" = "seconden";
+"exercise.reward_per_rep" = "%.1f min/rep (min %d), +%.1f na %d";
+"exercise.reward_per_sec" = "%.1f min/sec (min %ds), +%.1f na %ds";
+"exercise.verify_task" = "Verifieer taakvoltooiing";
+"exercise.reward_per_unit" = "%.1f min per eenheid";
+
+// Photo Task Presets
+"exercise.preset.clean_room" = "Kamer opruimen";
+"exercise.preset.do_dishes" = "Afwassen";
+"exercise.preset.make_bed" = "Bed opmaken";
+"exercise.preset.organize_desk" = "Bureau opruimen";
+"exercise.preset.take_walk" = "Wandelen";
+"exercise.preset.read_book" = "Boek lezen";
+"exercise.preset.meditate" = "Mediteren";
+"exercise.preset.stretch" = "Stretchen";
+"exercise.preset.drink_water" = "Water drinken";
+"exercise.preset.healthy_meal" = "Gezond eten";
+
+// MARK: - Focus Mode
+"focus.title" = "Focusmodus";
+"focus.deep_focus" = "Diepe Focus";
+"focus.description" = "Blokkeer alle afleidingen en focus op wat belangrijk is";
+"focus.session_duration" = "Sessieduur";
+"focus.apps_blocked" = "Alle geselecteerde apps worden geblokkeerd";
+"focus.earn_info" = "Verdien %@ minuten bij voltooiing";
+"focus.earn_minutes" = "Verdien %d minuten bij voltooiing";
+"focus.no_interruptions" = "Blijf gefocust zonder onderbrekingen";
+"focus.start" = "Start Focussessie";
+"focus.remaining" = "Resterend";
+"focus.paused" = "Gepauzeerd";
+"focus.active" = "Focus Actief";
+"focus.all_blocked" = "Alle apps zijn geblokkeerd";
+"focus.end" = "Beëindigen";
+"focus.pause" = "Pauzeren";
+"focus.resume" = "Hervatten";
+"focus.add_time" = "+5min";
+"focus.complete" = "Geweldige Focus!";
+"focus.completed_session" = "Je hebt een focussessie van %d minuten voltooid";
+"focus.time_earned" = "Tijd Verdiend";
+"focus.cancel" = "Annuleren";
+"focus.focus_session" = "Focussessie";
+"focus.session_paused" = "Sessie Gepauzeerd";
+"focus.focus_active" = "Focus Actief";
+"focus.minutes" = "+%@ minuten";
+
+// MARK: - Profile
+"profile.settings" = "Instellingen";
+"profile.achievements" = "Prestaties";
+"profile.blocked_items" = "Geblokkeerde Items";
+"profile.blocked_items_desc" = "Apps en categorieën die je hebt geblokkeerd";
+"profile.app_settings" = "App Instellingen";
+"profile.unlock_window" = "Ontgrendelvenster";
+"profile.unlock_window_desc" = "Hoe lang je toegang krijgt bij gebruik van verdiende tijd";
+"profile.daily_goal" = "Dagelijks Doel";
+"profile.daily_goal_desc" = "Maximale schermtijd per dag toegestaan";
+"profile.default_app_limit" = "Standaard App Limiet";
+"profile.default_app_limit_desc" = "Standaard dagelijkse limiet voor nieuwe geblokkeerde apps";
+"profile.theme" = "Thema";
+"profile.accent_color" = "Accentkleur";
+"profile.notifications" = "Meldingen";
+"profile.contact_us" = "Contact Opnemen";
+"profile.rate_us" = "Beoordeel Ons";
+"profile.logout" = "Uitloggen";
+"profile.apps" = "apps";
+"profile.categories" = "categorieën";
+"profile.min" = "min";
+"profile.pro" = "PRO";
+
+// MARK: - Stats
+"stats.streak" = "Reeks";
+"stats.tasks" = "Taken";
+"stats.days" = "dagen";
+"stats.total_earned" = "Totaal Verdiend";
+"stats.total_spent" = "Totaal Besteed";
+"stats.weekly_stats" = "Wekelijkse Statistieken";
+"stats.today" = "Vandaag";
+"stats.this_week" = "Deze Week";
+"stats.last_week" = "Vorige Week";
+"stats.daily_avg" = "Dagelijks Gem.";
+"stats.vs_last_week" = "VS VORIGE WEEK";
+"stats.less_screen_time" = "minder schermtijd";
+"stats.more_screen_time" = "meer schermtijd";
+"stats.share_progress" = "Deel Je Voortgang";
+"stats.share" = "Delen";
+
+// MARK: - Achievements
+"achievements.title" = "Prestaties";
+"achievements.unlocked" = "Prestaties Ontgrendeld";
+"achievements.category.streak" = "Reeks";
+"achievements.category.tasks" = "Taken";
+"achievements.category.time_earned" = "Tijd Verdiend";
+"achievements.category.health" = "Gezondheid";
+"achievements.category.balance" = "Balans";
+"achievements.category.special" = "Speciaal";
+"achievements.category.all" = "Alle";
+
+// Achievement Names and Descriptions
+"achievement.streak_1.name" = "Eerste Vlam";
+"achievement.streak_1.desc" = "Voltooi je eerste dag";
+"achievement.streak_3.name" = "Op Weg";
+"achievement.streak_3.desc" = "3-daagse reeks";
+"achievement.streak_7.name" = "Week Strijder";
+"achievement.streak_7.desc" = "7-daagse reeks";
+"achievement.streak_14.name" = "Twee Weken Kampioen";
+"achievement.streak_14.desc" = "14-daagse reeks";
+"achievement.streak_30.name" = "Maand Meester";
+"achievement.streak_30.desc" = "30-daagse reeks";
+"achievement.streak_60.name" = "Reeks Legende";
+"achievement.streak_60.desc" = "60-daagse reeks";
+
+"achievement.tasks_1.name" = "Eerste Stappen";
+"achievement.tasks_1.desc" = "Voltooi 1 taak";
+"achievement.tasks_5.name" = "Taak Aanpakker";
+"achievement.tasks_5.desc" = "Voltooi 5 taken";
+"achievement.tasks_10.name" = "Bezig Bezig";
+"achievement.tasks_10.desc" = "Voltooi 10 taken";
+"achievement.tasks_25.name" = "Productiviteits Pro";
+"achievement.tasks_25.desc" = "Voltooi 25 taken";
+"achievement.tasks_50.name" = "Taak Machine";
+"achievement.tasks_50.desc" = "Voltooi 50 taken";
+"achievement.tasks_100.name" = "Century Club";
+"achievement.tasks_100.desc" = "Voltooi 100 taken";
+
+"achievement.time_5.name" = "Eerste Minuten";
+"achievement.time_5.desc" = "Verdien 5 minuten";
+"achievement.time_30.name" = "Tijd Bouwer";
+"achievement.time_30.desc" = "Verdien 30 minuten totaal";
+"achievement.time_60.name" = "Uur Held";
+"achievement.time_60.desc" = "Verdien 1 uur totaal";
+"achievement.time_180.name" = "Tijd Titaan";
+"achievement.time_180.desc" = "Verdien 3 uur totaal";
+"achievement.time_600.name" = "Tijd Meester";
+"achievement.time_600.desc" = "Verdien 10 uur totaal";
+"achievement.time_1800.name" = "Tijd Legende";
+"achievement.time_1800.desc" = "Verdien 30 uur totaal";
+
+"achievement.health_60.name" = "Op de Weg Omhoog";
+"achievement.health_60.desc" = "Bereik gezondheidsscore 60";
+"achievement.health_70.name" = "Goede Vibes";
+"achievement.health_70.desc" = "Bereik gezondheidsscore 70";
+"achievement.health_80.name" = "Uitstekend";
+"achievement.health_80.desc" = "Bereik gezondheidsscore 80";
+"achievement.health_90.name" = "Perfecte Vorm";
+"achievement.health_90.desc" = "Bereik gezondheidsscore 90";
+
+"achievement.balance_30.name" = "Spaarder";
+"achievement.balance_30.desc" = "Spaar 30 minuten saldo";
+"achievement.balance_120.name" = "Tijdbank Elite";
+"achievement.balance_120.desc" = "Spaar 2 uur saldo";
+
+// MARK: - Goals / Blocking
+"goals.title" = "Doelen";
+"goals.today_usage" = "APP GEBRUIK VANDAAG";
+"goals.loading" = "Gebruiksgegevens laden...";
+"goals.screen_time_required" = "Schermtijd Toegang Vereist";
+"goals.screen_time_description" = "LockIn heeft Schermtijd toestemming nodig om apps te blokkeren en je gebruik te volgen.";
+"goals.grant_access" = "Toegang Verlenen";
+"goals.requesting" = "Aanvragen...";
+"goals.blocked_apps" = "GEBLOKKEERDE APPS";
+"goals.selected" = "geselecteerd";
+"goals.select_apps_to_block" = "Selecteer Apps om te Blokkeren";
+"goals.choose_apps" = "Kies apps en categorieën die je wilt blokkeren. Je kunt dit altijd wijzigen.";
+"goals.app_limits" = "APP LIMIETEN";
+"goals.apps" = "apps";
+"goals.no_limits_set" = "Geen App Limieten Ingesteld";
+"goals.set_daily_limits" = "Stel dagelijkse tijdlimieten in voor specifieke apps om je schermtijd beter te beheren.";
+"goals.add_app_limit" = "App Limiet Toevoegen";
+"goals.add_another_limit" = "Nog een Limiet Toevoegen";
+"goals.set_limits" = "Limieten Instellen";
+"goals.daily_app_limits" = "Dagelijkse App Limieten";
+"goals.limit_description" = "Stel maximaal dagelijks gebruik in voor elke app. Deze limiet kan niet worden overschreden, zelfs niet met verdiende tijd.";
+"goals.select_apps_limits" = "Selecteer apps om dagelijkse limieten in te stellen";
+"goals.no_limits_yet" = "Geen app limieten ingesteld";
+"goals.add_limit_hint" = "Tik op \"App Limiet Toevoegen\" om limieten voor specifieke apps in te stellen";
+"goals.limits_reset_info" = "Limieten worden dagelijks om middernacht gereset. Gebruik wordt automatisch bijgehouden wanneer je geblokkeerde apps opent.";
+"goals.daily_limit_for" = "Dagelijkse Limiet voor";
+"goals.of" = "van";
+"goals.limit_reached" = "Limiet Bereikt";
+"goals.min_daily_limit" = "min dagelijkse limiet";
+"goals.edit" = "Bewerken";
+"goals.remove_limit" = "Limiet Verwijderen";
+"goals.cancel" = "Annuleren";
+"goals.done" = "Klaar";
+"goals.save" = "Opslaan";
+"goals.minutes" = "minuten";
+"goals.share_progress" = "Voortgang Delen";
+"goals.used" = "Gebruikt";
+"goals.goal" = "Doel";
+"goals.left" = "Over";
+"goals.of_goal" = "van doel";
+"goals.daily_app_limits_desc" = "Stel maximaal dagelijks gebruik in voor elke app. Deze limiet kan niet worden overschreden, zelfs niet met verdiende tijd.";
+"goals.select_apps_to_set_limits" = "Selecteer apps om dagelijkse limieten in te stellen";
+"goals.no_app_limits_set" = "Geen app limieten ingesteld";
+"goals.tap_to_set_limits" = "Tik op \"App Limiet Toevoegen\" om limieten voor specifieke apps in te stellen";
+"goals.of_minutes" = "van %dmin";
+"goals.minutes_count" = "%d minuten";
+"goals.min_daily_limit" = "%d min dagelijkse limiet";
+
+// MARK: - Shield Screen
+"shield.ready_to_unlock" = "Klaar om te Ontgrendelen";
+"shield.app_blocked" = "App Geblokkeerd";
+"shield.almost_there" = "Bijna Daar";
+"shield.times_up" = "Tijd Om";
+"shield.goal_complete" = "Doel Voltooid!";
+"shield.daily_goal_reached" = "Dagelijks Doel Bereikt";
+"shield.unlock" = "Ontgrendel %dmin";
+"shield.stay_focused" = "Blijf Gefocust";
+"shield.earn_time" = "Verdien Tijd";
+"shield.earn_more_time" = "Verdien Meer Tijd";
+"shield.talk_to_coach" = "Praat met Coach";
+"shield.close" = "Sluiten";
+"shield.site_limit_reached" = "Sitelimiet Bereikt";
+"shield.not_enough_time" = "Niet Genoeg Tijd";
+"shield.no_time_available" = "Geen Tijd Beschikbaar";
+"shield.unlock_minutes" = "Ontgrendel %dm";
+"shield.unlock_for_minutes" = "Ontgrendel voor %dm";
+"shield.earn_time_now" = "Verdien Nu Tijd";
+
+// Shield Descriptions - App
+"shield.goal_complete_desc" = "Je hebt je dagelijkse schermtijd doel bereikt.\n\nKlaar voor een pauze? Je AI coach kan je helpen bonustijd te verdienen.";
+"shield.time_up_desc" = "Je hebt al je tijd voor %@ vandaag gebruikt.\n\nPraat met je AI coach over betere gewoontes.";
+"shield.ready_unlock_desc" = "%@ is geblokkeerd.\n\nJe hebt %@ verdiend.\nOntgrendelen kost %dm van je saldo.";
+"shield.almost_there_desc" = "%@ is geblokkeerd.\n\nJe hebt %@ maar hebt %dm nodig.\nVerdien nog %@ om te ontgrendelen.";
+"shield.app_blocked_desc" = "%@ is geblokkeerd.\n\nVoltooi oefeningen om schermtijd te verdienen.\nJe hebt %dm nodig om te ontgrendelen.";
+
+// Shield Descriptions - Web
+"shield.daily_goal_reached_desc" = "Je hebt je schermtijd doel voor vandaag bereikt.\n\nPraat met je AI coach om bonustijd te verdienen.";
+"shield.site_limit_desc" = "Je hebt al je browsetijd vandaag gebruikt.\n\nPraat met je AI coach over betere gewoontes.";
+"shield.web_ready_unlock_desc" = "%@ is geblokkeerd.\n\nJe hebt %@ verdiend.\nOntgrendelen kost %dm van je tijd.";
+"shield.web_not_enough_desc" = "%@ is geblokkeerd.\n\nJe hebt %@ maar hebt %dm nodig.\nVerdien nog %@ om te ontgrendelen.";
+"shield.web_no_time_desc" = "%@ is geblokkeerd.\n\nVoltooi oefeningen om schermtijd te verdienen.\nJe hebt %dm nodig om te ontgrendelen.";
+
+// MARK: - Contact Us
+"contact.title" = "Contact Opnemen";
+"contact.header" = "We horen graag van je!";
+"contact.description" = "Heb je vragen, feedback of hulp nodig? Neem contact op en we reageren zo snel mogelijk.";
+"contact.email_label" = "Stuur ons een e-mail";
+"contact.send_email" = "Verstuur E-mail";
+"contact.get_in_touch" = "Neem Contact Op";
+"contact.love_to_hear" = "We horen graag van je! Deel feedback, meld een bug of stel een vraag.";
+"contact.your_message" = "Je Bericht";
+"contact.placeholder" = "Vertel ons wat je denkt...";
+"contact.send_message" = "Verstuur Bericht";
+"contact.email_directly" = "Of mail ons direct op:";
+
+// MARK: - Rate Us
+"rate.title" = "Beoordeel Ons";
+"rate.how_enjoying" = "Hoe bevalt LockIn je?";
+"rate.tap_to_rate" = "Tik op een ster om te beoordelen";
+"rate.feedback" = "Vertel ons hoe we kunnen verbeteren";
+"rate.feedback_placeholder" = "Je feedback helpt ons LockIn te verbeteren...";
+"rate.submit" = "Feedback Verzenden";
+"rate.rating_1" = "We kunnen beter";
+"rate.rating_2" = "Werk nodig";
+"rate.rating_3" = "Het is oké";
+"rate.rating_4" = "Behoorlijk goed!";
+"rate.rating_5" = "Geweldig!";
+"rate.enjoying" = "Bevalt LockIn je?";
+"rate.love_to_hear" = "We horen graag wat je denkt! Je feedback helpt ons verbeteren.";
+"rate.can_do_better" = "We kunnen beter";
+"rate.needs_improvement" = "Verbetering nodig";
+"rate.its_okay" = "Het is oké";
+"rate.really_good" = "Echt goed!";
+"rate.love_it" = "Geweldig!";
+"rate.how_improve" = "Vertel ons hoe we kunnen verbeteren";
+"rate.what_better" = "Wat kunnen we beter doen?";
+"rate.rate_app_store" = "Beoordeel in App Store";
+"rate.send_feedback" = "Feedback Verzenden";
+
+// MARK: - Help Tips
+"help.tip1.title" = "Jouw digitale welzijn";
+"help.tip1.desc" = "LockIn herprogrammeert je brein voor langdurige focus. Zie je Gezondheidsscore groeien terwijl je betere gewoontes opbouwt.";
+"help.tip2.title" = "Volg je voortgang";
+"help.tip2.desc" = "Bekijk je reeks, dagelijks gebruik en hoe je je verhoudt tot je gemiddelde. Kleine overwinningen leiden tot grote veranderingen.";
+"help.tip3.title" = "Verdien schermtijd";
+"help.tip3.desc" = "Voltooi oefeningen zoals push-ups, squats en planks om bonusschermtijd te verdienen. Beweeg je lichaam, bevrijd je geest.";
+"help.tip4.title" = "Stel dagelijkse doelen";
+"help.tip4.desc" = "Kies een schermtijdlimiet en zie je voortgangsring vollopen. Blijf onder je doel om blijvende gewoontes op te bouwen.";
+"help.tip5.title" = "Blokkeer afleidingen";
+"help.tip5.desc" = "Selecteer apps om te blokkeren wanneer je je limiet bereikt. Neem controle over je aandacht en focus op wat belangrijk is.";
+"help.tip6.title" = "Bekijk je statistieken";
+"help.tip6.desc" = "Bekijk je wekelijkse patronen en trends. Je gebruik begrijpen is de eerste stap om het te veranderen.";
+"help.set_daily_goal" = "Stel Je Dagelijks Doel In";
+"help.set_daily_goal_desc" = "Kies een schermtijdlimiet in Profiel. Blijf eronder om gezonde gewoontes op te bouwen.";
+"help.earn_screen_time" = "Verdien Schermtijd";
+"help.earn_screen_time_desc" = "Ga naar de LockIn tab en voltooi oefeningen - doe push-ups, squats, planks of fototaken!";
+"help.focus_mode" = "Focusmodus";
+"help.focus_mode_desc" = "Start een Pomodoro sessie om alle apps te blokkeren en verdien 0.5 minuten voor elke minuut focus.";
+"help.block_apps" = "Blokkeer Afleidende Apps";
+"help.block_apps_desc" = "Ga naar de Doelen tab en selecteer apps om te blokkeren. Stel ook per-app tijdlimieten in.";
+"help.talk_to_coach" = "Praat met Je Coach";
+"help.talk_to_coach_desc" = "Dagelijkse limiet bereikt? Chat met de AI coach om te reflecteren en bonustijd te verdienen.";
+"help.track_progress" = "Volg Je Voortgang";
+"help.track_progress_desc" = "Bekijk de Statistieken tab om je Gezondheidsscore te zien verbeteren terwijl je betere gewoontes opbouwt.";
+
+// MARK: - Quick Actions
+"quick_actions.title" = "Snelle Acties";
+"quick_actions.focus_mode" = "Focusmodus";
+"quick_actions.pomodoro_timer" = "Pomodoro timer";
+"quick_actions.hold_for_time" = "Houd voor tijd";
+"quick_actions.earn_per_rep" = "Verdien %@ min/rep";
+"quick_actions.verify_with_photo" = "Verifieer met foto";
+
+// MARK: - Time Formatting
+"time.minutes" = "%d minuten";
+"time.hours" = "%d uur";
+"time.hours_minutes" = "%du %dmin";
+"time.today" = "vandaag";
+
+// MARK: - Errors
+"error.camera_permission" = "Camera toestemming is vereist voor fototaken.";
+"error.no_apps_selected" = "Selecteer minstens één app om te blokkeren.";
+"error.insufficient_time" = "Je hebt niet genoeg verdiende tijd.";
+
+// MARK: - Settings
+"settings.title" = "Instellingen";
+"settings.accent_color" = "Accentkleur";
+"settings.appearance" = "Uiterlijk";
+"settings.language" = "Taal";
+"settings.current_language" = "Huidige Taal";
+"settings.select_language" = "Selecteer Taal";
+"settings.change_password" = "Wachtwoord Wijzigen";
+"settings.enter_new_password" = "Voer nieuw wachtwoord in";
+"settings.save_changes" = "Wijzigingen Opslaan";
+"settings.danger_zone" = "GEVARENZONE";
+"settings.delete_account" = "Account Verwijderen";
+"settings.delete_account_confirm" = "Typ 'Delete' om te bevestigen";
+"settings.delete_account_warning" = "Deze actie is onomkeerbaar. Typ 'Delete' om te bevestigen.";
+"settings.type_delete" = "Delete";
+
+// Theme Modes
+"settings.theme.light" = "Licht";
+"settings.theme.dark" = "Donker";
+"settings.theme.system" = "Systeem";
+
+// Accent Colors
+"settings.color.blue" = "Blauw";
+"settings.color.purple" = "Paars";
+"settings.color.green" = "Groen";
+"settings.color.orange" = "Oranje";
+"settings.color.pink" = "Roze";
+"settings.color.red" = "Rood";
+"settings.color.teal" = "Blauwgroen";
+"settings.color.indigo" = "Indigo";
+
+// MARK: - Onboarding
+"onboarding.hello" = "Hallo!";
+"onboarding.welcome_to" = "Welkom bij";
+"onboarding.ready_to_help" = "We staan klaar om je te helpen met";
+"onboarding.taking_control" = "controle nemen over je tijd";
+"onboarding.lets_start" = "Laten We Beginnen";
+"onboarding.how_old" = "Hoe oud ben je?";
+"onboarding.personalize_exp" = "Dit helpt ons je ervaring te personaliseren";
+"onboarding.daily_screen_time" = "Dagelijkse schermtijd?";
+"onboarding.be_honest" = "Wees eerlijk - we oordelen niet";
+"onboarding.bad_news_good_news" = "We hebben slecht nieuws\nen goed nieuws";
+"onboarding.show_something" = "Laat ons je iets belangrijks tonen over je schermtijd...";
+"onboarding.show_me" = "Toon Mij";
+"onboarding.the_bad_news" = "HET SLECHTE NIEUWS";
+"onboarding.the_good_news" = "HET GOEDE NIEUWS";
+"onboarding.at_hours_per_day" = "Met %d uur per dag, zul je";
+"onboarding.looking_at_phone" = "naar je telefoon kijken DIT JAAR";
+"onboarding.thats_approx" = "Dat is ongeveer";
+"onboarding.of_your_life" = "van je leven";
+"onboarding.you_read_right" = "Ja, je leest dit goed. Je besteedt het grootste deel van je vrije tijd aan je telefoon terwijl je je doelen kunt bereiken en het leven kunt leiden dat je wilt.";
+"onboarding.whats_good_news" = "Wat is het goede nieuws?";
+"onboarding.can_help_get_back" = "LockIn kan je helpen terugkrijgen";
+"onboarding.turn_into_things" = "En ze omzetten in de dingen die je altijd wilde bereiken.\n\nMeer tijd voor je doelen, je passies en de mensen van wie je houdt.";
+"onboarding.lets_get_started" = "Laten We Beginnen";
+"onboarding.first_step" = "Laten we de eerste stap zetten";
+"onboarding.connect_screen_time" = "LockIn zal verbinding maken met je schermtijd om je een ";
+"onboarding.personalized_report" = "gepersonaliseerd focusrapport te geven";
+"onboarding.see_real_usage" = "Zie je echte gebruiksgegevens";
+"onboarding.get_recommendations" = "Krijg gepersonaliseerde aanbevelingen";
+"onboarding.track_progress" = "Volg je voortgang in de tijd";
+"onboarding.enable_screen_time" = "Schakel Schermtijd\n& App Blokkering In";
+"onboarding.secure_on_phone" = "100% van de info is veilig en blijft op je telefoon";
+"onboarding.permission_granted" = "Toestemming verleend!";
+"onboarding.what_happens_next" = "Wat er nu gebeurt:";
+"onboarding.tap_continue" = "Tik op \"Doorgaan\" om Schermtijd toegang te autoriseren";
+"onboarding.select_apps" = "Selecteer apps en categorieën die je wilt blokkeren";
+"onboarding.tap_done" = "Tik op \"Klaar\" om je selectie te bevestigen";
+"onboarding.enable_app_blocking" = "App Blokkering Inschakelen";
+"onboarding.ready_to_block" = "Klaar om apps te blokkeren!";
+"onboarding.shield_when_open" = "Je geblokkeerde apps tonen een schild wanneer je ze probeert te openen.";
+"onboarding.stay_active_earn" = "Blijf Actief, Verdien Tijd";
+"onboarding.complete_exercises_earn" = "Voltooi oefeningen en taken om schermtijd te verdienen voor je geblokkeerde apps.";
+"onboarding.heres_reality" = "Hier Is Je Realiteit";
+"onboarding.based_on_usage" = "Gebaseerd op je daadwerkelijke telefoongebruik";
+"onboarding.todays_screen_time" = "SCHERMTIJD VANDAAG";
+"onboarding.this_week" = "DEZE WEEK";
+"onboarding.life_on_phone" = "Leven op telefoon";
+"onboarding.at_this_rate" = "In dit tempo zul je ";
+"onboarding.lets_fix_this" = "Laten We Dit Oplossen";
+"onboarding.your_potential" = "Jouw Potentieel";
+"onboarding.see_how_much" = "Zie hoeveel tijd je zou kunnen besparen";
+"onboarding.reduce_by" = "Verminder schermtijd met %d%%";
+"onboarding.weekly_projection" = "WEKELIJKSE PROJECTIE";
+"onboarding.free_time_week" = "Vrije tijd/week";
+"onboarding.life_reclaimed" = "Leven teruggewonnen";
+"onboarding.accomplish_goals" = "Bereik je doelen sneller, wees productiever en vervulder";
+"onboarding.current" = "Huidig";
+"onboarding.with_lockin" = "Met LockIn";
+"onboarding.unlock_potential" = "Ontgrendel Je Potentieel";
+"onboarding.hours_back" = "%d+ uur terug elke week";
+"onboarding.smart_coach" = "Slimme Coach";
+"onboarding.task_verification" = "Taakverificatie";
+"onboarding.focus_sessions" = "Focussessies";
+"onboarding.daily_goals" = "Dagelijkse Doelen";
+"onboarding.complete_tasks" = "Voltooide Taken";
+"onboarding.app_rating" = "App Beoordeling";
+"onboarding.more_productive" = "Productiever";
+"onboarding.start_free_trial" = "Start Gratis Proefperiode";
+"onboarding.days_free" = "3 dagen gratis";
+"onboarding.maybe_later" = "Misschien later";
+"onboarding.allow_notifications" = "Sta Meldingen Toe";
+"onboarding.remind_overscrolling" = "Zodat we je kunnen herinneren aan te veel scrollen en je kunnen helpen je doelen te bereiken";
+"onboarding.notifications_enabled" = "Meldingen ingeschakeld!";
+"onboarding.scrolling_for" = "Je scrollt al 30 min. Tijd voor een pauze?";
+"onboarding.time_for_break" = "Tijd voor een pauze?";
+"onboarding.what_to_block" = "Wat blokkeren?";
+"onboarding.change_this_later" = "Maak je geen zorgen, je kunt dit later wijzigen";
+"onboarding.apps" = "Apps";
+"onboarding.categories" = "Categorieën";
+"onboarding.start_blocking" = "Start Blokkeren";
+"onboarding.items_selected" = "%d items geselecteerd";
+"onboarding.set_daily_goal" = "Stel Je Dagelijks Doel In";
+"onboarding.how_much_allow" = "Hoeveel schermtijd wil je\njezelf toestaan?";
+"onboarding.per_day" = "per dag";
+"onboarding.change_in_settings" = "Je kunt dit altijd wijzigen in Instellingen";
+"onboarding.set_my_goal" = "Stel Mijn Doel In";
+"onboarding.days" = "dagen";
+"onboarding.years" = "jaar";
+"onboarding.projection_title" = "LockIn herprogrammeert je brein voor\nlangdurige focus.";
+"onboarding.projection_subtitle" = "LockIn-gebruikers winnen %d+ uur focus per week terug.";
+"onboarding.without_lockin" = "Zonder LockIn";
+"onboarding.day_one" = "Dag 1";
+"onboarding.day_fourteen" = "Dag 14";
+"onboarding.commitment_title" = "Maak een Belofte";
+"onboarding.committed" = "Je bent Toegewijd!";
+"onboarding.press_and_hold" = "Houd de orb 3 seconden ingedrukt om je te committeren aan het controleren van je schermtijd";
+"onboarding.taken_first_step" = "Je hebt de eerste stap gezet naar een gezondere relatie met je telefoon";
+"onboarding.keep_holding" = "Blijf vasthouden...";
+"onboarding.hold_the_orb" = "Houd de orb vast om je te committeren";
+"onboarding.lets_set_up" = "Laten we je focus-app instellen!";
+
+// MARK: - Auth
+"auth.welcome_to" = "Welkom bij LockIn";
+"auth.take_control" = "Neem controle over je schermtijd";
+"auth.continue_google" = "Doorgaan met Google";
+"auth.continue_apple" = "Doorgaan met Apple";
+"auth.continue_email" = "Doorgaan met E-mail";
+"auth.get_started" = "Aan de Slag";
+"auth.already_have_account" = "Ik heb al een account";
+"auth.privacy_policy" = "Privacybeleid";
+"auth.terms_of_service" = "Servicevoorwaarden";
+"auth.create_account" = "Account Aanmaken";
+"auth.welcome_back" = "Welkom Terug";
+"auth.start_taking_control" = "Begin met controle nemen over je schermtijd";
+"auth.goals_waiting" = "Je focusdoelen wachten op je";
+"auth.email" = "E-mail";
+"auth.password" = "Wachtwoord";
+"auth.enter_password" = "Voer je wachtwoord in";
+"auth.agree_to_terms" = "Ik ga akkoord met LockIn's ";
+"auth.terms_conditions" = "Algemene Voorwaarden";
+"auth.sign_in" = "Inloggen";
+"auth.sign_up" = "Aanmelden";
+"auth.or_continue_with" = "of doorgaan met";
+"auth.no_account" = "Geen account?";
+"auth.have_account" = "Heb je al een account?";
+
+// MARK: - Device Activity Report
+"report.no_data" = "Geen schermtijdgegevens";
+"report.no_data_desc" = "Gebruik je apparaat en kom terug om je statistieken te zien";
+"report.vs_last_week" = "VS VORIGE WEEK";
+"report.less_screen_time" = "minder schermtijd";
+"report.more_screen_time" = "meer schermtijd";
+"report.vs" = "vs";
+"report.difference" = "verschil";
+"report.total_hours" = "Totaal uren";
+"report.daily_avg" = "Dagelijks gem.";
+"report.peak_day" = "Piekdag";
+"report.today" = "Vandaag";
+"report.stats_per_day" = "Stats per dag";
+"report.total_time_per_app" = "Totale tijd per app";
+"report.no_app_data" = "Geen app-gebruiksgegevens";
+"report.less" = "Minder";
+"report.more" = "Meer";
+"report.streak" = "REEKS";
+"report.vs_avg" = "VS GEM.";
+"report.top_apps" = "Top Apps";
+"report.no_app_usage" = "Geen app-gebruik vandaag";
+"report.start_using" = "Gebruik apps om je statistieken te zien";
+"report.screen_time" = "Schermtijd";
+"report.notifications" = "Meldingen";
+"report.todays_progress" = "VOORTGANG VANDAAG";
+"report.used" = "gebruikt";
+"report.left" = "over";
+"report.goal_reached" = "Doel bereikt";
+"report.this_week" = "Deze week";
+"report.remaining" = "Resterend";
+"report.of_goal" = "Van doel";
+"report.goal" = "doel";
+"report.day_sun" = "Zo";
+"report.day_mon" = "Ma";
+"report.day_tue" = "Di";
+"report.day_wed" = "Wo";
+"report.day_thu" = "Do";
+"report.day_fri" = "Vr";
+"report.day_sat" = "Za";
+"report.day_s" = "Z";
+"report.day_m" = "M";
+"report.day_t" = "D";
+"report.day_w" = "W";
+"report.day_f" = "V";
+"report.avg" = "gem.";
+
+
+// MARK: - Language Restart
+"settings.restart_required" = "Herstart vereist";
+"settings.restart_message" = "Sluit de app en open deze opnieuw om de taalwijziging toe te passen.";
+
+// MARK: - Shield Action Notifications
+"action.talk_to_coach" = "Praat met Coach";
+"action.earn_screen_time" = "Verdien schermtijd";
+"action.times_up" = "Tijd om";
+"action.chat_coach_bonus" = "Chat met je AI-coach om bonustijd te verdienen.";
+"action.get_personalized_advice" = "Krijg persoonlijk advies van je AI-coach.";
+"action.complete_exercises" = "Voltooi oefeningen om je apps te ontgrendelen.";
+"action.unlock_expired" = "Je %d-minuten ontgrendelingsvenster is verlopen. Tik om blokkering opnieuw in te schakelen.";
+
+// MARK: - Quick Menu
+"quick.focus_mode" = "Focusmodus";
+"quick.pomodoro_timer" = "Pomodoro timer";
+"quick.plank" = "Plank";
+"quick.hold_for_time" = "Houd de tijd";
+"quick.squats" = "Squats";
+"quick.earn_per_rep" = "Verdien 0,3 min/hh";
+"quick.pushups" = "Push-ups";
+"quick.pushups_earn" = "Verdien 0,5 min/hh";
+"quick.photo_task" = "Foto-opdracht";
+"quick.verify_with_photo" = "Verifieer met foto";
+
+// MARK: - Help Tips
+"help.tip1.title" = "Jouw digitale welzijn";
+"help.tip1.desc" = "LockIn herprogrammeert je brein voor langdurige focus. Zie je Gezondheidsscore groeien terwijl je betere gewoontes opbouwt.";
+"help.tip2.title" = "Volg je voortgang";
+"help.tip2.desc" = "Bekijk je reeks, dagelijks gebruik en hoe je je verhoudt tot je gemiddelde. Kleine overwinningen leiden tot grote veranderingen.";
+"help.tip3.title" = "Verdien schermtijd";
+"help.tip3.desc" = "Voltooi oefeningen zoals push-ups, squats en planks om bonusschermtijd te verdienen. Beweeg je lichaam, bevrijd je geest.";
+"help.tip4.title" = "Stel dagelijkse doelen";
+"help.tip4.desc" = "Kies een schermtijdlimiet en zie je voortgangsring vollopen. Blijf onder je doel om blijvende gewoontes op te bouwen.";
+"help.tip5.title" = "Blokkeer afleidingen";
+"help.tip5.desc" = "Selecteer apps om te blokkeren wanneer je je limiet bereikt. Neem controle over je aandacht en focus op wat belangrijk is.";
+"help.tip6.title" = "Bekijk je statistieken";
+"help.tip6.desc" = "Bekijk je wekelijkse patronen en trends. Je gebruik begrijpen is de eerste stap om het te veranderen.";
+"help.back" = "Terug";
+"help.next" = "Volgende";
+"help.got_it" = "Begrepen!";
+
+// MARK: - Photo Task Presets (Updated)
+"preset.clean_room" = "Kamer opruimen";
+"preset.homework" = "Huiswerk maken";
+"preset.workout" = "Trainingsroutine";
+"preset.cook" = "Maaltijd koken";
+"preset.read" = "10 pagina's lezen";
+"preset.write" = "Dagplan schrijven";
+
+// MARK: - Streak
+"streak.title" = "Huidige Reeks";
+"streak.days" = "dagen";
+"streak.best" = "Beste Reeks";
+"streak.keep_going" = "Ga zo door!";
+"streak.lost" = "Reeks Verloren";
+
+// MARK: - History
+"history.title" = "Activiteitsgeschiedenis";
+"history.today" = "Vandaag";
+"history.yesterday" = "Gisteren";
+"history.this_week" = "Deze Week";
+"history.earlier" = "Eerder";
+"history.no_activity" = "Nog geen activiteit";
+
+// MARK: - Exercise Info
+"exercise.info" = "Info";
+"exercise.watch_demo" = "Demo Bekijken";
+"exercise.coming_soon" = "Binnenkort beschikbaar";
+"exercise.how_to_do_it" = "HOE DOE JE HET";
+"exercise.rewards" = "BELONINGEN";
+"exercise.got_it" = "Begrepen!";
+"exercise.reward_info" = "Verdien schermtijd voor elke voltooide set";
+"exercise.reward_description" = "Voltooi oefeningen om schermtijd te verdienen. Meer reps = meer tijd!";
+
+// MARK: - Exercise Descriptions
+"exercise.desc.pushups" = "Bouw bovenlichaamsterkte op met klassieke push-ups";
+"exercise.desc.squats" = "Versterk je benen en core met goede squat-vorm";
+"exercise.desc.plank" = "Verbeter kernstabiliteit door de positie vast te houden";
+"exercise.desc.jumpingJacks" = "Cardio warming-up om je hartslag omhoog te krijgen";
+"exercise.desc.lunges" = "Richt je op quadriceps en bilspieren met gecontroleerde beweging";
+"exercise.desc.crunches" = "Versterk je buikspieren effectief";
+"exercise.desc.shoulderPress" = "Bouw schouderkracht op met het tillen van gewicht";
+"exercise.desc.legRaises" = "Richt je op onderste buikspieren en heupflexoren";
+"exercise.desc.highKnees" = "Cardio-oefening om hartslag en uithoudingsvermogen te verbeteren";
+"exercise.desc.pullUps" = "Uitdagende bovenlichaamsoefening voor rug en armen";
+"exercise.desc.wallSit" = "Isometrische oefening om beenspieren te versterken";
+"exercise.desc.sidePlank" = "Versterk obliques en verbeter balans";
+"exercise.desc.photoVerification" = "Verifieer je taak met foto bewijs";
+"exercise.desc.custom" = "Maak een aangepaste taak met foto verificatie";
+
+// MARK: - Exercise Instructions
+"exercise.inst.pushups.1" = "Begin in een plankpositie met je handen schouderbreed uit elkaar.";
+"exercise.inst.pushups.2" = "Laat je lichaam zakken totdat je borst bijna de grond raakt.";
+"exercise.inst.pushups.3" = "Houd je lichaam recht en kern aangespannen.";
+"exercise.inst.pushups.4" = "Duw terug omhoog naar de startpositie en herhaal.";
+
+"exercise.inst.squats.1" = "Sta met je voeten schouderbreed uit elkaar.";
+"exercise.inst.squats.2" = "Laat je lichaam zakken alsof je op een stoel gaat zitten.";
+"exercise.inst.squats.3" = "Houd je knieën achter je tenen en borst omhoog.";
+"exercise.inst.squats.4" = "Duw door je hielen om weer omhoog te komen.";
+
+"exercise.inst.plank.1" = "Begin in een push-up positie met onderarmen op de grond.";
+"exercise.inst.plank.2" = "Houd je lichaam in een rechte lijn van hoofd tot hielen.";
+"exercise.inst.plank.3" = "Span je kern aan en kijk naar de vloer.";
+"exercise.inst.plank.4" = "Houd de positie terwijl je gelijkmatig blijft ademen.";
+
+"exercise.inst.jumpingJacks.1" = "Sta rechtop met je armen langs je zij.";
+"exercise.inst.jumpingJacks.2" = "Spring omhoog, spreid je benen en breng armen boven je hoofd.";
+"exercise.inst.jumpingJacks.3" = "Land met voeten wijd en handen rakend boven.";
+"exercise.inst.jumpingJacks.4" = "Spring terug naar startpositie en herhaal.";
+
+"exercise.inst.lunges.1" = "Sta rechtop met voeten heupbreed uit elkaar.";
+"exercise.inst.lunges.2" = "Stap naar voren met één been, laat je heupen zakken.";
+"exercise.inst.lunges.3" = "Beide knieën moeten 90 graden zijn, achterknie net boven de vloer.";
+"exercise.inst.lunges.4" = "Duw door je voorste voet om terug te keren en wissel van kant.";
+
+"exercise.inst.crunches.1" = "Lig op je rug met knieën gebogen en voeten plat.";
+"exercise.inst.crunches.2" = "Plaats handen achter je hoofd, ellebogen naar buiten.";
+"exercise.inst.crunches.3" = "Til je schouders van de grond door je buik aan te spannen.";
+"exercise.inst.crunches.4" = "Laat gecontroleerd zakken en herhaal.";
+
+"exercise.inst.shoulderPress.1" = "Sta of zit met een gewicht in elke hand op schouderhoogte.";
+"exercise.inst.shoulderPress.2" = "Druk gewichten recht omhoog totdat armen gestrekt zijn.";
+"exercise.inst.shoulderPress.3" = "Houd je kern aangespannen en rug recht.";
+"exercise.inst.shoulderPress.4" = "Laat langzaam zakken naar schouderhoogte en herhaal.";
+
+"exercise.inst.legRaises.1" = "Lig plat op je rug met benen gestrekt.";
+"exercise.inst.legRaises.2" = "Houd je benen recht en til ze naar het plafond.";
+"exercise.inst.legRaises.3" = "Laat langzaam zakken zonder de grond te raken.";
+"exercise.inst.legRaises.4" = "Houd je onderrug tegen de grond gedrukt.";
+
+"exercise.inst.highKnees.1" = "Sta rechtop met voeten heupbreed uit elkaar.";
+"exercise.inst.highKnees.2" = "Ren ter plaatse en breng knieën hoog op taillehoogte.";
+"exercise.inst.highKnees.3" = "Pomp je armen voor balans en tempo.";
+"exercise.inst.highKnees.4" = "Land licht op de bal van je voet elke keer.";
+
+"exercise.inst.pullUps.1" = "Hang aan een stang met handen schouderbreed, palmen naar buiten.";
+"exercise.inst.pullUps.2" = "Trek jezelf omhoog tot je kin boven de stang is.";
+"exercise.inst.pullUps.3" = "Span je schouderbladspieren samen bovenaan.";
+"exercise.inst.pullUps.4" = "Laat gecontroleerd zakken en herhaal.";
+
+"exercise.inst.wallSit.1" = "Sta met je rug tegen een muur.";
+"exercise.inst.wallSit.2" = "Schuif naar beneden tot je dijen evenwijdig aan de grond zijn.";
+"exercise.inst.wallSit.3" = "Houd knieën op 90 graden, recht boven enkels.";
+"exercise.inst.wallSit.4" = "Houd je rug plat tegen de muur gedrukt.";
+
+"exercise.inst.sidePlank.1" = "Lig op je zij met benen gestrekt en gestapeld.";
+"exercise.inst.sidePlank.2" = "Duw je heupen omhoog, rust op onderarm en voetzijde.";
+"exercise.inst.sidePlank.3" = "Houd lichaam in rechte lijn van hoofd tot voeten.";
+"exercise.inst.sidePlank.4" = "Houd de positie vast, wissel dan van kant.";
+
+"exercise.inst.photo.1" = "Maak een 'voor' foto om je startpunt vast te leggen.";
+"exercise.inst.photo.2" = "Voltooi je taak of activiteit.";
+"exercise.inst.photo.3" = "Maak een 'na' foto die de voltooide taak toont.";
+"exercise.inst.photo.4" = "Verstuur voor verificatie en verdien je beloning.";
+
+// MARK: - Paywall
+"paywall.pro" = "PRO";
+"paywall.title" = "Neem de Controle over\nje Schermtijd";
+"paywall.subtitle" = "Sluit je aan bij duizenden die hun focus hebben teruggewonnen en schermtijd met 50%+ hebben verminderd";
+"paywall.users_love" = "10.000+ gebruikers zijn fan van LockIn";
+"paywall.feature_blocking" = "Onbeperkt apps en websites blokkeren";
+"paywall.feature_focus" = "Focussessies met taakverificatie";
+"paywall.feature_analytics" = "Gedetailleerde gebruiksanalyses en inzichten";
+"paywall.trial_toggle" = "Niet zeker? Probeer 3 dagen gratis";
+"paywall.trial_subtitle" = "Annuleer op elk moment tijdens de proefperiode, zonder kosten";
+"paywall.choose_plan" = "Kies je Plan";
+"paywall.loading_plans" = "Plannen laden...";
+"paywall.annual" = "Jaarlijks";
+"paywall.monthly" = "Maandelijks";
+"paywall.save" = "BESPAAR %@%%";
+"paywall.billed_annually" = "%@/maand jaarlijks gefactureerd";
+"paywall.legal_trial" = "Na je gratis proefperiode van 3 dagen wordt de betaling in rekening gebracht op je Apple ID-account. Abonnementen worden automatisch verlengd tenzij 24 uur voor het einde opgezegd.";
+"paywall.legal_no_trial" = "De betaling wordt in rekening gebracht op je Apple ID-account. Abonnementen worden automatisch verlengd tenzij 24 uur voor het einde opgezegd.";
+"paywall.terms_of_service" = "Servicevoorwaarden";
+"paywall.privacy_policy" = "Privacybeleid";
+"paywall.restore_purchases" = "Aankopen Herstellen";
+"paywall.no_purchases_found" = "Geen eerdere aankopen gevonden";
+"paywall.start_trial" = "Start 3-Daagse Gratis Proefperiode";
+"paywall.subscribe_now" = "Nu Abonneren";
+"paywall.cancel_in_app_store" = "Annuleren in App Store";
+"paywall.per_year" = "/jaar";
+"paywall.per_month" = "/maand";
+"paywall.welcome_title" = "Welkom bij LockIn!";
+"paywall.welcome_message" = "Je focusreis begint nu";
+"paywall.continue" = "Doorgaan";
+"paywall.error" = "Fout";
+"paywall.ok" = "OK";
+"paywall.review1_text" = "Eindelijk mijn telefoonverslaving doorbroken!";
+"paywall.review1_author" = "Sarah M.";
+"paywall.review2_text" = "Mijn schermtijd daalde met 3 uur/dag";
+"paywall.review2_author" = "James K.";
+"paywall.review3_text" = "Beste focus-app die ik ooit heb gebruikt";
+"paywall.review3_author" = "Emily R.";
+
+// MARK: - Home (nieuwe sleutels)
+"home.todays_goal" = "Doel van vandaag";
+"home.used" = "gebruikt";
+"home.left" = "over";
+
+// MARK: - Meldingen
+"notification.earn_time_action" = "Tijd verdienen";
+"notification.view_stats_action" = "Stats bekijken";
+"notification.daily_reminder_title" = "Tijd voor LockIn!";
+"notification.daily_reminder_body" = "Doe een snelle oefening om vandaag schermtijd te verdienen.";
+"notification.streak_risk_title" = "Breek je reeks niet!";
+"notification.streak_risk_body" = "Je hebt een reeks van %d dagen. Doe een oefening om hem te behouden!";
+"notification.need_more_time_title" = "Meer schermtijd nodig?";
+"notification.need_more_time_body" = "Doe een snelle oefening om je favoriete apps te ontgrendelen.";
+"notification.focus_complete_title" = "Focus-sessie voltooid!";
+"notification.focus_complete_body" = "Je hebt %@ minuten schermtijd verdiend.";
+
+// MARK: - Coach
+"coach.title" = "AI Coach";
+"coach.your_ai_coach" = "Jouw AI Coach";
+"coach.description" = "Ik ben hier om je te helpen gezondere gewoontes op te bouwen en je schermtijdpatronen te begrijpen.";
+"coach.greeting_can_earn" = "Hé! Ik zag dat je je dagelijkse doel hebt bereikt. Dat is eigenlijk een goed teken - het betekent dat je grenzen werken.\n\nChat even met mij, en je kunt bonus schermtijd verdienen. Hoe voel je je nu?";
+"coach.greeting_cant_earn" = "Welkom terug! Je hebt vandaag al je bonustijd verdiend, maar ik ben er nog steeds om te helpen.\n\nWat houdt je bezig?";
+"coach.prompt1" = "Waarom bereik ik steeds mijn limiet?";
+"coach.prompt2" = "Help me gefocust te blijven";
+"coach.prompt3" = "Ik voel me gestrest";
+"coach.ready_to_earn" = "Goed gesprek! Klaar om bonustijd te verdienen?";
+"coach.earn_minutes" = "5 minuten verdienen";
+"coach.minutes_earned" = "+%d minuten verdiend!";
+"coach.thanks_reflecting" = "Bedankt voor het reflecteren met je coach.\nBlijf gezonde gewoontes opbouwen!";
+"coach.bonus_acknowledgment" = "Geweldig! Ik heb 5 minuten aan je tijdbank toegevoegd. Onthoud, tijd verdienen door te sporten is nog bevredigender - je bouwt fysieke gezondheid op terwijl je schermtijd beheert.\n\nJe kunt morgen meer bonustijd verdienen door weer met me te chatten!";
+"coach.type_message" = "Typ een bericht...";
+"coach.response_limit" = "Je limiet bereiken is geen mislukking - het is je systeem dat werkt. Het ongemak dat je voelt is je brein dat opnieuw bedraadt.\n\nWat probeerde je te doen toen je werd geblokkeerd? Soms helpt het om de trigger te begrijpen.";
+"coach.response_stress" = "Ik hoor je. Stress zorgt er vaak voor dat we naar onze telefoon grijpen als snelle ontsnapping. Maar hier is het punt - die ontsnapping maakt ons meestal slechter na.\n\nProbeer dit: Adem nu 5 keer diep in. Vertel me dan wat je stress bezorgt.";
+"coach.response_focus" = "Geweldig dat je gefocust wilt blijven! Hier zijn wat snelle overwinningen:\n\n1. Leg je telefoon in een andere kamer\n2. Zet een timer van 25 minuten en werk aan één ding\n3. Beloon jezelf daarna met een korte pauze\n\nWelke voelt nu haalbaar?";
+"coach.response_bored" = "Verveling is eigenlijk waardevol - dan ontstaat creativiteit. Maar ik begrijp het, het is ongemakkelijk.\n\nIn plaats van scrollen, wat wilde je al lang doen maar heb je niet gedaan? Zelfs iets kleins.";
+"coach.response_default" = "Bedankt voor het delen. Nieuwe gewoontes opbouwen is een reis, en je maakt al stappen door hier te zijn.\n\nWat zou je nu het meeste helpen - wat praktische tips, of gewoon iemand om naar te luisteren?";
+
+// MARK: - Detox
+"detox.title" = "Detox";
+"detox.stay_focused" = "Blijf gefocust!";
+"detox.digital_detox" = "Digitale Detox";
+"detox.all_apps_blocked" = "Alle afleidende apps zijn geblokkeerd";
+"detox.take_break" = "Neem een pauze van je telefoon";
+"detox.remaining" = "resterend";
+"detox.duration" = "DUUR";
+"detox.end_detox" = "Detox beëindigen";
+"detox.start_detox" = "Detox starten";
+
+// Onboarding nieuwe sleutels
+
+// Leeftijdsgroepen
+"onboarding.age_under_18" = "Jonger dan 18";
+"onboarding.age_18_24" = "18-24";
+"onboarding.age_25_30" = "25-30";
+"onboarding.age_31_40" = "31-40";
+"onboarding.age_41_50" = "41-50";
+"onboarding.age_51_plus" = "51+";
+
+// Uren per dag
+"onboarding.hours_1_2" = "1-2 uur";
+"onboarding.hours_2_4" = "2-4 uur";
+"onboarding.hours_4_6" = "4-6 uur";
+"onboarding.hours_6_8" = "6-8 uur";
+"onboarding.hours_8_plus" = "8+ uur";
+
+"onboarding.now" = "nu";
+"onboarding.how_it_works" = "Hoe het werkt";
+"onboarding.block_apps" = "Apps blokkeren";
+"onboarding.block_apps_desc" = "Selecteer apps om permanent te blokkeren";
+"onboarding.earn_time" = "Tijd verdienen";
+"onboarding.earn_time_desc" = "Doe oefeningen om schermtijd te verdienen";
+"onboarding.spend_wisely" = "Verstandig besteden";
+"onboarding.spend_wisely_desc" = "Gebruik je verdiende tijd aan geblokkeerde apps";
+"onboarding.schedule_freedom" = "Vrijheid plannen";
+"onboarding.schedule_freedom_desc" = "Stel ontgrendelvensters in voor specifieke tijden";
+"onboarding.select_apps_to_block" = "Selecteer apps om te blokkeren";
+"onboarding.apps_blocked_by_default" = "Deze apps worden standaard geblokkeerd. Je moet tijd verdienen of geplande vensters gebruiken om ze te openen.";
+"onboarding.earn_screen_time" = "Verdien schermtijd";
+"onboarding.earn_screen_time_desc" = "Doe oefeningen om minuten te verdienen die je kunt gebruiken voor geblokkeerde apps";
+"onboarding.unlock_window_title" = "Ontgrendelvenster";
+"onboarding.unlock_window_desc" = "Wanneer je een app ontgrendelt met verdiende tijd, hoe lang moet het toegangsvenster zijn?";
+"onboarding.how_it_works_explain" = "Hoe het werkt";
+"onboarding.how_it_works_detail" = "Tijd wordt direct afgetrokken bij ontgrendeling. Na het verlopen van het venster worden apps automatisch opnieuw geblokkeerd. Kies een korter venster om meer gefocust te blijven.";
+"onboarding.minutes_selected" = "minuten geselecteerd";
+"onboarding.min" = "min";
+"onboarding.almost_ready" = "Bijna klaar!";
+"onboarding.grant_permissions" = "Geef toestemmingen om app-blokkering en oefeningverificatie in te schakelen";
+"onboarding.screen_time" = "Schermtijd";
+"onboarding.required_to_block" = "Vereist om apps te blokkeren";
+"onboarding.camera" = "Camera";
+"onboarding.for_exercise_verification" = "Voor oefeningverificatie";
+"onboarding.grant" = "Toestaan";

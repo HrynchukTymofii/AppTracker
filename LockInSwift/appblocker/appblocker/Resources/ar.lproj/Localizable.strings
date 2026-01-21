@@ -1,0 +1,966 @@
+/*
+  Localizable.strings
+  LockIn
+
+  Arabic Localization
+*/
+
+// MARK: - Common
+"common.done" = "تم";
+"common.cancel" = "إلغاء";
+"common.save" = "حفظ";
+"common.edit" = "تعديل";
+"common.close" = "إغلاق";
+"common.back" = "رجوع";
+"common.next" = "التالي";
+"common.skip" = "تخطي";
+"common.continue" = "متابعة";
+"common.error" = "خطأ";
+"common.success" = "نجاح";
+"common.loading" = "جاري التحميل...";
+"common.retry" = "إعادة المحاولة";
+"common.get_started" = "ابدأ";
+"common.of" = "من";
+
+// MARK: - Tab Bar
+"tab.home" = "الرئيسية";
+"tab.goals" = "الأهداف";
+"tab.lockin" = "LockIn";
+"tab.stats" = "الإحصائيات";
+"tab.profile" = "الملف الشخصي";
+
+// MARK: - Home
+"home.greeting" = "%@ سعيد";
+"home.morning" = "صباح";
+"home.afternoon" = "مساء";
+"home.evening" = "مساء";
+"home.help" = "مساعدة";
+"home.health_score" = "الصحة";
+"home.today_progress" = "تقدم اليوم";
+"home.screen_time" = "وقت الشاشة";
+"home.earned_time" = "المكتسب";
+"home.top_apps" = "أكثر التطبيقات استخداماً";
+"home.daily_goal" = "الهدف اليومي";
+"home.change" = "تغيير";
+"home.upcoming" = "القادم";
+"home.see_all" = "عرض الكل";
+"home.create_schedule" = "إنشاء جدول";
+"home.set_times_unblocked" = "حدد أوقات إلغاء حظر التطبيقات";
+"home.unblocked" = "غير محظور";
+"home.every_day" = "كل يوم";
+"home.weekdays" = "أيام الأسبوع";
+"home.weekends" = "عطلة نهاية الأسبوع";
+
+// MARK: - Today's Progress
+"progress.todays_progress" = "تقدم اليوم";
+"progress.earn" = "اكسب";
+"progress.spent" = "مُنفَق";
+"progress.earned" = "مكتسب";
+"progress.balance" = "الرصيد";
+"progress.this_week" = "هذا الأسبوع";
+
+// MARK: - LockIn (Earn Time)
+"lockin.title" = "اكسب وقت الشاشة";
+"lockin.subtitle" = "أكمل التمارين لفتح وقت التطبيق";
+"lockin.balance" = "رصيد وقت الشاشة";
+"lockin.minutes" = "دقيقة";
+"lockin.earn" = "اكسب";
+"lockin.earn_time" = "اكسب الوقت";
+"lockin.transaction_history" = "سجل المعاملات";
+"lockin.no_activity" = "لا يوجد نشاط";
+"lockin.complete_exercises" = "أكمل التمارين لكسب الوقت";
+"lockin.today" = "اليوم:";
+"lockin.earned" = "مكتسب";
+"lockin.spent" = "مستخدم";
+"lockin.week" = "الأسبوع:";
+"lockin.task_in_progress" = "المهمة قيد التنفيذ";
+"lockin.continue" = "متابعة";
+"lockin.recent_activity" = "النشاط الأخير";
+"lockin.resets_in_hours" = "إعادة التعيين خلال %d ساعة";
+"lockin.favorites" = "المفضلة";
+"lockin.all_exercises" = "جميع التمارين";
+"lockin.double_tap_add" = "انقر مرتين للإضافة";
+"lockin.double_tap_remove" = "انقر مرتين للإزالة";
+
+// MARK: - Exercises
+"exercise.pushups" = "تمارين الضغط";
+"exercise.squats" = "القرفصاء";
+"exercise.plank" = "البلانك";
+"exercise.jumping_jacks" = "القفز مع رفع اليدين";
+"exercise.lunges" = "الاندفاع";
+"exercise.crunches" = "تمارين البطن";
+"exercise.shoulder_press" = "ضغط الكتف";
+"exercise.leg_raises" = "رفع الساقين";
+"exercise.high_knees" = "رفع الركبتين";
+"exercise.pull_ups" = "العقلة";
+"exercise.wall_sit" = "الجلوس على الحائط";
+"exercise.side_plank" = "البلانك الجانبي";
+"exercise.photo_task" = "مهمة بالصور";
+"exercise.focus_mode" = "وضع التركيز";
+"exercise.custom" = "مهمة مخصصة";
+"exercise.min_per_rep" = "دقيقة/تكرار";
+"exercise.min_per_sec" = "دقيقة/ثانية";
+"exercise.camera_required" = "مطلوب الوصول للكاميرا";
+"exercise.open_settings" = "فتح الإعدادات";
+"exercise.enable_camera" = "تفعيل الكاميرا";
+"exercise.great_job" = "عمل رائع!";
+"exercise.leg_day_champion" = "بطل يوم الأرجل!";
+"exercise.core_of_steel" = "عضلات حديدية!";
+"exercise.min_earned" = "+%@ دقيقة مكتسبة";
+"exercise.do_pushups" = "قم بتمارين الضغط";
+"exercise.do_squats" = "قم بالقرفصاء";
+"exercise.hold_plank" = "ثبت البلانك";
+"exercise.pushup_instructions" = "ضع هاتفك بحيث ترى الكاميرا الجزء العلوي من جسمك من الجانب.";
+"exercise.squat_instructions" = "قف أمام هاتفك بحيث يرى جسمك بالكامل من الجانب.";
+"exercise.plank_instructions" = "ضع هاتفك لرؤية جسمك بالكامل من الجانب. حافظ على جسمك مستقيماً!";
+"exercise.start_pushups" = "ابدأ تمارين الضغط";
+"exercise.start_squats" = "ابدأ القرفصاء";
+"exercise.start_plank" = "ابدأ البلانك";
+"exercise.do_some_pushups" = "قم ببعض تمارين الضغط...";
+"exercise.do_some_squats" = "قم ببعض القرفصاء...";
+"exercise.hold_the_plank" = "ثبت البلانك...";
+"exercise.pushups_label" = "تمارين الضغط";
+"exercise.squats_label" = "القرفصاء";
+"exercise.seconds" = "ثواني";
+"exercise.down" = "أسفل";
+"exercise.up" = "أعلى";
+"exercise.holding" = "تثبيت";
+"exercise.get_in_position" = "اتخذ الوضعية";
+"exercise.paused" = "متوقف مؤقتاً";
+"exercise.paused_get_back" = "متوقف - عد للوضعية";
+"exercise.timer_pauses_info" = "يتوقف المؤقت إذا خرجت من الإطار";
+"exercise.camera_tracking_pushups" = "لتتبع تمارين الضغط، نحتاج الوصول للكاميرا.";
+"exercise.camera_tracking_squats" = "لتتبع القرفصاء، نحتاج الوصول للكاميرا.";
+"exercise.camera_tracking_plank" = "لتتبع البلانك، نحتاج الوصول للكاميرا.";
+"exercise.did_pushups" = "أكملت %d تمرين ضغط!";
+"exercise.did_squats" = "أكملت %d قرفصاء!";
+"exercise.held_for_seconds" = "ثبت لمدة %d ثانية!";
+"exercise.finish_with_reward" = "إنهاء (+%@ دقيقة)";
+"exercise.photo_task_desc" = "أكمل مهمة وتحقق بالصور لكسب وقت الشاشة";
+"exercise.describe_task" = "صف مهمتك";
+"exercise.task_placeholder" = "ماذا ستفعل؟ (مثال: تنظيف غرفتي)";
+"exercise.or_choose_preset" = "أو اختر جاهز";
+"exercise.camera_permission_message" = "نحتاج الوصول للكاميرا للتحقق من تمارينك وتتبع تقدمك.";
+"exercise.camera_photo_task_message" = "لالتقاط صور للتحقق من المهام، نحتاج الوصول للكاميرا.";
+"exercise.before_photo" = "صورة قبل";
+"exercise.after_photo" = "صورة بعد";
+"exercise.show_completed" = "أظهر مهمتك المكتملة";
+"exercise.take_starting_photo" = "التقط صورة لنقطة البداية";
+"exercise.before" = "قبل";
+"exercise.after" = "بعد";
+"exercise.proof" = "إثبات";
+"exercise.go_complete_task" = "اذهب لإكمال مهمتك!";
+"exercise.done_after_photo" = "انتهيت - التقط صورة بعد";
+"exercise.done_verify_task" = "انتهيت - تحقق من المهمة";
+"exercise.task_verified" = "تم التحقق من المهمة!";
+"exercise.type_message" = "اكتب رسالة...";
+"exercise.complete_anyway" = "إكمال على أي حال (+%d دقيقة)";
+"exercise.reps" = "تكرارات";
+"exercise.seconds_unit" = "ثواني";
+"exercise.reward_per_rep" = "%.1f دقيقة/تكرار (حد أدنى %d)، +%.1f بعد %d";
+"exercise.reward_per_sec" = "%.1f دقيقة/ثانية (حد أدنى %d ثانية)، +%.1f بعد %d ثانية";
+"exercise.verify_task" = "تحقق من إكمال المهمة";
+"exercise.reward_per_unit" = "%.1f دقيقة لكل وحدة";
+
+// Photo Task Presets
+"exercise.preset.clean_room" = "تنظيف الغرفة";
+"exercise.preset.do_dishes" = "غسل الأطباق";
+"exercise.preset.make_bed" = "ترتيب السرير";
+"exercise.preset.organize_desk" = "تنظيم المكتب";
+"exercise.preset.take_walk" = "المشي";
+"exercise.preset.read_book" = "قراءة كتاب";
+"exercise.preset.meditate" = "التأمل";
+"exercise.preset.stretch" = "تمارين الإطالة";
+"exercise.preset.drink_water" = "شرب الماء";
+"exercise.preset.healthy_meal" = "وجبة صحية";
+
+// MARK: - Focus Mode
+"focus.title" = "وضع التركيز";
+"focus.deep_focus" = "تركيز عميق";
+"focus.description" = "احجب كل المشتتات وركز على ما يهم";
+"focus.session_duration" = "مدة الجلسة";
+"focus.apps_blocked" = "سيتم حظر جميع التطبيقات المحددة";
+"focus.earn_info" = "اكسب %@ دقيقة عند الإكمال";
+"focus.earn_minutes" = "اكسب %d دقيقة عند الإكمال";
+"focus.no_interruptions" = "ابق مركزاً بدون انقطاع";
+"focus.start" = "ابدأ جلسة التركيز";
+"focus.remaining" = "متبقي";
+"focus.paused" = "متوقف مؤقتاً";
+"focus.active" = "التركيز نشط";
+"focus.all_blocked" = "جميع التطبيقات محظورة";
+"focus.end" = "إنهاء";
+"focus.pause" = "إيقاف مؤقت";
+"focus.resume" = "استئناف";
+"focus.add_time" = "+5 دقائق";
+"focus.complete" = "تركيز رائع!";
+"focus.completed_session" = "أكملت جلسة تركيز مدتها %d دقيقة";
+"focus.time_earned" = "الوقت المكتسب";
+"focus.cancel" = "إلغاء";
+"focus.focus_session" = "جلسة تركيز";
+"focus.session_paused" = "الجلسة متوقفة";
+"focus.focus_active" = "التركيز نشط";
+"focus.minutes" = "+%@ دقيقة";
+
+// MARK: - Profile
+"profile.settings" = "الإعدادات";
+"profile.achievements" = "الإنجازات";
+"profile.blocked_items" = "العناصر المحظورة";
+"profile.blocked_items_desc" = "التطبيقات والفئات التي حظرتها";
+"profile.app_settings" = "إعدادات التطبيق";
+"profile.unlock_window" = "نافذة الفتح";
+"profile.unlock_window_desc" = "المدة التي تحصل عليها عند استخدام الوقت المكتسب";
+"profile.daily_goal" = "الهدف اليومي";
+"profile.daily_goal_desc" = "أقصى وقت شاشة مسموح يومياً";
+"profile.default_app_limit" = "حد التطبيق الافتراضي";
+"profile.default_app_limit_desc" = "الحد اليومي الافتراضي للتطبيقات المحظورة الجديدة";
+"profile.theme" = "المظهر";
+"profile.accent_color" = "لون التمييز";
+"profile.notifications" = "الإشعارات";
+"profile.contact_us" = "تواصل معنا";
+"profile.rate_us" = "قيمنا";
+"profile.logout" = "تسجيل الخروج";
+"profile.apps" = "تطبيقات";
+"profile.categories" = "فئات";
+"profile.min" = "دقيقة";
+"profile.pro" = "PRO";
+
+// MARK: - Stats
+"stats.streak" = "السلسلة";
+"stats.tasks" = "المهام";
+"stats.days" = "أيام";
+"stats.total_earned" = "إجمالي المكتسب";
+"stats.total_spent" = "إجمالي المستخدم";
+"stats.weekly_stats" = "إحصائيات أسبوعية";
+"stats.today" = "اليوم";
+"stats.this_week" = "هذا الأسبوع";
+"stats.last_week" = "الأسبوع الماضي";
+"stats.daily_avg" = "المتوسط اليومي";
+"stats.vs_last_week" = "مقارنة بالأسبوع الماضي";
+"stats.less_screen_time" = "وقت شاشة أقل";
+"stats.more_screen_time" = "وقت شاشة أكثر";
+"stats.share_progress" = "شارك تقدمك";
+"stats.share" = "مشاركة";
+
+// MARK: - Achievements
+"achievements.title" = "الإنجازات";
+"achievements.unlocked" = "الإنجازات المفتوحة";
+"achievements.category.streak" = "السلسلة";
+"achievements.category.tasks" = "المهام";
+"achievements.category.time_earned" = "الوقت المكتسب";
+"achievements.category.health" = "الصحة";
+"achievements.category.balance" = "التوازن";
+"achievements.category.special" = "خاص";
+"achievements.category.all" = "الكل";
+
+// Achievement Names and Descriptions
+"achievement.streak_1.name" = "الشعلة الأولى";
+"achievement.streak_1.desc" = "أكمل يومك الأول";
+"achievement.streak_3.name" = "البداية";
+"achievement.streak_3.desc" = "سلسلة 3 أيام";
+"achievement.streak_7.name" = "محارب الأسبوع";
+"achievement.streak_7.desc" = "سلسلة 7 أيام";
+"achievement.streak_14.name" = "بطل الأسبوعين";
+"achievement.streak_14.desc" = "سلسلة 14 يوماً";
+"achievement.streak_30.name" = "سيد الشهر";
+"achievement.streak_30.desc" = "سلسلة 30 يوماً";
+"achievement.streak_60.name" = "أسطورة السلسلة";
+"achievement.streak_60.desc" = "سلسلة 60 يوماً";
+
+"achievement.tasks_1.name" = "الخطوات الأولى";
+"achievement.tasks_1.desc" = "أكمل مهمة واحدة";
+"achievement.tasks_5.name" = "منجز المهام";
+"achievement.tasks_5.desc" = "أكمل 5 مهام";
+"achievement.tasks_10.name" = "مشغول";
+"achievement.tasks_10.desc" = "أكمل 10 مهام";
+"achievement.tasks_25.name" = "محترف الإنتاجية";
+"achievement.tasks_25.desc" = "أكمل 25 مهمة";
+"achievement.tasks_50.name" = "آلة المهام";
+"achievement.tasks_50.desc" = "أكمل 50 مهمة";
+"achievement.tasks_100.name" = "نادي المئة";
+"achievement.tasks_100.desc" = "أكمل 100 مهمة";
+
+"achievement.time_5.name" = "الدقائق الأولى";
+"achievement.time_5.desc" = "اكسب 5 دقائق";
+"achievement.time_30.name" = "باني الوقت";
+"achievement.time_30.desc" = "اكسب 30 دقيقة إجمالاً";
+"achievement.time_60.name" = "بطل الساعة";
+"achievement.time_60.desc" = "اكسب ساعة واحدة إجمالاً";
+"achievement.time_180.name" = "عملاق الوقت";
+"achievement.time_180.desc" = "اكسب 3 ساعات إجمالاً";
+"achievement.time_600.name" = "سيد الوقت";
+"achievement.time_600.desc" = "اكسب 10 ساعات إجمالاً";
+"achievement.time_1800.name" = "أسطورة الوقت";
+"achievement.time_1800.desc" = "اكسب 30 ساعة إجمالاً";
+
+"achievement.health_60.name" = "في الصعود";
+"achievement.health_60.desc" = "حقق نقاط صحة 60";
+"achievement.health_70.name" = "أجواء جيدة";
+"achievement.health_70.desc" = "حقق نقاط صحة 70";
+"achievement.health_80.name" = "ممتاز";
+"achievement.health_80.desc" = "حقق نقاط صحة 80";
+"achievement.health_90.name" = "الشكل المثالي";
+"achievement.health_90.desc" = "حقق نقاط صحة 90";
+
+"achievement.balance_30.name" = "موفر";
+"achievement.balance_30.desc" = "اجمع 30 دقيقة رصيد";
+"achievement.balance_120.name" = "نخبة بنك الوقت";
+"achievement.balance_120.desc" = "اجمع ساعتين رصيد";
+
+// MARK: - Goals / Blocking
+"goals.title" = "الأهداف";
+"goals.today_usage" = "استخدام التطبيقات اليوم";
+"goals.loading" = "جاري تحميل بيانات الاستخدام...";
+"goals.screen_time_required" = "مطلوب الوصول لوقت الشاشة";
+"goals.screen_time_description" = "يحتاج LockIn إذن وقت الشاشة لحظر التطبيقات وتتبع استخدامك.";
+"goals.grant_access" = "منح الوصول";
+"goals.requesting" = "جاري الطلب...";
+"goals.blocked_apps" = "التطبيقات المحظورة";
+"goals.selected" = "محدد";
+"goals.select_apps_to_block" = "اختر التطبيقات للحظر";
+"goals.choose_apps" = "اختر التطبيقات والفئات التي تريد حظرها. يمكنك تغيير هذا في أي وقت.";
+"goals.app_limits" = "حدود التطبيقات";
+"goals.apps" = "تطبيقات";
+"goals.no_limits_set" = "لا توجد حدود محددة";
+"goals.set_daily_limits" = "حدد حدود زمنية يومية لتطبيقات معينة لإدارة وقت شاشتك بشكل أفضل.";
+"goals.add_app_limit" = "إضافة حد تطبيق";
+"goals.add_another_limit" = "إضافة حد آخر";
+"goals.set_limits" = "تعيين الحدود";
+"goals.daily_app_limits" = "الحدود اليومية للتطبيقات";
+"goals.limit_description" = "حدد الاستخدام اليومي الأقصى لكل تطبيق. لا يمكن تجاوز هذا الحد حتى بالوقت المكتسب.";
+"goals.select_apps_limits" = "اختر التطبيقات لتعيين حدود يومية";
+"goals.no_limits_yet" = "لا توجد حدود محددة";
+"goals.add_limit_hint" = "انقر على \"إضافة حد تطبيق\" لتعيين حدود لتطبيقات معينة";
+"goals.limits_reset_info" = "تُعاد تعيين الحدود يومياً عند منتصف الليل. يتم تتبع الاستخدام تلقائياً عند الوصول للتطبيقات المحظورة.";
+"goals.daily_limit_for" = "الحد اليومي لـ";
+"goals.of" = "من";
+"goals.limit_reached" = "تم الوصول للحد";
+"goals.min_daily_limit" = "دقيقة حد يومي";
+"goals.edit" = "تعديل";
+"goals.remove_limit" = "إزالة الحد";
+"goals.cancel" = "إلغاء";
+"goals.done" = "تم";
+"goals.save" = "حفظ";
+"goals.minutes" = "دقائق";
+"goals.share_progress" = "مشاركة التقدم";
+"goals.used" = "مستخدم";
+"goals.goal" = "الهدف";
+"goals.left" = "متبقي";
+"goals.of_goal" = "من الهدف";
+"goals.daily_app_limits_desc" = "حدد الاستخدام اليومي الأقصى لكل تطبيق. لا يمكن تجاوز هذا الحد حتى بالوقت المكتسب.";
+"goals.select_apps_to_set_limits" = "اختر التطبيقات لتعيين حدود يومية";
+"goals.no_app_limits_set" = "لا توجد حدود محددة";
+"goals.tap_to_set_limits" = "انقر على \"إضافة حد تطبيق\" لتعيين الحدود";
+"goals.of_minutes" = "من %d دقيقة";
+"goals.minutes_count" = "%d دقيقة";
+"goals.min_daily_limit" = "%d دقيقة حد يومي";
+
+// MARK: - Shield Screen
+"shield.ready_to_unlock" = "جاهز للفتح";
+"shield.app_blocked" = "التطبيق محظور";
+"shield.almost_there" = "اقتربت";
+"shield.times_up" = "انتهى الوقت";
+"shield.goal_complete" = "تم الهدف!";
+"shield.daily_goal_reached" = "تم الوصول للهدف اليومي";
+"shield.unlock" = "فتح %d دقيقة";
+"shield.stay_focused" = "ابق مركزاً";
+"shield.earn_time" = "اكسب الوقت";
+"shield.earn_more_time" = "اكسب المزيد من الوقت";
+"shield.talk_to_coach" = "تحدث مع المدرب";
+"shield.close" = "إغلاق";
+"shield.site_limit_reached" = "تم الوصول لحد الموقع";
+"shield.not_enough_time" = "وقت غير كافٍ";
+"shield.no_time_available" = "لا يوجد وقت متاح";
+"shield.unlock_minutes" = "فتح %d دقيقة";
+"shield.unlock_for_minutes" = "فتح لـ %d دقيقة";
+"shield.earn_time_now" = "اكسب الوقت الآن";
+
+// Shield Descriptions - App
+"shield.goal_complete_desc" = "لقد وصلت لهدف وقت الشاشة اليومي.\n\nهل أنت مستعد لاستراحة؟ يمكن لمدربك الذكي مساعدتك في كسب وقت إضافي.";
+"shield.time_up_desc" = "لقد استخدمت كل وقتك لـ %@ اليوم.\n\nتحدث مع مدربك الذكي حول بناء عادات أفضل.";
+"shield.ready_unlock_desc" = "%@ محظور.\n\nلديك %@ مكتسب.\nالفتح يستخدم %dm من رصيدك.";
+"shield.almost_there_desc" = "%@ محظور.\n\nلديك %@ لكنك تحتاج %dm.\nاكسب %@ أكثر للفتح.";
+"shield.app_blocked_desc" = "%@ محظور.\n\nأكمل التمارين لكسب وقت الشاشة.\nتحتاج %dm للفتح.";
+
+// Shield Descriptions - Web
+"shield.daily_goal_reached_desc" = "لقد وصلت لهدف وقت الشاشة اليوم.\n\nتحدث مع مدربك الذكي لكسب وقت إضافي.";
+"shield.site_limit_desc" = "لقد استخدمت كل وقت التصفح اليوم.\n\nتحدث مع مدربك الذكي حول بناء عادات أفضل.";
+"shield.web_ready_unlock_desc" = "%@ محظور.\n\nلديك %@ مكتسب.\nالفتح سيستخدم %dm من وقتك.";
+"shield.web_not_enough_desc" = "%@ محظور.\n\nلديك %@ لكنك تحتاج %dm.\nاكسب %@ أكثر للفتح.";
+"shield.web_no_time_desc" = "%@ محظور.\n\nأكمل التمارين لكسب وقت الشاشة.\nتحتاج %dm للفتح.";
+
+
+// MARK: - Contact Us
+"contact.title" = "تواصل معنا";
+"contact.header" = "نحب أن نسمع منك!";
+"contact.description" = "هل لديك أسئلة أو ملاحظات أو تحتاج مساعدة؟ تواصل معنا وسنرد في أقرب وقت.";
+"contact.email_label" = "أرسل لنا بريداً";
+"contact.send_email" = "إرسال بريد";
+"contact.get_in_touch" = "تواصل معنا";
+"contact.love_to_hear" = "نحب أن نسمع منك! شارك ملاحظاتك أو أبلغ عن خطأ أو اطرح سؤالاً.";
+"contact.your_message" = "رسالتك";
+"contact.placeholder" = "أخبرنا ما في ذهنك...";
+"contact.send_message" = "إرسال الرسالة";
+"contact.email_directly" = "أو راسلنا مباشرة على:";
+
+// MARK: - Rate Us
+"rate.title" = "قيمنا";
+"rate.how_enjoying" = "كيف تجد LockIn؟";
+"rate.tap_to_rate" = "انقر على نجمة للتقييم";
+"rate.feedback" = "أخبرنا كيف يمكننا التحسين";
+"rate.feedback_placeholder" = "ملاحظاتك تساعدنا على تحسين LockIn...";
+"rate.submit" = "إرسال الملاحظات";
+"rate.rating_1" = "يمكننا أفضل";
+"rate.rating_2" = "يحتاج عمل";
+"rate.rating_3" = "لا بأس";
+"rate.rating_4" = "جيد جداً!";
+"rate.rating_5" = "أحبه!";
+"rate.enjoying" = "هل تستمتع بـ LockIn؟";
+"rate.love_to_hear" = "نحب أن نعرف رأيك! ملاحظاتك تساعدنا على التحسين.";
+"rate.can_do_better" = "يمكننا أفضل";
+"rate.needs_improvement" = "يحتاج تحسين";
+"rate.its_okay" = "لا بأس";
+"rate.really_good" = "جيد جداً!";
+"rate.love_it" = "أحبه!";
+"rate.how_improve" = "أخبرنا كيف نتحسن";
+"rate.what_better" = "ما الذي يمكننا فعله أفضل؟";
+"rate.rate_app_store" = "قيم في App Store";
+"rate.send_feedback" = "إرسال الملاحظات";
+
+// MARK: - Help Tips
+"help.tip1.title" = "صحتك الرقمية";
+"help.tip1.desc" = "LockIn يعيد برمجة دماغك للتركيز طويل المدى. شاهد درجة صحتك تنمو وأنت تبني عادات أفضل.";
+"help.tip2.title" = "تتبع تقدمك";
+"help.tip2.desc" = "شاهد سلسلتك، استخدامك اليومي، وكيف تقارن بمتوسطك. الانتصارات الصغيرة تؤدي لتغييرات كبيرة.";
+"help.tip3.title" = "اكسب وقت الشاشة";
+"help.tip3.desc" = "أكمل تمارين مثل الضغط والقرفصاء والبلانك لكسب وقت شاشة إضافي. حرك جسمك، حرر عقلك.";
+"help.tip4.title" = "حدد أهدافاً يومية";
+"help.tip4.desc" = "اختر حد وقت الشاشة وشاهد حلقة تقدمك تمتلئ. ابق تحت هدفك لبناء عادات دائمة.";
+"help.tip5.title" = "احجب المشتتات";
+"help.tip5.desc" = "اختر التطبيقات للحظر عند وصولك للحد. تحكم في انتباهك وركز على ما يهم.";
+"help.tip6.title" = "شاهد إحصائياتك";
+"help.tip6.desc" = "راجع أنماطك واتجاهاتك الأسبوعية. فهم استخدامك هو الخطوة الأولى لتغييره.";
+"help.set_daily_goal" = "حدد هدفك اليومي";
+"help.set_daily_goal_desc" = "اختر حد وقت الشاشة في الملف الشخصي. ابق تحته لبناء عادات صحية.";
+"help.earn_screen_time" = "اكسب وقت الشاشة";
+"help.earn_screen_time_desc" = "اذهب لتبويب LockIn وأكمل التمارين - تمارين ضغط، قرفصاء، بلانك أو مهام بالصور!";
+"help.focus_mode" = "وضع التركيز";
+"help.focus_mode_desc" = "ابدأ جلسة بومودورو لحظر جميع التطبيقات واكسب 0.5 دقيقة لكل دقيقة تركيز.";
+"help.block_apps" = "احظر التطبيقات المشتتة";
+"help.block_apps_desc" = "اذهب لتبويب الأهداف واختر التطبيقات للحظر. حدد حدود زمنية لكل تطبيق أيضاً.";
+"help.talk_to_coach" = "تحدث مع مدربك";
+"help.talk_to_coach_desc" = "وصلت للحد اليومي؟ تحدث مع مدرب AI للتأمل واكسب وقتاً إضافياً.";
+"help.track_progress" = "تتبع تقدمك";
+"help.track_progress_desc" = "راجع تبويب الإحصائيات لمشاهدة تحسن نقاط صحتك مع بناء عادات أفضل.";
+
+// MARK: - Quick Actions
+"quick_actions.title" = "إجراءات سريعة";
+"quick_actions.focus_mode" = "وضع التركيز";
+"quick_actions.pomodoro_timer" = "مؤقت بومودورو";
+"quick_actions.hold_for_time" = "ثبت للوقت";
+"quick_actions.earn_per_rep" = "اكسب %@ دقيقة/تكرار";
+"quick_actions.verify_with_photo" = "تحقق بصورة";
+
+// MARK: - Time Formatting
+"time.minutes" = "%d دقيقة";
+"time.hours" = "%d ساعة";
+"time.hours_minutes" = "%d ساعة %d دقيقة";
+"time.today" = "اليوم";
+
+// MARK: - Errors
+"error.camera_permission" = "إذن الكاميرا مطلوب لمهام الصور.";
+"error.no_apps_selected" = "يرجى اختيار تطبيق واحد على الأقل للحظر.";
+"error.insufficient_time" = "ليس لديك وقت مكتسب كافٍ.";
+
+// MARK: - Settings
+"settings.title" = "الإعدادات";
+"settings.accent_color" = "لون التمييز";
+"settings.appearance" = "المظهر";
+"settings.language" = "اللغة";
+"settings.current_language" = "اللغة الحالية";
+"settings.select_language" = "اختر اللغة";
+"settings.change_password" = "تغيير كلمة المرور";
+"settings.enter_new_password" = "أدخل كلمة المرور الجديدة";
+"settings.save_changes" = "حفظ التغييرات";
+"settings.danger_zone" = "منطقة الخطر";
+"settings.delete_account" = "حذف الحساب";
+"settings.delete_account_confirm" = "اكتب 'Delete' للتأكيد";
+"settings.delete_account_warning" = "هذا الإجراء لا يمكن التراجع عنه. اكتب 'Delete' للتأكيد.";
+"settings.type_delete" = "Delete";
+
+// Theme Modes
+"settings.theme.light" = "فاتح";
+"settings.theme.dark" = "داكن";
+"settings.theme.system" = "النظام";
+
+// Accent Colors
+"settings.color.blue" = "أزرق";
+"settings.color.purple" = "بنفسجي";
+"settings.color.green" = "أخضر";
+"settings.color.orange" = "برتقالي";
+"settings.color.pink" = "وردي";
+"settings.color.red" = "أحمر";
+"settings.color.teal" = "سماوي";
+"settings.color.indigo" = "نيلي";
+
+// MARK: - Onboarding
+"onboarding.hello" = "مرحباً!";
+"onboarding.welcome_to" = "مرحباً بك في";
+"onboarding.ready_to_help" = "نحن جاهزون لمساعدتك في";
+"onboarding.taking_control" = "السيطرة على وقتك";
+"onboarding.lets_start" = "لنبدأ";
+"onboarding.how_old" = "كم عمرك؟";
+"onboarding.personalize_exp" = "هذا يساعدنا على تخصيص تجربتك";
+"onboarding.daily_screen_time" = "وقت الشاشة اليومي؟";
+"onboarding.be_honest" = "كن صادقاً - لن نحكم";
+"onboarding.bad_news_good_news" = "لدينا أخبار سيئة\nوأخبار جيدة";
+"onboarding.show_something" = "دعنا نريك شيئاً مهماً عن وقت شاشتك...";
+"onboarding.show_me" = "أرني";
+"onboarding.the_bad_news" = "الأخبار السيئة";
+"onboarding.the_good_news" = "الأخبار الجيدة";
+"onboarding.at_hours_per_day" = "بـ %d ساعة يومياً، ستقضي";
+"onboarding.looking_at_phone" = "تنظر لهاتفك هذا العام";
+"onboarding.thats_approx" = "هذا تقريباً";
+"onboarding.of_your_life" = "من حياتك";
+"onboarding.you_read_right" = "نعم، قرأت بشكل صحيح. تقضي معظم وقت فراغك تنظر لهاتفك بينما يمكنك تحقيق أهدافك وعيش الحياة التي تريدها.";
+"onboarding.whats_good_news" = "ما الأخبار الجيدة؟";
+"onboarding.can_help_get_back" = "LockIn يمكن أن يساعدك لاستعادة";
+"onboarding.turn_into_things" = "وتحويلها للأشياء التي طالما أردت تحقيقها.\n\nوقت أكثر لأهدافك وشغفك والأشخاص الذين تحبهم.";
+"onboarding.lets_get_started" = "لنبدأ";
+"onboarding.first_step" = "لنتخذ الخطوة الأولى";
+"onboarding.connect_screen_time" = "سيتصل LockIn بوقت شاشتك ليعطيك ";
+"onboarding.personalized_report" = "تقرير تركيز مخصص";
+"onboarding.see_real_usage" = "شاهد بيانات استخدامك الحقيقية";
+"onboarding.get_recommendations" = "احصل على توصيات مخصصة";
+"onboarding.track_progress" = "تتبع تقدمك مع الوقت";
+"onboarding.enable_screen_time" = "فعّل وقت الشاشة\nوحظر التطبيقات";
+"onboarding.secure_on_phone" = "100% من المعلومات آمنة وتبقى على هاتفك";
+"onboarding.permission_granted" = "تم منح الإذن!";
+"onboarding.what_happens_next" = "ما سيحدث:";
+"onboarding.tap_continue" = "انقر \"متابعة\" للسماح بالوصول لوقت الشاشة";
+"onboarding.select_apps" = "اختر التطبيقات والفئات التي تريد حظرها";
+"onboarding.tap_done" = "انقر \"تم\" لتأكيد اختيارك";
+"onboarding.enable_app_blocking" = "تفعيل حظر التطبيقات";
+"onboarding.ready_to_block" = "جاهز لحظر التطبيقات!";
+"onboarding.shield_when_open" = "تطبيقاتك المحظورة ستظهر درعاً عند محاولة فتحها.";
+"onboarding.stay_active_earn" = "ابق نشطاً، اكسب الوقت";
+"onboarding.complete_exercises_earn" = "أكمل التمارين والمهام لكسب وقت شاشة لتطبيقاتك المحظورة.";
+"onboarding.heres_reality" = "هذه حقيقتك";
+"onboarding.based_on_usage" = "بناءً على استخدامك الفعلي للهاتف";
+"onboarding.todays_screen_time" = "وقت الشاشة اليوم";
+"onboarding.this_week" = "هذا الأسبوع";
+"onboarding.life_on_phone" = "الحياة على الهاتف";
+"onboarding.at_this_rate" = "بهذا المعدل، ستقضي ";
+"onboarding.lets_fix_this" = "لنصلح هذا";
+"onboarding.your_potential" = "إمكانياتك";
+"onboarding.see_how_much" = "شاهد كم من الوقت يمكنك توفيره";
+"onboarding.reduce_by" = "قلل وقت الشاشة بنسبة %d%%";
+"onboarding.weekly_projection" = "التوقع الأسبوعي";
+"onboarding.free_time_week" = "وقت حر/أسبوع";
+"onboarding.life_reclaimed" = "حياة مستردة";
+"onboarding.accomplish_goals" = "حقق أهدافك أسرع، كن أكثر إنتاجية وإشباعاً";
+"onboarding.current" = "الحالي";
+"onboarding.with_lockin" = "مع LockIn";
+"onboarding.unlock_potential" = "أطلق إمكانياتك";
+"onboarding.hours_back" = "%d+ ساعة مستردة أسبوعياً";
+"onboarding.smart_coach" = "مدرب ذكي";
+"onboarding.task_verification" = "التحقق من المهام";
+"onboarding.focus_sessions" = "جلسات التركيز";
+"onboarding.daily_goals" = "الأهداف اليومية";
+"onboarding.complete_tasks" = "المهام المكتملة";
+"onboarding.app_rating" = "تقييم التطبيق";
+"onboarding.more_productive" = "أكثر إنتاجية";
+"onboarding.start_free_trial" = "ابدأ التجربة المجانية";
+"onboarding.days_free" = "3 أيام مجاناً";
+"onboarding.maybe_later" = "ربما لاحقاً";
+"onboarding.allow_notifications" = "السماح بالإشعارات";
+"onboarding.remind_overscrolling" = "حتى نذكرك بالتمرير الزائد ونساعدك على البقاء على المسار";
+"onboarding.notifications_enabled" = "تم تفعيل الإشعارات!";
+"onboarding.scrolling_for" = "كنت تتصفح لمدة 30 دقيقة. وقت لاستراحة؟";
+"onboarding.time_for_break" = "وقت لاستراحة؟";
+"onboarding.what_to_block" = "ماذا تحظر؟";
+"onboarding.change_this_later" = "لا تقلق، يمكنك تغيير هذا لاحقاً";
+"onboarding.apps" = "التطبيقات";
+"onboarding.categories" = "الفئات";
+"onboarding.start_blocking" = "ابدأ الحظر";
+"onboarding.items_selected" = "تم اختيار %d عناصر";
+"onboarding.set_daily_goal" = "حدد هدفك اليومي";
+"onboarding.how_much_allow" = "كم وقت شاشة تريد\nأن تسمح لنفسك؟";
+"onboarding.per_day" = "يومياً";
+"onboarding.change_in_settings" = "يمكنك دائماً تغيير هذا في الإعدادات";
+"onboarding.set_my_goal" = "حدد هدفي";
+"onboarding.days" = "أيام";
+"onboarding.years" = "سنة";
+"onboarding.projection_title" = "LockIn يعيد برمجة دماغك\nللتركيز طويل المدى.";
+"onboarding.projection_subtitle" = "يستعيد مستخدمو LockIn %d+ ساعة من التركيز كل أسبوع.";
+"onboarding.without_lockin" = "بدون LockIn";
+"onboarding.day_one" = "اليوم 1";
+"onboarding.day_fourteen" = "اليوم 14";
+"onboarding.commitment_title" = "قطع التزام";
+"onboarding.committed" = "أنت ملتزم!";
+"onboarding.press_and_hold" = "اضغط مع الاستمرار على الكرة لمدة 3 ثوانٍ للالتزام بالتحكم في وقت شاشتك";
+"onboarding.taken_first_step" = "لقد اتخذت الخطوة الأولى نحو علاقة أكثر صحة مع هاتفك";
+"onboarding.keep_holding" = "استمر في الضغط...";
+"onboarding.hold_the_orb" = "امسك الكرة للالتزام";
+"onboarding.lets_set_up" = "لنقم بإعداد تطبيق التركيز الخاص بك!";
+
+// MARK: - Auth
+"auth.welcome_to" = "مرحباً بك في LockIn";
+"auth.take_control" = "تحكم في وقت شاشتك";
+"auth.continue_google" = "متابعة مع Google";
+"auth.continue_apple" = "متابعة مع Apple";
+"auth.continue_email" = "متابعة بالبريد الإلكتروني";
+"auth.get_started" = "ابدأ";
+"auth.already_have_account" = "لدي حساب بالفعل";
+"auth.privacy_policy" = "سياسة الخصوصية";
+"auth.terms_of_service" = "شروط الخدمة";
+"auth.create_account" = "إنشاء حساب";
+"auth.welcome_back" = "مرحباً بعودتك";
+"auth.start_taking_control" = "ابدأ بالتحكم في وقت شاشتك";
+"auth.goals_waiting" = "أهداف تركيزك تنتظرك";
+"auth.email" = "البريد الإلكتروني";
+"auth.password" = "كلمة المرور";
+"auth.enter_password" = "أدخل كلمة المرور";
+"auth.agree_to_terms" = "أوافق على ";
+"auth.terms_conditions" = "الشروط والأحكام";
+"auth.sign_in" = "تسجيل الدخول";
+"auth.sign_up" = "إنشاء حساب";
+"auth.or_continue_with" = "أو تابع مع";
+"auth.no_account" = "ليس لديك حساب؟";
+"auth.have_account" = "لديك حساب بالفعل؟";
+
+// MARK: - Device Activity Report
+"report.no_data" = "لا توجد بيانات وقت الشاشة";
+"report.no_data_desc" = "استخدم جهازك وعد لرؤية الإحصائيات";
+"report.vs_last_week" = "مقابل الأسبوع الماضي";
+"report.less_screen_time" = "وقت شاشة أقل";
+"report.more_screen_time" = "وقت شاشة أكثر";
+"report.vs" = "مقابل";
+"report.difference" = "الفرق";
+"report.total_hours" = "إجمالي الساعات";
+"report.daily_avg" = "المتوسط اليومي";
+"report.peak_day" = "يوم الذروة";
+"report.today" = "اليوم";
+"report.stats_per_day" = "إحصائيات يومية";
+"report.total_time_per_app" = "الوقت الإجمالي لكل تطبيق";
+"report.no_app_data" = "لا توجد بيانات استخدام";
+"report.less" = "أقل";
+"report.more" = "أكثر";
+"report.streak" = "السلسلة";
+"report.vs_avg" = "مقابل المتوسط";
+"report.top_apps" = "أفضل التطبيقات";
+"report.no_app_usage" = "لا يوجد استخدام للتطبيقات اليوم";
+"report.start_using" = "استخدم التطبيقات لرؤية الإحصائيات";
+"report.screen_time" = "وقت الشاشة";
+"report.notifications" = "الإشعارات";
+"report.todays_progress" = "تقدم اليوم";
+"report.used" = "مستخدم";
+"report.left" = "متبقي";
+"report.goal_reached" = "تم تحقيق الهدف";
+"report.this_week" = "هذا الأسبوع";
+"report.remaining" = "المتبقي";
+"report.of_goal" = "من الهدف";
+"report.goal" = "الهدف";
+"report.day_sun" = "أحد";
+"report.day_mon" = "إثن";
+"report.day_tue" = "ثلا";
+"report.day_wed" = "أرب";
+"report.day_thu" = "خمي";
+"report.day_fri" = "جمع";
+"report.day_sat" = "سبت";
+"report.day_s" = "ح";
+"report.day_m" = "ن";
+"report.day_t" = "ث";
+"report.day_w" = "ر";
+"report.day_f" = "ج";
+"report.avg" = "متوسط";
+
+
+// MARK: - Language Restart
+"settings.restart_required" = "إعادة التشغيل مطلوبة";
+"settings.restart_message" = "يرجى إغلاق التطبيق وإعادة فتحه لتطبيق تغيير اللغة.";
+
+// MARK: - Shield Action Notifications
+"action.talk_to_coach" = "تحدث مع المدرب";
+"action.earn_screen_time" = "اكسب وقت الشاشة";
+"action.times_up" = "انتهى الوقت";
+"action.chat_coach_bonus" = "تحدث مع مدربك الذكي للحصول على وقت إضافي.";
+"action.get_personalized_advice" = "احصل على نصائح مخصصة من مدربك الذكي.";
+"action.complete_exercises" = "أكمل التمارين لفتح تطبيقاتك.";
+"action.unlock_expired" = "انتهت فترة فتح القفل البالغة %d دقيقة. انقر لإعادة تفعيل الحظر.";
+
+// MARK: - Quick Menu
+"quick.focus_mode" = "وضع التركيز";
+"quick.pomodoro_timer" = "مؤقت بومودورو";
+"quick.plank" = "تمرين البلانك";
+"quick.hold_for_time" = "حافظ على الوقت";
+"quick.squats" = "تمرين القرفصاء";
+"quick.earn_per_rep" = "اكسب 0.3 دقيقة/تكرار";
+"quick.pushups" = "تمرين الضغط";
+"quick.pushups_earn" = "اكسب 0.5 دقيقة/تكرار";
+"quick.photo_task" = "مهمة صورة";
+"quick.verify_with_photo" = "تحقق بالصورة";
+
+// MARK: - Help Tips
+"help.tip1.title" = "صحتك الرقمية";
+"help.tip1.desc" = "LockIn يعيد برمجة دماغك للتركيز طويل المدى. شاهد درجة صحتك تنمو وأنت تبني عادات أفضل.";
+"help.tip2.title" = "تتبع تقدمك";
+"help.tip2.desc" = "شاهد سلسلتك، استخدامك اليومي، وكيف تقارن بمتوسطك. الانتصارات الصغيرة تؤدي لتغييرات كبيرة.";
+"help.tip3.title" = "اكسب وقت الشاشة";
+"help.tip3.desc" = "أكمل تمارين مثل الضغط والقرفصاء والبلانك لكسب وقت شاشة إضافي. حرك جسمك، حرر عقلك.";
+"help.tip4.title" = "حدد أهدافاً يومية";
+"help.tip4.desc" = "اختر حد وقت الشاشة وشاهد حلقة تقدمك تمتلئ. ابق تحت هدفك لبناء عادات دائمة.";
+"help.tip5.title" = "احجب المشتتات";
+"help.tip5.desc" = "اختر التطبيقات للحظر عند وصولك للحد. تحكم في انتباهك وركز على ما يهم.";
+"help.tip6.title" = "شاهد إحصائياتك";
+"help.tip6.desc" = "راجع أنماطك واتجاهاتك الأسبوعية. فهم استخدامك هو الخطوة الأولى لتغييره.";
+"help.back" = "رجوع";
+"help.next" = "التالي";
+"help.got_it" = "فهمت!";
+
+// MARK: - Photo Task Presets (Updated)
+"preset.clean_room" = "تنظيف الغرفة";
+"preset.homework" = "إكمال الواجب";
+"preset.workout" = "روتين التمرين";
+"preset.cook" = "طبخ وجبة";
+"preset.read" = "قراءة 10 صفحات";
+"preset.write" = "كتابة خطة اليوم";
+
+// MARK: - Streak
+"streak.title" = "السلسلة الحالية";
+"streak.days" = "أيام";
+"streak.best" = "أفضل سلسلة";
+"streak.keep_going" = "استمر!";
+"streak.lost" = "انتهت السلسلة";
+
+// MARK: - History
+"history.title" = "سجل النشاط";
+"history.today" = "اليوم";
+"history.yesterday" = "أمس";
+"history.this_week" = "هذا الأسبوع";
+"history.earlier" = "سابقاً";
+"history.no_activity" = "لا يوجد نشاط بعد";
+
+// MARK: - Exercise Info
+"exercise.info" = "معلومات";
+"exercise.watch_demo" = "شاهد العرض";
+"exercise.coming_soon" = "قريباً";
+"exercise.how_to_do_it" = "كيفية التنفيذ";
+"exercise.rewards" = "المكافآت";
+"exercise.got_it" = "فهمت!";
+"exercise.reward_info" = "اكسب وقت شاشة لكل مجموعة مكتملة";
+"exercise.reward_description" = "أكمل التمارين لكسب وقت الشاشة. المزيد من التكرارات = المزيد من الوقت!";
+
+// MARK: - Exercise Descriptions
+"exercise.desc.pushups" = "بناء قوة الجزء العلوي من الجسم بتمارين الضغط الكلاسيكية";
+"exercise.desc.squats" = "تقوية الساقين والجذع بوضعية القرفصاء الصحيحة";
+"exercise.desc.plank" = "تحسين ثبات الجذع بالحفاظ على الوضعية";
+"exercise.desc.jumpingJacks" = "إحماء كارديو لرفع معدل ضربات القلب";
+"exercise.desc.lunges" = "استهداف عضلات الفخذ الأمامية والأرداف بحركة متحكمة";
+"exercise.desc.crunches" = "تقوية عضلات البطن بفعالية";
+"exercise.desc.shoulderPress" = "بناء قوة الكتف من خلال رفع الأثقال";
+"exercise.desc.legRaises" = "استهداف عضلات البطن السفلية ومثنيات الورك";
+"exercise.desc.highKnees" = "تمرين كارديو لتحسين معدل ضربات القلب والتحمل";
+"exercise.desc.pullUps" = "تمرين صعب للجزء العلوي للظهر والذراعين";
+"exercise.desc.wallSit" = "تمرين متساوي القياس لتقوية عضلات الساق";
+"exercise.desc.sidePlank" = "تقوية العضلات المائلة وتحسين التوازن";
+"exercise.desc.photoVerification" = "تحقق من مهمتك بدليل صورة";
+"exercise.desc.custom" = "أنشئ مهمة مخصصة مع التحقق بالصورة";
+
+// MARK: - Exercise Instructions
+"exercise.inst.pushups.1" = "ابدأ في وضع البلانك مع وضع اليدين بعرض الكتفين.";
+"exercise.inst.pushups.2" = "أنزل جسمك حتى يلامس صدرك الأرض تقريباً.";
+"exercise.inst.pushups.3" = "حافظ على جسمك مستقيماً وعضلات البطن مشدودة.";
+"exercise.inst.pushups.4" = "ادفع للأعلى للعودة إلى وضع البداية وكرر.";
+
+"exercise.inst.squats.1" = "قف مع وضع القدمين بعرض الكتفين.";
+"exercise.inst.squats.2" = "أنزل جسمك كأنك تجلس على كرسي.";
+"exercise.inst.squats.3" = "حافظ على الركبتين خلف أصابع القدم والصدر مرفوعاً.";
+"exercise.inst.squats.4" = "ادفع من خلال الكعبين للعودة للأعلى.";
+
+"exercise.inst.plank.1" = "ابدأ في وضع الضغط مع وضع الساعدين على الأرض.";
+"exercise.inst.plank.2" = "حافظ على جسمك في خط مستقيم من الرأس إلى الكعبين.";
+"exercise.inst.plank.3" = "شد عضلات البطن وانظر إلى الأرض.";
+"exercise.inst.plank.4" = "حافظ على الوضعية مع التنفس بشكل متساوٍ.";
+
+"exercise.inst.jumpingJacks.1" = "قف مستقيماً مع وضع الذراعين على الجانبين.";
+"exercise.inst.jumpingJacks.2" = "اقفز مع فتح الساقين ورفع الذراعين فوق الرأس.";
+"exercise.inst.jumpingJacks.3" = "انزل مع فتح القدمين وتلامس اليدين في الأعلى.";
+"exercise.inst.jumpingJacks.4" = "اقفز للعودة إلى وضع البداية وكرر.";
+
+"exercise.inst.lunges.1" = "قف مستقيماً مع وضع القدمين بعرض الورك.";
+"exercise.inst.lunges.2" = "تقدم خطوة بساق واحدة مع خفض الوركين.";
+"exercise.inst.lunges.3" = "يجب أن تكون الركبتان بزاوية 90 درجة، الركبة الخلفية فوق الأرض مباشرة.";
+"exercise.inst.lunges.4" = "ادفع من القدم الأمامية للعودة وبدّل الجانب.";
+
+"exercise.inst.crunches.1" = "استلقِ على ظهرك مع ثني الركبتين والقدمين مسطحتين.";
+"exercise.inst.crunches.2" = "ضع يديك خلف رأسك، المرفقان للخارج.";
+"exercise.inst.crunches.3" = "ارفع كتفيك عن الأرض بشد عضلات البطن.";
+"exercise.inst.crunches.4" = "أنزل بتحكم وكرر.";
+
+"exercise.inst.shoulderPress.1" = "قف أو اجلس مع وزن في كل يد على مستوى الكتف.";
+"exercise.inst.shoulderPress.2" = "ادفع الأثقال للأعلى حتى تمتد الذراعان.";
+"exercise.inst.shoulderPress.3" = "حافظ على شد عضلات البطن واستقامة الظهر.";
+"exercise.inst.shoulderPress.4" = "أنزل ببطء إلى مستوى الكتف وكرر.";
+
+"exercise.inst.legRaises.1" = "استلقِ على ظهرك مع الساقين ممدودتين.";
+"exercise.inst.legRaises.2" = "حافظ على استقامة الساقين وارفعهما نحو السقف.";
+"exercise.inst.legRaises.3" = "أنزل ببطء دون لمس الأرض.";
+"exercise.inst.legRaises.4" = "حافظ على ضغط أسفل ظهرك على الأرض.";
+
+"exercise.inst.highKnees.1" = "قف مستقيماً مع وضع القدمين بعرض الورك.";
+"exercise.inst.highKnees.2" = "اركض في مكانك مع رفع الركبتين إلى مستوى الخصر.";
+"exercise.inst.highKnees.3" = "حرك ذراعيك للتوازن والإيقاع.";
+"exercise.inst.highKnees.4" = "انزل برفق على مقدمة قدميك في كل مرة.";
+
+"exercise.inst.pullUps.1" = "تعلق بالبار مع وضع اليدين بعرض الكتفين، الكفان للأمام.";
+"exercise.inst.pullUps.2" = "اسحب نفسك حتى تتجاوز ذقنك البار.";
+"exercise.inst.pullUps.3" = "اضغط على لوحي الكتف معاً في الأعلى.";
+"exercise.inst.pullUps.4" = "أنزل بتحكم وكرر.";
+
+"exercise.inst.wallSit.1" = "قف وظهرك على الحائط.";
+"exercise.inst.wallSit.2" = "انزلق للأسفل حتى يصبح الفخذان موازيين للأرض.";
+"exercise.inst.wallSit.3" = "حافظ على الركبتين بزاوية 90 درجة، فوق الكاحلين مباشرة.";
+"exercise.inst.wallSit.4" = "حافظ على استواء ظهرك على الحائط.";
+
+"exercise.inst.sidePlank.1" = "استلقِ على جانبك مع الساقين ممدودتين ومتراكبتين.";
+"exercise.inst.sidePlank.2" = "ارفع وركيك مع الارتكاز على الساعد وجانب القدم.";
+"exercise.inst.sidePlank.3" = "حافظ على جسمك في خط مستقيم من الرأس إلى القدمين.";
+"exercise.inst.sidePlank.4" = "حافظ على الوضعية ثم بدّل الجانب.";
+
+"exercise.inst.photo.1" = "التقط صورة 'قبل' لتوثيق نقطة البداية.";
+"exercise.inst.photo.2" = "أكمل مهمتك أو نشاطك.";
+"exercise.inst.photo.3" = "التقط صورة 'بعد' تظهر المهمة المكتملة.";
+"exercise.inst.photo.4" = "أرسل للتحقق واحصل على مكافأتك.";
+
+// MARK: - Paywall
+"paywall.pro" = "PRO";
+"paywall.title" = "تحكم في\nوقت الشاشة";
+"paywall.subtitle" = "انضم إلى الآلاف الذين استعادوا تركيزهم وقللوا وقت الشاشة بأكثر من 50%";
+"paywall.users_love" = "أكثر من 10,000 مستخدم يحبون LockIn";
+"paywall.feature_blocking" = "حظر غير محدود للتطبيقات والمواقع";
+"paywall.feature_focus" = "جلسات تركيز مع التحقق من المهام";
+"paywall.feature_analytics" = "تحليلات استخدام مفصلة ورؤى";
+"paywall.trial_toggle" = "غير متأكد؟ جرب 3 أيام مجاناً";
+"paywall.trial_subtitle" = "ألغِ في أي وقت خلال الفترة التجريبية، بدون رسوم";
+"paywall.choose_plan" = "اختر خطتك";
+"paywall.loading_plans" = "جاري تحميل الخطط...";
+"paywall.annual" = "سنوي";
+"paywall.monthly" = "شهري";
+"paywall.save" = "وفر %@%%";
+"paywall.billed_annually" = "%@/شهر يُفوتر سنوياً";
+"paywall.legal_trial" = "بعد الفترة التجريبية المجانية لمدة 3 أيام، سيتم تحصيل الدفع من حساب Apple ID الخاص بك. تتجدد الاشتراكات تلقائياً ما لم يتم إلغاؤها قبل 24 ساعة من نهاية الفترة.";
+"paywall.legal_no_trial" = "سيتم تحصيل الدفع من حساب Apple ID الخاص بك. تتجدد الاشتراكات تلقائياً ما لم يتم إلغاؤها قبل 24 ساعة من نهاية الفترة.";
+"paywall.terms_of_service" = "شروط الخدمة";
+"paywall.privacy_policy" = "سياسة الخصوصية";
+"paywall.restore_purchases" = "استعادة المشتريات";
+"paywall.no_purchases_found" = "لم يتم العثور على مشتريات سابقة";
+"paywall.start_trial" = "ابدأ التجربة المجانية لـ 3 أيام";
+"paywall.subscribe_now" = "اشترك الآن";
+"paywall.cancel_in_app_store" = "إلغاء في App Store";
+"paywall.per_year" = "/سنة";
+"paywall.per_month" = "/شهر";
+"paywall.welcome_title" = "مرحباً بك في LockIn!";
+"paywall.welcome_message" = "رحلة تركيزك تبدأ الآن";
+"paywall.continue" = "متابعة";
+"paywall.error" = "خطأ";
+"paywall.ok" = "حسناً";
+"paywall.review1_text" = "أخيراً تخلصت من إدمان الهاتف!";
+"paywall.review1_author" = "سارة م.";
+"paywall.review2_text" = "انخفض وقت شاشتي 3 ساعات/يوم";
+"paywall.review2_author" = "جيمس ك.";
+"paywall.review3_text" = "أفضل تطبيق تركيز استخدمته على الإطلاق";
+"paywall.review3_author" = "إيميلي ر.";
+
+// MARK: - Home
+"home.todays_goal" = "هدف اليوم";
+"home.used" = "مستخدم";
+"home.left" = "متبقي";
+
+// MARK: - Notifications
+"notification.earn_time_action" = "اكسب وقتاً";
+"notification.view_stats_action" = "عرض الإحصائيات";
+"notification.daily_reminder_title" = "حان وقت LockIn!";
+"notification.daily_reminder_body" = "تحقق من هدفك اليومي واكسب بعض وقت الشاشة.";
+"notification.streak_risk_title" = "سلسلتك في خطر! 🔥";
+"notification.streak_risk_body" = "لقد كنت في سلسلة لمدة %lld يوم. لا تفقدها اليوم!";
+"notification.need_more_time_title" = "تحتاج المزيد من الوقت؟";
+"notification.need_more_time_body" = "أكمل تمريناً سريعاً لكسب المزيد من دقائق الشاشة.";
+"notification.focus_complete_title" = "اكتملت جلسة التركيز! 🎉";
+"notification.focus_complete_body" = "عمل رائع! لقد ربحت %lld دقيقة من وقت الشاشة.";
+
+// MARK: - Coach
+"coach.title" = "المدرب الذكي";
+"coach.your_ai_coach" = "مدربك الذكي";
+"coach.description" = "احصل على التوجيه والتشجيع الشخصي.";
+"coach.greeting_can_earn" = "مرحباً! لاحظت أنك حققت هدفك اليومي. عمل رائع! 🎉 هل تريد اكتساب بعض وقت الشاشة الإضافي، أو هل يمكنني مساعدتك في شيء آخر اليوم؟";
+"coach.greeting_cant_earn" = "مرحباً! 👋 أنا هنا لمساعدتك في رحلة تركيزك. كيف يمكنني مساعدتك اليوم؟";
+"coach.prompt1" = "💭 أشعر بالتوتر";
+"coach.prompt2" = "🎯 ساعدني في التركيز";
+"coach.prompt3" = "😴 أنا ملول";
+"coach.ready_to_earn" = "جاهز لكسب بعض وقت الشاشة؟";
+"coach.earn_minutes" = "اكسب %lld دقيقة";
+"coach.minutes_earned" = "لقد كسبت %lld دقيقة! 🎉";
+"coach.thanks_reflecting" = "شكراً لمشاركة ذلك. التفكير في مشاعرنا هو خطوة قوية.";
+"coach.bonus_acknowledgment" = "لقد أضفت %lld دقيقة إضافية لك كمكافأة على انفتاحك. 💪";
+"coach.type_message" = "اكتب رسالة...";
+"coach.response_limit" = "هذا كثير ليوم واحد! فلنتحدث أكثر غداً. في هذه الأثناء، حاول ممارسة بعض التمارين أو أخذ استراحة.";
+"coach.response_stress" = "أسمعك. التوتر قد يكون صعباً. تذكر أن تأخذ نفساً عميقاً. ما رأيك بممارسة بعض التمارين لتصفية ذهنك؟";
+"coach.response_focus" = "التركيز قد يكون صعباً في عالمنا المشتت. حاول وضع هاتفك جانباً لمدة 25 دقيقة والعمل على مهمة واحدة. يمكنك فعل هذا!";
+"coach.response_bored" = "الملل يمكن أن يكون فرصة للإبداع! بدلاً من التصفح اللانهائي، ما رأيك بتجربة شيء جديد أو ممارسة هواية؟";
+"coach.response_default" = "شكراً للمشاركة. أنا هنا لدعمك في رحلة تركيزك. هل هناك شيء محدد أستطيع مساعدتك به؟";
+
+// MARK: - Detox
+"detox.title" = "ديتوكس";
+"detox.stay_focused" = "ابقَ مركزاً!";
+"detox.digital_detox" = "ديتوكس رقمي";
+"detox.all_apps_blocked" = "جميع التطبيقات محظورة";
+"detox.take_break" = "خذ استراحة من الشاشة";
+"detox.remaining" = "المتبقي";
+"detox.duration" = "المدة";
+"detox.end_detox" = "إنهاء الديتوكس";
+"detox.start_detox" = "بدء الديتوكس";
+
+// MARK: - Onboarding (New)
+
+// الفئات العمرية
+"onboarding.age_under_18" = "أقل من 18";
+"onboarding.age_18_24" = "18-24";
+"onboarding.age_25_30" = "25-30";
+"onboarding.age_31_40" = "31-40";
+"onboarding.age_41_50" = "41-50";
+"onboarding.age_51_plus" = "51+";
+
+// ساعات في اليوم
+"onboarding.hours_1_2" = "1-2 ساعات";
+"onboarding.hours_2_4" = "2-4 ساعات";
+"onboarding.hours_4_6" = "4-6 ساعات";
+"onboarding.hours_6_8" = "6-8 ساعات";
+"onboarding.hours_8_plus" = "8+ ساعات";
+
+"onboarding.now" = "الآن";
+"onboarding.how_it_works" = "كيف يعمل";
+"onboarding.block_apps" = "حظر التطبيقات";
+"onboarding.block_apps_desc" = "اختر التطبيقات التي تريد حظرها خلال أوقات التركيز.";
+"onboarding.earn_time" = "اكسب الوقت";
+"onboarding.earn_time_desc" = "أكمل تمارين سريعة لكسب وقت الشاشة.";
+"onboarding.spend_wisely" = "أنفق بحكمة";
+"onboarding.spend_wisely_desc" = "استخدم وقتك المكتسب بوعي ومسؤولية.";
+"onboarding.schedule_freedom" = "جدولة الحرية";
+"onboarding.schedule_freedom_desc" = "حدد أوقات فتح التطبيقات المحظورة.";
+"onboarding.select_apps_to_block" = "اختر التطبيقات للحظر";
+"onboarding.apps_blocked_by_default" = "التطبيقات محظورة افتراضياً";
+"onboarding.earn_screen_time" = "اكسب وقت الشاشة";
+"onboarding.earn_screen_time_desc" = "أكمل التمارين لكسب دقائق من وقت الشاشة.";
+"onboarding.unlock_window_title" = "نافذة الفتح";
+"onboarding.unlock_window_desc" = "اختر متى ستكون التطبيقات المحظورة متاحة.";
+"onboarding.how_it_works_explain" = "كيف يعمل LockIn";
+"onboarding.how_it_works_detail" = "احظر التطبيقات المشتتة، اكسب وقت الشاشة من خلال التمارين، واستخدمه بحكمة.";
+"onboarding.minutes_selected" = "الدقائق المختارة";
+"onboarding.min" = "د";
+"onboarding.almost_ready" = "أنت جاهز تقريباً!";
+"onboarding.grant_permissions" = "منح الأذونات";
+"onboarding.screen_time" = "وقت الشاشة";
+"onboarding.required_to_block" = "مطلوب لحظر التطبيقات";
+"onboarding.camera" = "الكاميرا";
+"onboarding.for_exercise_verification" = "للتحقق من التمارين";
+"onboarding.grant" = "منح";

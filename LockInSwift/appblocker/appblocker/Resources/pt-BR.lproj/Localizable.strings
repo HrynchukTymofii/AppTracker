@@ -1,0 +1,965 @@
+/*
+  Localizable.strings
+  LockIn
+
+  Portuguese (Brazil) Localization
+*/
+
+// MARK: - Common
+"common.done" = "Concluído";
+"common.cancel" = "Cancelar";
+"common.save" = "Salvar";
+"common.edit" = "Editar";
+"common.close" = "Fechar";
+"common.back" = "Voltar";
+"common.next" = "Próximo";
+"common.skip" = "Pular";
+"common.continue" = "Continuar";
+"common.error" = "Erro";
+"common.success" = "Sucesso";
+"common.loading" = "Carregando...";
+"common.retry" = "Tentar novamente";
+"common.get_started" = "Começar";
+"common.of" = "de";
+
+// MARK: - Tab Bar
+"tab.home" = "Início";
+"tab.goals" = "Metas";
+"tab.lockin" = "LockIn";
+"tab.stats" = "Estatísticas";
+"tab.profile" = "Perfil";
+
+// MARK: - Home
+"home.greeting" = "Bom %@";
+"home.morning" = "dia";
+"home.afternoon" = "tarde";
+"home.evening" = "noite";
+"home.help" = "Ajuda";
+"home.health_score" = "Saúde";
+"home.today_progress" = "Progresso de Hoje";
+"home.screen_time" = "Tempo de Tela";
+"home.earned_time" = "Ganho";
+"home.top_apps" = "Apps Mais Usados";
+"home.daily_goal" = "Meta Diária";
+"home.change" = "Alterar";
+"home.upcoming" = "Próximos";
+"home.see_all" = "Ver Todos";
+"home.create_schedule" = "Criar Cronograma";
+"home.set_times_unblocked" = "Defina horários para apps desbloqueados";
+"home.unblocked" = "Desbloqueado";
+"home.every_day" = "Todos os dias";
+"home.weekdays" = "Dias úteis";
+"home.weekends" = "Fins de semana";
+
+// MARK: - Today's Progress
+"progress.todays_progress" = "Progresso de Hoje";
+"progress.earn" = "Ganhar";
+"progress.spent" = "Gasto";
+"progress.earned" = "Ganho";
+"progress.balance" = "Saldo";
+"progress.this_week" = "Esta Semana";
+
+// MARK: - LockIn (Earn Time)
+"lockin.title" = "Ganhe Tempo de Tela";
+"lockin.subtitle" = "Complete exercícios para desbloquear tempo de app";
+"lockin.balance" = "Saldo de Tempo de Tela";
+"lockin.minutes" = "min";
+"lockin.earn" = "Ganhar";
+"lockin.earn_time" = "GANHAR TEMPO";
+"lockin.transaction_history" = "Histórico de Transações";
+"lockin.no_activity" = "Nenhuma atividade ainda";
+"lockin.complete_exercises" = "Complete exercícios para ganhar tempo";
+"lockin.today" = "Hoje:";
+"lockin.earned" = "ganho";
+"lockin.spent" = "gasto";
+"lockin.week" = "Semana:";
+"lockin.task_in_progress" = "Tarefa em Progresso";
+"lockin.continue" = "Continuar";
+"lockin.recent_activity" = "ATIVIDADE RECENTE";
+"lockin.resets_in_hours" = "Reinicia em %dh";
+"lockin.favorites" = "Favoritos";
+"lockin.all_exercises" = "Todos os exercícios";
+"lockin.double_tap_add" = "Toque duas vezes para adicionar";
+"lockin.double_tap_remove" = "Toque duas vezes para remover";
+
+// MARK: - Exercises
+"exercise.pushups" = "Flexões";
+"exercise.squats" = "Agachamentos";
+"exercise.plank" = "Prancha";
+"exercise.jumping_jacks" = "Polichinelos";
+"exercise.lunges" = "Avanços";
+"exercise.crunches" = "Abdominais";
+"exercise.shoulder_press" = "Desenvolvimento de ombros";
+"exercise.leg_raises" = "Elevação de pernas";
+"exercise.high_knees" = "Joelhos altos";
+"exercise.pull_ups" = "Barra fixa";
+"exercise.wall_sit" = "Cadeira na parede";
+"exercise.side_plank" = "Prancha lateral";
+"exercise.photo_task" = "Tarefa com Foto";
+"exercise.focus_mode" = "Modo Foco";
+"exercise.custom" = "Tarefa Personalizada";
+"exercise.min_per_rep" = "min/rep";
+"exercise.min_per_sec" = "min/seg";
+"exercise.camera_required" = "Acesso à Câmera Necessário";
+"exercise.open_settings" = "Abrir Configurações";
+"exercise.enable_camera" = "Habilitar Câmera";
+"exercise.great_job" = "Ótimo Trabalho!";
+"exercise.leg_day_champion" = "Campeão do Dia de Pernas!";
+"exercise.core_of_steel" = "Core de Aço!";
+"exercise.min_earned" = "+%@ min ganhos";
+"exercise.do_pushups" = "Fazer Flexões";
+"exercise.do_squats" = "Fazer Agachamentos";
+"exercise.hold_plank" = "Manter Prancha";
+"exercise.pushup_instructions" = "Posicione seu celular para que a câmera possa ver a parte superior do corpo de lado.";
+"exercise.squat_instructions" = "Fique em frente ao celular para que ele possa ver seu corpo inteiro de lado.";
+"exercise.plank_instructions" = "Posicione seu celular para ver seu corpo inteiro de lado. Mantenha o corpo reto!";
+"exercise.start_pushups" = "Iniciar Flexões";
+"exercise.start_squats" = "Iniciar Agachamentos";
+"exercise.start_plank" = "Iniciar Prancha";
+"exercise.do_some_pushups" = "Faça algumas flexões...";
+"exercise.do_some_squats" = "Faça alguns agachamentos...";
+"exercise.hold_the_plank" = "Mantenha a prancha...";
+"exercise.pushups_label" = "FLEXÕES";
+"exercise.squats_label" = "AGACHAMENTOS";
+"exercise.seconds" = "SEGUNDOS";
+"exercise.down" = "BAIXO";
+"exercise.up" = "CIMA";
+"exercise.holding" = "MANTENDO";
+"exercise.get_in_position" = "POSICIONE-SE";
+"exercise.paused" = "PAUSADO";
+"exercise.paused_get_back" = "PAUSADO - Volte à posição";
+"exercise.timer_pauses_info" = "O timer pausa se você sair do enquadramento";
+"exercise.camera_tracking_pushups" = "Para rastrear suas flexões, precisamos de acesso à câmera.";
+"exercise.camera_tracking_squats" = "Para rastrear seus agachamentos, precisamos de acesso à câmera.";
+"exercise.camera_tracking_plank" = "Para rastrear sua prancha, precisamos de acesso à câmera.";
+"exercise.did_pushups" = "Você fez %d flexões!";
+"exercise.did_squats" = "Você fez %d agachamentos!";
+"exercise.held_for_seconds" = "Você manteve por %d segundos!";
+"exercise.finish_with_reward" = "Finalizar (+%@ min)";
+"exercise.photo_task_desc" = "Complete uma tarefa e verifique com fotos para ganhar tempo de tela";
+"exercise.describe_task" = "DESCREVA SUA TAREFA";
+"exercise.task_placeholder" = "O que você vai fazer? (ex: Limpar meu quarto)";
+"exercise.or_choose_preset" = "OU ESCOLHA UM PREDEFINIDO";
+"exercise.camera_permission_message" = "Precisamos de acesso à câmera para verificar seus exercícios e acompanhar seu progresso.";
+"exercise.camera_photo_task_message" = "Para tirar fotos para verificação de tarefas, precisamos de acesso à câmera.";
+"exercise.before_photo" = "Foto Antes";
+"exercise.after_photo" = "Foto Depois";
+"exercise.show_completed" = "Mostre sua tarefa concluída";
+"exercise.take_starting_photo" = "Tire uma foto do ponto de partida";
+"exercise.before" = "Antes";
+"exercise.after" = "Depois";
+"exercise.proof" = "Prova";
+"exercise.go_complete_task" = "Vá completar sua tarefa!";
+"exercise.done_after_photo" = "Terminei - Tirar Foto Depois";
+"exercise.done_verify_task" = "Terminei - Verificar Tarefa";
+"exercise.task_verified" = "Tarefa verificada!";
+"exercise.type_message" = "Digite uma mensagem...";
+"exercise.complete_anyway" = "Completar Mesmo Assim (+%d min)";
+"exercise.reps" = "repetições";
+"exercise.seconds_unit" = "segundos";
+"exercise.reward_per_rep" = "%.1f min/rep (mín %d), +%.1f após %d";
+"exercise.reward_per_sec" = "%.1f min/seg (mín %ds), +%.1f após %ds";
+"exercise.verify_task" = "Verificar tarefa";
+"exercise.reward_per_unit" = "%.1f min por unidade";
+
+// Photo Task Presets
+"exercise.preset.clean_room" = "Limpar o quarto";
+"exercise.preset.do_dishes" = "Lavar a louça";
+"exercise.preset.make_bed" = "Arrumar a cama";
+"exercise.preset.organize_desk" = "Organizar a mesa";
+"exercise.preset.take_walk" = "Dar uma caminhada";
+"exercise.preset.read_book" = "Ler um livro";
+"exercise.preset.meditate" = "Meditar";
+"exercise.preset.stretch" = "Alongar";
+"exercise.preset.drink_water" = "Beber água";
+"exercise.preset.healthy_meal" = "Comer saudável";
+
+// MARK: - Focus Mode
+"focus.title" = "Modo Foco";
+"focus.deep_focus" = "Foco Profundo";
+"focus.description" = "Bloqueie todas as distrações e foque no que importa";
+"focus.session_duration" = "Duração da Sessão";
+"focus.apps_blocked" = "Todos os apps selecionados serão bloqueados";
+"focus.earn_info" = "Ganhe %@ minutos ao completar";
+"focus.earn_minutes" = "Ganhe %d minutos ao completar";
+"focus.no_interruptions" = "Mantenha o foco sem interrupções";
+"focus.start" = "Iniciar Sessão de Foco";
+"focus.remaining" = "Restante";
+"focus.paused" = "Pausado";
+"focus.active" = "Foco Ativo";
+"focus.all_blocked" = "Todos os apps estão bloqueados";
+"focus.end" = "Encerrar";
+"focus.pause" = "Pausar";
+"focus.resume" = "Retomar";
+"focus.add_time" = "+5min";
+"focus.complete" = "Ótimo Foco!";
+"focus.completed_session" = "Você completou uma sessão de foco de %d minutos";
+"focus.time_earned" = "Tempo Ganho";
+"focus.cancel" = "Cancelar";
+"focus.focus_session" = "Sessão de Foco";
+"focus.session_paused" = "Sessão Pausada";
+"focus.focus_active" = "Foco Ativo";
+"focus.minutes" = "+%@ minutos";
+
+// MARK: - Profile
+"profile.settings" = "Configurações";
+"profile.achievements" = "Conquistas";
+"profile.blocked_items" = "Itens Bloqueados";
+"profile.blocked_items_desc" = "Apps e categorias que você bloqueou";
+"profile.app_settings" = "Configurações do App";
+"profile.unlock_window" = "Janela de Desbloqueio";
+"profile.unlock_window_desc" = "Quanto tempo você tem acesso ao usar tempo ganho";
+"profile.daily_goal" = "Meta Diária";
+"profile.daily_goal_desc" = "Tempo de tela máximo permitido por dia";
+"profile.default_app_limit" = "Limite Padrão de App";
+"profile.default_app_limit_desc" = "Limite diário padrão para novos apps bloqueados";
+"profile.theme" = "Tema";
+"profile.accent_color" = "Cor de Destaque";
+"profile.notifications" = "Notificações";
+"profile.contact_us" = "Fale Conosco";
+"profile.rate_us" = "Avalie-nos";
+"profile.logout" = "Sair";
+"profile.apps" = "apps";
+"profile.categories" = "categorias";
+"profile.min" = "min";
+"profile.pro" = "PRO";
+
+// MARK: - Stats
+"stats.streak" = "Sequência";
+"stats.tasks" = "Tarefas";
+"stats.days" = "dias";
+"stats.total_earned" = "Total Ganho";
+"stats.total_spent" = "Total Gasto";
+"stats.weekly_stats" = "Estatísticas Semanais";
+"stats.today" = "Hoje";
+"stats.this_week" = "Esta Semana";
+"stats.last_week" = "Semana Passada";
+"stats.daily_avg" = "Média Diária";
+"stats.vs_last_week" = "VS SEMANA PASSADA";
+"stats.less_screen_time" = "menos tempo de tela";
+"stats.more_screen_time" = "mais tempo de tela";
+"stats.share_progress" = "Compartilhar Progresso";
+"stats.share" = "Compartilhar";
+
+// MARK: - Achievements
+"achievements.title" = "Conquistas";
+"achievements.unlocked" = "Conquistas Desbloqueadas";
+"achievements.category.streak" = "Sequência";
+"achievements.category.tasks" = "Tarefas";
+"achievements.category.time_earned" = "Tempo Ganho";
+"achievements.category.health" = "Saúde";
+"achievements.category.balance" = "Equilíbrio";
+"achievements.category.special" = "Especial";
+"achievements.category.all" = "Todos";
+
+// Achievement Names and Descriptions
+"achievement.streak_1.name" = "Primeira Chama";
+"achievement.streak_1.desc" = "Complete seu primeiro dia";
+"achievement.streak_3.name" = "Começando";
+"achievement.streak_3.desc" = "Sequência de 3 dias";
+"achievement.streak_7.name" = "Guerreiro da Semana";
+"achievement.streak_7.desc" = "Sequência de 7 dias";
+"achievement.streak_14.name" = "Campeão de Duas Semanas";
+"achievement.streak_14.desc" = "Sequência de 14 dias";
+"achievement.streak_30.name" = "Mestre do Mês";
+"achievement.streak_30.desc" = "Sequência de 30 dias";
+"achievement.streak_60.name" = "Lenda da Sequência";
+"achievement.streak_60.desc" = "Sequência de 60 dias";
+
+"achievement.tasks_1.name" = "Primeiros Passos";
+"achievement.tasks_1.desc" = "Complete 1 tarefa";
+"achievement.tasks_5.name" = "Enfrentador de Tarefas";
+"achievement.tasks_5.desc" = "Complete 5 tarefas";
+"achievement.tasks_10.name" = "Ficando Ocupado";
+"achievement.tasks_10.desc" = "Complete 10 tarefas";
+"achievement.tasks_25.name" = "Pro da Produtividade";
+"achievement.tasks_25.desc" = "Complete 25 tarefas";
+"achievement.tasks_50.name" = "Máquina de Tarefas";
+"achievement.tasks_50.desc" = "Complete 50 tarefas";
+"achievement.tasks_100.name" = "Clube do Século";
+"achievement.tasks_100.desc" = "Complete 100 tarefas";
+
+"achievement.time_5.name" = "Primeiros Minutos";
+"achievement.time_5.desc" = "Ganhe 5 minutos";
+"achievement.time_30.name" = "Construtor de Tempo";
+"achievement.time_30.desc" = "Ganhe 30 minutos no total";
+"achievement.time_60.name" = "Herói da Hora";
+"achievement.time_60.desc" = "Ganhe 1 hora no total";
+"achievement.time_180.name" = "Titã do Tempo";
+"achievement.time_180.desc" = "Ganhe 3 horas no total";
+"achievement.time_600.name" = "Mestre do Tempo";
+"achievement.time_600.desc" = "Ganhe 10 horas no total";
+"achievement.time_1800.name" = "Lenda do Tempo";
+"achievement.time_1800.desc" = "Ganhe 30 horas no total";
+
+"achievement.health_60.name" = "Em Ascensão";
+"achievement.health_60.desc" = "Alcance pontuação de saúde 60";
+"achievement.health_70.name" = "Boas Vibrações";
+"achievement.health_70.desc" = "Alcance pontuação de saúde 70";
+"achievement.health_80.name" = "Excelente";
+"achievement.health_80.desc" = "Alcance pontuação de saúde 80";
+"achievement.health_90.name" = "Forma Perfeita";
+"achievement.health_90.desc" = "Alcance pontuação de saúde 90";
+
+"achievement.balance_30.name" = "Poupador";
+"achievement.balance_30.desc" = "Acumule 30 minutos de saldo";
+"achievement.balance_120.name" = "Elite do Banco de Tempo";
+"achievement.balance_120.desc" = "Acumule 2 horas de saldo";
+
+// MARK: - Goals / Blocking
+"goals.title" = "Metas";
+"goals.today_usage" = "USO DE APPS HOJE";
+"goals.loading" = "Carregando dados de uso...";
+"goals.screen_time_required" = "Acesso ao Tempo de Tela Necessário";
+"goals.screen_time_description" = "O LockIn precisa de permissão do Tempo de Tela para bloquear apps e rastrear seu uso.";
+"goals.grant_access" = "Conceder Acesso";
+"goals.requesting" = "Solicitando...";
+"goals.blocked_apps" = "APPS BLOQUEADOS";
+"goals.selected" = "selecionado";
+"goals.select_apps_to_block" = "Selecionar Apps para Bloquear";
+"goals.choose_apps" = "Escolha apps e categorias que deseja bloquear. Você pode mudar isso a qualquer momento.";
+"goals.app_limits" = "LIMITES DE APPS";
+"goals.apps" = "apps";
+"goals.no_limits_set" = "Nenhum Limite de App Definido";
+"goals.set_daily_limits" = "Defina limites de tempo diários para apps específicos para gerenciar melhor seu tempo de tela.";
+"goals.add_app_limit" = "Adicionar Limite de App";
+"goals.add_another_limit" = "Adicionar Outro Limite";
+"goals.set_limits" = "Definir Limites";
+"goals.daily_app_limits" = "Limites Diários de Apps";
+"goals.limit_description" = "Defina o uso máximo diário para cada app. Este limite não pode ser excedido mesmo com tempo ganho.";
+"goals.select_apps_limits" = "Selecione apps para definir limites diários";
+"goals.no_limits_yet" = "Nenhum limite de app definido";
+"goals.add_limit_hint" = "Toque em \"Adicionar Limite de App\" para definir limites para apps específicos";
+"goals.limits_reset_info" = "Os limites são reiniciados diariamente à meia-noite. O uso é rastreado automaticamente ao acessar apps bloqueados.";
+"goals.daily_limit_for" = "Limite Diário para";
+"goals.of" = "de";
+"goals.limit_reached" = "Limite Atingido";
+"goals.min_daily_limit" = "min de limite diário";
+"goals.edit" = "Editar";
+"goals.remove_limit" = "Remover Limite";
+"goals.cancel" = "Cancelar";
+"goals.done" = "Concluído";
+"goals.save" = "Salvar";
+"goals.minutes" = "minutos";
+"goals.share_progress" = "Compartilhar Progresso";
+"goals.used" = "Usado";
+"goals.goal" = "Meta";
+"goals.left" = "Restante";
+"goals.of_goal" = "da meta";
+"goals.daily_app_limits_desc" = "Defina o uso máximo diário para cada app. Este limite não pode ser excedido mesmo com tempo ganho.";
+"goals.select_apps_to_set_limits" = "Selecione apps para definir limites diários";
+"goals.no_app_limits_set" = "Nenhum limite de app definido";
+"goals.tap_to_set_limits" = "Toque em \"Adicionar Limite de App\" para definir limites para apps específicos";
+"goals.of_minutes" = "de %dmin";
+"goals.minutes_count" = "%d minutos";
+"goals.min_daily_limit" = "%d min de limite diário";
+
+// MARK: - Shield Screen
+"shield.ready_to_unlock" = "Pronto para Desbloquear";
+"shield.app_blocked" = "App Bloqueado";
+"shield.almost_there" = "Quase Lá";
+"shield.times_up" = "Tempo Esgotado";
+"shield.goal_complete" = "Meta Concluída!";
+"shield.daily_goal_reached" = "Meta Diária Atingida";
+"shield.unlock" = "Desbloquear %dmin";
+"shield.stay_focused" = "Mantenha o Foco";
+"shield.earn_time" = "Ganhar Tempo";
+"shield.earn_more_time" = "Ganhar Mais Tempo";
+"shield.talk_to_coach" = "Falar com Coach";
+"shield.close" = "Fechar";
+"shield.site_limit_reached" = "Limite do Site Atingido";
+"shield.not_enough_time" = "Tempo Insuficiente";
+"shield.no_time_available" = "Sem Tempo Disponível";
+"shield.unlock_minutes" = "Desbloquear %dm";
+"shield.unlock_for_minutes" = "Desbloquear por %dm";
+"shield.earn_time_now" = "Ganhar Tempo Agora";
+
+// Shield Descriptions - App
+"shield.goal_complete_desc" = "Você atingiu sua meta diária de tempo de tela.\n\nPronto para uma pausa? Seu coach IA pode ajudá-lo a ganhar tempo bônus.";
+"shield.time_up_desc" = "Você usou todo seu tempo para %@ hoje.\n\nConverse com seu coach IA sobre construir hábitos melhores.";
+"shield.ready_unlock_desc" = "%@ está bloqueado.\n\nVocê ganhou %@.\nDesbloquear usa %dm do seu saldo.";
+"shield.almost_there_desc" = "%@ está bloqueado.\n\nVocê tem %@ mas precisa de %dm.\nGanhe mais %@ para desbloquear.";
+"shield.app_blocked_desc" = "%@ está bloqueado.\n\nComplete exercícios para ganhar tempo de tela.\nVocê precisa de %dm para desbloquear.";
+
+// Shield Descriptions - Web
+"shield.daily_goal_reached_desc" = "Você atingiu sua meta de tempo de tela para hoje.\n\nFale com seu coach IA para ganhar tempo bônus.";
+"shield.site_limit_desc" = "Você usou todo seu tempo de navegação hoje.\n\nFale com seu coach IA sobre construir hábitos melhores.";
+"shield.web_ready_unlock_desc" = "%@ está bloqueado.\n\nVocê ganhou %@.\nDesbloquear usará %dm do seu tempo.";
+"shield.web_not_enough_desc" = "%@ está bloqueado.\n\nVocê tem %@ mas precisa de %dm.\nGanhe mais %@ para desbloquear.";
+"shield.web_no_time_desc" = "%@ está bloqueado.\n\nComplete exercícios para ganhar tempo de tela.\nVocê precisa de %dm para desbloquear.";
+
+// MARK: - Contact Us
+"contact.title" = "Fale Conosco";
+"contact.header" = "Adoraríamos ouvir você!";
+"contact.description" = "Tem dúvidas, feedback ou precisa de ajuda? Entre em contato e responderemos o mais rápido possível.";
+"contact.email_label" = "Envie-nos um email";
+"contact.send_email" = "Enviar Email";
+"contact.get_in_touch" = "Entre em Contato";
+"contact.love_to_hear" = "Adoraríamos ouvir você! Compartilhe feedback, reporte um bug ou faça uma pergunta.";
+"contact.your_message" = "Sua Mensagem";
+"contact.placeholder" = "Conte-nos o que está pensando...";
+"contact.send_message" = "Enviar Mensagem";
+"contact.email_directly" = "Ou envie email diretamente para:";
+
+// MARK: - Rate Us
+"rate.title" = "Avalie-nos";
+"rate.how_enjoying" = "Como está sendo sua experiência com o LockIn?";
+"rate.tap_to_rate" = "Toque em uma estrela para avaliar";
+"rate.feedback" = "Conte-nos como podemos melhorar";
+"rate.feedback_placeholder" = "Seu feedback nos ajuda a melhorar o LockIn...";
+"rate.submit" = "Enviar Feedback";
+"rate.rating_1" = "Podemos melhorar";
+"rate.rating_2" = "Precisa de trabalho";
+"rate.rating_3" = "Está ok";
+"rate.rating_4" = "Muito bom!";
+"rate.rating_5" = "Adoro!";
+"rate.enjoying" = "Gostando do LockIn?";
+"rate.love_to_hear" = "Adoraríamos saber o que você pensa! Seu feedback nos ajuda a melhorar.";
+"rate.can_do_better" = "Podemos melhorar";
+"rate.needs_improvement" = "Precisa de melhorias";
+"rate.its_okay" = "Está ok";
+"rate.really_good" = "Muito bom!";
+"rate.love_it" = "Adoro!";
+"rate.how_improve" = "Conte-nos como melhorar";
+"rate.what_better" = "O que poderíamos fazer melhor?";
+"rate.rate_app_store" = "Avaliar na App Store";
+"rate.send_feedback" = "Enviar Feedback";
+
+// MARK: - Help Tips
+"help.tip1.title" = "Seu bem-estar digital";
+"help.tip1.desc" = "LockIn reprograma seu cérebro para foco de longo prazo. Veja sua pontuação de Saúde crescer enquanto você constrói melhores hábitos.";
+"help.tip2.title" = "Acompanhe seu progresso";
+"help.tip2.desc" = "Veja sua sequência, uso diário e como você se compara à sua média. Pequenas vitórias levam a grandes mudanças.";
+"help.tip3.title" = "Ganhe tempo de tela";
+"help.tip3.desc" = "Complete exercícios como flexões, agachamentos e prancha para ganhar tempo de tela bônus. Mova seu corpo, liberte sua mente.";
+"help.tip4.title" = "Defina metas diárias";
+"help.tip4.desc" = "Escolha um limite de tempo de tela e veja seu anel de progresso se encher. Fique abaixo da sua meta para construir hábitos duradouros.";
+"help.tip5.title" = "Bloqueie distrações";
+"help.tip5.desc" = "Selecione apps para bloquear quando atingir seu limite. Assuma o controle da sua atenção e foque no que importa.";
+"help.tip6.title" = "Veja suas estatísticas";
+"help.tip6.desc" = "Confira seus padrões e tendências semanais. Entender seu uso é o primeiro passo para mudá-lo.";
+"help.set_daily_goal" = "Defina Sua Meta Diária";
+"help.set_daily_goal_desc" = "Escolha um limite de tempo de tela no Perfil. Fique abaixo para criar hábitos saudáveis.";
+"help.earn_screen_time" = "Ganhe Tempo de Tela";
+"help.earn_screen_time_desc" = "Vá até a aba LockIn e complete exercícios - faça flexões, agachamentos, prancha ou tarefas com foto!";
+"help.focus_mode" = "Modo Foco";
+"help.focus_mode_desc" = "Inicie uma sessão Pomodoro para bloquear todos os apps e ganhe 0.5 minutos para cada minuto focado.";
+"help.block_apps" = "Bloqueie Apps Distrativos";
+"help.block_apps_desc" = "Vá até a aba Metas e selecione apps para bloquear. Defina limites por app também.";
+"help.talk_to_coach" = "Fale com Seu Coach";
+"help.talk_to_coach_desc" = "Atingiu seu limite diário? Converse com o coach de IA para refletir e ganhar tempo bônus.";
+"help.track_progress" = "Acompanhe Seu Progresso";
+"help.track_progress_desc" = "Verifique a aba Estatísticas para ver sua pontuação de Saúde melhorar conforme você cria melhores hábitos.";
+
+// MARK: - Quick Actions
+"quick_actions.title" = "Ações Rápidas";
+"quick_actions.focus_mode" = "Modo Foco";
+"quick_actions.pomodoro_timer" = "Timer Pomodoro";
+"quick_actions.hold_for_time" = "Mantenha por tempo";
+"quick_actions.earn_per_rep" = "Ganhe %@ min/rep";
+"quick_actions.verify_with_photo" = "Verificar com foto";
+
+// MARK: - Time Formatting
+"time.minutes" = "%d minutos";
+"time.hours" = "%d horas";
+"time.hours_minutes" = "%dh %dmin";
+"time.today" = "hoje";
+
+// MARK: - Errors
+"error.camera_permission" = "Permissão de câmera é necessária para tarefas com foto.";
+"error.no_apps_selected" = "Por favor, selecione pelo menos um app para bloquear.";
+"error.insufficient_time" = "Você não tem tempo ganho suficiente.";
+
+// MARK: - Settings
+"settings.title" = "Configurações";
+"settings.accent_color" = "Cor de Destaque";
+"settings.appearance" = "Aparência";
+"settings.language" = "Idioma";
+"settings.current_language" = "Idioma Atual";
+"settings.select_language" = "Selecionar Idioma";
+"settings.change_password" = "Alterar Senha";
+"settings.enter_new_password" = "Digite a nova senha";
+"settings.save_changes" = "Salvar Alterações";
+"settings.danger_zone" = "ZONA DE PERIGO";
+"settings.delete_account" = "Excluir Conta";
+"settings.delete_account_confirm" = "Digite 'Delete' para confirmar";
+"settings.delete_account_warning" = "Esta ação é irreversível. Digite 'Delete' para confirmar.";
+"settings.type_delete" = "Delete";
+
+// Theme Modes
+"settings.theme.light" = "Claro";
+"settings.theme.dark" = "Escuro";
+"settings.theme.system" = "Sistema";
+
+// Accent Colors
+"settings.color.blue" = "Azul";
+"settings.color.purple" = "Roxo";
+"settings.color.green" = "Verde";
+"settings.color.orange" = "Laranja";
+"settings.color.pink" = "Rosa";
+"settings.color.red" = "Vermelho";
+"settings.color.teal" = "Verde-azulado";
+"settings.color.indigo" = "Índigo";
+
+// MARK: - Onboarding
+"onboarding.hello" = "Olá!";
+"onboarding.welcome_to" = "Bem-vindo ao";
+"onboarding.ready_to_help" = "Estamos prontos para ajudá-lo a";
+"onboarding.taking_control" = "assumir o controle do seu tempo";
+"onboarding.lets_start" = "Vamos Começar";
+"onboarding.how_old" = "Quantos anos você tem?";
+"onboarding.personalize_exp" = "Isso nos ajuda a personalizar sua experiência";
+"onboarding.daily_screen_time" = "Tempo de tela diário?";
+"onboarding.be_honest" = "Seja honesto - não vamos julgar";
+"onboarding.bad_news_good_news" = "Temos más notícias\ne boas notícias";
+"onboarding.show_something" = "Deixe-nos mostrar algo importante sobre seu tempo de tela...";
+"onboarding.show_me" = "Mostre-me";
+"onboarding.the_bad_news" = "AS MÁS NOTÍCIAS";
+"onboarding.the_good_news" = "AS BOAS NOTÍCIAS";
+"onboarding.at_hours_per_day" = "Com %d horas por dia, você vai gastar";
+"onboarding.looking_at_phone" = "olhando para seu celular ESTE ANO";
+"onboarding.thats_approx" = "Isso é aproximadamente";
+"onboarding.of_your_life" = "da sua vida";
+"onboarding.you_read_right" = "Sim, você leu certo. Você gasta a maior parte do seu tempo livre olhando para o celular quando poderia alcançar seus objetivos e viver a vida que deseja.";
+"onboarding.whats_good_news" = "Qual é a boa notícia?";
+"onboarding.can_help_get_back" = "O LockIn pode ajudá-lo a recuperar";
+"onboarding.turn_into_things" = "E transformá-los nas coisas que você sempre quis alcançar.\n\nMais tempo para seus objetivos, paixões e pessoas que você ama.";
+"onboarding.lets_get_started" = "Vamos Começar";
+"onboarding.first_step" = "Vamos dar o primeiro passo";
+"onboarding.connect_screen_time" = "O LockIn se conectará ao seu tempo de tela para fornecer um ";
+"onboarding.personalized_report" = "relatório de foco personalizado";
+"onboarding.see_real_usage" = "Ver seus dados reais de uso";
+"onboarding.get_recommendations" = "Obter recomendações personalizadas";
+"onboarding.track_progress" = "Acompanhar seu progresso ao longo do tempo";
+"onboarding.enable_screen_time" = "Ativar Tempo de Tela\ne Bloqueio de Apps";
+"onboarding.secure_on_phone" = "100% das informações são seguras e ficam no seu celular";
+"onboarding.permission_granted" = "Permissão concedida!";
+"onboarding.what_happens_next" = "O que acontece a seguir:";
+"onboarding.tap_continue" = "Toque em \"Continuar\" para autorizar acesso ao Tempo de Tela";
+"onboarding.select_apps" = "Selecione apps e categorias que deseja bloquear";
+"onboarding.tap_done" = "Toque em \"Concluído\" para confirmar sua seleção";
+"onboarding.enable_app_blocking" = "Ativar Bloqueio de Apps";
+"onboarding.ready_to_block" = "Pronto para bloquear apps!";
+"onboarding.shield_when_open" = "Seus apps bloqueados mostrarão um escudo quando você tentar abri-los.";
+"onboarding.stay_active_earn" = "Mantenha-se Ativo, Ganhe Tempo";
+"onboarding.complete_exercises_earn" = "Complete exercícios e tarefas para ganhar tempo de tela para seus apps bloqueados.";
+"onboarding.heres_reality" = "Aqui Está Sua Realidade";
+"onboarding.based_on_usage" = "Baseado no seu uso real do celular";
+"onboarding.todays_screen_time" = "TEMPO DE TELA DE HOJE";
+"onboarding.this_week" = "ESTA SEMANA";
+"onboarding.life_on_phone" = "Vida no celular";
+"onboarding.at_this_rate" = "Nesse ritmo, você vai gastar ";
+"onboarding.lets_fix_this" = "Vamos Resolver Isso";
+"onboarding.your_potential" = "Seu Potencial";
+"onboarding.see_how_much" = "Veja quanto tempo você poderia economizar";
+"onboarding.reduce_by" = "Reduzir tempo de tela em %d%%";
+"onboarding.weekly_projection" = "PROJEÇÃO SEMANAL";
+"onboarding.free_time_week" = "Tempo livre/semana";
+"onboarding.life_reclaimed" = "Vida recuperada";
+"onboarding.accomplish_goals" = "Alcance seus objetivos mais rápido, seja mais produtivo e realizado";
+"onboarding.current" = "Atual";
+"onboarding.with_lockin" = "Com LockIn";
+"onboarding.unlock_potential" = "Desbloqueie Seu Potencial";
+"onboarding.hours_back" = "%d+ horas de volta toda semana";
+"onboarding.smart_coach" = "Coach Inteligente";
+"onboarding.task_verification" = "Verificação de Tarefas";
+"onboarding.focus_sessions" = "Sessões de Foco";
+"onboarding.daily_goals" = "Metas Diárias";
+"onboarding.complete_tasks" = "Tarefas Completas";
+"onboarding.app_rating" = "Avaliação do App";
+"onboarding.more_productive" = "Mais Produtivo";
+"onboarding.start_free_trial" = "Iniciar Teste Grátis";
+"onboarding.days_free" = "3 dias grátis";
+"onboarding.maybe_later" = "Talvez depois";
+"onboarding.allow_notifications" = "Permitir Notificações";
+"onboarding.remind_overscrolling" = "Para lembrá-lo sobre rolagem excessiva e ajudá-lo a manter suas metas";
+"onboarding.notifications_enabled" = "Notificações ativadas!";
+"onboarding.scrolling_for" = "Você está rolando há 30 min. Hora de uma pausa?";
+"onboarding.time_for_break" = "Hora de uma pausa?";
+"onboarding.what_to_block" = "O que bloquear?";
+"onboarding.change_this_later" = "Não se preocupe, você pode mudar isso depois";
+"onboarding.apps" = "Apps";
+"onboarding.categories" = "Categorias";
+"onboarding.start_blocking" = "Iniciar Bloqueio";
+"onboarding.items_selected" = "%d itens selecionados";
+"onboarding.set_daily_goal" = "Defina Sua Meta Diária";
+"onboarding.how_much_allow" = "Quanto tempo de tela você\nquer se permitir?";
+"onboarding.per_day" = "por dia";
+"onboarding.change_in_settings" = "Você sempre pode mudar isso nas Configurações";
+"onboarding.set_my_goal" = "Definir Minha Meta";
+"onboarding.days" = "dias";
+"onboarding.years" = "anos";
+"onboarding.projection_title" = "LockIn reprograma seu cérebro para\nfoco de longo prazo.";
+"onboarding.projection_subtitle" = "Usuários do LockIn recuperam %d+ horas de foco toda semana.";
+"onboarding.without_lockin" = "Sem LockIn";
+"onboarding.day_one" = "Dia 1";
+"onboarding.day_fourteen" = "Dia 14";
+"onboarding.commitment_title" = "Faça um Compromisso";
+"onboarding.committed" = "Você está Comprometido!";
+"onboarding.press_and_hold" = "Pressione e segure o orbe por 3 segundos para se comprometer a controlar seu tempo de tela";
+"onboarding.taken_first_step" = "Você deu o primeiro passo para uma relação mais saudável com seu celular";
+"onboarding.keep_holding" = "Continue segurando...";
+"onboarding.hold_the_orb" = "Segure o orbe para se comprometer";
+"onboarding.lets_set_up" = "Vamos configurar seu app de foco!";
+
+// MARK: - Auth
+"auth.welcome_to" = "Bem-vindo ao LockIn";
+"auth.take_control" = "Assuma o controle do seu tempo de tela";
+"auth.continue_google" = "Continuar com Google";
+"auth.continue_apple" = "Continuar com Apple";
+"auth.continue_email" = "Continuar com Email";
+"auth.get_started" = "Começar";
+"auth.already_have_account" = "Já tenho uma conta";
+"auth.privacy_policy" = "Política de Privacidade";
+"auth.terms_of_service" = "Termos de Serviço";
+"auth.create_account" = "Criar Conta";
+"auth.welcome_back" = "Bem-vindo de Volta";
+"auth.start_taking_control" = "Comece a assumir o controle do seu tempo de tela";
+"auth.goals_waiting" = "Suas metas de foco estão esperando por você";
+"auth.email" = "Email";
+"auth.password" = "Senha";
+"auth.enter_password" = "Digite sua senha";
+"auth.agree_to_terms" = "Eu concordo com os ";
+"auth.terms_conditions" = "Termos e Condições";
+"auth.sign_in" = "Entrar";
+"auth.sign_up" = "Cadastrar";
+"auth.or_continue_with" = "ou continue com";
+"auth.no_account" = "Não tem uma conta?";
+"auth.have_account" = "Já tem uma conta?";
+
+// MARK: - Device Activity Report
+"report.no_data" = "Sem dados de tempo de tela";
+"report.no_data_desc" = "Use seu dispositivo e volte para ver suas estatísticas";
+"report.vs_last_week" = "VS SEMANA PASSADA";
+"report.less_screen_time" = "menos tempo de tela";
+"report.more_screen_time" = "mais tempo de tela";
+"report.vs" = "vs";
+"report.difference" = "diferença";
+"report.total_hours" = "Total de horas";
+"report.daily_avg" = "Média diária";
+"report.peak_day" = "Dia pico";
+"report.today" = "Hoje";
+"report.stats_per_day" = "Stats por dia";
+"report.total_time_per_app" = "Tempo total por app";
+"report.no_app_data" = "Sem dados de uso de apps";
+"report.less" = "Menos";
+"report.more" = "Mais";
+"report.streak" = "SEQUÊNCIA";
+"report.vs_avg" = "VS MÉD.";
+"report.top_apps" = "Top Apps";
+"report.no_app_usage" = "Sem uso de apps hoje";
+"report.start_using" = "Use apps para ver suas estatísticas";
+"report.screen_time" = "Tempo de tela";
+"report.notifications" = "Notificações";
+"report.todays_progress" = "PROGRESSO DE HOJE";
+"report.used" = "usado";
+"report.left" = "restante";
+"report.goal_reached" = "Meta alcançada";
+"report.this_week" = "Esta semana";
+"report.remaining" = "Restante";
+"report.of_goal" = "Da meta";
+"report.goal" = "meta";
+"report.day_sun" = "Dom";
+"report.day_mon" = "Seg";
+"report.day_tue" = "Ter";
+"report.day_wed" = "Qua";
+"report.day_thu" = "Qui";
+"report.day_fri" = "Sex";
+"report.day_sat" = "Sáb";
+"report.day_s" = "D";
+"report.day_m" = "S";
+"report.day_t" = "T";
+"report.day_w" = "Q";
+"report.day_f" = "S";
+"report.avg" = "méd.";
+
+
+// MARK: - Language Restart
+"settings.restart_required" = "Reinício necessário";
+"settings.restart_message" = "Por favor, feche e reabra o app para aplicar a mudança de idioma.";
+
+// MARK: - Shield Action Notifications
+"action.talk_to_coach" = "Falar com o Coach";
+"action.earn_screen_time" = "Ganhar tempo de tela";
+"action.times_up" = "Tempo esgotado";
+"action.chat_coach_bonus" = "Converse com seu coach de IA para ganhar tempo bônus.";
+"action.get_personalized_advice" = "Obtenha conselhos personalizados do seu coach de IA.";
+"action.complete_exercises" = "Complete exercícios para desbloquear seus apps.";
+"action.unlock_expired" = "Sua janela de desbloqueio de %d minutos expirou. Toque para reativar o bloqueio.";
+
+// MARK: - Quick Menu
+"quick.focus_mode" = "Modo Foco";
+"quick.pomodoro_timer" = "Timer Pomodoro";
+"quick.plank" = "Prancha";
+"quick.hold_for_time" = "Manter o tempo";
+"quick.squats" = "Agachamentos";
+"quick.earn_per_rep" = "Ganhe 0,3 min/rep";
+"quick.pushups" = "Flexões";
+"quick.pushups_earn" = "Ganhe 0,5 min/rep";
+"quick.photo_task" = "Tarefa com Foto";
+"quick.verify_with_photo" = "Verificar com foto";
+
+// MARK: - Help Tips
+"help.tip1.title" = "Seu bem-estar digital";
+"help.tip1.desc" = "LockIn reprograma seu cérebro para foco de longo prazo. Veja sua pontuação de Saúde crescer enquanto você constrói melhores hábitos.";
+"help.tip2.title" = "Acompanhe seu progresso";
+"help.tip2.desc" = "Veja sua sequência, uso diário e como você se compara à sua média. Pequenas vitórias levam a grandes mudanças.";
+"help.tip3.title" = "Ganhe tempo de tela";
+"help.tip3.desc" = "Complete exercícios como flexões, agachamentos e prancha para ganhar tempo de tela bônus. Mova seu corpo, liberte sua mente.";
+"help.tip4.title" = "Defina metas diárias";
+"help.tip4.desc" = "Escolha um limite de tempo de tela e veja seu anel de progresso se encher. Fique abaixo da sua meta para construir hábitos duradouros.";
+"help.tip5.title" = "Bloqueie distrações";
+"help.tip5.desc" = "Selecione apps para bloquear quando atingir seu limite. Assuma o controle da sua atenção e foque no que importa.";
+"help.tip6.title" = "Veja suas estatísticas";
+"help.tip6.desc" = "Confira seus padrões e tendências semanais. Entender seu uso é o primeiro passo para mudá-lo.";
+"help.back" = "Voltar";
+"help.next" = "Próximo";
+"help.got_it" = "Entendi!";
+
+// MARK: - Photo Task Presets (Updated)
+"preset.clean_room" = "Limpar quarto";
+"preset.homework" = "Completar lição";
+"preset.workout" = "Rotina de treino";
+"preset.cook" = "Cozinhar uma refeição";
+"preset.read" = "Ler 10 páginas";
+"preset.write" = "Escrever plano do dia";
+
+// MARK: - Streak
+"streak.title" = "Sequência Atual";
+"streak.days" = "dias";
+"streak.best" = "Melhor Sequência";
+"streak.keep_going" = "Continue assim!";
+"streak.lost" = "Sequência Perdida";
+
+// MARK: - History
+"history.title" = "Histórico de Atividades";
+"history.today" = "Hoje";
+"history.yesterday" = "Ontem";
+"history.this_week" = "Esta Semana";
+"history.earlier" = "Anteriormente";
+"history.no_activity" = "Nenhuma atividade ainda";
+
+// MARK: - Exercise Info
+"exercise.info" = "Info";
+"exercise.watch_demo" = "Assistir Demo";
+"exercise.coming_soon" = "Em breve";
+"exercise.how_to_do_it" = "COMO FAZER";
+"exercise.rewards" = "RECOMPENSAS";
+"exercise.got_it" = "Entendi!";
+"exercise.reward_info" = "Ganhe tempo de tela para cada série completada";
+"exercise.reward_description" = "Complete exercícios para ganhar tempo de tela. Mais repetições = mais tempo!";
+
+// MARK: - Exercise Descriptions
+"exercise.desc.pushups" = "Construa força na parte superior do corpo com flexões clássicas";
+"exercise.desc.squats" = "Fortaleça suas pernas e core com forma adequada de agachamento";
+"exercise.desc.plank" = "Melhore a estabilidade do core mantendo a posição";
+"exercise.desc.jumpingJacks" = "Aquecimento cardio para aumentar sua frequência cardíaca";
+"exercise.desc.lunges" = "Trabalhe quadríceps e glúteos com movimento controlado";
+"exercise.desc.crunches" = "Fortaleça seus músculos abdominais de forma eficaz";
+"exercise.desc.shoulderPress" = "Construa força nos ombros através do levantamento de peso";
+"exercise.desc.legRaises" = "Trabalhe abdominais inferiores e flexores do quadril";
+"exercise.desc.highKnees" = "Exercício cardio para melhorar frequência cardíaca e resistência";
+"exercise.desc.pullUps" = "Exercício desafiador para costas e braços";
+"exercise.desc.wallSit" = "Exercício isométrico para fortalecer músculos das pernas";
+"exercise.desc.sidePlank" = "Fortaleça oblíquos e melhore o equilíbrio";
+"exercise.desc.photoVerification" = "Verifique sua tarefa com prova fotográfica";
+"exercise.desc.custom" = "Crie uma tarefa personalizada com verificação por foto";
+
+// MARK: - Exercise Instructions
+"exercise.inst.pushups.1" = "Comece em posição de prancha com as mãos na largura dos ombros.";
+"exercise.inst.pushups.2" = "Abaixe o corpo até o peito quase tocar o chão.";
+"exercise.inst.pushups.3" = "Mantenha o corpo reto e o core contraído.";
+"exercise.inst.pushups.4" = "Empurre de volta para a posição inicial e repita.";
+
+"exercise.inst.squats.1" = "Fique em pé com os pés na largura dos ombros.";
+"exercise.inst.squats.2" = "Abaixe o corpo como se fosse sentar em uma cadeira.";
+"exercise.inst.squats.3" = "Mantenha os joelhos atrás dos dedos dos pés e o peito erguido.";
+"exercise.inst.squats.4" = "Empurre através dos calcanhares para voltar.";
+
+"exercise.inst.plank.1" = "Comece em posição de flexão com os antebraços no chão.";
+"exercise.inst.plank.2" = "Mantenha o corpo em linha reta da cabeça aos calcanhares.";
+"exercise.inst.plank.3" = "Contraia o core e olhe para o chão.";
+"exercise.inst.plank.4" = "Mantenha a posição enquanto respira de forma constante.";
+
+"exercise.inst.jumpingJacks.1" = "Fique em pé com os braços ao lado do corpo.";
+"exercise.inst.jumpingJacks.2" = "Pule abrindo as pernas e levantando os braços acima da cabeça.";
+"exercise.inst.jumpingJacks.3" = "Aterrisse com os pés afastados e mãos tocando no alto.";
+"exercise.inst.jumpingJacks.4" = "Pule de volta para a posição inicial e repita.";
+
+"exercise.inst.lunges.1" = "Fique em pé com os pés na largura do quadril.";
+"exercise.inst.lunges.2" = "Dê um passo à frente com uma perna, abaixando os quadris.";
+"exercise.inst.lunges.3" = "Ambos os joelhos devem estar a 90 graus, joelho de trás logo acima do chão.";
+"exercise.inst.lunges.4" = "Empurre através do pé da frente para voltar e alterne.";
+
+"exercise.inst.crunches.1" = "Deite de costas com os joelhos dobrados e pés no chão.";
+"exercise.inst.crunches.2" = "Coloque as mãos atrás da cabeça, cotovelos para fora.";
+"exercise.inst.crunches.3" = "Levante os ombros do chão contraindo os abdominais.";
+"exercise.inst.crunches.4" = "Abaixe com controle e repita.";
+
+"exercise.inst.shoulderPress.1" = "Fique em pé ou sente com um peso em cada mão na altura dos ombros.";
+"exercise.inst.shoulderPress.2" = "Empurre os pesos para cima até os braços estarem estendidos.";
+"exercise.inst.shoulderPress.3" = "Mantenha o core contraído e as costas retas.";
+"exercise.inst.shoulderPress.4" = "Abaixe lentamente até a altura dos ombros e repita.";
+
+"exercise.inst.legRaises.1" = "Deite de costas com as pernas estendidas.";
+"exercise.inst.legRaises.2" = "Mantendo as pernas retas, levante-as em direção ao teto.";
+"exercise.inst.legRaises.3" = "Abaixe lentamente sem tocar o chão.";
+"exercise.inst.legRaises.4" = "Mantenha a lombar pressionada contra o chão.";
+
+"exercise.inst.highKnees.1" = "Fique em pé com os pés na largura do quadril.";
+"exercise.inst.highKnees.2" = "Corra no lugar trazendo os joelhos até a altura da cintura.";
+"exercise.inst.highKnees.3" = "Mova os braços para equilíbrio e ritmo.";
+"exercise.inst.highKnees.4" = "Aterrisse suavemente na ponta dos pés a cada vez.";
+
+"exercise.inst.pullUps.1" = "Pendure-se em uma barra com as mãos na largura dos ombros, palmas para frente.";
+"exercise.inst.pullUps.2" = "Puxe-se para cima até o queixo passar da barra.";
+"exercise.inst.pullUps.3" = "Aperte as escápulas juntas no topo.";
+"exercise.inst.pullUps.4" = "Abaixe com controle e repita.";
+
+"exercise.inst.wallSit.1" = "Fique de costas contra uma parede.";
+"exercise.inst.wallSit.2" = "Deslize para baixo até as coxas ficarem paralelas ao chão.";
+"exercise.inst.wallSit.3" = "Mantenha os joelhos a 90 graus, diretamente acima dos tornozelos.";
+"exercise.inst.wallSit.4" = "Mantenha as costas planas contra a parede.";
+
+"exercise.inst.sidePlank.1" = "Deite de lado com as pernas estendidas e empilhadas.";
+"exercise.inst.sidePlank.2" = "Levante os quadris, apoiando-se no antebraço e na lateral do pé.";
+"exercise.inst.sidePlank.3" = "Mantenha o corpo em linha reta da cabeça aos pés.";
+"exercise.inst.sidePlank.4" = "Mantenha a posição e depois troque de lado.";
+
+"exercise.inst.photo.1" = "Tire uma foto 'antes' para documentar seu ponto de partida.";
+"exercise.inst.photo.2" = "Complete sua tarefa ou atividade.";
+"exercise.inst.photo.3" = "Tire uma foto 'depois' mostrando a tarefa concluída.";
+"exercise.inst.photo.4" = "Envie para verificação e receba sua recompensa.";
+
+// MARK: - Paywall
+"paywall.pro" = "PRO";
+"paywall.title" = "Assuma o Controle do\nseu Tempo de Tela";
+"paywall.subtitle" = "Junte-se a milhares que recuperaram o foco e reduziram o tempo de tela em mais de 50%";
+"paywall.users_love" = "Mais de 10.000 usuários amam o LockIn";
+"paywall.feature_blocking" = "Bloqueio ilimitado de apps e sites";
+"paywall.feature_focus" = "Sessões de foco com verificação de tarefas";
+"paywall.feature_analytics" = "Análises detalhadas de uso e insights";
+"paywall.trial_toggle" = "Não tem certeza? Teste 3 dias grátis";
+"paywall.trial_subtitle" = "Cancele a qualquer momento durante o teste, sem cobrança";
+"paywall.choose_plan" = "Escolha seu Plano";
+"paywall.loading_plans" = "Carregando planos...";
+"paywall.annual" = "Anual";
+"paywall.monthly" = "Mensal";
+"paywall.save" = "ECONOMIZE %@%%";
+"paywall.billed_annually" = "%@/mês cobrado anualmente";
+"paywall.legal_trial" = "Após o período de teste gratuito de 3 dias, o pagamento será cobrado na sua conta Apple ID. As assinaturas são renovadas automaticamente, a menos que sejam canceladas 24 horas antes do fim do período.";
+"paywall.legal_no_trial" = "O pagamento será cobrado na sua conta Apple ID. As assinaturas são renovadas automaticamente, a menos que sejam canceladas 24 horas antes do fim do período.";
+"paywall.terms_of_service" = "Termos de Serviço";
+"paywall.privacy_policy" = "Política de Privacidade";
+"paywall.restore_purchases" = "Restaurar Compras";
+"paywall.no_purchases_found" = "Nenhuma compra anterior encontrada";
+"paywall.start_trial" = "Iniciar Teste Grátis de 3 Dias";
+"paywall.subscribe_now" = "Assinar Agora";
+"paywall.cancel_in_app_store" = "Cancelar na App Store";
+"paywall.per_year" = "/ano";
+"paywall.per_month" = "/mês";
+"paywall.welcome_title" = "Bem-vindo ao LockIn!";
+"paywall.welcome_message" = "Sua jornada de foco começa agora";
+"paywall.continue" = "Continuar";
+"paywall.error" = "Erro";
+"paywall.ok" = "OK";
+"paywall.review1_text" = "Finalmente venci meu vício em celular!";
+"paywall.review1_author" = "Sarah M.";
+"paywall.review2_text" = "Meu tempo de tela caiu 3 horas/dia";
+"paywall.review2_author" = "James K.";
+"paywall.review3_text" = "Melhor app de foco que já usei";
+"paywall.review3_author" = "Emily R.";
+
+// MARK: - Home (novas chaves)
+"home.todays_goal" = "Meta de hoje";
+"home.used" = "usado";
+"home.left" = "restante";
+
+// MARK: - Notificações
+"notification.earn_time_action" = "Ganhar tempo";
+"notification.view_stats_action" = "Ver estatísticas";
+"notification.daily_reminder_title" = "Hora do LockIn!";
+"notification.daily_reminder_body" = "Complete um exercício rápido para ganhar tempo de tela hoje.";
+"notification.streak_risk_title" = "Não quebre sua sequência!";
+"notification.streak_risk_body" = "Você tem uma sequência de %d dias. Complete um exercício para mantê-la!";
+"notification.need_more_time_title" = "Precisa de mais tempo de tela?";
+"notification.need_more_time_body" = "Complete um exercício rápido para desbloquear seus apps favoritos.";
+"notification.focus_complete_title" = "Sessão de foco concluída!";
+"notification.focus_complete_body" = "Você ganhou %@ minutos de tempo de tela.";
+
+// MARK: - Coach
+"coach.title" = "Coach IA";
+"coach.your_ai_coach" = "Seu Coach IA";
+"coach.description" = "Estou aqui para ajudar você a construir hábitos mais saudáveis e entender seus padrões de tempo de tela.";
+"coach.greeting_can_earn" = "Ei! Percebi que você atingiu sua meta diária. Isso é um bom sinal - significa que seus limites estão funcionando.\n\nConverse comigo um pouco e você pode ganhar tempo de tela bônus. Como você está se sentindo agora?";
+"coach.greeting_cant_earn" = "Bem-vindo de volta! Você já ganhou seu tempo bônus hoje, mas ainda estou aqui para ajudar.\n\nO que está em sua mente?";
+"coach.prompt1" = "Por que sempre atinjo meu limite?";
+"coach.prompt2" = "Me ajude a manter o foco";
+"coach.prompt3" = "Estou me sentindo estressado";
+"coach.ready_to_earn" = "Ótima conversa! Pronto para ganhar tempo bônus?";
+"coach.earn_minutes" = "Ganhar 5 minutos";
+"coach.minutes_earned" = "+%d minutos ganhos!";
+"coach.thanks_reflecting" = "Obrigado por refletir com seu coach.\nContinue construindo hábitos saudáveis!";
+"coach.bonus_acknowledgment" = "Incrível! Adicionei 5 minutos ao seu banco de tempo. Lembre-se, ganhar tempo através de exercícios é ainda mais gratificante - você está construindo saúde física enquanto gerencia o tempo de tela.\n\nVocê pode ganhar mais tempo bônus amanhã conversando comigo novamente!";
+"coach.type_message" = "Digite uma mensagem...";
+"coach.response_limit" = "Atingir seu limite não é fracasso - é seu sistema funcionando. O desconforto que você sente é seu cérebro se reconectando.\n\nO que você estava tentando fazer quando foi bloqueado? Às vezes entender o gatilho ajuda.";
+"coach.response_stress" = "Eu entendo você. O estresse frequentemente nos faz buscar o celular como fuga rápida. Mas aqui está o ponto - essa fuga geralmente nos faz sentir pior depois.\n\nTente isso: Respire fundo 5 vezes agora. Depois me diga o que está te estressando.";
+"coach.response_focus" = "Adoro que você quer manter o foco! Aqui estão algumas vitórias rápidas:\n\n1. Coloque seu celular em outro cômodo\n2. Defina um timer de 25 minutos e trabalhe em uma coisa\n3. Se recompense com uma pausa curta depois\n\nQual parece viável agora?";
+"coach.response_bored" = "O tédio é na verdade valioso - é quando a criatividade acontece. Mas eu entendo, é desconfortável.\n\nEm vez de rolar, o que você quis fazer mas não fez? Mesmo algo pequeno.";
+"coach.response_default" = "Obrigado por compartilhar. Construir novos hábitos é uma jornada, e você já está dando passos estando aqui.\n\nO que te ajudaria mais agora - algumas dicas práticas, ou apenas alguém para ouvir?";
+
+// MARK: - Detox
+"detox.title" = "Detox";
+"detox.stay_focused" = "Mantenha o foco!";
+"detox.digital_detox" = "Detox Digital";
+"detox.all_apps_blocked" = "Todos os apps que distraem estão bloqueados";
+"detox.take_break" = "Faça uma pausa do celular";
+"detox.remaining" = "restante";
+"detox.duration" = "DURAÇÃO";
+"detox.end_detox" = "Encerrar Detox";
+"detox.start_detox" = "Iniciar Detox";
+
+// Onboarding novas chaves
+
+// Faixas etárias
+"onboarding.age_under_18" = "Menos de 18";
+"onboarding.age_18_24" = "18-24";
+"onboarding.age_25_30" = "25-30";
+"onboarding.age_31_40" = "31-40";
+"onboarding.age_41_50" = "41-50";
+"onboarding.age_51_plus" = "51+";
+
+// Horas por dia
+"onboarding.hours_1_2" = "1-2 horas";
+"onboarding.hours_2_4" = "2-4 horas";
+"onboarding.hours_4_6" = "4-6 horas";
+"onboarding.hours_6_8" = "6-8 horas";
+"onboarding.hours_8_plus" = "8+ horas";
+
+"onboarding.now" = "agora";
+"onboarding.how_it_works" = "Como funciona";
+"onboarding.block_apps" = "Bloquear apps";
+"onboarding.block_apps_desc" = "Selecione apps para bloquear permanentemente";
+"onboarding.earn_time" = "Ganhar tempo";
+"onboarding.earn_time_desc" = "Complete exercícios para ganhar tempo de tela";
+"onboarding.spend_wisely" = "Gaste com sabedoria";
+"onboarding.spend_wisely_desc" = "Use seu tempo ganho em apps bloqueados";
+"onboarding.schedule_freedom" = "Agende liberdade";
+"onboarding.schedule_freedom_desc" = "Defina janelas de desbloqueio para horários específicos";
+"onboarding.select_apps_to_block" = "Selecione apps para bloquear";
+"onboarding.apps_blocked_by_default" = "Esses apps serão bloqueados por padrão. Você precisará ganhar tempo ou usar janelas agendadas para acessá-los.";
+"onboarding.earn_screen_time" = "Ganhe tempo de tela";
+"onboarding.earn_screen_time_desc" = "Complete exercícios para ganhar minutos que você pode usar em apps bloqueados";
+"onboarding.unlock_window_title" = "Janela de desbloqueio";
+"onboarding.unlock_window_desc" = "Quando você desbloqueia um app com tempo ganho, quanto tempo deve durar a janela de acesso?";
+"onboarding.how_it_works_explain" = "Como funciona";
+"onboarding.how_it_works_detail" = "O tempo é descontado na hora do desbloqueio. Depois que a janela expira, os apps são bloqueados automaticamente. Escolha uma janela mais curta para manter mais foco.";
+"onboarding.minutes_selected" = "minutos selecionados";
+"onboarding.min" = "min";
+"onboarding.almost_ready" = "Quase pronto!";
+"onboarding.grant_permissions" = "Conceda permissões para habilitar bloqueio de apps e verificação de exercícios";
+"onboarding.screen_time" = "Tempo de tela";
+"onboarding.required_to_block" = "Necessário para bloquear apps";
+"onboarding.camera" = "Câmera";
+"onboarding.for_exercise_verification" = "Para verificação de exercícios";
+"onboarding.grant" = "Permitir";
