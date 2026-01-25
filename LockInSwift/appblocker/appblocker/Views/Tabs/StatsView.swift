@@ -1,20 +1,23 @@
 import SwiftUI
 import DeviceActivity
+import FamilyControls
+import ManagedSettings
 
 // MARK: - StatsView (Matching HTML Design Exactly)
 
 struct StatsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(ThemeService.self) private var themeService
+    @Environment(StatsService.self) private var statsService
 
-    // Colors from HTML
-    private let primary = Color(hex: "#0d7ff2")
-    private let primaryDeep = Color(hex: "#072b4d")
+    // Colors from HTML - using theme accent color
+    private var primary: Color { themeService.accentColor }
+    private var primaryDeep: Color { themeService.accentColorDark }
     private let backgroundDark = Color(hex: "#000000")
     private let greenAccent = Color(hex: "#0bda5b")
 
     // Sample data
-    private let streakDays = 28
+    private var streakDays: Int { statsService.currentStreak }
     private let focusTime = "45h 12m"
     private let focusChange = "+5.2h"
     private let efficiencyPercent = 92
@@ -50,12 +53,17 @@ struct StatsView: View {
         ("calendar", "30 Day Club", false, true)
     ]
 
-    // App usage data
-    private let appUsage: [(name: String, category: String, icon: String, time: String, percent: CGFloat)] = [
-        ("VS Code", "DEVELOPMENT", "chevron.left.forwardslash.chevron.right", "18h 45m", 0.70),
-        ("Notion", "ORGANIZATION", "tablecells", "12h 20m", 0.55),
-        ("Terminal", "SYSTEM", "terminal", "6h 15m", 0.30)
-    ]
+    // Filter for DeviceActivityReport
+    private var filter: DeviceActivityFilter {
+        DeviceActivityFilter(
+            segment: .daily(
+                during: DateInterval(
+                    start: Calendar.current.startOfDay(for: Date()),
+                    end: Date()
+                )
+            )
+        )
+    }
 
     var body: some View {
         ZStack {
@@ -97,18 +105,30 @@ struct StatsView: View {
                         .padding(.horizontal, 16)
                         .padding(.top, 24)
 
-                    // App Usage
-                    appUsageSection
-                        .padding(.horizontal, 16)
-                        .padding(.top, 16)
+                    // Real App Usage from DeviceActivityReport
+                    // ZStack with transparent overlay to allow parent ScrollView to receive gestures
+                    ZStack {
+                        VStack {
+                            DeviceActivityReport(.statsAppUsage, filter: filter)
+                            Spacer(minLength: 0)
+                        }
 
-                    // View Full History button
-                    viewHistoryButton
-                        .padding(.horizontal, 16)
-                        .padding(.top, 24)
-                        .padding(.bottom, 120)
+                        // Transparent overlay to capture gestures and pass to parent ScrollView
+                        // This sits on top of the DeviceActivityReport (which runs in separate process)
+                        // Note: Color.clear doesn't capture touches - need tiny opacity to intercept gestures
+                        Color.white.opacity(0.001)
+                            .contentShape(Rectangle())
+                            .allowsHitTesting(true)
+                    }
+                    .frame(height: 600, alignment: .top)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 24)
+                    .padding(.bottom, 120)
                 }
             }
+        }
+        .onAppear {
+            statsService.calculateStreakFromCompletionDates()
         }
     }
 
@@ -583,7 +603,7 @@ struct StatsView: View {
     }
 
     private func milestoneItem(icon: String, title: String, isActive: Bool, isLocked: Bool) -> some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 12) {
             ZStack {
                 Circle()
                     .fill(
@@ -591,11 +611,11 @@ struct StatsView: View {
                             ? primary
                             : (isLocked ? Color.white.opacity(0.1) : primaryDeep.opacity(0.4))
                     )
-                    .frame(width: 40, height: 40)
-                    .shadow(color: isActive ? primary.opacity(0.6) : .clear, radius: 8)
+                    .frame(width: 60, height: 60)
+                    .shadow(color: isActive ? primary.opacity(0.6) : .clear, radius: 12)
 
                 Image(systemName: icon)
-                    .font(.system(size: 18))
+                    .font(.system(size: 27))
                     .foregroundStyle(
                         isActive
                             ? .white
@@ -605,7 +625,7 @@ struct StatsView: View {
             }
 
             Text(title)
-                .font(.system(size: 10, weight: .bold))
+                .font(.system(size: 12, weight: .bold))
                 .foregroundStyle(
                     isActive
                         ? primary
@@ -614,123 +634,18 @@ struct StatsView: View {
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .aspectRatio(1, contentMode: .fit)
-        .padding(8)
+        .padding(.vertical, 16)
+        .padding(.horizontal, 12)
         .background(liquidGlassBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 24))
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: 24)
                 .stroke(
                     isActive ? primary.opacity(0.2) : Color.white.opacity(0.05),
                     lineWidth: 1
                 )
         )
         .opacity(isLocked ? 0.4 : 1)
-    }
-
-    // MARK: - App Usage Section
-
-    private var appUsageSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("App Usage")
-                .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(.white)
-                .padding(.horizontal, 4)
-
-            VStack(spacing: 12) {
-                ForEach(appUsage.indices, id: \.self) { index in
-                    let app = appUsage[index]
-                    appUsageRow(
-                        name: app.name,
-                        category: app.category,
-                        icon: app.icon,
-                        time: app.time,
-                        percent: app.percent
-                    )
-                }
-            }
-        }
-    }
-
-    private func appUsageRow(name: String, category: String, icon: String, time: String, percent: CGFloat) -> some View {
-        HStack(spacing: 16) {
-            // App icon
-            ZStack {
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(primaryDeep.opacity(0.3))
-                    .frame(width: 48, height: 48)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.white.opacity(0.1), lineWidth: 1)
-                    )
-
-                Image(systemName: icon)
-                    .font(.system(size: 20))
-                    .foregroundStyle(primary)
-            }
-
-            // Name and category
-            VStack(alignment: .leading, spacing: 2) {
-                Text(name)
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(.white)
-
-                Text(category)
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(.white.opacity(0.4))
-                    .tracking(1)
-            }
-
-            Spacer()
-
-            // Time and progress
-            VStack(alignment: .trailing, spacing: 8) {
-                Text(time)
-                    .font(.system(size: 14, weight: .heavy))
-                    .foregroundStyle(.white)
-
-                // Progress bar
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 2)
-                        .fill(Color.white.opacity(0.1))
-                        .frame(width: 80, height: 4)
-
-                    RoundedRectangle(cornerRadius: 2)
-                        .fill(primary)
-                        .frame(width: 80 * percent, height: 4)
-                        .shadow(color: primary.opacity(0.6), radius: 4)
-                }
-            }
-        }
-        .padding(16)
-        .background(liquidGlassBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 20))
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(Color.white.opacity(0.05), lineWidth: 1)
-        )
-    }
-
-    // MARK: - View History Button
-
-    private var viewHistoryButton: some View {
-        Button {
-            // View history action
-        } label: {
-            Text("View Full History")
-                .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .background(primary)
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-                .shadow(color: primary.opacity(0.3), radius: 20, y: 8)
-                .shadow(color: primary.opacity(0.6), radius: 10)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.white.opacity(0.2), lineWidth: 1)
-                )
-        }
     }
 
     // MARK: - Helper Views
@@ -740,7 +655,14 @@ struct StatsView: View {
     }
 }
 
+// MARK: - DeviceActivityReport Context Extension
+
+extension DeviceActivityReport.Context {
+    static let statsAppUsage = Self("StatsAppUsage")
+}
+
 #Preview {
     StatsView()
         .environment(ThemeService())
+        .environment(StatsService())
 }

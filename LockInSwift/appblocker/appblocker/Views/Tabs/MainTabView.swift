@@ -28,10 +28,12 @@ struct MainTabView: View {
                     .tag(3)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
+            .ignoresSafeArea()
 
             // Custom Grassy Glass Tab Bar
             grassyGlassTabBar
         }
+        .ignoresSafeArea()
         .onChange(of: deepLinkTab.wrappedValue) { _, newTab in
             if let tab = newTab {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {

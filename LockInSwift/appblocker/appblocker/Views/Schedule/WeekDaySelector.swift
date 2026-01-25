@@ -53,6 +53,10 @@ struct DayPill: View {
 
     private var isDark: Bool { colorScheme == .dark }
 
+    // Colors matching HomeView
+    private let zinc400 = Color(hex: "#a1a1aa")
+    private let zinc500 = Color(hex: "#71717a")
+
     private var dayAbbreviation: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE"
@@ -73,7 +77,7 @@ struct DayPill: View {
                     .foregroundStyle(
                         isSelected
                             ? theme.accentColor
-                            : theme.textMuted(for: colorScheme)
+                            : zinc500
                     )
                     .tracking(0.5)
 
@@ -81,8 +85,8 @@ struct DayPill: View {
                     .font(.system(size: 18, weight: .bold))
                     .foregroundStyle(
                         isSelected
-                            ? theme.textPrimary(for: colorScheme)
-                            : theme.textSecondary(for: colorScheme)
+                            ? .white
+                            : zinc400
                     )
 
                 // Today indicator
@@ -102,21 +106,17 @@ struct DayPill: View {
                     if isSelected {
                         RoundedRectangle(cornerRadius: 16)
                             .fill(theme.accentColor.opacity(0.15))
-                            .background(.ultraThinMaterial)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
                             .overlay(
                                 RoundedRectangle(cornerRadius: 16)
-                                    .stroke(theme.accentColor.opacity(0.4), lineWidth: 1)
+                                    .stroke(theme.accentColor.opacity(0.3), lineWidth: 1)
                             )
-                            .shadow(color: theme.accentColor.opacity(isDark ? 0.4 : 0.25), radius: 12)
+                            .shadow(color: theme.accentColor.opacity(0.5), radius: 10)
                     } else {
                         RoundedRectangle(cornerRadius: 16)
-                            .fill(isDark ? Color.white.opacity(0.03) : Color.white.opacity(0.6))
-                            .background(.ultraThinMaterial)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            .fill(Color.white.opacity(0.03))
                             .overlay(
                                 RoundedRectangle(cornerRadius: 16)
-                                    .stroke(isDark ? Color.white.opacity(0.08) : Color.white.opacity(0.4), lineWidth: 1)
+                                    .stroke(Color.white.opacity(0.08), lineWidth: 1)
                             )
                     }
                 }

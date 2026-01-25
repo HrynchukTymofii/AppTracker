@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 import DeviceActivity
 
 // MARK: - New Liquid Glass HomeView
@@ -9,29 +10,93 @@ struct HomeView: View {
     @Environment(TimeBankService.self) private var timeBank
     @Environment(StatsService.self) private var statsService
     @Environment(BlockingService.self) private var blockingService
+    @Environment(ScheduleService.self) private var scheduleService
+    @Environment(\.modelContext) private var modelContext
 
     @Binding var selectedTab: Int
 
+    // Query all tasks - we'll filter for today in computed property
+    @Query private var allTasks: [ScheduledTask]
+
     @State private var showSettings = false
-    @State private var currentTaskTimeRemaining: TimeInterval = 24 * 60 + 12 // 24:12
+    @State private var currentTaskTimeRemaining: TimeInterval = 0
     @State private var timer: Timer?
 
     private var isDark: Bool { colorScheme == .dark }
 
     // HTML Colors
     private let backgroundDark = Color(hex: "#050505")
-    private let primary = Color(hex: "#0d7ff2")
+    private var primary: Color { themeService.accentColor }
     private let glassDark = Color(red: 24/255, green: 38/255, blue: 52/255).opacity(0.4)
     private let zinc400 = Color(hex: "#a1a1aa")
     private let zinc500 = Color(hex: "#71717a")
     private let zinc800 = Color(hex: "#27272a")
 
-    // Sample data - replace with real data from services
-    private var completedTasks: Int { 3 }
-    private var totalTasks: Int { 7 }
+    // MARK: - Real Task Data
+
+    private var todaysTasks: [ScheduledTask] {
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: Date())
+        guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else {
+            return []
+        }
+        return allTasks.filter { task in
+            task.scheduledDate >= startOfDay && task.scheduledDate < endOfDay
+        }.sorted { $0.startTime < $1.startTime }
+    }
+
+    private var completedTasks: Int {
+        todaysTasks.filter { $0.status == .completed }.count
+    }
+
+    private var totalTasks: Int {
+        todaysTasks.count
+    }
+
     private var progressPercentage: Int {
         guard totalTasks > 0 else { return 0 }
         return Int((Double(completedTasks) / Double(totalTasks)) * 100)
+    }
+
+    /// Current task is either in-progress or the next upcoming task
+    private var currentTask: ScheduledTask? {
+        let now = Date()
+
+        // First check for in-progress tasks
+        if let inProgress = todaysTasks.first(where: { $0.status == .inProgress }) {
+            return inProgress
+        }
+
+        // Then check for a task that should be active now (started but not ended)
+        if let activeNow = todaysTasks.first(where: { task in
+            task.startTime <= now && task.endTime >= now && task.status == .pending
+        }) {
+            return activeNow
+        }
+
+        // Finally get the next upcoming pending task
+        return todaysTasks.first(where: { task in
+            task.status == .pending && task.endTime > now
+        })
+    }
+
+    private var motivationalText: String {
+        let percentage = progressPercentage
+        if totalTasks == 0 {
+            return "No tasks scheduled for today"
+        } else if percentage == 0 {
+            return "Ready to start your day!"
+        } else if percentage < 25 {
+            return "Great start! Keep the momentum going!"
+        } else if percentage < 50 {
+            return "Almost halfway to your goal today!"
+        } else if percentage < 75 {
+            return "Over halfway there! You're crushing it!"
+        } else if percentage < 100 {
+            return "Almost done! Finish strong!"
+        } else {
+            return "All tasks completed! Amazing work!"
+        }
     }
 
     var body: some View {
@@ -72,11 +137,25 @@ struct HomeView: View {
             FullSettingsView()
         }
         .onAppear {
+            scheduleService.setModelContext(modelContext)
+            updateTimeRemaining()
             startTimer()
         }
         .onDisappear {
             timer?.invalidate()
         }
+        .onChange(of: currentTask?.id) { _, _ in
+            updateTimeRemaining()
+        }
+    }
+
+    private func updateTimeRemaining() {
+        guard let task = currentTask else {
+            currentTaskTimeRemaining = 0
+            return
+        }
+        let remaining = task.endTime.timeIntervalSince(Date())
+        currentTaskTimeRemaining = max(0, remaining)
     }
 
     // MARK: - Header Section
@@ -207,11 +286,11 @@ struct HomeView: View {
 
             // Motivational text
             HStack(spacing: 8) {
-                Image(systemName: "sparkles")
+                Image(systemName: progressPercentage >= 100 ? "star.fill" : "sparkles")
                     .font(.system(size: 14))
                     .foregroundStyle(primary)
 
-                Text("Almost halfway to your goal today!")
+                Text(motivationalText)
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(zinc400)
             }
@@ -233,7 +312,16 @@ struct HomeView: View {
 
     // MARK: - Current Task Card
 
+    @ViewBuilder
     private var currentTaskCard: some View {
+        if let task = currentTask {
+            activeTaskCard(task: task)
+        } else {
+            noTaskCard
+        }
+    }
+
+    private func activeTaskCard(task: ScheduledTask) -> some View {
         VStack(spacing: 0) {
             // Header image with wave pattern
             ZStack(alignment: .bottomLeading) {
@@ -250,7 +338,7 @@ struct HomeView: View {
                             endPoint: .bottom
                         )
                     )
-                    .frame(height: 176)
+                    .frame(height: 140)
 
                 // Gradient overlay
                 LinearGradient(
@@ -259,30 +347,43 @@ struct HomeView: View {
                     endPoint: .bottom
                 )
 
-                // Focus Mode badge
-                Text("FOCUS MODE")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(.white)
-                    .tracking(2)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(primary)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .padding(16)
+                // Task type badge
+                HStack(spacing: 6) {
+                    Image(systemName: task.verificationType.icon)
+                        .font(.system(size: 10, weight: .bold))
+                    Text(task.verificationType.displayName.uppercased())
+                        .font(.system(size: 10, weight: .bold))
+                        .tracking(1)
+                }
+                .foregroundStyle(.white)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(primary)
+                .clipShape(RoundedRectangle(cornerRadius: 4))
+                .padding(16)
             }
 
             // Content
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: 20) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Deep Work Session")
-                        .font(.system(size: 24, weight: .bold))
+                    Text(task.title)
+                        .font(.system(size: 22, weight: .bold))
                         .foregroundStyle(.white)
                         .tracking(-0.5)
+                        .lineLimit(2)
 
-                    Text("Designing the Liquid Glass interface for the next generation productivity suite.")
-                        .font(.system(size: 16))
-                        .foregroundStyle(zinc400)
-                        .lineSpacing(4)
+                    if let description = task.taskDescription {
+                        Text(description)
+                            .font(.system(size: 15))
+                            .foregroundStyle(zinc400)
+                            .lineSpacing(3)
+                            .lineLimit(2)
+                    }
+
+                    // Time range
+                    Text(task.formattedTimeRange)
+                        .font(.system(size: 13))
+                        .foregroundStyle(zinc500)
                 }
 
                 HStack {
@@ -297,20 +398,20 @@ struct HomeView: View {
                                         .stroke(Color.white.opacity(0.1), lineWidth: 1)
                                 )
 
-                            Image(systemName: "timer")
+                            Image(systemName: currentTaskTimeRemaining > 0 ? "timer" : "exclamationmark.triangle")
                                 .font(.system(size: 18))
-                                .foregroundStyle(zinc400)
+                                .foregroundStyle(currentTaskTimeRemaining > 0 ? zinc400 : .orange)
                         }
 
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("REMAINING")
+                            Text(currentTaskTimeRemaining > 0 ? "REMAINING" : "OVERDUE")
                                 .font(.system(size: 10, weight: .bold))
-                                .foregroundStyle(zinc500)
+                                .foregroundStyle(currentTaskTimeRemaining > 0 ? zinc500 : .orange)
                                 .tracking(2)
 
-                            Text(formatTime(currentTaskTimeRemaining))
+                            Text(formatTime(abs(currentTaskTimeRemaining)))
                                 .font(.system(size: 18, weight: .bold))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(currentTaskTimeRemaining > 0 ? .white : .orange)
                         }
                     }
 
@@ -318,7 +419,7 @@ struct HomeView: View {
 
                     // Complete button
                     Button {
-                        // Complete task action
+                        completeCurrentTask()
                     } label: {
                         Text("Complete")
                             .font(.system(size: 16, weight: .bold))
@@ -331,8 +432,9 @@ struct HomeView: View {
                     }
                 }
             }
-            .padding(24)
+            .padding(20)
         }
+        .clipShape(RoundedRectangle(cornerRadius: 16))
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(Color.white.opacity(0.02))
@@ -341,6 +443,69 @@ struct HomeView: View {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(Color.white.opacity(0.06), lineWidth: 1)
         )
+    }
+
+    private var noTaskCard: some View {
+        VStack(spacing: 16) {
+            ZStack {
+                Circle()
+                    .fill(primary.opacity(0.15))
+                    .frame(width: 64, height: 64)
+
+                Image(systemName: totalTasks == completedTasks && totalTasks > 0 ? "checkmark.circle.fill" : "calendar.badge.plus")
+                    .font(.system(size: 28))
+                    .foregroundStyle(primary)
+            }
+
+            VStack(spacing: 4) {
+                Text(totalTasks == completedTasks && totalTasks > 0 ? "All Done!" : "No Current Task")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundStyle(.white)
+
+                Text(totalTasks == completedTasks && totalTasks > 0
+                     ? "You've completed all your tasks for today"
+                     : "Add tasks in the Schedule tab")
+                    .font(.system(size: 14))
+                    .foregroundStyle(zinc400)
+            }
+
+            if totalTasks == 0 {
+                Button {
+                    selectedTab = 2 // Go to Schedule tab
+                } label: {
+                    Text("Add Task")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(primary)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 10)
+                        .background(primary.opacity(0.15))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                }
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(32)
+        .background(liquidGlassBackground)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+        )
+    }
+
+    private func completeCurrentTask() {
+        guard let task = currentTask else { return }
+
+        // For simple check tasks, mark as completed directly
+        if task.verificationType == .check {
+            task.status = .completed
+            task.completedAt = Date()
+            task.verificationStatus = .verified
+            try? modelContext.save()
+        } else {
+            // For other verification types, go to schedule tab to complete verification
+            selectedTab = 2
+        }
     }
 
     // MARK: - Blocked Apps Section
@@ -504,16 +669,22 @@ struct HomeView: View {
     // MARK: - Helper Methods
 
     private func formatTime(_ seconds: TimeInterval) -> String {
-        let minutes = Int(seconds) / 60
-        let secs = Int(seconds) % 60
-        return String(format: "%d:%02d", minutes, secs)
+        let totalSeconds = Int(abs(seconds))
+        let hours = totalSeconds / 3600
+        let minutes = (totalSeconds % 3600) / 60
+        let secs = totalSeconds % 60
+
+        if hours > 0 {
+            return String(format: "%d:%02d:%02d", hours, minutes, secs)
+        } else {
+            return String(format: "%d:%02d", minutes, secs)
+        }
     }
 
     private func startTimer() {
+        timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            if currentTaskTimeRemaining > 0 {
-                currentTaskTimeRemaining -= 1
-            }
+            updateTimeRemaining()
         }
     }
 }
@@ -527,5 +698,7 @@ struct HomeView: View {
         .environment(StatsService())
         .environment(BlockingService())
         .environment(ExerciseFavoritesService())
+        .environment(ScheduleService(openAIService: OpenAIService(), photoStorageService: PhotoStorageService()))
+        .modelContainer(for: [ScheduledTask.self])
         .preferredColorScheme(.dark)
 }

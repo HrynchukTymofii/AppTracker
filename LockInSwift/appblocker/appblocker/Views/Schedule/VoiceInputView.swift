@@ -31,6 +31,7 @@ class NetworkMonitor: ObservableObject {
 struct VoiceInputView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(ThemeService.self) private var theme
+    @Environment(TaskParserService.self) private var taskParserService
     @Environment(\.colorScheme) private var colorScheme
 
     @State private var speechRecognizer = SpeechRecognizer()
@@ -41,7 +42,10 @@ struct VoiceInputView: View {
     @State private var showError = false
     @State private var isAuthorized = false
 
-    var onTaskCreated: (TaskParseResult) -> Void
+    // Same parameters as EnhancedTextInputView
+    let selectedDate: Date
+    let existingTasks: [ScheduledTask]
+    var onTaskCreated: (TaskParsingResponse) -> Void
 
     private var isDark: Bool { colorScheme == .dark }
 
@@ -248,47 +252,72 @@ struct VoiceInputView: View {
 
         Task {
             do {
-                let parser = TaskParserService()
-
-                guard parser.isConfigured else {
-                    // If OpenAI is not configured, create a simple task from the text
+                guard taskParserService.isConfigured else {
+                    // If OpenAI is not configured, create a simple fallback response
                     let simpleResult = TaskParseResult(
                         title: speechRecognizer.transcript.prefix(50).description,
                         description: speechRecognizer.transcript.count > 50 ? speechRecognizer.transcript : nil,
                         scheduledTime: nil,
+                        endTime: nil,
                         duration: 30,
-                        verificationType: "check"
+                        verificationType: VerificationType.check,
+                        verificationConfig: nil,
+                        exerciseConfig: nil,
+                        voiceConfig: nil,
+                        stepCountConfig: nil,
+                        hasConflict: false,
+                        conflictDetails: nil
+                    )
+
+                    let response = TaskParsingResponse(
+                        tasks: [simpleResult],
+                        hasConflicts: false,
+                        conflictDetails: nil,
+                        suggestedResolutions: nil,
+                        requiresUserInput: false,
+                        promptForUser: nil
                     )
 
                     await MainActor.run {
                         isParsing = false
-                        onTaskCreated(simpleResult)
+                        onTaskCreated(response)
                         dismiss()
                     }
                     return
                 }
 
-                let result = try await parser.parseTaskFromText(speechRecognizer.transcript)
+                // Use same parsing as text input - with schedule context
+                let taskSummaries = existingTasks.map { TaskSummary(from: $0) }
+
+                #if DEBUG
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+                print("[VoiceInput] Parsing transcript:")
+                print("  - selectedDate: \(dateFormatter.string(from: selectedDate))")
+                print("  - existingTasks count: \(taskSummaries.count)")
+                print("  - transcript: \(speechRecognizer.transcript)")
+                #endif
+
+                let response = try await taskParserService.parseTaskWithContext(
+                    speechRecognizer.transcript,
+                    forDate: selectedDate,
+                    existingTasks: taskSummaries
+                )
+
+                #if DEBUG
+                print("[VoiceInput] AI returned \(response.tasks.count) tasks")
+                #endif
 
                 await MainActor.run {
                     isParsing = false
-                    onTaskCreated(result)
+                    onTaskCreated(response)
                     dismiss()
                 }
             } catch {
                 await MainActor.run {
                     isParsing = false
-
-                    // Fallback: create simple task from transcript
-                    let simpleResult = TaskParseResult(
-                        title: speechRecognizer.transcript.prefix(50).description,
-                        description: nil,
-                        scheduledTime: nil,
-                        duration: 30,
-                        verificationType: "check"
-                    )
-                    onTaskCreated(simpleResult)
-                    dismiss()
+                    errorMessage = error.localizedDescription
+                    showError = true
                 }
             }
         }
@@ -298,8 +327,12 @@ struct VoiceInputView: View {
 // MARK: - Preview
 
 #Preview {
-    VoiceInputView { result in
-        print("Task created: \(result.title)")
+    VoiceInputView(
+        selectedDate: Date(),
+        existingTasks: []
+    ) { response in
+        print("Tasks created: \(response.tasks.count)")
     }
     .environment(ThemeService())
+    .environment(TaskParserService())
 }

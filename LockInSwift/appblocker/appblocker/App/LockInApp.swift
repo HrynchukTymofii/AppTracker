@@ -17,6 +17,12 @@ struct LockInApp: App {
     @State private var localizationService = LocalizationService()
     @State private var exerciseFavoritesService = ExerciseFavoritesService()
 
+    // Schedule Services
+    @State private var openAIService = OpenAIService()
+    @State private var photoStorageService = PhotoStorageService()
+    @State private var taskParserService = TaskParserService()
+    @State private var scheduleService: ScheduleService
+
     // Deep link navigation
     @State private var deepLinkTab: Int?
     @State private var showCoach: Bool = false
@@ -24,6 +30,13 @@ struct LockInApp: App {
     init() {
         // Set up notification delegate for routing
         UNUserNotificationCenter.current().delegate = NotificationService.shared
+
+        // Initialize schedule service with dependencies
+        let openAI = OpenAIService()
+        let photoStorage = PhotoStorageService()
+        _openAIService = State(initialValue: openAI)
+        _photoStorageService = State(initialValue: photoStorage)
+        _scheduleService = State(initialValue: ScheduleService(openAIService: openAI, photoStorageService: photoStorage))
     }
 
     var body: some Scene {
@@ -61,6 +74,10 @@ struct LockInApp: App {
                 .environment(achievementService)
                 .environment(localizationService)
                 .environment(exerciseFavoritesService)
+                .environment(openAIService)
+                .environment(photoStorageService)
+                .environment(taskParserService)
+                .environment(scheduleService)
                 .environment(\.deepLinkTab, $deepLinkTab)
                 .environment(\.showCoach, $showCoach)
                 .preferredColorScheme(themeService.colorScheme)
@@ -70,12 +87,19 @@ struct LockInApp: App {
                 }
         }
         .modelContainer(for: [
+            // Existing models
             BlockedApp.self,
             UnblockSchedule.self,
             TimeTransaction.self,
             ExerciseTask.self,
             UsageRecord.self,
-            Achievement.self
+            Achievement.self,
+            // Schedule models
+            ScheduledTask.self,
+            RecurrencePattern.self,
+            AIConversation.self,
+            AIMessage.self,
+            VerificationAttempt.self
         ])
     }
 

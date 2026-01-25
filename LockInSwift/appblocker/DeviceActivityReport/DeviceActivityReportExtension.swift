@@ -135,6 +135,11 @@ struct LockInDeviceActivityReport: DeviceActivityReportExtension {
         HomeQuickStatsReport { statsData in
             HomeQuickStatsOnlyView(statsData: statsData)
         }
+
+        // Stats page app usage list with real icons
+        StatsAppUsageReport { appData in
+            StatsAppUsageView(appData: appData)
+        }
     }
 }
 
@@ -148,6 +153,7 @@ extension DeviceActivityReport.Context {
     static let dailyGoalProgress = Self("DailyGoalProgress")
     static let goalsPageProgress = Self("GoalsPageProgress")
     static let homeQuickStats = Self("HomeQuickStats")
+    static let statsAppUsage = Self("StatsAppUsage")
 }
 
 // MARK: - Total Activity Report (Full Stats Page)
@@ -3061,6 +3067,275 @@ struct GoalsPageProgressView: View {
             return m > 0 ? "\(h)h\(m)m" : "\(h)h"
         }
         return "\(mins)m"
+    }
+}
+
+// MARK: - Stats App Usage Report (For Stats Page)
+
+struct StatsAppUsageData {
+    let apps: [AppUsageData]
+    let totalAppsCount: Int
+
+    var hasData: Bool {
+        !apps.isEmpty
+    }
+}
+
+struct StatsAppUsageReport: DeviceActivityReportScene {
+    let context: DeviceActivityReport.Context = .statsAppUsage
+
+    let content: (StatsAppUsageData) -> StatsAppUsageView
+
+    func makeConfiguration(representing data: DeviceActivityResults<DeviceActivityData>) async -> StatsAppUsageData {
+        let today = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let todayString = dateFormatter.string(from: today)
+
+        var todayApps: [AppUsageData] = []
+
+        for await activityData in data {
+            for await segment in activityData.activitySegments {
+                let segmentDate = segment.dateInterval.start
+                let segmentDateString = dateFormatter.string(from: segmentDate)
+                let isToday = segmentDateString == todayString
+
+                guard isToday else { continue }
+
+                for await categoryActivity in segment.categories {
+                    for await appActivity in categoryActivity.applications {
+                        let appName = appActivity.application.localizedDisplayName ?? "Unknown"
+                        let bundleId = appActivity.application.bundleIdentifier ?? "unknown"
+                        let duration = appActivity.totalActivityDuration
+
+                        // Skip system apps
+                        if bundleId.hasPrefix("com.apple.family") ||
+                           bundleId.hasPrefix("com.apple.ScreenTime") ||
+                           bundleId == "com.apple.FamilyControlsAuthentication" {
+                            continue
+                        }
+
+                        if let index = todayApps.firstIndex(where: { $0.bundleId == bundleId }) {
+                            todayApps[index].duration += duration
+                        } else {
+                            todayApps.append(AppUsageData(
+                                appName: appName,
+                                bundleId: bundleId,
+                                duration: duration,
+                                token: appActivity.application.token
+                            ))
+                        }
+                    }
+                }
+            }
+        }
+
+        // Filter apps with more than 30 seconds of usage and sort by duration
+        let filteredApps = todayApps.filter { $0.duration > 30 }.sorted { $0.duration > $1.duration }
+
+        return StatsAppUsageData(
+            apps: filteredApps,
+            totalAppsCount: filteredApps.count
+        )
+    }
+}
+
+// MARK: - Stats App Usage View (Matching Stats page style)
+
+struct StatsAppUsageView: View {
+    let appData: StatsAppUsageData
+    @State private var showAllApps = false
+
+    private var isDark: Bool {
+        UITraitCollection.current.userInterfaceStyle == .dark
+    }
+
+    private var maxAppDuration: TimeInterval {
+        appData.apps.first?.duration ?? 1
+    }
+
+    private var displayedApps: [AppUsageData] {
+        if showAllApps {
+            return appData.apps
+        }
+        return Array(appData.apps.prefix(7))
+    }
+
+    private var hasMoreApps: Bool {
+        appData.totalAppsCount > 7
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            // Header
+            HStack {
+                Text("App Usage")
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(ReportColors.text)
+
+                Spacer()
+            }
+            .padding(.horizontal, 4)
+
+            if appData.hasData {
+                // Apps List
+                VStack(spacing: 12) {
+                    ForEach(Array(displayedApps.enumerated()), id: \.element.id) { index, app in
+                        StatsAppUsageRow(
+                            app: app,
+                            maxDuration: maxAppDuration
+                        )
+                    }
+                }
+
+                // View all apps button (only if more than 7 apps)
+                if hasMoreApps {
+                    Button {
+                        withAnimation(.spring(response: 0.3)) {
+                            showAllApps.toggle()
+                        }
+                    } label: {
+                        Text(showAllApps ? "Show less" : "View all apps")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(ReportColors.accentGradient)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                            .shadow(color: ReportColors.accentColor.opacity(0.3), radius: 20, y: 8)
+                            .shadow(color: ReportColors.accentColor.opacity(0.6), radius: 10)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                            )
+                    }
+                    .padding(.top, 8)
+                }
+            } else {
+                // Empty state
+                VStack(spacing: 12) {
+                    Image(systemName: "iphone")
+                        .font(.system(size: 40))
+                        .foregroundColor(isDark ? Color(hex: "4b5563") : Color(hex: "9ca3af"))
+
+                    Text("No app usage today")
+                        .font(.system(size: 14))
+                        .foregroundColor(ReportColors.secondaryText)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.vertical, 40)
+                .frame(maxWidth: .infinity)
+            }
+        }
+    }
+}
+
+// MARK: - Stats App Usage Row (Matching Stats page design)
+
+struct StatsAppUsageRow: View {
+    let app: AppUsageData
+    let maxDuration: TimeInterval
+
+    private var isDark: Bool {
+        UITraitCollection.current.userInterfaceStyle == .dark
+    }
+
+    private var progress: CGFloat {
+        CGFloat(app.duration / maxDuration)
+    }
+
+    private var barGradient: LinearGradient {
+        ReportColors.accentGradientHorizontal
+    }
+
+    var body: some View {
+        HStack(spacing: 16) {
+            // App icon using Label with token (real icon)
+            if let token = app.token {
+                Label(token)
+                    .labelStyle(.iconOnly)
+                    .scaleEffect(1.5)
+                    .frame(width: 48, height: 48)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            } else {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(isDark ? ReportColors.accentColorDark.opacity(0.3) : ReportColors.accentColor.opacity(0.15))
+                        .frame(width: 48, height: 48)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                        )
+
+                    Image(systemName: "app.fill")
+                        .font(.system(size: 20))
+                        .foregroundColor(ReportColors.accentColor)
+                }
+            }
+
+            // Name and category
+            VStack(alignment: .leading, spacing: 2) {
+                Text(app.appName)
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(ReportColors.text)
+                    .lineLimit(1)
+
+                Text(getCategoryForBundle(app.bundleId).uppercased())
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundColor(ReportColors.secondaryText.opacity(0.7))
+                    .tracking(1)
+            }
+
+            Spacer()
+
+            // Time and progress
+            VStack(alignment: .trailing, spacing: 8) {
+                Text(app.formattedDuration)
+                    .font(.system(size: 14, weight: .heavy))
+                    .foregroundColor(ReportColors.text)
+
+                // Progress bar
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(Color.white.opacity(0.1))
+                        .frame(width: 80, height: 4)
+
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(barGradient)
+                        .frame(width: 80 * progress, height: 4)
+                        .shadow(color: ReportColors.accentColor.opacity(0.6), radius: 4)
+                }
+            }
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(isDark ? Color.white.opacity(0.03) : Color.white)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(isDark ? Color.white.opacity(0.05) : Color.black.opacity(0.03), lineWidth: 1)
+        )
+    }
+
+    // Helper to categorize apps by bundle ID
+    private func getCategoryForBundle(_ bundleId: String) -> String {
+        let lowered = bundleId.lowercased()
+        if lowered.contains("instagram") || lowered.contains("tiktok") || lowered.contains("facebook") || lowered.contains("twitter") || lowered.contains("snapchat") {
+            return "Social"
+        } else if lowered.contains("youtube") || lowered.contains("netflix") || lowered.contains("spotify") || lowered.contains("music") {
+            return "Entertainment"
+        } else if lowered.contains("safari") || lowered.contains("chrome") || lowered.contains("firefox") {
+            return "Browser"
+        } else if lowered.contains("slack") || lowered.contains("teams") || lowered.contains("zoom") || lowered.contains("mail") {
+            return "Communication"
+        } else if lowered.contains("game") || lowered.contains("games") {
+            return "Games"
+        } else if lowered.contains("photos") || lowered.contains("camera") {
+            return "Photos"
+        } else {
+            return "App"
+        }
     }
 }
 

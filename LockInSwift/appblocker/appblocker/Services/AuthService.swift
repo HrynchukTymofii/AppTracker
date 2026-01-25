@@ -65,20 +65,32 @@ final class AuthService {
             if let token = result["token"] as? String {
                 saveToken(token)
 
+                // Get the server's userId - this is the ID we need for RevenueCat
+                let serverUserId = result["userId"] as? String ?? result["id"] as? String
+
                 // Fetch actual user data from server
                 if let userData = await fetchUserData(token: token) {
-                    currentUser = userData
-                    saveUser(userData)
+                    // Use server userId if available, otherwise use fetched data's ID
+                    let finalUser = User(
+                        id: serverUserId ?? userData.id,
+                        email: userData.email,
+                        displayName: userData.displayName,
+                        isPro: userData.isPro
+                    )
+                    currentUser = finalUser
+                    saveUser(finalUser)
+                    print("✅ AuthService: Apple login - using server userId: \(finalUser.id)")
                 } else {
-                    // Fallback to credential data if fetch fails
+                    // Fallback - use server userId from auth response, NOT credential.user
                     let user = User(
-                        id: credential.user,
+                        id: serverUserId ?? credential.user,
                         email: credential.email ?? "\(credential.user)@privaterelay.appleid.com",
                         displayName: fullName.isEmpty ? nil : fullName,
                         isPro: result["isPro"] as? Bool ?? false
                     )
                     currentUser = user
                     saveUser(user)
+                    print("⚠️ AuthService: Apple login fallback - userId: \(user.id)")
                 }
 
                 // Fetch OpenAI key from backend
@@ -141,20 +153,32 @@ final class AuthService {
             if let token = result["token"] as? String {
                 saveToken(token)
 
+                // Get the server's userId - this is the ID we need for RevenueCat
+                let serverUserId = result["userId"] as? String ?? result["id"] as? String
+
                 // Fetch actual user data from server
                 if let userData = await fetchUserData(token: token) {
-                    currentUser = userData
-                    saveUser(userData)
+                    // Use server userId if available, otherwise use fetched data's ID
+                    let finalUser = User(
+                        id: serverUserId ?? userData.id,
+                        email: userData.email,
+                        displayName: userData.displayName,
+                        isPro: userData.isPro
+                    )
+                    currentUser = finalUser
+                    saveUser(finalUser)
+                    print("✅ AuthService: Google login - using server userId: \(finalUser.id)")
                 } else {
                     // Fallback to response data if fetch fails
                     let user = User(
-                        id: result["userId"] as? String ?? UUID().uuidString,
+                        id: serverUserId ?? UUID().uuidString,
                         email: result["email"] as? String ?? "user@google.com",
                         displayName: result["name"] as? String,
                         isPro: result["isPro"] as? Bool ?? false
                     )
                     currentUser = user
                     saveUser(user)
+                    print("⚠️ AuthService: Google login fallback - userId: \(user.id)")
                 }
 
                 // Fetch OpenAI key from backend
@@ -190,8 +214,11 @@ final class AuthService {
             if let token = result["token"] as? String {
                 saveToken(token)
 
+                // Get the server's userId - this is the ID we need for RevenueCat
+                let serverUserId = result["userId"] as? String ?? result["id"] as? String
+
                 let user = User(
-                    id: result["userId"] as? String ?? UUID().uuidString,
+                    id: serverUserId ?? UUID().uuidString,
                     email: email,
                     displayName: result["name"] as? String ?? email.components(separatedBy: "@").first,
                     isPro: result["isPro"] as? Bool ?? false
@@ -199,6 +226,7 @@ final class AuthService {
 
                 currentUser = user
                 saveUser(user)
+                print("✅ AuthService: Email login - using server userId: \(user.id)")
 
                 // Fetch OpenAI key from backend
                 await fetchOpenAIConfig(token: token)
@@ -382,6 +410,72 @@ final class AuthService {
             return user
         } catch {
             print("AuthService: Failed to fetch user data - \(error.localizedDescription)")
+            return nil
+        }
+    }
+
+    // MARK: - RevenueCat User ID
+
+    /// Fetch RevenueCat user ID from backend - this is the ID to use for RevenueCat login
+    func fetchRevenueCatUserId() async -> String? {
+        guard let token = getToken() else {
+            print("❌ AuthService: No token available for RevenueCat userId fetch")
+            return nil
+        }
+
+        guard let url = URL(string: "https://www.fibipals.com/api/apps/appBlocker/user/id") else {
+            print("❌ AuthService: Invalid URL for RevenueCat userId endpoint")
+            return nil
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        print("🔄 AuthService: Fetching RevenueCat userId from \(url.absoluteString)")
+        print("🔄 AuthService: Token (first 20 chars): \(String(token.prefix(20)))...")
+
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                print("❌ AuthService: Response is not HTTP response")
+                return nil
+            }
+
+            let responseBody = String(data: data, encoding: .utf8) ?? "Unable to decode response"
+            print("🔄 AuthService: HTTP Status: \(httpResponse.statusCode)")
+            print("🔄 AuthService: Response body: \(responseBody)")
+
+            guard httpResponse.statusCode == 200 else {
+                print("❌ AuthService: Failed to fetch RevenueCat userId - HTTP \(httpResponse.statusCode)")
+                print("❌ AuthService: Error response: \(responseBody)")
+                return nil
+            }
+
+            // Try to parse as JSON object first
+            if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                print("🔄 AuthService: Parsed JSON: \(json)")
+                if let userId = json["userId"] as? String ?? json["id"] as? String ?? json["_id"] as? String {
+                    print("✅ AuthService: Fetched RevenueCat userId: \(userId)")
+                    return userId
+                }
+            }
+
+            // Try to parse as plain string (in case server returns just the ID)
+            let trimmedResponse = responseBody.trimmingCharacters(in: .whitespacesAndNewlines)
+                .trimmingCharacters(in: CharacterSet(charactersIn: "\"")) // Remove quotes if present
+            if !trimmedResponse.isEmpty && !trimmedResponse.contains("{") {
+                print("✅ AuthService: Fetched RevenueCat userId (plain): \(trimmedResponse)")
+                return trimmedResponse
+            }
+
+            print("❌ AuthService: Could not parse RevenueCat userId from response: \(responseBody)")
+            return nil
+        } catch {
+            print("❌ AuthService: Failed to fetch RevenueCat userId - \(error.localizedDescription)")
+            print("❌ AuthService: Full error: \(error)")
             return nil
         }
     }

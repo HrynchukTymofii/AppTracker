@@ -387,6 +387,22 @@ final class OpenAIService {
     func setAPIKey(_ key: String) {
         UserDefaults.standard.set(key, forKey: "openai_api_key")
     }
+
+    // MARK: - Task Parsing with Context
+
+    /// Parse task from user input with schedule context
+    func parseTaskWithContext(userInput: String, systemPrompt: String) async throws -> String {
+        guard isConfigured else {
+            throw OpenAIError.notConfigured
+        }
+
+        let messages: [[String: Any]] = [
+            ["role": "system", "content": systemPrompt],
+            ["role": "user", "content": userInput]
+        ]
+
+        return try await makeRequest(messages: messages, temperature: 0.3, maxTokens: 1500)
+    }
 }
 
 // MARK: - Errors
