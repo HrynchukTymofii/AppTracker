@@ -3,9 +3,9 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import { submitSupportMessage } from "./actions";
 
 const SUPPORT_EMAIL = "lockin@fibipals.com";
-const API_BASE_URL = "https://lockin.fibipals.com/api";
 
 const SupportPage: React.FC = () => {
   const { t } = useLanguage();
@@ -28,18 +28,13 @@ const SupportPage: React.FC = () => {
     setError("");
 
     try {
-      const res = await fetch(`${API_BASE_URL}/user/message`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          topic: "support",
-          message: `LockIn website support\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
-        }),
+      const result = await submitSupportMessage({
+        name: name.trim(),
+        email: email.trim(),
+        message: message.trim(),
       });
 
-      if (res.ok) {
+      if (result.success) {
         setSubmitted(true);
         setName("");
         setEmail("");

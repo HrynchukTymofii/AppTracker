@@ -48,3 +48,19 @@ export async function markEmailSent(id: number): Promise<void> {
     data: { emailSent: true },
   });
 }
+
+export async function createSupportMessage(data: {
+  name: string;
+  email: string;
+  message: string;
+}): Promise<{ id: number }> {
+  const result = await db.supportMessage.create({
+    data: {
+      name: data.name,
+      email: data.email,
+      message: data.message,
+    },
+  });
+
+  return { id: result.id };
+}

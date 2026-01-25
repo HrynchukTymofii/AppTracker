@@ -131,3 +131,15 @@ model Waitlist {
   @@index([email])
   @@index([createdAt(sort: Desc)])
 }
+
+model SupportMessage {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  message   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("support_message")
+  @@index([email])
+  @@index([createdAt(sort: Desc)])
+}
