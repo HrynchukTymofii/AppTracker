@@ -1,0 +1,975 @@
+/*
+  Localizable.strings
+  LockIn
+
+  Hindi Localization
+*/
+
+// MARK: - Common
+"common.done" = "हो गया";
+"common.cancel" = "रद्द करें";
+"common.save" = "सहेजें";
+"common.edit" = "संपादित करें";
+"common.close" = "बंद करें";
+"common.back" = "वापस";
+"common.next" = "अगला";
+"common.skip" = "छोड़ें";
+"common.continue" = "जारी रखें";
+"common.error" = "त्रुटि";
+"common.success" = "सफलता";
+"common.loading" = "लोड हो रहा है...";
+"common.retry" = "पुनः प्रयास करें";
+"common.get_started" = "शुरू करें";
+"common.of" = "में से";
+
+// MARK: - Tab Bar
+"tab.home" = "होम";
+"tab.goals" = "लक्ष्य";
+"tab.lockin" = "LockIn";
+"tab.stats" = "आंकड़े";
+"tab.profile" = "प्रोफ़ाइल";
+
+// MARK: - Home
+"home.greeting" = "शुभ %@";
+"home.morning" = "प्रभात";
+"home.afternoon" = "दोपहर";
+"home.evening" = "संध्या";
+"home.help" = "मदद";
+"home.health_score" = "स्वास्थ्य";
+"home.today_progress" = "आज की प्रगति";
+"home.screen_time" = "स्क्रीन टाइम";
+"home.earned_time" = "अर्जित";
+"home.top_apps" = "शीर्ष ऐप्स";
+"home.daily_goal" = "दैनिक लक्ष्य";
+"home.change" = "बदलें";
+"home.upcoming" = "आगामी";
+"home.see_all" = "सभी देखें";
+"home.create_schedule" = "शेड्यूल बनाएं";
+"home.set_times_unblocked" = "वह समय निर्धारित करें जब ऐप्स अनब्लॉक हों";
+"home.unblocked" = "अनब्लॉक";
+"home.every_day" = "हर दिन";
+"home.weekdays" = "कार्यदिवस";
+"home.weekends" = "सप्ताहांत";
+
+// MARK: - Today's Progress
+"progress.todays_progress" = "आज की प्रगति";
+"progress.earn" = "अर्जित करें";
+"progress.spent" = "खर्च किया";
+"progress.earned" = "अर्जित";
+"progress.balance" = "शेष";
+"progress.this_week" = "इस सप्ताह";
+
+// MARK: - LockIn (Earn Time)
+"lockin.title" = "स्क्रीन टाइम अर्जित करें";
+"lockin.subtitle" = "ऐप टाइम अनलॉक करने के लिए व्यायाम पूरा करें";
+"lockin.balance" = "स्क्रीन टाइम बैलेंस";
+"lockin.minutes" = "मिनट";
+"lockin.earn" = "अर्जित करें";
+"lockin.earn_time" = "समय अर्जित करें";
+"lockin.transaction_history" = "लेनदेन इतिहास";
+"lockin.no_activity" = "अभी तक कोई गतिविधि नहीं";
+"lockin.complete_exercises" = "समय अर्जित करने के लिए व्यायाम पूरा करें";
+"lockin.today" = "आज:";
+"lockin.earned" = "अर्जित";
+"lockin.spent" = "खर्च";
+"lockin.week" = "सप्ताह:";
+"lockin.task_in_progress" = "कार्य प्रगति में";
+"lockin.continue" = "जारी रखें";
+"lockin.recent_activity" = "हाल की गतिविधि";
+"lockin.resets_in_hours" = "%d घंटे में रीसेट";
+"lockin.favorites" = "पसंदीदा";
+"lockin.all_exercises" = "सभी व्यायाम";
+"lockin.double_tap_add" = "जोड़ने के लिए डबल टैप करें";
+"lockin.double_tap_remove" = "हटाने के लिए डबल टैप करें";
+
+// MARK: - Exercises
+"exercise.pushups" = "पुश-अप्स";
+"exercise.squats" = "स्क्वैट्स";
+"exercise.plank" = "प्लैंक";
+"exercise.jumping_jacks" = "जम्पिंग जैक";
+"exercise.lunges" = "लंजेस";
+"exercise.crunches" = "क्रंचेस";
+"exercise.shoulder_press" = "शोल्डर प्रेस";
+"exercise.leg_raises" = "लेग रेज";
+"exercise.high_knees" = "हाई नीज़";
+"exercise.pull_ups" = "पुल-अप्स";
+"exercise.wall_sit" = "वॉल सिट";
+"exercise.side_plank" = "साइड प्लैंक";
+"exercise.photo_task" = "फोटो कार्य";
+"exercise.focus_mode" = "फोकस मोड";
+"exercise.custom" = "कस्टम कार्य";
+"exercise.min_per_rep" = "मिनट/रेप";
+"exercise.min_per_sec" = "मिनट/सेकंड";
+"exercise.camera_required" = "कैमरा एक्सेस आवश्यक";
+"exercise.open_settings" = "सेटिंग्स खोलें";
+"exercise.enable_camera" = "कैमरा सक्षम करें";
+"exercise.great_job" = "शानदार काम!";
+"exercise.leg_day_champion" = "लेग डे चैंपियन!";
+"exercise.core_of_steel" = "स्टील की तरह मजबूत!";
+"exercise.min_earned" = "+%@ मिनट अर्जित";
+"exercise.do_pushups" = "पुश-अप्स करें";
+"exercise.do_squats" = "स्क्वैट्स करें";
+"exercise.hold_plank" = "प्लैंक होल्ड करें";
+"exercise.pushup_instructions" = "अपने फोन को ऐसे रखें कि कैमरा आपके ऊपरी शरीर को साइड से देख सके।";
+"exercise.squat_instructions" = "अपने फोन के सामने खड़े हों ताकि यह आपके पूरे शरीर को साइड से देख सके।";
+"exercise.plank_instructions" = "अपने फोन को ऐसे रखें कि यह आपके पूरे शरीर को साइड से देख सके। अपने शरीर को सीधा रखें!";
+"exercise.start_pushups" = "पुश-अप्स शुरू करें";
+"exercise.start_squats" = "स्क्वैट्स शुरू करें";
+"exercise.start_plank" = "प्लैंक शुरू करें";
+"exercise.do_some_pushups" = "कुछ पुश-अप्स करें...";
+"exercise.do_some_squats" = "कुछ स्क्वैट्स करें...";
+"exercise.hold_the_plank" = "प्लैंक होल्ड करें...";
+"exercise.pushups_label" = "पुश-अप्स";
+"exercise.squats_label" = "स्क्वैट्स";
+"exercise.seconds" = "सेकंड";
+"exercise.down" = "नीचे";
+"exercise.up" = "ऊपर";
+"exercise.holding" = "होल्डिंग";
+"exercise.get_in_position" = "पोजीशन में आएं";
+"exercise.paused" = "रुका हुआ";
+"exercise.paused_get_back" = "रुका - वापस पोजीशन में आएं";
+"exercise.timer_pauses_info" = "अगर आप फ्रेम से बाहर जाते हैं तो टाइमर रुक जाता है";
+"exercise.camera_tracking_pushups" = "आपके पुश-अप्स ट्रैक करने के लिए, हमें आपके कैमरे की जरूरत है।";
+"exercise.camera_tracking_squats" = "आपके स्क्वैट्स ट्रैक करने के लिए, हमें आपके कैमरे की जरूरत है।";
+"exercise.camera_tracking_plank" = "आपकी प्लैंक ट्रैक करने के लिए, हमें आपके कैमरे की जरूरत है।";
+"exercise.did_pushups" = "आपने %d पुश-अप्स किए!";
+"exercise.did_squats" = "आपने %d स्क्वैट्स किए!";
+"exercise.held_for_seconds" = "आपने %d सेकंड होल्ड किया!";
+"exercise.finish_with_reward" = "पूरा करें (+%@ मिनट)";
+"exercise.photo_task_desc" = "स्क्रीन टाइम अर्जित करने के लिए एक कार्य पूरा करें और फोटो से सत्यापित करें";
+"exercise.describe_task" = "अपना कार्य बताएं";
+"exercise.task_placeholder" = "आप क्या करेंगे? (उदा., मेरा कमरा साफ करना)";
+"exercise.or_choose_preset" = "या प्रीसेट चुनें";
+"exercise.camera_permission_message" = "आपके व्यायाम सत्यापित करने और प्रगति ट्रैक करने के लिए हमें कैमरा एक्सेस चाहिए।";
+"exercise.camera_photo_task_message" = "कार्य सत्यापन के लिए फोटो लेने के लिए, हमें आपके कैमरे की जरूरत है।";
+"exercise.before_photo" = "पहले की फोटो";
+"exercise.after_photo" = "बाद की फोटो";
+"exercise.show_completed" = "अपना पूरा किया हुआ कार्य दिखाएं";
+"exercise.take_starting_photo" = "अपने शुरुआती बिंदु की फोटो लें";
+"exercise.before" = "पहले";
+"exercise.after" = "बाद";
+"exercise.proof" = "प्रमाण";
+"exercise.go_complete_task" = "जाकर अपना कार्य पूरा करें!";
+"exercise.done_after_photo" = "हो गया - बाद की फोटो लें";
+"exercise.done_verify_task" = "हो गया - कार्य सत्यापित करें";
+"exercise.task_verified" = "कार्य सत्यापित!";
+"exercise.type_message" = "संदेश टाइप करें...";
+"exercise.complete_anyway" = "फिर भी पूरा करें (+%d मिनट)";
+"exercise.reps" = "रेप्स";
+"exercise.seconds_unit" = "सेकंड";
+"exercise.reward_per_rep" = "%.1f मिनट/रेप (न्यूनतम %d), +%.1f के बाद %d";
+"exercise.reward_per_sec" = "%.1f मिनट/सेकंड (न्यूनतम %d सेकंड), +%.1f के बाद %d सेकंड";
+"exercise.verify_task" = "कार्य पूर्णता सत्यापित करें";
+"exercise.reward_per_unit" = "%.1f मिनट प्रति यूनिट";
+
+// Photo Task Presets
+"exercise.preset.clean_room" = "कमरा साफ करें";
+"exercise.preset.do_dishes" = "बर्तन धोएं";
+"exercise.preset.make_bed" = "बिस्तर बनाएं";
+"exercise.preset.organize_desk" = "डेस्क व्यवस्थित करें";
+"exercise.preset.take_walk" = "टहलने जाएं";
+"exercise.preset.read_book" = "किताब पढ़ें";
+"exercise.preset.meditate" = "ध्यान करें";
+"exercise.preset.stretch" = "स्ट्रेचिंग करें";
+"exercise.preset.drink_water" = "पानी पिएं";
+"exercise.preset.healthy_meal" = "स्वस्थ भोजन करें";
+
+// MARK: - Focus Mode
+"focus.title" = "फोकस मोड";
+"focus.deep_focus" = "गहन फोकस";
+"focus.description" = "सभी विकर्षणों को ब्लॉक करें और जो महत्वपूर्ण है उस पर ध्यान दें";
+"focus.session_duration" = "सत्र की अवधि";
+"focus.apps_blocked" = "सभी चयनित ऐप्स ब्लॉक होंगे";
+"focus.earn_info" = "पूरा करने पर %@ मिनट अर्जित करें";
+"focus.earn_minutes" = "पूरा करने पर %d मिनट अर्जित करें";
+"focus.no_interruptions" = "बिना किसी रुकावट के फोकस रहें";
+"focus.start" = "फोकस सत्र शुरू करें";
+"focus.remaining" = "शेष";
+"focus.paused" = "रुका हुआ";
+"focus.active" = "फोकस सक्रिय";
+"focus.all_blocked" = "सभी ऐप्स ब्लॉक हैं";
+"focus.end" = "समाप्त";
+"focus.pause" = "रोकें";
+"focus.resume" = "जारी रखें";
+"focus.add_time" = "+5मि";
+"focus.complete" = "शानदार फोकस!";
+"focus.completed_session" = "आपने %d मिनट का फोकस सत्र पूरा किया";
+"focus.time_earned" = "समय अर्जित";
+"focus.cancel" = "रद्द करें";
+"focus.focus_session" = "फोकस सत्र";
+"focus.session_paused" = "सत्र रुका हुआ";
+"focus.focus_active" = "फोकस सक्रिय";
+"focus.minutes" = "+%@ मिनट";
+
+// MARK: - Profile
+"profile.settings" = "सेटिंग्स";
+"profile.achievements" = "उपलब्धियां";
+"profile.blocked_items" = "ब्लॉक किए गए आइटम";
+"profile.blocked_items_desc" = "आपके द्वारा ब्लॉक किए गए ऐप्स और श्रेणियां";
+"profile.app_settings" = "ऐप सेटिंग्स";
+"profile.unlock_window" = "अनलॉक विंडो";
+"profile.unlock_window_desc" = "अर्जित समय का उपयोग करते समय आपको कितना समय मिलता है";
+"profile.daily_goal" = "दैनिक लक्ष्य";
+"profile.daily_goal_desc" = "प्रति दिन अधिकतम स्क्रीन टाइम की अनुमति";
+"profile.default_app_limit" = "डिफ़ॉल्ट ऐप सीमा";
+"profile.default_app_limit_desc" = "नए ब्लॉक किए गए ऐप्स के लिए डिफ़ॉल्ट दैनिक सीमा";
+"profile.theme" = "थीम";
+"profile.accent_color" = "एक्सेंट रंग";
+"profile.notifications" = "सूचनाएं";
+"profile.contact_us" = "हमसे संपर्क करें";
+"profile.rate_us" = "हमें रेट करें";
+"profile.logout" = "लॉग आउट करें";
+"profile.apps" = "ऐप्स";
+"profile.categories" = "श्रेणियां";
+"profile.min" = "मिनट";
+"profile.pro" = "PRO";
+
+// MARK: - Stats
+"stats.streak" = "श्रृंखला";
+"stats.tasks" = "कार्य";
+"stats.days" = "दिन";
+"stats.total_earned" = "कुल अर्जित";
+"stats.total_spent" = "कुल खर्च";
+"stats.weekly_stats" = "साप्ताहिक आंकड़े";
+"stats.today" = "आज";
+"stats.this_week" = "इस सप्ताह";
+"stats.last_week" = "पिछला सप्ताह";
+"stats.daily_avg" = "दैनिक औसत";
+"stats.vs_last_week" = "पिछले सप्ताह की तुलना में";
+"stats.less_screen_time" = "कम स्क्रीन टाइम";
+"stats.more_screen_time" = "ज्यादा स्क्रीन टाइम";
+"stats.share_progress" = "अपनी प्रगति साझा करें";
+"stats.share" = "साझा करें";
+
+// MARK: - Achievements
+"achievements.title" = "उपलब्धियां";
+"achievements.unlocked" = "अनलॉक की गई उपलब्धियां";
+"achievements.category.streak" = "श्रृंखला";
+"achievements.category.tasks" = "कार्य";
+"achievements.category.time_earned" = "समय अर्जित";
+"achievements.category.health" = "स्वास्थ्य";
+"achievements.category.balance" = "संतुलन";
+"achievements.category.special" = "विशेष";
+"achievements.category.all" = "सभी";
+
+// Achievement Names and Descriptions
+"achievement.streak_1.name" = "पहली ज्वाला";
+"achievement.streak_1.desc" = "अपना पहला दिन पूरा करें";
+"achievement.streak_3.name" = "शुरुआत";
+"achievement.streak_3.desc" = "3-दिन की श्रृंखला";
+"achievement.streak_7.name" = "सप्ताह योद्धा";
+"achievement.streak_7.desc" = "7-दिन की श्रृंखला";
+"achievement.streak_14.name" = "दो सप्ताह चैंपियन";
+"achievement.streak_14.desc" = "14-दिन की श्रृंखला";
+"achievement.streak_30.name" = "महीने का मास्टर";
+"achievement.streak_30.desc" = "30-दिन की श्रृंखला";
+"achievement.streak_60.name" = "श्रृंखला किंवदंती";
+"achievement.streak_60.desc" = "60-दिन की श्रृंखला";
+
+"achievement.tasks_1.name" = "पहले कदम";
+"achievement.tasks_1.desc" = "1 कार्य पूरा करें";
+"achievement.tasks_5.name" = "कार्य निपटाने वाला";
+"achievement.tasks_5.desc" = "5 कार्य पूरा करें";
+"achievement.tasks_10.name" = "व्यस्त हो रहे हैं";
+"achievement.tasks_10.desc" = "10 कार्य पूरा करें";
+"achievement.tasks_25.name" = "उत्पादकता प्रो";
+"achievement.tasks_25.desc" = "25 कार्य पूरा करें";
+"achievement.tasks_50.name" = "कार्य मशीन";
+"achievement.tasks_50.desc" = "50 कार्य पूरा करें";
+"achievement.tasks_100.name" = "सेंचुरी क्लब";
+"achievement.tasks_100.desc" = "100 कार्य पूरा करें";
+
+"achievement.time_5.name" = "पहले मिनट";
+"achievement.time_5.desc" = "5 मिनट अर्जित करें";
+"achievement.time_30.name" = "समय निर्माता";
+"achievement.time_30.desc" = "कुल 30 मिनट अर्जित करें";
+"achievement.time_60.name" = "घंटे का हीरो";
+"achievement.time_60.desc" = "कुल 1 घंटा अर्जित करें";
+"achievement.time_180.name" = "समय टाइटन";
+"achievement.time_180.desc" = "कुल 3 घंटे अर्जित करें";
+"achievement.time_600.name" = "समय मास्टर";
+"achievement.time_600.desc" = "कुल 10 घंटे अर्जित करें";
+"achievement.time_1800.name" = "समय किंवदंती";
+"achievement.time_1800.desc" = "कुल 30 घंटे अर्जित करें";
+
+"achievement.health_60.name" = "उठान पर";
+"achievement.health_60.desc" = "60 स्वास्थ्य स्कोर प्राप्त करें";
+"achievement.health_70.name" = "अच्छी वाइब्स";
+"achievement.health_70.desc" = "70 स्वास्थ्य स्कोर प्राप्त करें";
+"achievement.health_80.name" = "उत्कृष्ट";
+"achievement.health_80.desc" = "80 स्वास्थ्य स्कोर प्राप्त करें";
+"achievement.health_90.name" = "परफेक्ट फॉर्म";
+"achievement.health_90.desc" = "90 स्वास्थ्य स्कोर प्राप्त करें";
+
+"achievement.balance_30.name" = "बचतकर्ता";
+"achievement.balance_30.desc" = "30 मिनट बैलेंस जमा करें";
+"achievement.balance_120.name" = "टाइम बैंक एलीट";
+"achievement.balance_120.desc" = "2 घंटे बैलेंस जमा करें";
+
+// MARK: - Goals / Blocking
+"goals.title" = "लक्ष्य";
+"goals.today_usage" = "आज का ऐप उपयोग";
+"goals.loading" = "उपयोग डेटा लोड हो रहा है...";
+"goals.screen_time_required" = "स्क्रीन टाइम एक्सेस आवश्यक";
+"goals.screen_time_description" = "LockIn को ऐप्स ब्लॉक करने और आपका उपयोग ट्रैक करने के लिए स्क्रीन टाइम अनुमति चाहिए।";
+"goals.grant_access" = "एक्सेस दें";
+"goals.requesting" = "अनुरोध हो रहा है...";
+"goals.blocked_apps" = "ब्लॉक किए गए ऐप्स";
+"goals.selected" = "चयनित";
+"goals.select_apps_to_block" = "ब्लॉक करने के लिए ऐप्स चुनें";
+"goals.choose_apps" = "वे ऐप्स और श्रेणियां चुनें जिन्हें आप ब्लॉक करना चाहते हैं। आप इसे कभी भी बदल सकते हैं।";
+"goals.app_limits" = "ऐप सीमाएं";
+"goals.apps" = "ऐप्स";
+"goals.no_limits_set" = "कोई ऐप सीमा निर्धारित नहीं";
+"goals.set_daily_limits" = "अपने स्क्रीन टाइम को बेहतर प्रबंधित करने के लिए विशिष्ट ऐप्स के लिए दैनिक सीमाएं निर्धारित करें।";
+"goals.add_app_limit" = "ऐप सीमा जोड़ें";
+"goals.add_another_limit" = "एक और सीमा जोड़ें";
+"goals.set_limits" = "सीमाएं निर्धारित करें";
+"goals.daily_app_limits" = "दैनिक ऐप सीमाएं";
+"goals.limit_description" = "प्रत्येक ऐप के लिए अधिकतम दैनिक उपयोग निर्धारित करें। यह सीमा अर्जित समय के साथ भी पार नहीं की जा सकती।";
+"goals.select_apps_limits" = "दैनिक सीमाएं निर्धारित करने के लिए ऐप्स चुनें";
+"goals.no_limits_yet" = "कोई ऐप सीमा निर्धारित नहीं";
+"goals.add_limit_hint" = "विशिष्ट ऐप्स के लिए सीमाएं निर्धारित करने के लिए \"ऐप सीमा जोड़ें\" पर टैप करें";
+"goals.limits_reset_info" = "सीमाएं रोजाना आधी रात को रीसेट होती हैं। जब आप ब्लॉक किए गए ऐप्स एक्सेस करते हैं तो उपयोग स्वचालित रूप से ट्रैक होता है।";
+"goals.daily_limit_for" = "के लिए दैनिक सीमा";
+"goals.of" = "में से";
+"goals.limit_reached" = "सीमा पहुंच गई";
+"goals.min_daily_limit" = "मिनट दैनिक सीमा";
+"goals.edit" = "संपादित करें";
+"goals.remove_limit" = "सीमा हटाएं";
+"goals.cancel" = "रद्द करें";
+"goals.done" = "हो गया";
+"goals.save" = "सहेजें";
+"goals.minutes" = "मिनट";
+"goals.share_progress" = "प्रगति साझा करें";
+"goals.used" = "उपयोग किया";
+"goals.goal" = "लक्ष्य";
+"goals.left" = "शेष";
+"goals.of_goal" = "लक्ष्य में से";
+"goals.daily_app_limits_desc" = "प्रत्येक ऐप के लिए अधिकतम दैनिक उपयोग निर्धारित करें। यह सीमा अर्जित समय के साथ भी पार नहीं की जा सकती।";
+"goals.select_apps_to_set_limits" = "दैनिक सीमाएं निर्धारित करने के लिए ऐप्स चुनें";
+"goals.no_app_limits_set" = "कोई ऐप सीमा निर्धारित नहीं";
+"goals.tap_to_set_limits" = "विशिष्ट ऐप्स के लिए सीमाएं निर्धारित करने के लिए \"ऐप सीमा जोड़ें\" पर टैप करें";
+"goals.of_minutes" = "%dm में से";
+"goals.minutes_count" = "%d मिनट";
+"goals.min_daily_limit" = "%d मिनट दैनिक सीमा";
+
+// MARK: - Shield Screen
+"shield.ready_to_unlock" = "अनलॉक के लिए तैयार";
+"shield.app_blocked" = "ऐप ब्लॉक";
+"shield.almost_there" = "लगभग पहुंच गए";
+"shield.times_up" = "समय समाप्त";
+"shield.goal_complete" = "लक्ष्य पूरा!";
+"shield.daily_goal_reached" = "दैनिक लक्ष्य प्राप्त";
+"shield.unlock" = "%dm अनलॉक करें";
+"shield.stay_focused" = "फोकस रहें";
+"shield.earn_time" = "समय अर्जित करें";
+"shield.earn_more_time" = "और समय अर्जित करें";
+"shield.talk_to_coach" = "कोच से बात करें";
+"shield.close" = "बंद करें";
+"shield.site_limit_reached" = "साइट सीमा पूरी";
+"shield.not_enough_time" = "पर्याप्त समय नहीं";
+"shield.no_time_available" = "कोई समय उपलब्ध नहीं";
+"shield.unlock_minutes" = "%dm अनलॉक करें";
+"shield.unlock_for_minutes" = "%dm के लिए अनलॉक करें";
+"shield.earn_time_now" = "अभी समय कमाएं";
+
+// Shield Descriptions - App
+"shield.goal_complete_desc" = "आपने अपना दैनिक स्क्रीन टाइम लक्ष्य पूरा कर लिया।\n\nब्रेक के लिए तैयार? आपका AI कोच बोनस टाइम कमाने में मदद कर सकता है।";
+"shield.time_up_desc" = "आपने आज %@ के लिए अपना सारा समय उपयोग कर लिया।\n\nबेहतर आदतें बनाने के बारे में अपने AI कोच से बात करें।";
+"shield.ready_unlock_desc" = "%@ ब्लॉक है।\n\nआपके पास %@ कमाया हुआ है।\nअनलॉक करने से %dm बैलेंस से कटेगा।";
+"shield.almost_there_desc" = "%@ ब्लॉक है।\n\nआपके पास %@ है लेकिन %dm चाहिए।\nअनलॉक करने के लिए %@ और कमाएं।";
+"shield.app_blocked_desc" = "%@ ब्लॉक है।\n\nस्क्रीन टाइम कमाने के लिए एक्सरसाइज पूरी करें।\nअनलॉक करने के लिए %dm चाहिए।";
+
+// Shield Descriptions - Web
+"shield.daily_goal_reached_desc" = "आपने आज का स्क्रीन टाइम लक्ष्य पूरा कर लिया।\n\nबोनस टाइम कमाने के लिए अपने AI कोच से बात करें।";
+"shield.site_limit_desc" = "आपने आज ब्राउज़िंग का सारा समय उपयोग कर लिया।\n\nबेहतर आदतें बनाने के बारे में अपने AI कोच से बात करें।";
+"shield.web_ready_unlock_desc" = "%@ ब्लॉक है।\n\nआपके पास %@ कमाया हुआ है।\nअनलॉक करने से %dm समय कटेगा।";
+"shield.web_not_enough_desc" = "%@ ब्लॉक है।\n\nआपके पास %@ है लेकिन %dm चाहिए।\nअनलॉक करने के लिए %@ और कमाएं।";
+"shield.web_no_time_desc" = "%@ ब्लॉक है।\n\nस्क्रीन टाइम कमाने के लिए एक्सरसाइज पूरी करें।\nअनलॉक करने के लिए %dm चाहिए।";
+
+// MARK: - Contact Us
+"contact.title" = "हमसे संपर्क करें";
+"contact.header" = "हम आपसे सुनना चाहेंगे!";
+"contact.description" = "सवाल, फीडबैक, या मदद चाहिए? संपर्क करें और हम जल्द से जल्द जवाब देंगे।";
+"contact.email_label" = "हमें ईमेल करें";
+"contact.send_email" = "ईमेल भेजें";
+"contact.get_in_touch" = "संपर्क करें";
+"contact.love_to_hear" = "हम आपसे सुनना चाहेंगे! अपना फीडबैक साझा करें, बग रिपोर्ट करें, या सवाल पूछें।";
+"contact.your_message" = "आपका संदेश";
+"contact.placeholder" = "बताएं आपके मन में क्या है...";
+"contact.send_message" = "संदेश भेजें";
+"contact.email_directly" = "या सीधे हमें ईमेल करें:";
+
+// MARK: - Rate Us
+"rate.title" = "हमें रेट करें";
+"rate.how_enjoying" = "LockIn कैसा लग रहा है?";
+"rate.tap_to_rate" = "रेट करने के लिए स्टार पर टैप करें";
+"rate.feedback" = "बताएं हम कैसे सुधार कर सकते हैं";
+"rate.feedback_placeholder" = "आपका फीडबैक LockIn को बेहतर बनाने में मदद करता है...";
+"rate.submit" = "फीडबैक सबमिट करें";
+"rate.rating_1" = "हम बेहतर कर सकते हैं";
+"rate.rating_2" = "सुधार की जरूरत है";
+"rate.rating_3" = "ठीक है";
+"rate.rating_4" = "काफी अच्छा!";
+"rate.rating_5" = "बहुत पसंद है!";
+"rate.enjoying" = "LockIn पसंद आया?";
+"rate.love_to_hear" = "हम जानना चाहेंगे आप क्या सोचते हैं! आपका फीडबैक हमें सुधारने में मदद करता है।";
+"rate.can_do_better" = "हम बेहतर कर सकते हैं";
+"rate.needs_improvement" = "सुधार की जरूरत है";
+"rate.its_okay" = "ठीक है";
+"rate.really_good" = "सच में अच्छा!";
+"rate.love_it" = "बहुत पसंद है!";
+"rate.how_improve" = "बताएं हम कैसे सुधार कर सकते हैं";
+"rate.what_better" = "हम क्या बेहतर कर सकते हैं?";
+"rate.rate_app_store" = "App Store पर रेट करें";
+"rate.send_feedback" = "फीडबैक भेजें";
+
+// MARK: - Help Tips
+"help.tip1.title" = "आपकी डिजिटल सेहत";
+"help.tip1.desc" = "LockIn आपके दिमाग को लंबे समय के फोकस के लिए प्रशिक्षित करता है। बेहतर आदतें बनाते हुए अपना हेल्थ स्कोर बढ़ते देखें।";
+"help.tip2.title" = "अपनी प्रगति ट्रैक करें";
+"help.tip2.desc" = "अपनी श्रृंखला, दैनिक उपयोग और अपने औसत से तुलना देखें। छोटी जीत बड़े बदलाव लाती है।";
+"help.tip3.title" = "स्क्रीन टाइम अर्जित करें";
+"help.tip3.desc" = "पुश-अप्स, स्क्वैट्स और प्लैंक जैसे व्यायाम करके बोनस स्क्रीन टाइम अर्जित करें। अपना शरीर हिलाएं, अपना मन मुक्त करें।";
+"help.tip4.title" = "दैनिक लक्ष्य निर्धारित करें";
+"help.tip4.desc" = "स्क्रीन टाइम सीमा चुनें और अपनी प्रगति रिंग भरते देखें। स्थायी आदतें बनाने के लिए अपने लक्ष्य के अंदर रहें।";
+"help.tip5.title" = "विकर्षण ब्लॉक करें";
+"help.tip5.desc" = "सीमा पहुंचने पर ब्लॉक करने के लिए ऐप्स चुनें। अपने ध्यान पर नियंत्रण लें और जो महत्वपूर्ण है उस पर फोकस करें।";
+"help.tip6.title" = "अपने आंकड़े देखें";
+"help.tip6.desc" = "अपने साप्ताहिक पैटर्न और रुझान देखें। अपने उपयोग को समझना इसे बदलने का पहला कदम है।";
+"help.set_daily_goal" = "अपना दैनिक लक्ष्य निर्धारित करें";
+"help.set_daily_goal_desc" = "प्रोफ़ाइल में स्क्रीन टाइम सीमा चुनें। स्वस्थ आदतें बनाने के लिए इसके अंदर रहें।";
+"help.earn_screen_time" = "स्क्रीन टाइम अर्जित करें";
+"help.earn_screen_time_desc" = "LockIn टैब पर जाएं और व्यायाम पूरा करें - पुश-अप्स, स्क्वैट्स, प्लैंक, या फोटो कार्य करें!";
+"help.focus_mode" = "फोकस मोड";
+"help.focus_mode_desc" = "सभी ऐप्स ब्लॉक करने के लिए पोमोडोरो सत्र शुरू करें और हर मिनट फोकस के लिए 0.5 मिनट अर्जित करें।";
+"help.block_apps" = "विकर्षण वाले ऐप्स ब्लॉक करें";
+"help.block_apps_desc" = "लक्ष्य टैब पर जाएं और ब्लॉक करने के लिए ऐप्स चुनें। प्रति-ऐप समय सीमाएं भी निर्धारित करें।";
+"help.talk_to_coach" = "अपने कोच से बात करें";
+"help.talk_to_coach_desc" = "दैनिक सीमा पहुंच गई? प्रतिबिंबित करने और बोनस समय अर्जित करने के लिए AI कोच से चैट करें।";
+"help.track_progress" = "अपनी प्रगति ट्रैक करें";
+"help.track_progress_desc" = "स्टैट्स टैब देखें और देखें कैसे बेहतर आदतें बनाने से आपका हेल्थ स्कोर सुधरता है।";
+
+// MARK: - Quick Actions
+"quick_actions.title" = "त्वरित क्रियाएं";
+"quick_actions.focus_mode" = "फोकस मोड";
+"quick_actions.pomodoro_timer" = "पोमोडोरो टाइमर";
+"quick_actions.hold_for_time" = "समय के लिए होल्ड करें";
+"quick_actions.earn_per_rep" = "%@ मिनट/रेप अर्जित करें";
+"quick_actions.verify_with_photo" = "फोटो से सत्यापित करें";
+
+// MARK: - Time Formatting
+"time.minutes" = "%d मिनट";
+"time.hours" = "%d घंटे";
+"time.hours_minutes" = "%dघं %dमि";
+"time.today" = "आज";
+
+// MARK: - Errors
+"error.camera_permission" = "फोटो कार्यों के लिए कैमरा अनुमति आवश्यक है।";
+"error.no_apps_selected" = "कृपया ब्लॉक करने के लिए कम से कम एक ऐप चुनें।";
+"error.insufficient_time" = "आपके पास पर्याप्त अर्जित समय नहीं है।";
+
+// MARK: - Settings
+"settings.title" = "सेटिंग्स";
+"settings.accent_color" = "एक्सेंट रंग";
+"settings.appearance" = "दिखावट";
+"settings.language" = "भाषा";
+"settings.current_language" = "वर्तमान भाषा";
+"settings.select_language" = "भाषा चुनें";
+"settings.change_password" = "पासवर्ड बदलें";
+"settings.enter_new_password" = "नया पासवर्ड दर्ज करें";
+"settings.save_changes" = "परिवर्तन सहेजें";
+"settings.danger_zone" = "खतरे का क्षेत्र";
+"settings.delete_account" = "खाता हटाएं";
+"settings.delete_account_confirm" = "पुष्टि के लिए 'Delete' टाइप करें";
+"settings.delete_account_warning" = "यह क्रिया अपरिवर्तनीय है। पुष्टि के लिए 'Delete' टाइप करें।";
+"settings.type_delete" = "Delete";
+
+// Theme Modes
+"settings.theme.light" = "लाइट";
+"settings.theme.dark" = "डार्क";
+"settings.theme.system" = "सिस्टम";
+
+// Accent Colors
+"settings.color.blue" = "नीला";
+"settings.color.purple" = "बैंगनी";
+"settings.color.green" = "हरा";
+"settings.color.orange" = "नारंगी";
+"settings.color.pink" = "गुलाबी";
+"settings.color.red" = "लाल";
+"settings.color.teal" = "टील";
+"settings.color.indigo" = "इंडिगो";
+
+// MARK: - Onboarding
+"onboarding.hello" = "नमस्ते!";
+"onboarding.welcome_to" = "स्वागत है";
+"onboarding.ready_to_help" = "हम आपकी मदद के लिए तैयार हैं";
+"onboarding.taking_control" = "अपने समय पर नियंत्रण लेने में";
+"onboarding.lets_start" = "शुरू करें";
+"onboarding.how_old" = "आपकी उम्र क्या है?";
+"onboarding.personalize_exp" = "यह आपके अनुभव को व्यक्तिगत बनाने में मदद करता है";
+"onboarding.daily_screen_time" = "दैनिक स्क्रीन टाइम?";
+"onboarding.be_honest" = "ईमानदार रहें - हम आंकलन नहीं करेंगे";
+"onboarding.bad_news_good_news" = "हमारे पास बुरी खबर है\nऔर अच्छी भी";
+"onboarding.show_something" = "आइए आपको आपके स्क्रीन टाइम के बारे में कुछ महत्वपूर्ण दिखाते हैं...";
+"onboarding.show_me" = "दिखाएं";
+"onboarding.the_bad_news" = "बुरी खबर";
+"onboarding.the_good_news" = "अच्छी खबर";
+"onboarding.at_hours_per_day" = "प्रति दिन %d घंटे पर, आप खर्च करेंगे";
+"onboarding.looking_at_phone" = "इस साल अपना फोन देखने में";
+"onboarding.thats_approx" = "यह लगभग है";
+"onboarding.of_your_life" = "आपके जीवन का";
+"onboarding.you_read_right" = "हां, आपने सही पढ़ा। आप अपना अधिकांश खाली समय अपना फोन देखने में बिताते हैं जबकि आप अपने लक्ष्य प्राप्त कर सकते हैं और वह जीवन जी सकते हैं जो आप चाहते हैं।";
+"onboarding.whats_good_news" = "अच्छी खबर क्या है?";
+"onboarding.can_help_get_back" = "LockIn आपको वापस पाने में मदद कर सकता है";
+"onboarding.turn_into_things" = "और उन्हें उन चीजों में बदलें जो आप हमेशा हासिल करना चाहते थे।\n\nआपके लक्ष्यों, आपके जुनून और आपके प्रियजनों के लिए अधिक समय।";
+"onboarding.lets_get_started" = "शुरू करें";
+"onboarding.first_step" = "पहला कदम उठाएं";
+"onboarding.connect_screen_time" = "LockIn आपके स्क्रीन टाइम से कनेक्ट होगा आपको ";
+"onboarding.personalized_report" = "व्यक्तिगत फोकस रिपोर्ट";
+"onboarding.see_real_usage" = "अपना वास्तविक उपयोग डेटा देखें";
+"onboarding.get_recommendations" = "व्यक्तिगत सिफारिशें प्राप्त करें";
+"onboarding.track_progress" = "समय के साथ अपनी प्रगति ट्रैक करें";
+"onboarding.enable_screen_time" = "स्क्रीन टाइम\nऔर ऐप ब्लॉकिंग सक्षम करें";
+"onboarding.secure_on_phone" = "100% जानकारी सुरक्षित है और आपके फोन पर रहती है";
+"onboarding.permission_granted" = "अनुमति दी गई!";
+"onboarding.what_happens_next" = "आगे क्या होता है:";
+"onboarding.tap_continue" = "स्क्रीन टाइम एक्सेस अधिकृत करने के लिए \"जारी रखें\" पर टैप करें";
+"onboarding.select_apps" = "वे ऐप्स और श्रेणियां चुनें जिन्हें आप ब्लॉक करना चाहते हैं";
+"onboarding.tap_done" = "अपने चयन की पुष्टि के लिए \"हो गया\" पर टैप करें";
+"onboarding.enable_app_blocking" = "ऐप ब्लॉकिंग सक्षम करें";
+"onboarding.ready_to_block" = "ऐप्स ब्लॉक करने के लिए तैयार!";
+"onboarding.shield_when_open" = "जब आप ब्लॉक किए गए ऐप्स खोलने की कोशिश करेंगे तो एक शील्ड दिखाई देगी।";
+"onboarding.stay_active_earn" = "सक्रिय रहें, समय अर्जित करें";
+"onboarding.complete_exercises_earn" = "अपने ब्लॉक किए गए ऐप्स के लिए स्क्रीन टाइम अर्जित करने के लिए व्यायाम और कार्य पूरा करें।";
+"onboarding.heres_reality" = "यह है आपकी वास्तविकता";
+"onboarding.based_on_usage" = "आपके वास्तविक फोन उपयोग के आधार पर";
+"onboarding.todays_screen_time" = "आज का स्क्रीन टाइम";
+"onboarding.this_week" = "इस सप्ताह";
+"onboarding.life_on_phone" = "फोन पर जीवन";
+"onboarding.at_this_rate" = "इस दर पर, आप खर्च करेंगे ";
+"onboarding.lets_fix_this" = "इसे ठीक करें";
+"onboarding.your_potential" = "आपकी क्षमता";
+"onboarding.see_how_much" = "देखें आप कितना समय बचा सकते हैं";
+"onboarding.reduce_by" = "स्क्रीन टाइम %d%% कम करें";
+"onboarding.weekly_projection" = "साप्ताहिक अनुमान";
+"onboarding.free_time_week" = "खाली समय/सप्ताह";
+"onboarding.life_reclaimed" = "जीवन पुनः प्राप्त";
+"onboarding.accomplish_goals" = "अपने लक्ष्य तेजी से प्राप्त करें, अधिक उत्पादक और संतुष्ट रहें";
+"onboarding.current" = "वर्तमान";
+"onboarding.with_lockin" = "LockIn के साथ";
+"onboarding.unlock_potential" = "अपनी क्षमता अनलॉक करें";
+"onboarding.hours_back" = "हर सप्ताह %d+ घंटे वापस";
+"onboarding.smart_coach" = "स्मार्ट कोच";
+"onboarding.task_verification" = "कार्य सत्यापन";
+"onboarding.focus_sessions" = "फोकस सत्र";
+"onboarding.daily_goals" = "दैनिक लक्ष्य";
+"onboarding.complete_tasks" = "कार्य पूरा करें";
+"onboarding.app_rating" = "ऐप रेटिंग";
+"onboarding.more_productive" = "अधिक उत्पादक";
+"onboarding.start_free_trial" = "मुफ्त ट्रायल शुरू करें";
+"onboarding.days_free" = "3 दिन मुफ्त";
+"onboarding.maybe_later" = "शायद बाद में";
+"onboarding.allow_notifications" = "सूचनाएं अनुमति दें";
+"onboarding.remind_overscrolling" = "ताकि हम आपको ज्यादा स्क्रॉलिंग के बारे में याद दिला सकें और आपके लक्ष्यों के साथ ट्रैक पर रहने में मदद कर सकें";
+"onboarding.notifications_enabled" = "सूचनाएं सक्षम!";
+"onboarding.scrolling_for" = "आप 30 मिनट से स्क्रॉल कर रहे हैं। ब्रेक का समय?";
+"onboarding.time_for_break" = "ब्रेक का समय?";
+"onboarding.what_to_block" = "क्या ब्लॉक करें?";
+"onboarding.change_this_later" = "चिंता न करें, आप इसे बाद में बदल सकते हैं";
+"onboarding.apps" = "ऐप्स";
+"onboarding.categories" = "श्रेणियां";
+"onboarding.start_blocking" = "ब्लॉकिंग शुरू करें";
+"onboarding.items_selected" = "%d आइटम चयनित";
+"onboarding.set_daily_goal" = "अपना दैनिक लक्ष्य निर्धारित करें";
+"onboarding.how_much_allow" = "आप खुद को कितना स्क्रीन टाइम\nदेना चाहते हैं?";
+"onboarding.per_day" = "प्रति दिन";
+"onboarding.change_in_settings" = "आप इसे बाद में सेटिंग्स में बदल सकते हैं";
+"onboarding.set_my_goal" = "मेरा लक्ष्य निर्धारित करें";
+"onboarding.days" = "दिन";
+"onboarding.years" = "साल";
+"onboarding.projection_title" = "LockIn आपके दिमाग को\nदीर्घकालिक फोकस के लिए प्रशिक्षित करता है।";
+"onboarding.projection_subtitle" = "LockIn उपयोगकर्ता हर सप्ताह %d+ घंटे फोकस वापस पाते हैं।";
+"onboarding.without_lockin" = "LockIn के बिना";
+"onboarding.day_one" = "दिन 1";
+"onboarding.day_fourteen" = "दिन 14";
+"onboarding.commitment_title" = "प्रतिबद्धता बनाएं";
+"onboarding.committed" = "आप प्रतिबद्ध हैं!";
+"onboarding.press_and_hold" = "अपने स्क्रीन टाइम को नियंत्रित करने के लिए 3 सेकंड के लिए ऑर्ब को दबाकर रखें";
+"onboarding.taken_first_step" = "आपने अपने फोन के साथ एक स्वस्थ संबंध की ओर पहला कदम उठाया है";
+"onboarding.keep_holding" = "पकड़े रखें...";
+"onboarding.hold_the_orb" = "प्रतिबद्ध होने के लिए ऑर्ब को पकड़ें";
+"onboarding.lets_set_up" = "चलिए आपका फोकस ऐप सेट करते हैं!";
+
+// MARK: - Auth
+"auth.welcome_to" = "LockIn में आपका स्वागत है";
+"auth.take_control" = "अपने स्क्रीन टाइम पर नियंत्रण लें";
+"auth.continue_google" = "Google से जारी रखें";
+"auth.continue_apple" = "Apple से जारी रखें";
+"auth.continue_email" = "ईमेल से जारी रखें";
+"auth.get_started" = "शुरू करें";
+"auth.already_have_account" = "मेरा पहले से खाता है";
+"auth.privacy_policy" = "गोपनीयता नीति";
+"auth.terms_of_service" = "सेवा की शर्तें";
+"auth.create_account" = "खाता बनाएं";
+"auth.welcome_back" = "वापसी पर स्वागत है";
+"auth.start_taking_control" = "अपने स्क्रीन टाइम पर नियंत्रण लेना शुरू करें";
+"auth.goals_waiting" = "आपके फोकस लक्ष्य आपका इंतजार कर रहे हैं";
+"auth.email" = "ईमेल";
+"auth.password" = "पासवर्ड";
+"auth.enter_password" = "अपना पासवर्ड दर्ज करें";
+"auth.agree_to_terms" = "मैं LockIn की शर्तों से सहमत हूं ";
+"auth.terms_conditions" = "नियम और शर्तें";
+"auth.sign_in" = "साइन इन करें";
+"auth.sign_up" = "साइन अप करें";
+"auth.or_continue_with" = "या इससे जारी रखें";
+"auth.no_account" = "खाता नहीं है?";
+"auth.have_account" = "पहले से खाता है?";
+
+// MARK: - Device Activity Report
+"report.no_data" = "कोई स्क्रीन टाइम डेटा नहीं";
+"report.no_data_desc" = "अपने डिवाइस का उपयोग करें और आंकड़े देखने के लिए वापस आएं";
+"report.vs_last_week" = "पिछले सप्ताह की तुलना में";
+"report.less_screen_time" = "कम स्क्रीन टाइम";
+"report.more_screen_time" = "अधिक स्क्रीन टाइम";
+"report.vs" = "बनाम";
+"report.difference" = "अंतर";
+"report.total_hours" = "कुल घंटे";
+"report.daily_avg" = "दैनिक औसत";
+"report.peak_day" = "शिखर दिन";
+"report.today" = "आज";
+"report.stats_per_day" = "दैनिक आंकड़े";
+"report.total_time_per_app" = "प्रति ऐप कुल समय";
+"report.no_app_data" = "कोई ऐप उपयोग डेटा नहीं";
+"report.less" = "कम";
+"report.more" = "अधिक";
+"report.streak" = "स्ट्रीक";
+"report.vs_avg" = "औसत की तुलना में";
+"report.top_apps" = "शीर्ष ऐप्स";
+"report.no_app_usage" = "आज कोई ऐप उपयोग नहीं";
+"report.start_using" = "आंकड़े देखने के लिए ऐप्स का उपयोग करें";
+"report.screen_time" = "स्क्रीन टाइम";
+"report.notifications" = "सूचनाएं";
+"report.todays_progress" = "आज की प्रगति";
+"report.used" = "उपयोग किया";
+"report.left" = "बाकी";
+"report.goal_reached" = "लक्ष्य पूरा";
+"report.this_week" = "इस सप्ताह";
+"report.remaining" = "शेष";
+"report.of_goal" = "लक्ष्य का";
+"report.goal" = "लक्ष्य";
+"report.day_sun" = "रवि";
+"report.day_mon" = "सोम";
+"report.day_tue" = "मंगल";
+"report.day_wed" = "बुध";
+"report.day_thu" = "गुरु";
+"report.day_fri" = "शुक्र";
+"report.day_sat" = "शनि";
+"report.day_s" = "र";
+"report.day_m" = "सो";
+"report.day_t" = "मं";
+"report.day_w" = "बु";
+"report.day_f" = "शु";
+"report.avg" = "औसत";
+
+
+// MARK: - Language Restart
+"settings.restart_required" = "पुनरारंभ आवश्यक";
+"settings.restart_message" = "भाषा परिवर्तन लागू करने के लिए कृपया ऐप बंद करें और फिर से खोलें।";
+
+// MARK: - Shield Action Notifications
+"action.talk_to_coach" = "कोच से बात करें";
+"action.earn_screen_time" = "स्क्रीन टाइम कमाएं";
+"action.times_up" = "समय समाप्त";
+"action.chat_coach_bonus" = "बोनस समय पाने के लिए अपने AI कोच से चैट करें।";
+"action.get_personalized_advice" = "अपने AI कोच से व्यक्तिगत सलाह प्राप्त करें।";
+"action.complete_exercises" = "अपने ऐप्स अनलॉक करने के लिए व्यायाम पूरे करें।";
+"action.unlock_expired" = "आपकी %d-मिनट की अनलॉक विंडो समाप्त हो गई है। ब्लॉकिंग फिर से सक्षम करने के लिए टैप करें।";
+
+// MARK: - Quick Menu
+"quick.focus_mode" = "फोकस मोड";
+"quick.pomodoro_timer" = "पोमोडोरो टाइमर";
+"quick.plank" = "प्लैंक";
+"quick.hold_for_time" = "समय बनाए रखें";
+"quick.squats" = "स्क्वाट्स";
+"quick.earn_per_rep" = "0.3 मिनट/रेप कमाएं";
+"quick.pushups" = "पुशअप्स";
+"quick.pushups_earn" = "0.5 मिनट/रेप कमाएं";
+"quick.photo_task" = "फोटो टास्क";
+"quick.verify_with_photo" = "फोटो से सत्यापित करें";
+
+// MARK: - Help Tips
+"help.tip1.title" = "आपकी डिजिटल सेहत";
+"help.tip1.desc" = "LockIn आपके दिमाग को लंबे समय के फोकस के लिए प्रशिक्षित करता है। बेहतर आदतें बनाते हुए अपना हेल्थ स्कोर बढ़ते देखें।";
+"help.tip2.title" = "अपनी प्रगति ट्रैक करें";
+"help.tip2.desc" = "अपनी श्रृंखला, दैनिक उपयोग और अपने औसत से तुलना देखें। छोटी जीत बड़े बदलाव लाती है।";
+"help.tip3.title" = "स्क्रीन टाइम अर्जित करें";
+"help.tip3.desc" = "पुश-अप्स, स्क्वैट्स और प्लैंक जैसे व्यायाम करके बोनस स्क्रीन टाइम अर्जित करें। अपना शरीर हिलाएं, अपना मन मुक्त करें।";
+"help.tip4.title" = "दैनिक लक्ष्य निर्धारित करें";
+"help.tip4.desc" = "स्क्रीन टाइम सीमा चुनें और अपनी प्रगति रिंग भरते देखें। स्थायी आदतें बनाने के लिए अपने लक्ष्य के अंदर रहें।";
+"help.tip5.title" = "विकर्षण ब्लॉक करें";
+"help.tip5.desc" = "सीमा पहुंचने पर ब्लॉक करने के लिए ऐप्स चुनें। अपने ध्यान पर नियंत्रण लें और जो महत्वपूर्ण है उस पर फोकस करें।";
+"help.tip6.title" = "अपने आंकड़े देखें";
+"help.tip6.desc" = "अपने साप्ताहिक पैटर्न और रुझान देखें। अपने उपयोग को समझना इसे बदलने का पहला कदम है।";
+"help.back" = "वापस";
+"help.next" = "अगला";
+"help.got_it" = "समझ गया!";
+
+// MARK: - Photo Task Presets (Updated)
+"preset.clean_room" = "कमरा साफ करें";
+"preset.homework" = "होमवर्क पूरा करें";
+"preset.workout" = "वर्कआउट रूटीन";
+"preset.cook" = "खाना बनाएं";
+"preset.read" = "10 पेज पढ़ें";
+"preset.write" = "दिन की योजना लिखें";
+
+// MARK: - Streak
+"streak.title" = "वर्तमान स्ट्रीक";
+"streak.days" = "दिन";
+"streak.best" = "सर्वश्रेष्ठ स्ट्रीक";
+"streak.keep_going" = "जारी रखें!";
+"streak.lost" = "स्ट्रीक खो गई";
+
+// MARK: - History
+"history.title" = "गतिविधि इतिहास";
+"history.today" = "आज";
+"history.yesterday" = "कल";
+"history.this_week" = "इस सप्ताह";
+"history.earlier" = "पहले";
+"history.no_activity" = "अभी तक कोई गतिविधि नहीं";
+
+// MARK: - Exercise Info
+"exercise.info" = "जानकारी";
+"exercise.watch_demo" = "डेमो देखें";
+"exercise.coming_soon" = "जल्द आ रहा है";
+"exercise.how_to_do_it" = "कैसे करें";
+"exercise.rewards" = "पुरस्कार";
+"exercise.got_it" = "समझ गया!";
+"exercise.reward_info" = "प्रत्येक पूर्ण सेट के लिए स्क्रीन टाइम अर्जित करें";
+"exercise.reward_description" = "स्क्रीन टाइम अर्जित करने के लिए व्यायाम पूरे करें। अधिक रेप्स = अधिक समय!";
+
+// MARK: - Exercise Descriptions
+"exercise.desc.pushups" = "क्लासिक पुशअप्स के साथ ऊपरी शरीर की ताकत बनाएं";
+"exercise.desc.squats" = "उचित स्क्वाट फॉर्म के साथ अपने पैरों और कोर को मजबूत करें";
+"exercise.desc.plank" = "स्थिति बनाए रखकर कोर स्थिरता में सुधार करें";
+"exercise.desc.jumpingJacks" = "हृदय गति बढ़ाने के लिए कार्डियो वार्म-अप";
+"exercise.desc.lunges" = "नियंत्रित गति के साथ क्वाड्रिसेप्स और ग्लूट्स को लक्षित करें";
+"exercise.desc.crunches" = "अपनी पेट की मांसपेशियों को प्रभावी ढंग से मजबूत करें";
+"exercise.desc.shoulderPress" = "वजन उठाकर कंधे की ताकत बनाएं";
+"exercise.desc.legRaises" = "निचले एब्स और हिप फ्लेक्सर्स को लक्षित करें";
+"exercise.desc.highKnees" = "हृदय गति और सहनशक्ति में सुधार के लिए कार्डियो व्यायाम";
+"exercise.desc.pullUps" = "पीठ और बाहों के लिए चुनौतीपूर्ण ऊपरी शरीर का व्यायाम";
+"exercise.desc.wallSit" = "पैर की मांसपेशियों को मजबूत करने के लिए आइसोमेट्रिक व्यायाम";
+"exercise.desc.sidePlank" = "ओब्लिक्स को मजबूत करें और संतुलन में सुधार करें";
+"exercise.desc.photoVerification" = "फोटो प्रमाण के साथ अपना कार्य सत्यापित करें";
+"exercise.desc.custom" = "फोटो सत्यापन के साथ कस्टम टास्क बनाएं";
+
+// MARK: - Exercise Instructions
+"exercise.inst.pushups.1" = "कंधे की चौड़ाई पर हाथों के साथ प्लैंक स्थिति में शुरू करें।";
+"exercise.inst.pushups.2" = "अपने शरीर को तब तक नीचे करें जब तक छाती जमीन को लगभग न छू ले।";
+"exercise.inst.pushups.3" = "अपने शरीर को सीधा और कोर को टाइट रखें।";
+"exercise.inst.pushups.4" = "शुरुआती स्थिति में वापस धकेलें और दोहराएं।";
+
+"exercise.inst.squats.1" = "पैरों को कंधे की चौड़ाई पर रखकर खड़े हों।";
+"exercise.inst.squats.2" = "अपने शरीर को ऐसे नीचे करें जैसे कुर्सी पर बैठ रहे हों।";
+"exercise.inst.squats.3" = "घुटनों को पंजों के पीछे और छाती को ऊपर रखें।";
+"exercise.inst.squats.4" = "एड़ियों के माध्यम से धक्का देकर वापस ऊपर आएं।";
+
+"exercise.inst.plank.1" = "फर्श पर अग्रभुजाओं के साथ पुश-अप स्थिति में शुरू करें।";
+"exercise.inst.plank.2" = "सिर से एड़ी तक शरीर को सीधी रेखा में रखें।";
+"exercise.inst.plank.3" = "कोर को संलग्न करें और फर्श की ओर देखें।";
+"exercise.inst.plank.4" = "समान रूप से सांस लेते हुए स्थिति बनाए रखें।";
+
+"exercise.inst.jumpingJacks.1" = "भुजाओं को बगल में रखकर सीधे खड़े हों।";
+"exercise.inst.jumpingJacks.2" = "कूदें, पैर फैलाएं और बाहों को सिर के ऊपर लाएं।";
+"exercise.inst.jumpingJacks.3" = "पैर चौड़े और हाथ ऊपर छूते हुए उतरें।";
+"exercise.inst.jumpingJacks.4" = "शुरुआती स्थिति में वापस कूदें और दोहराएं।";
+
+"exercise.inst.lunges.1" = "पैरों को कूल्हे की चौड़ाई पर रखकर सीधे खड़े हों।";
+"exercise.inst.lunges.2" = "एक पैर से आगे कदम रखें, कूल्हों को नीचे करें।";
+"exercise.inst.lunges.3" = "दोनों घुटने 90 डिग्री पर होने चाहिए, पिछला घुटना जमीन से ठीक ऊपर।";
+"exercise.inst.lunges.4" = "आगे के पैर से धक्का देकर लौटें और पक्ष बदलें।";
+
+"exercise.inst.crunches.1" = "घुटने मोड़कर और पैर सपाट रखकर पीठ के बल लेटें।";
+"exercise.inst.crunches.2" = "हाथों को सिर के पीछे रखें, कोहनियां बाहर।";
+"exercise.inst.crunches.3" = "एब्स को संकुचित करके कंधों को जमीन से ऊपर उठाएं।";
+"exercise.inst.crunches.4" = "नियंत्रण के साथ नीचे आएं और दोहराएं।";
+
+"exercise.inst.shoulderPress.1" = "कंधे की ऊंचाई पर प्रत्येक हाथ में वजन लेकर खड़े या बैठें।";
+"exercise.inst.shoulderPress.2" = "वजन को ऊपर दबाएं जब तक बाहें पूरी तरह फैली न हों।";
+"exercise.inst.shoulderPress.3" = "कोर को टाइट और पीठ को सीधा रखें।";
+"exercise.inst.shoulderPress.4" = "धीरे-धीरे कंधे की ऊंचाई तक नीचे लाएं और दोहराएं।";
+
+"exercise.inst.legRaises.1" = "पैर फैलाकर पीठ के बल सपाट लेटें।";
+"exercise.inst.legRaises.2" = "पैरों को सीधा रखते हुए उन्हें छत की ओर उठाएं।";
+"exercise.inst.legRaises.3" = "जमीन को छुए बिना धीरे-धीरे नीचे लाएं।";
+"exercise.inst.legRaises.4" = "पीठ के निचले हिस्से को जमीन से दबाकर रखें।";
+
+"exercise.inst.highKnees.1" = "पैरों को कूल्हे की चौड़ाई पर रखकर सीधे खड़े हों।";
+"exercise.inst.highKnees.2" = "एक जगह दौड़ें, घुटनों को कमर की ऊंचाई तक लाएं।";
+"exercise.inst.highKnees.3" = "संतुलन और गति के लिए बाहों को पंप करें।";
+"exercise.inst.highKnees.4" = "हर बार पंजों पर हल्के से उतरें।";
+
+"exercise.inst.pullUps.1" = "हाथों को कंधे की चौड़ाई पर, हथेलियां सामने की ओर रखकर बार से लटकें।";
+"exercise.inst.pullUps.2" = "अपने आप को ऊपर खींचें जब तक ठुड्डी बार के ऊपर न हो।";
+"exercise.inst.pullUps.3" = "शीर्ष पर कंधे के ब्लेड को एक साथ निचोड़ें।";
+"exercise.inst.pullUps.4" = "नियंत्रण के साथ नीचे आएं और दोहराएं।";
+
+"exercise.inst.wallSit.1" = "पीठ को दीवार से लगाकर खड़े हों।";
+"exercise.inst.wallSit.2" = "नीचे खिसकें जब तक जांघें जमीन के समानांतर न हों।";
+"exercise.inst.wallSit.3" = "घुटनों को 90 डिग्री पर रखें, सीधे टखनों के ऊपर।";
+"exercise.inst.wallSit.4" = "पीठ को दीवार से सपाट रखें।";
+
+"exercise.inst.sidePlank.1" = "पैर फैलाकर और एक के ऊपर एक रखकर करवट से लेटें।";
+"exercise.inst.sidePlank.2" = "अग्रभुजा और पैर के किनारे पर टिककर कूल्हों को ऊपर उठाएं।";
+"exercise.inst.sidePlank.3" = "सिर से पैरों तक शरीर को सीधी रेखा में रखें।";
+"exercise.inst.sidePlank.4" = "स्थिति बनाए रखें, फिर पक्ष बदलें।";
+
+"exercise.inst.photo.1" = "अपने शुरुआती बिंदु को दर्शाने के लिए 'पहले' की फोटो लें।";
+"exercise.inst.photo.2" = "अपना कार्य या गतिविधि पूरी करें।";
+"exercise.inst.photo.3" = "पूर्ण किए गए कार्य को दिखाते हुए 'बाद' की फोटो लें।";
+"exercise.inst.photo.4" = "सत्यापन के लिए जमा करें और अपना पुरस्कार प्राप्त करें।";
+
+// MARK: - Paywall
+"paywall.pro" = "PRO";
+"paywall.title" = "अपने स्क्रीन टाइम पर\nनियंत्रण रखें";
+"paywall.subtitle" = "हजारों लोगों से जुड़ें जिन्होंने अपना फोकस वापस पाया और स्क्रीन टाइम 50%+ कम किया";
+"paywall.users_love" = "10,000+ उपयोगकर्ता LockIn को पसंद करते हैं";
+"paywall.feature_blocking" = "असीमित ऐप और वेबसाइट ब्लॉकिंग";
+"paywall.feature_focus" = "कार्य सत्यापन के साथ फोकस सत्र";
+"paywall.feature_analytics" = "विस्तृत उपयोग विश्लेषण और अंतर्दृष्टि";
+"paywall.trial_toggle" = "निश्चित नहीं? 3 दिन मुफ्त आज़माएं";
+"paywall.trial_subtitle" = "ट्रायल के दौरान कभी भी रद्द करें, कोई शुल्क नहीं";
+"paywall.choose_plan" = "अपना प्लान चुनें";
+"paywall.loading_plans" = "प्लान लोड हो रहे हैं...";
+"paywall.annual" = "वार्षिक";
+"paywall.monthly" = "मासिक";
+"paywall.save" = "%@%% बचाएं";
+"paywall.billed_annually" = "%@/माह वार्षिक बिल";
+"paywall.legal_trial" = "आपके 3-दिवसीय मुफ्त ट्रायल के बाद, भुगतान आपके Apple ID खाते से लिया जाएगा। सदस्यताएं स्वचालित रूप से नवीनीकृत होती हैं जब तक कि अवधि समाप्त होने से 24 घंटे पहले रद्द न की जाएं।";
+"paywall.legal_no_trial" = "भुगतान आपके Apple ID खाते से लिया जाएगा। सदस्यताएं स्वचालित रूप से नवीनीकृत होती हैं जब तक कि अवधि समाप्त होने से 24 घंटे पहले रद्द न की जाएं।";
+"paywall.terms_of_service" = "सेवा की शर्तें";
+"paywall.privacy_policy" = "गोपनीयता नीति";
+"paywall.restore_purchases" = "खरीदारी पुनर्स्थापित करें";
+"paywall.no_purchases_found" = "कोई पिछली खरीदारी नहीं मिली";
+"paywall.start_trial" = "3-दिन का मुफ्त ट्रायल शुरू करें";
+"paywall.subscribe_now" = "अभी सदस्यता लें";
+"paywall.cancel_in_app_store" = "App Store में रद्द करें";
+"paywall.per_year" = "/वर्ष";
+"paywall.per_month" = "/माह";
+"paywall.welcome_title" = "LockIn में आपका स्वागत है!";
+"paywall.welcome_message" = "आपकी फोकस यात्रा अब शुरू होती है";
+"paywall.continue" = "जारी रखें";
+"paywall.error" = "त्रुटि";
+"paywall.ok" = "ठीक है";
+"paywall.review1_text" = "आखिरकार मैंने फोन की लत तोड़ दी!";
+"paywall.review1_author" = "सारा एम.";
+"paywall.review2_text" = "मेरा स्क्रीन टाइम 3 घंटे/दिन कम हुआ";
+"paywall.review2_author" = "जेम्स के.";
+"paywall.review3_text" = "सबसे अच्छा फोकस ऐप जो मैंने कभी इस्तेमाल किया";
+"paywall.review3_author" = "एमिली आर.";
+
+// MARK: - Home
+"home.todays_goal" = "आज का लक्ष्य";
+"home.used" = "उपयोग किया";
+"home.left" = "बाकी";
+
+// MARK: - Notifications
+"notification.earn_time_action" = "समय कमाएं";
+"notification.view_stats_action" = "आंकड़े देखें";
+"notification.daily_reminder_title" = "LockIn का समय!";
+"notification.daily_reminder_body" = "अपने दैनिक लक्ष्य की जांच करें और कुछ स्क्रीन टाइम कमाएं।";
+"notification.streak_risk_title" = "आपकी स्ट्रीक खतरे में है! 🔥";
+"notification.streak_risk_body" = "आप %lld दिनों से स्ट्रीक पर हैं। इसे आज मत खोइए!";
+"notification.need_more_time_title" = "और समय चाहिए?";
+"notification.need_more_time_body" = "अधिक स्क्रीन मिनट कमाने के लिए एक त्वरित व्यायाम पूरा करें।";
+"notification.focus_complete_title" = "फोकस सत्र पूरा! 🎉";
+"notification.focus_complete_body" = "बढ़िया काम! आपने %lld मिनट का स्क्रीन टाइम कमाया।";
+
+// MARK: - Coach
+"coach.title" = "AI कोच";
+"coach.your_ai_coach" = "आपका AI कोच";
+"coach.description" = "व्यक्तिगत मार्गदर्शन और प्रोत्साहन पाएं।";
+"coach.greeting_can_earn" = "नमस्ते! मैंने देखा कि आपने आज का लक्ष्य पूरा कर लिया। शानदार काम! 🎉 क्या आप कुछ अतिरिक्त स्क्रीन टाइम कमाना चाहेंगे, या मैं आज किसी और चीज़ में मदद कर सकता हूं?";
+"coach.greeting_cant_earn" = "नमस्ते! 👋 मैं आपकी फोकस यात्रा में मदद के लिए यहां हूं। आज मैं आपकी कैसे मदद कर सकता हूं?";
+"coach.prompt1" = "💭 मुझे तनाव हो रहा है";
+"coach.prompt2" = "🎯 फोकस में मदद करें";
+"coach.prompt3" = "😴 मुझे बोरियत हो रही है";
+"coach.ready_to_earn" = "कुछ स्क्रीन टाइम कमाने के लिए तैयार?";
+"coach.earn_minutes" = "%lld मिनट कमाएं";
+"coach.minutes_earned" = "आपने %lld मिनट कमाए! 🎉";
+"coach.thanks_reflecting" = "साझा करने के लिए धन्यवाद। अपनी भावनाओं पर विचार करना एक शक्तिशाली कदम है।";
+"coach.bonus_acknowledgment" = "आपके खुलेपन के लिए मैंने आपके लिए %lld बोनस मिनट जोड़े हैं। 💪";
+"coach.type_message" = "संदेश टाइप करें...";
+"coach.response_limit" = "एक दिन के लिए बहुत हो गया! चलो कल और बात करते हैं। इस बीच, कुछ व्यायाम करें या ब्रेक लें।";
+"coach.response_stress" = "मैं समझता हूं। तनाव कठिन हो सकता है। गहरी सांस लेना याद रखें। अपना दिमाग साफ करने के लिए कुछ व्यायाम करें?";
+"coach.response_focus" = "हमारी विचलित दुनिया में फोकस करना मुश्किल हो सकता है। 25 मिनट के लिए अपना फोन अलग रखें और एक काम पर ध्यान दें। आप कर सकते हैं!";
+"coach.response_bored" = "बोरियत रचनात्मकता का अवसर हो सकती है! अंतहीन स्क्रॉलिंग के बजाय, कुछ नया करें या कोई शौक आज़माएं?";
+"coach.response_default" = "साझा करने के लिए धन्यवाद। मैं आपकी फोकस यात्रा में सहायता के लिए यहां हूं। क्या कोई विशेष चीज़ है जिसमें मैं मदद कर सकता हूं?";
+
+// MARK: - Detox
+"detox.title" = "डिटॉक्स";
+"detox.stay_focused" = "फोकस्ड रहें!";
+"detox.digital_detox" = "डिजिटल डिटॉक्स";
+"detox.all_apps_blocked" = "सभी ऐप्स ब्लॉक हैं";
+"detox.take_break" = "स्क्रीन से ब्रेक लें";
+"detox.remaining" = "शेष";
+"detox.duration" = "अवधि";
+"detox.end_detox" = "डिटॉक्स समाप्त करें";
+"detox.start_detox" = "डिटॉक्स शुरू करें";
+
+// MARK: - Onboarding (New)
+
+// आयु समूह
+"onboarding.age_under_18" = "18 से कम";
+"onboarding.age_18_24" = "18-24";
+"onboarding.age_25_30" = "25-30";
+"onboarding.age_31_40" = "31-40";
+"onboarding.age_41_50" = "41-50";
+"onboarding.age_51_plus" = "51+";
+
+// प्रति दिन घंटे
+"onboarding.hours_1_2" = "1-2 घंटे";
+"onboarding.hours_2_4" = "2-4 घंटे";
+"onboarding.hours_4_6" = "4-6 घंटे";
+"onboarding.hours_6_8" = "6-8 घंटे";
+"onboarding.hours_8_plus" = "8+ घंटे";
+
+// Onboarding Reviews
+"onboarding.review1_text" = "मैं रोज़ 5 घंटे इंस्टाग्राम पर बर्बाद करती थी। अब मैं फिर से किताबें पढ़ती हूं और बेहतर सोती हूं।";
+"onboarding.review1_author" = "प्रिया एस.";
+"onboarding.review2_text" = "पहले हफ्ते में मेरी प्रोडक्टिविटी दोगुनी हो गई। आखिरकार मैं अपने दैनिक कार्य पूरे करता हूं।";
+"onboarding.review2_author" = "राहुल के.";
+"onboarding.review3_text" = "आखिरकार मेरे शौक के लिए समय है। LockIn ने मुझे मेरी शामें वापस दिलाईं।";
+"onboarding.review3_author" = "अनीता एम.";
+"onboarding.review4_text" = "टास्क वेरिफिकेशन ने सब कुछ बदल दिया। अब मैं वाकई जो शुरू करता हूं उसे खत्म करता हूं।";
+"onboarding.review4_author" = "विकास पी.";
+
+"onboarding.now" = "अभी";
+"onboarding.how_it_works" = "यह कैसे काम करता है";
+"onboarding.block_apps" = "ऐप्स ब्लॉक करें";
+"onboarding.block_apps_desc" = "चुनें कि फोकस समय के दौरान कौन से ऐप्स ब्लॉक करने हैं।";
+"onboarding.earn_time" = "समय कमाएं";
+"onboarding.earn_time_desc" = "स्क्रीन टाइम कमाने के लिए त्वरित व्यायाम पूरे करें।";
+"onboarding.spend_wisely" = "समझदारी से खर्च करें";
+"onboarding.spend_wisely_desc" = "अपना कमाया हुआ समय सोच-समझकर उपयोग करें।";
+"onboarding.schedule_freedom" = "स्वतंत्रता शेड्यूल करें";
+"onboarding.schedule_freedom_desc" = "सेट करें कि ब्लॉक किए गए ऐप्स कब उपलब्ध हों।";
+"onboarding.select_apps_to_block" = "ब्लॉक करने के लिए ऐप्स चुनें";
+"onboarding.apps_blocked_by_default" = "ऐप्स डिफ़ॉल्ट रूप से ब्लॉक हैं";
+"onboarding.earn_screen_time" = "स्क्रीन टाइम कमाएं";
+"onboarding.earn_screen_time_desc" = "स्क्रीन मिनट कमाने के लिए व्यायाम पूरे करें।";
+"onboarding.unlock_window_title" = "अनलॉक विंडो";
+"onboarding.unlock_window_desc" = "चुनें कि ब्लॉक किए गए ऐप्स कब उपलब्ध होंगे।";
+"onboarding.how_it_works_explain" = "LockIn कैसे काम करता है";
+"onboarding.how_it_works_detail" = "विचलित करने वाले ऐप्स ब्लॉक करें, व्यायाम से स्क्रीन टाइम कमाएं, और समझदारी से उपयोग करें।";
+"onboarding.minutes_selected" = "मिनट चुने गए";
+"onboarding.min" = "मि";
+"onboarding.almost_ready" = "आप लगभग तैयार हैं!";
+"onboarding.grant_permissions" = "अनुमतियां दें";
+"onboarding.screen_time" = "स्क्रीन टाइम";
+"onboarding.required_to_block" = "ऐप्स ब्लॉक करने के लिए आवश्यक";
+"onboarding.camera" = "कैमरा";
+"onboarding.for_exercise_verification" = "व्यायाम सत्यापन के लिए";
+"onboarding.grant" = "अनुमति दें";

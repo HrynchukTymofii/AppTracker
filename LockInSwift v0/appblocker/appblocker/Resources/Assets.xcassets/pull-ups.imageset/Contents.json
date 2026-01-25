@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "pull-ups.jpg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

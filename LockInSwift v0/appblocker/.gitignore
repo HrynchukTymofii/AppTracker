@@ -1,0 +1,31 @@
+# Secrets - DO NOT COMMIT
+Secrets.xcconfig
+
+# Xcode
+*.xcuserstate
+*.xcuserdatad/
+xcuserdata/
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# CocoaPods (optional - can comment out if you want to commit Pods)
+# Pods/
+
+# Carthage
+Carthage/Build/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# macOS
+.DS_Store
+*.swp
+*~.nib
+
+# App packaging
+*.ipa
+*.xcarchive

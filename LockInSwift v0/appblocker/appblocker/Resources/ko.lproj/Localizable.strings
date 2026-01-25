@@ -1,0 +1,975 @@
+/*
+  Localizable.strings
+  LockIn
+
+  Korean Localization
+*/
+
+// MARK: - Common
+"common.done" = "완료";
+"common.cancel" = "취소";
+"common.save" = "저장";
+"common.edit" = "편집";
+"common.close" = "닫기";
+"common.back" = "뒤로";
+"common.next" = "다음";
+"common.skip" = "건너뛰기";
+"common.continue" = "계속";
+"common.error" = "오류";
+"common.success" = "성공";
+"common.loading" = "로딩 중...";
+"common.retry" = "다시 시도";
+"common.get_started" = "시작하기";
+"common.of" = "/";
+
+// MARK: - Tab Bar
+"tab.home" = "홈";
+"tab.goals" = "목표";
+"tab.lockin" = "LockIn";
+"tab.stats" = "통계";
+"tab.profile" = "프로필";
+
+// MARK: - Home
+"home.greeting" = "%@ 좋은";
+"home.morning" = "아침";
+"home.afternoon" = "오후";
+"home.evening" = "저녁";
+"home.help" = "도움말";
+"home.health_score" = "건강";
+"home.today_progress" = "오늘의 진행";
+"home.screen_time" = "스크린타임";
+"home.earned_time" = "획득";
+"home.top_apps" = "자주 사용하는 앱";
+"home.daily_goal" = "일일 목표";
+"home.change" = "변경";
+"home.upcoming" = "예정됨";
+"home.see_all" = "모두 보기";
+"home.create_schedule" = "일정 만들기";
+"home.set_times_unblocked" = "앱 차단 해제 시간 설정";
+"home.unblocked" = "차단 해제됨";
+"home.every_day" = "매일";
+"home.weekdays" = "평일";
+"home.weekends" = "주말";
+
+// MARK: - Today's Progress
+"progress.todays_progress" = "오늘의 진행";
+"progress.earn" = "획득";
+"progress.spent" = "사용됨";
+"progress.earned" = "획득함";
+"progress.balance" = "잔액";
+"progress.this_week" = "이번 주";
+
+// MARK: - LockIn (Earn Time)
+"lockin.title" = "스크린타임 획득";
+"lockin.subtitle" = "운동을 완료하여 앱 시간 잠금 해제";
+"lockin.balance" = "스크린타임 잔액";
+"lockin.minutes" = "분";
+"lockin.earn" = "획득";
+"lockin.earn_time" = "시간 획득";
+"lockin.transaction_history" = "거래 내역";
+"lockin.no_activity" = "아직 활동 없음";
+"lockin.complete_exercises" = "운동을 완료하여 시간 획득";
+"lockin.today" = "오늘:";
+"lockin.earned" = "획득";
+"lockin.spent" = "사용";
+"lockin.week" = "주:";
+"lockin.task_in_progress" = "작업 진행 중";
+"lockin.continue" = "계속";
+"lockin.recent_activity" = "최근 활동";
+"lockin.resets_in_hours" = "%d시간 후 초기화";
+"lockin.favorites" = "즐겨찾기";
+"lockin.all_exercises" = "모든 운동";
+"lockin.double_tap_add" = "두 번 탭하여 추가";
+"lockin.double_tap_remove" = "두 번 탭하여 제거";
+
+// MARK: - Exercises
+"exercise.pushups" = "푸쉬업";
+"exercise.squats" = "스쿼트";
+"exercise.plank" = "플랭크";
+"exercise.jumping_jacks" = "점핑잭";
+"exercise.lunges" = "런지";
+"exercise.crunches" = "크런치";
+"exercise.shoulder_press" = "숄더 프레스";
+"exercise.leg_raises" = "레그 레이즈";
+"exercise.high_knees" = "하이 니";
+"exercise.pull_ups" = "풀업";
+"exercise.wall_sit" = "월 싯";
+"exercise.side_plank" = "사이드 플랭크";
+"exercise.photo_task" = "사진 작업";
+"exercise.focus_mode" = "집중 모드";
+"exercise.custom" = "사용자 정의 작업";
+"exercise.min_per_rep" = "분/회";
+"exercise.min_per_sec" = "분/초";
+"exercise.camera_required" = "카메라 접근 필요";
+"exercise.open_settings" = "설정 열기";
+"exercise.enable_camera" = "카메라 활성화";
+"exercise.great_job" = "잘했어요!";
+"exercise.leg_day_champion" = "레그데이 챔피언!";
+"exercise.core_of_steel" = "강철 코어!";
+"exercise.min_earned" = "+%@분 획득";
+"exercise.do_pushups" = "푸쉬업 하기";
+"exercise.do_squats" = "스쿼트 하기";
+"exercise.hold_plank" = "플랭크 유지";
+"exercise.pushup_instructions" = "카메라가 옆에서 상체를 볼 수 있도록 휴대폰을 배치하세요.";
+"exercise.squat_instructions" = "휴대폰이 옆에서 전신을 볼 수 있도록 휴대폰 앞에 서세요.";
+"exercise.plank_instructions" = "휴대폰이 옆에서 전신을 볼 수 있도록 배치하세요. 몸을 곧게 유지하세요!";
+"exercise.start_pushups" = "푸쉬업 시작";
+"exercise.start_squats" = "스쿼트 시작";
+"exercise.start_plank" = "플랭크 시작";
+"exercise.do_some_pushups" = "푸쉬업을 하세요...";
+"exercise.do_some_squats" = "스쿼트를 하세요...";
+"exercise.hold_the_plank" = "플랭크를 유지하세요...";
+"exercise.pushups_label" = "푸쉬업";
+"exercise.squats_label" = "스쿼트";
+"exercise.seconds" = "초";
+"exercise.down" = "다운";
+"exercise.up" = "업";
+"exercise.holding" = "유지 중";
+"exercise.get_in_position" = "자세를 잡으세요";
+"exercise.paused" = "일시정지";
+"exercise.paused_get_back" = "일시정지 - 자세로 돌아가세요";
+"exercise.timer_pauses_info" = "화면을 벗어나면 타이머가 일시정지됩니다";
+"exercise.camera_tracking_pushups" = "푸쉬업을 추적하려면 카메라 접근이 필요합니다.";
+"exercise.camera_tracking_squats" = "스쿼트를 추적하려면 카메라 접근이 필요합니다.";
+"exercise.camera_tracking_plank" = "플랭크를 추적하려면 카메라 접근이 필요합니다.";
+"exercise.did_pushups" = "%d회 푸쉬업 완료!";
+"exercise.did_squats" = "%d회 스쿼트 완료!";
+"exercise.held_for_seconds" = "%d초 유지했습니다!";
+"exercise.finish_with_reward" = "완료 (+%@분)";
+"exercise.photo_task_desc" = "작업을 완료하고 사진으로 확인하여 스크린타임 획득";
+"exercise.describe_task" = "작업 설명";
+"exercise.task_placeholder" = "무엇을 할 건가요? (예: 방 청소)";
+"exercise.or_choose_preset" = "또는 프리셋 선택";
+"exercise.camera_permission_message" = "운동을 확인하고 진행 상황을 추적하려면 카메라 접근이 필요합니다.";
+"exercise.camera_photo_task_message" = "작업 확인용 사진을 찍으려면 카메라 접근이 필요합니다.";
+"exercise.before_photo" = "전 사진";
+"exercise.after_photo" = "후 사진";
+"exercise.show_completed" = "완료된 작업을 보여주세요";
+"exercise.take_starting_photo" = "시작점 사진을 찍으세요";
+"exercise.before" = "전";
+"exercise.after" = "후";
+"exercise.proof" = "증거";
+"exercise.go_complete_task" = "작업을 완료하세요!";
+"exercise.done_after_photo" = "완료 - 후 사진 찍기";
+"exercise.done_verify_task" = "완료 - 작업 확인";
+"exercise.task_verified" = "작업 확인됨!";
+"exercise.type_message" = "메시지 입력...";
+"exercise.complete_anyway" = "그래도 완료 (+%d분)";
+"exercise.reps" = "회";
+"exercise.seconds_unit" = "초";
+"exercise.reward_per_rep" = "%.1f분/회 (최소 %d), +%.1f 이후 %d";
+"exercise.reward_per_sec" = "%.1f분/초 (최소 %d초), +%.1f 이후 %d초";
+"exercise.verify_task" = "작업 완료 확인";
+"exercise.reward_per_unit" = "%.1f분/단위";
+
+// Photo Task Presets
+"exercise.preset.clean_room" = "방 청소";
+"exercise.preset.do_dishes" = "설거지";
+"exercise.preset.make_bed" = "침대 정리";
+"exercise.preset.organize_desk" = "책상 정리";
+"exercise.preset.take_walk" = "산책하기";
+"exercise.preset.read_book" = "독서하기";
+"exercise.preset.meditate" = "명상하기";
+"exercise.preset.stretch" = "스트레칭";
+"exercise.preset.drink_water" = "물 마시기";
+"exercise.preset.healthy_meal" = "건강식 먹기";
+
+// MARK: - Focus Mode
+"focus.title" = "집중 모드";
+"focus.deep_focus" = "딥 포커스";
+"focus.description" = "모든 방해 요소를 차단하고 중요한 것에 집중";
+"focus.session_duration" = "세션 시간";
+"focus.apps_blocked" = "선택한 모든 앱이 차단됩니다";
+"focus.earn_info" = "완료하면 %@분 획득";
+"focus.earn_minutes" = "완료하면 %d분 획득";
+"focus.no_interruptions" = "방해 없이 집중 유지";
+"focus.start" = "집중 세션 시작";
+"focus.remaining" = "남음";
+"focus.paused" = "일시정지됨";
+"focus.active" = "집중 중";
+"focus.all_blocked" = "모든 앱 차단됨";
+"focus.end" = "종료";
+"focus.pause" = "일시정지";
+"focus.resume" = "재개";
+"focus.add_time" = "+5분";
+"focus.complete" = "훌륭한 집중!";
+"focus.completed_session" = "%d분 집중 세션을 완료했습니다";
+"focus.time_earned" = "획득 시간";
+"focus.cancel" = "취소";
+"focus.focus_session" = "집중 세션";
+"focus.session_paused" = "세션 일시정지됨";
+"focus.focus_active" = "집중 중";
+"focus.minutes" = "+%@분";
+
+// MARK: - Profile
+"profile.settings" = "설정";
+"profile.achievements" = "업적";
+"profile.blocked_items" = "차단된 항목";
+"profile.blocked_items_desc" = "차단한 앱 및 카테고리";
+"profile.app_settings" = "앱 설정";
+"profile.unlock_window" = "잠금 해제 시간";
+"profile.unlock_window_desc" = "획득한 시간 사용 시 접근 가능 시간";
+"profile.daily_goal" = "일일 목표";
+"profile.daily_goal_desc" = "하루 최대 허용 스크린타임";
+"profile.default_app_limit" = "기본 앱 제한";
+"profile.default_app_limit_desc" = "새로 차단된 앱의 기본 일일 제한";
+"profile.theme" = "테마";
+"profile.accent_color" = "강조 색상";
+"profile.notifications" = "알림";
+"profile.contact_us" = "문의하기";
+"profile.rate_us" = "평가하기";
+"profile.logout" = "로그아웃";
+"profile.apps" = "앱";
+"profile.categories" = "카테고리";
+"profile.min" = "분";
+"profile.pro" = "PRO";
+
+// MARK: - Stats
+"stats.streak" = "연속";
+"stats.tasks" = "작업";
+"stats.days" = "일";
+"stats.total_earned" = "총 획득";
+"stats.total_spent" = "총 사용";
+"stats.weekly_stats" = "주간 통계";
+"stats.today" = "오늘";
+"stats.this_week" = "이번 주";
+"stats.last_week" = "지난 주";
+"stats.daily_avg" = "일일 평균";
+"stats.vs_last_week" = "지난 주 대비";
+"stats.less_screen_time" = "스크린타임 감소";
+"stats.more_screen_time" = "스크린타임 증가";
+"stats.share_progress" = "진행 상황 공유";
+"stats.share" = "공유";
+
+// MARK: - Achievements
+"achievements.title" = "업적";
+"achievements.unlocked" = "달성한 업적";
+"achievements.category.streak" = "연속";
+"achievements.category.tasks" = "작업";
+"achievements.category.time_earned" = "획득 시간";
+"achievements.category.health" = "건강";
+"achievements.category.balance" = "균형";
+"achievements.category.special" = "특별";
+"achievements.category.all" = "전체";
+
+// Achievement Names and Descriptions
+"achievement.streak_1.name" = "첫 불꽃";
+"achievement.streak_1.desc" = "첫 번째 날 완료";
+"achievement.streak_3.name" = "시작";
+"achievement.streak_3.desc" = "3일 연속";
+"achievement.streak_7.name" = "주간 전사";
+"achievement.streak_7.desc" = "7일 연속";
+"achievement.streak_14.name" = "2주 챔피언";
+"achievement.streak_14.desc" = "14일 연속";
+"achievement.streak_30.name" = "월간 마스터";
+"achievement.streak_30.desc" = "30일 연속";
+"achievement.streak_60.name" = "연속 레전드";
+"achievement.streak_60.desc" = "60일 연속";
+
+"achievement.tasks_1.name" = "첫 걸음";
+"achievement.tasks_1.desc" = "1개 작업 완료";
+"achievement.tasks_5.name" = "작업 도전자";
+"achievement.tasks_5.desc" = "5개 작업 완료";
+"achievement.tasks_10.name" = "바쁘게";
+"achievement.tasks_10.desc" = "10개 작업 완료";
+"achievement.tasks_25.name" = "생산성 프로";
+"achievement.tasks_25.desc" = "25개 작업 완료";
+"achievement.tasks_50.name" = "작업 기계";
+"achievement.tasks_50.desc" = "50개 작업 완료";
+"achievement.tasks_100.name" = "센추리 클럽";
+"achievement.tasks_100.desc" = "100개 작업 완료";
+
+"achievement.time_5.name" = "첫 분";
+"achievement.time_5.desc" = "5분 획득";
+"achievement.time_30.name" = "시간 건설자";
+"achievement.time_30.desc" = "총 30분 획득";
+"achievement.time_60.name" = "시간의 영웅";
+"achievement.time_60.desc" = "총 1시간 획득";
+"achievement.time_180.name" = "시간 타이탄";
+"achievement.time_180.desc" = "총 3시간 획득";
+"achievement.time_600.name" = "시간 마스터";
+"achievement.time_600.desc" = "총 10시간 획득";
+"achievement.time_1800.name" = "시간 레전드";
+"achievement.time_1800.desc" = "총 30시간 획득";
+
+"achievement.health_60.name" = "상승 중";
+"achievement.health_60.desc" = "건강 점수 60 달성";
+"achievement.health_70.name" = "좋은 기운";
+"achievement.health_70.desc" = "건강 점수 70 달성";
+"achievement.health_80.name" = "훌륭함";
+"achievement.health_80.desc" = "건강 점수 80 달성";
+"achievement.health_90.name" = "완벽한 컨디션";
+"achievement.health_90.desc" = "건강 점수 90 달성";
+
+"achievement.balance_30.name" = "저축가";
+"achievement.balance_30.desc" = "30분 잔액 축적";
+"achievement.balance_120.name" = "타임뱅크 엘리트";
+"achievement.balance_120.desc" = "2시간 잔액 축적";
+
+// MARK: - Goals / Blocking
+"goals.title" = "목표";
+"goals.today_usage" = "오늘의 앱 사용량";
+"goals.loading" = "사용 데이터 로딩 중...";
+"goals.screen_time_required" = "스크린타임 접근 필요";
+"goals.screen_time_description" = "LockIn이 앱을 차단하고 사용량을 추적하려면 스크린타임 권한이 필요합니다.";
+"goals.grant_access" = "접근 허용";
+"goals.requesting" = "요청 중...";
+"goals.blocked_apps" = "차단된 앱";
+"goals.selected" = "선택됨";
+"goals.select_apps_to_block" = "차단할 앱 선택";
+"goals.choose_apps" = "차단할 앱과 카테고리를 선택하세요. 언제든 변경할 수 있습니다.";
+"goals.app_limits" = "앱 제한";
+"goals.apps" = "앱";
+"goals.no_limits_set" = "설정된 앱 제한 없음";
+"goals.set_daily_limits" = "특정 앱에 일일 시간 제한을 설정하여 스크린타임을 더 잘 관리하세요.";
+"goals.add_app_limit" = "앱 제한 추가";
+"goals.add_another_limit" = "다른 제한 추가";
+"goals.set_limits" = "제한 설정";
+"goals.daily_app_limits" = "일일 앱 제한";
+"goals.limit_description" = "각 앱의 최대 일일 사용량을 설정하세요. 이 제한은 획득한 시간으로도 초과할 수 없습니다.";
+"goals.select_apps_limits" = "일일 제한을 설정할 앱 선택";
+"goals.no_limits_yet" = "설정된 앱 제한 없음";
+"goals.add_limit_hint" = "\"앱 제한 추가\"를 탭하여 특정 앱에 제한 설정";
+"goals.limits_reset_info" = "제한은 매일 자정에 초기화됩니다. 차단된 앱에 접근하면 사용량이 자동으로 추적됩니다.";
+"goals.daily_limit_for" = "일일 제한";
+"goals.of" = "/";
+"goals.limit_reached" = "제한 도달";
+"goals.min_daily_limit" = "분 일일 제한";
+"goals.edit" = "편집";
+"goals.remove_limit" = "제한 제거";
+"goals.cancel" = "취소";
+"goals.done" = "완료";
+"goals.save" = "저장";
+"goals.minutes" = "분";
+"goals.share_progress" = "진행 상황 공유";
+"goals.used" = "사용됨";
+"goals.goal" = "목표";
+"goals.left" = "남음";
+"goals.of_goal" = "목표의";
+"goals.daily_app_limits_desc" = "각 앱의 최대 일일 사용량을 설정하세요. 이 제한은 획득한 시간으로도 초과할 수 없습니다.";
+"goals.select_apps_to_set_limits" = "일일 제한을 설정할 앱 선택";
+"goals.no_app_limits_set" = "설정된 앱 제한 없음";
+"goals.tap_to_set_limits" = "\"앱 제한 추가\"를 탭하여 특정 앱에 제한 설정";
+"goals.of_minutes" = "/%d분";
+"goals.minutes_count" = "%d분";
+"goals.min_daily_limit" = "%d분 일일 제한";
+
+// MARK: - Shield Screen
+"shield.ready_to_unlock" = "잠금 해제 준비";
+"shield.app_blocked" = "앱 차단됨";
+"shield.almost_there" = "거의 다 됐어요";
+"shield.times_up" = "시간 종료";
+"shield.goal_complete" = "목표 완료!";
+"shield.daily_goal_reached" = "일일 목표 달성";
+"shield.unlock" = "%d분 잠금 해제";
+"shield.stay_focused" = "집중 유지";
+"shield.earn_time" = "시간 획득";
+"shield.earn_more_time" = "더 많은 시간 획득";
+"shield.talk_to_coach" = "코치와 대화";
+"shield.close" = "닫기";
+"shield.site_limit_reached" = "사이트 제한 도달";
+"shield.not_enough_time" = "시간 부족";
+"shield.no_time_available" = "사용 가능한 시간 없음";
+"shield.unlock_minutes" = "%dm 잠금 해제";
+"shield.unlock_for_minutes" = "%dm 동안 잠금 해제";
+"shield.earn_time_now" = "지금 시간 획득";
+
+// Shield Descriptions - App
+"shield.goal_complete_desc" = "일일 스크린타임 목표를 달성했습니다.\n\n휴식 준비가 되셨나요? AI 코치가 보너스 시간 획득을 도와드립니다.";
+"shield.time_up_desc" = "오늘 %@의 시간을 모두 사용했습니다.\n\nAI 코치와 더 나은 습관에 대해 이야기하세요.";
+"shield.ready_unlock_desc" = "%@이(가) 차단되었습니다.\n\n%@ 획득했습니다.\n잠금 해제 시 %dm이 사용됩니다.";
+"shield.almost_there_desc" = "%@이(가) 차단되었습니다.\n\n%@ 있지만 %dm이 필요합니다.\n잠금 해제를 위해 %@ 더 획득하세요.";
+"shield.app_blocked_desc" = "%@이(가) 차단되었습니다.\n\n운동을 완료하여 스크린타임을 획득하세요.\n잠금 해제에 %dm이 필요합니다.";
+
+// Shield Descriptions - Web
+"shield.daily_goal_reached_desc" = "오늘의 스크린타임 목표를 달성했습니다.\n\nAI 코치와 대화하여 보너스 시간을 획득하세요.";
+"shield.site_limit_desc" = "오늘 브라우징 시간을 모두 사용했습니다.\n\nAI 코치와 더 나은 습관에 대해 이야기하세요.";
+"shield.web_ready_unlock_desc" = "%@이(가) 차단되었습니다.\n\n%@ 획득했습니다.\n잠금 해제 시 %dm이 사용됩니다.";
+"shield.web_not_enough_desc" = "%@이(가) 차단되었습니다.\n\n%@ 있지만 %dm이 필요합니다.\n잠금 해제를 위해 %@ 더 획득하세요.";
+"shield.web_no_time_desc" = "%@이(가) 차단되었습니다.\n\n운동을 완료하여 스크린타임을 획득하세요.\n잠금 해제에 %dm이 필요합니다.";
+
+// MARK: - Contact Us
+"contact.title" = "문의하기";
+"contact.header" = "여러분의 의견을 듣고 싶습니다!";
+"contact.description" = "질문, 피드백 또는 도움이 필요하신가요? 연락 주시면 최대한 빨리 답변 드리겠습니다.";
+"contact.email_label" = "이메일 보내기";
+"contact.send_email" = "이메일 보내기";
+"contact.get_in_touch" = "연락하기";
+"contact.love_to_hear" = "여러분의 의견을 듣고 싶습니다! 피드백 공유, 버그 신고 또는 질문을 해주세요.";
+"contact.your_message" = "메시지";
+"contact.placeholder" = "생각을 알려주세요...";
+"contact.send_message" = "메시지 보내기";
+"contact.email_directly" = "또는 직접 이메일:";
+
+// MARK: - Rate Us
+"rate.title" = "평가하기";
+"rate.how_enjoying" = "LockIn 어떠세요?";
+"rate.tap_to_rate" = "별을 탭하여 평가";
+"rate.feedback" = "개선 방법을 알려주세요";
+"rate.feedback_placeholder" = "피드백은 LockIn을 더 좋게 만드는 데 도움이 됩니다...";
+"rate.submit" = "피드백 제출";
+"rate.rating_1" = "더 잘할 수 있어요";
+"rate.rating_2" = "개선 필요";
+"rate.rating_3" = "괜찮아요";
+"rate.rating_4" = "꽤 좋아요!";
+"rate.rating_5" = "최고예요!";
+"rate.enjoying" = "LockIn 즐기고 계신가요?";
+"rate.love_to_hear" = "의견을 듣고 싶습니다! 피드백은 개선에 도움이 됩니다.";
+"rate.can_do_better" = "더 잘할 수 있어요";
+"rate.needs_improvement" = "개선 필요";
+"rate.its_okay" = "괜찮아요";
+"rate.really_good" = "정말 좋아요!";
+"rate.love_it" = "최고예요!";
+"rate.how_improve" = "개선 방법을 알려주세요";
+"rate.what_better" = "무엇을 더 잘할 수 있을까요?";
+"rate.rate_app_store" = "App Store에서 평가";
+"rate.send_feedback" = "피드백 보내기";
+
+// MARK: - Help Tips
+"help.tip1.title" = "일일 목표 설정";
+"help.tip1.desc" = "프로필에서 스크린타임 제한을 선택하세요. 제한 내에서 건강한 습관을 만드세요.";
+"help.tip2.title" = "스크린타임 획득";
+"help.tip2.desc" = "LockIn 탭으로 가서 운동을 완료하세요 - 푸쉬업, 스쿼트, 플랭크 또는 사진 작업!";
+"help.tip3.title" = "집중 모드";
+"help.tip3.desc" = "포모도로 세션을 시작하여 모든 앱을 차단하고 집중 1분당 0.5분을 획득하세요.";
+"help.tip4.title" = "방해되는 앱 차단";
+"help.tip4.desc" = "목표 탭으로 가서 차단할 앱을 선택하세요. 앱별 시간 제한도 설정하세요.";
+"help.tip5.title" = "코치와 대화";
+"help.tip5.desc" = "일일 제한에 도달했나요? AI 코치와 채팅하여 반성하고 보너스 시간을 획득하세요.";
+"help.tip6.title" = "진행 상황 추적";
+"help.tip6.desc" = "통계 탭을 확인하여 더 나은 습관을 만들면서 건강 점수가 향상되는 것을 확인하세요.";
+"help.set_daily_goal" = "일일 목표 설정";
+"help.set_daily_goal_desc" = "프로필에서 스크린타임 제한을 선택하세요. 제한 내에서 건강한 습관을 만드세요.";
+"help.earn_screen_time" = "스크린타임 획득";
+"help.earn_screen_time_desc" = "LockIn 탭으로 가서 운동을 완료하세요 - 푸쉬업, 스쿼트, 플랭크 또는 사진 작업!";
+"help.focus_mode" = "집중 모드";
+"help.focus_mode_desc" = "포모도로 세션을 시작하여 모든 앱을 차단하고 집중 1분당 0.5분을 획득하세요.";
+"help.block_apps" = "방해되는 앱 차단";
+"help.block_apps_desc" = "목표 탭으로 가서 차단할 앱을 선택하세요. 앱별 시간 제한도 설정하세요.";
+"help.talk_to_coach" = "코치와 대화";
+"help.talk_to_coach_desc" = "일일 제한에 도달했나요? AI 코치와 채팅하여 반성하고 보너스 시간을 획득하세요.";
+"help.track_progress" = "진행 상황 추적";
+"help.track_progress_desc" = "통계 탭을 확인하여 더 나은 습관을 만들면서 건강 점수가 향상되는 것을 확인하세요.";
+
+// MARK: - Quick Actions
+"quick_actions.title" = "빠른 작업";
+"quick_actions.focus_mode" = "집중 모드";
+"quick_actions.pomodoro_timer" = "포모도로 타이머";
+"quick_actions.hold_for_time" = "시간 유지";
+"quick_actions.earn_per_rep" = "%@분/회 획득";
+"quick_actions.verify_with_photo" = "사진으로 확인";
+
+// MARK: - Time Formatting
+"time.minutes" = "%d분";
+"time.hours" = "%d시간";
+"time.hours_minutes" = "%d시간 %d분";
+"time.today" = "오늘";
+
+// MARK: - Errors
+"error.camera_permission" = "사진 작업에는 카메라 권한이 필요합니다.";
+"error.no_apps_selected" = "차단할 앱을 최소 하나 이상 선택하세요.";
+"error.insufficient_time" = "획득한 시간이 충분하지 않습니다.";
+
+// MARK: - Settings
+"settings.title" = "설정";
+"settings.accent_color" = "강조 색상";
+"settings.appearance" = "외관";
+"settings.language" = "언어";
+"settings.current_language" = "현재 언어";
+"settings.select_language" = "언어 선택";
+"settings.change_password" = "비밀번호 변경";
+"settings.enter_new_password" = "새 비밀번호 입력";
+"settings.save_changes" = "변경 사항 저장";
+"settings.danger_zone" = "위험 구역";
+"settings.delete_account" = "계정 삭제";
+"settings.delete_account_confirm" = "확인하려면 'Delete' 입력";
+"settings.delete_account_warning" = "이 작업은 되돌릴 수 없습니다. 확인하려면 'Delete'를 입력하세요.";
+"settings.type_delete" = "Delete";
+
+// Theme Modes
+"settings.theme.light" = "라이트";
+"settings.theme.dark" = "다크";
+"settings.theme.system" = "시스템";
+
+// Accent Colors
+"settings.color.blue" = "블루";
+"settings.color.purple" = "퍼플";
+"settings.color.green" = "그린";
+"settings.color.orange" = "오렌지";
+"settings.color.pink" = "핑크";
+"settings.color.red" = "레드";
+"settings.color.teal" = "틸";
+"settings.color.indigo" = "인디고";
+
+// MARK: - Onboarding
+"onboarding.hello" = "안녕하세요!";
+"onboarding.welcome_to" = "환영합니다";
+"onboarding.ready_to_help" = "당신의";
+"onboarding.taking_control" = "시간 관리를 도와드릴 준비가 되었습니다";
+"onboarding.lets_start" = "시작하기";
+"onboarding.how_old" = "몇 살이신가요?";
+"onboarding.personalize_exp" = "이것은 경험을 개인화하는 데 도움이 됩니다";
+"onboarding.daily_screen_time" = "일일 스크린타임?";
+"onboarding.be_honest" = "솔직하게 - 판단하지 않습니다";
+"onboarding.bad_news_good_news" = "나쁜 소식과\n좋은 소식이 있습니다";
+"onboarding.show_something" = "스크린타임에 대한 중요한 것을 보여드리겠습니다...";
+"onboarding.show_me" = "보여주세요";
+"onboarding.the_bad_news" = "나쁜 소식";
+"onboarding.the_good_news" = "좋은 소식";
+"onboarding.at_hours_per_day" = "하루 %d시간이면, 올해";
+"onboarding.looking_at_phone" = "휴대폰을 보며 보내게 됩니다";
+"onboarding.thats_approx" = "이는 약";
+"onboarding.of_your_life" = "당신의 인생의";
+"onboarding.you_read_right" = "네, 제대로 읽으셨습니다. 목표를 달성하고 원하는 삶을 살 수 있는 시간을 휴대폰을 보는 데 사용하고 있습니다.";
+"onboarding.whats_good_news" = "좋은 소식은 뭔가요?";
+"onboarding.can_help_get_back" = "LockIn이 되찾는 것을 도와드릴 수 있습니다";
+"onboarding.turn_into_things" = "그리고 항상 이루고 싶었던 것으로 바꿔드립니다.\n\n목표, 열정, 사랑하는 사람들을 위한 더 많은 시간.";
+"onboarding.lets_get_started" = "시작하기";
+"onboarding.first_step" = "첫 걸음을 내딛어 봅시다";
+"onboarding.connect_screen_time" = "LockIn이 스크린타임에 연결하여 ";
+"onboarding.personalized_report" = "개인화된 집중 리포트를 제공합니다";
+"onboarding.see_real_usage" = "실제 사용 데이터 보기";
+"onboarding.get_recommendations" = "개인화된 추천 받기";
+"onboarding.track_progress" = "시간에 따른 진행 상황 추적";
+"onboarding.enable_screen_time" = "스크린타임 및\n앱 차단 활성화";
+"onboarding.secure_on_phone" = "정보의 100%가 안전하며 휴대폰에 저장됩니다";
+"onboarding.permission_granted" = "권한 부여됨!";
+"onboarding.what_happens_next" = "다음에 일어날 일:";
+"onboarding.tap_continue" = "\"계속\"을 탭하여 스크린타임 접근 승인";
+"onboarding.select_apps" = "차단할 앱과 카테고리 선택";
+"onboarding.tap_done" = "\"완료\"를 탭하여 선택 확인";
+"onboarding.enable_app_blocking" = "앱 차단 활성화";
+"onboarding.ready_to_block" = "앱 차단 준비 완료!";
+"onboarding.shield_when_open" = "차단된 앱을 열려고 하면 방패가 표시됩니다.";
+"onboarding.stay_active_earn" = "활동적으로, 시간 획득";
+"onboarding.complete_exercises_earn" = "운동과 작업을 완료하여 차단된 앱의 스크린타임을 획득하세요.";
+"onboarding.heres_reality" = "당신의 현실입니다";
+"onboarding.based_on_usage" = "실제 휴대폰 사용 기반";
+"onboarding.todays_screen_time" = "오늘의 스크린타임";
+"onboarding.this_week" = "이번 주";
+"onboarding.life_on_phone" = "휴대폰에서의 삶";
+"onboarding.at_this_rate" = "이 속도라면 ";
+"onboarding.lets_fix_this" = "이것을 고쳐봅시다";
+"onboarding.your_potential" = "당신의 잠재력";
+"onboarding.see_how_much" = "얼마나 많은 시간을 절약할 수 있는지 확인하세요";
+"onboarding.reduce_by" = "스크린타임 %d%% 감소";
+"onboarding.weekly_projection" = "주간 예측";
+"onboarding.free_time_week" = "주당 자유 시간";
+"onboarding.life_reclaimed" = "되찾은 삶";
+"onboarding.accomplish_goals" = "목표를 더 빨리 달성하고, 더 생산적이고 충실하게";
+"onboarding.current" = "현재";
+"onboarding.with_lockin" = "LockIn과 함께";
+"onboarding.unlock_potential" = "잠재력 잠금 해제";
+"onboarding.hours_back" = "매주 %d시간 이상 되찾기";
+"onboarding.smart_coach" = "스마트 코치";
+"onboarding.task_verification" = "작업 확인";
+"onboarding.focus_sessions" = "집중 세션";
+"onboarding.daily_goals" = "일일 목표";
+"onboarding.complete_tasks" = "완료된 작업";
+"onboarding.app_rating" = "앱 평가";
+"onboarding.more_productive" = "더 생산적으로";
+"onboarding.start_free_trial" = "무료 체험 시작";
+"onboarding.days_free" = "3일 무료";
+"onboarding.maybe_later" = "나중에";
+"onboarding.allow_notifications" = "알림 허용";
+"onboarding.remind_overscrolling" = "과도한 스크롤을 알려주고 목표 달성을 도와드립니다";
+"onboarding.notifications_enabled" = "알림 활성화됨!";
+"onboarding.scrolling_for" = "30분 동안 스크롤했습니다. 쉴 시간?";
+"onboarding.time_for_break" = "쉴 시간?";
+"onboarding.what_to_block" = "무엇을 차단할까요?";
+"onboarding.change_this_later" = "걱정마세요, 나중에 변경할 수 있습니다";
+"onboarding.apps" = "앱";
+"onboarding.categories" = "카테고리";
+"onboarding.start_blocking" = "차단 시작";
+"onboarding.items_selected" = "%d개 항목 선택됨";
+"onboarding.set_daily_goal" = "일일 목표 설정";
+"onboarding.how_much_allow" = "자신에게 허용할\n스크린타임은?";
+"onboarding.per_day" = "하루";
+"onboarding.change_in_settings" = "설정에서 언제든 변경할 수 있습니다";
+"onboarding.set_my_goal" = "목표 설정";
+"onboarding.days" = "일";
+"onboarding.years" = "세";
+"onboarding.projection_title" = "LockIn이 당신의 두뇌를\n장기 집중을 위해 재구성합니다.";
+"onboarding.projection_subtitle" = "LockIn 사용자들은 매주 %d시간 이상의 집중 시간을 되찾습니다.";
+"onboarding.without_lockin" = "LockIn 없이";
+"onboarding.day_one" = "1일차";
+"onboarding.day_fourteen" = "14일차";
+"onboarding.commitment_title" = "다짐하기";
+"onboarding.committed" = "다짐했습니다!";
+"onboarding.press_and_hold" = "스크린타임을 제어하기로 다짐하려면 오브를 3초간 길게 누르세요";
+"onboarding.taken_first_step" = "휴대폰과 더 건강한 관계를 향한 첫 걸음을 내딛었습니다";
+"onboarding.keep_holding" = "계속 누르세요...";
+"onboarding.hold_the_orb" = "다짐하려면 오브를 길게 누르세요";
+"onboarding.lets_set_up" = "집중 앱을 설정해봅시다!";
+
+// MARK: - Auth
+"auth.welcome_to" = "LockIn에 오신 것을 환영합니다";
+"auth.take_control" = "스크린타임을 제어하세요";
+"auth.continue_google" = "Google로 계속";
+"auth.continue_apple" = "Apple로 계속";
+"auth.continue_email" = "이메일로 계속";
+"auth.get_started" = "시작하기";
+"auth.already_have_account" = "이미 계정이 있습니다";
+"auth.privacy_policy" = "개인정보 보호정책";
+"auth.terms_of_service" = "서비스 약관";
+"auth.create_account" = "계정 만들기";
+"auth.welcome_back" = "돌아오신 것을 환영합니다";
+"auth.start_taking_control" = "스크린타임 제어 시작";
+"auth.goals_waiting" = "집중 목표가 기다리고 있습니다";
+"auth.email" = "이메일";
+"auth.password" = "비밀번호";
+"auth.enter_password" = "비밀번호 입력";
+"auth.agree_to_terms" = "LockIn의 약관에 동의합니다 ";
+"auth.terms_conditions" = "이용약관";
+"auth.sign_in" = "로그인";
+"auth.sign_up" = "가입하기";
+"auth.or_continue_with" = "또는 계속";
+"auth.no_account" = "계정이 없으신가요?";
+"auth.have_account" = "이미 계정이 있으신가요?";
+
+// MARK: - Device Activity Report
+"report.no_data" = "스크린 타임 데이터 없음";
+"report.no_data_desc" = "기기를 사용하고 통계를 확인하세요";
+"report.vs_last_week" = "VS 지난주";
+"report.less_screen_time" = "더 적은 스크린 타임";
+"report.more_screen_time" = "더 많은 스크린 타임";
+"report.vs" = "vs";
+"report.difference" = "차이";
+"report.total_hours" = "총 시간";
+"report.daily_avg" = "일 평균";
+"report.peak_day" = "피크일";
+"report.today" = "오늘";
+"report.stats_per_day" = "일별 통계";
+"report.total_time_per_app" = "앱별 총 시간";
+"report.no_app_data" = "앱 사용 데이터 없음";
+"report.less" = "적음";
+"report.more" = "많음";
+"report.streak" = "연속";
+"report.vs_avg" = "VS 평균";
+"report.top_apps" = "상위 앱";
+"report.no_app_usage" = "오늘 앱 사용 없음";
+"report.start_using" = "앱을 사용하여 통계 확인";
+"report.screen_time" = "스크린 타임";
+"report.notifications" = "알림";
+"report.todays_progress" = "오늘의 진행";
+"report.used" = "사용됨";
+"report.left" = "남음";
+"report.goal_reached" = "목표 달성";
+"report.this_week" = "이번 주";
+"report.remaining" = "남은 시간";
+"report.of_goal" = "목표의";
+"report.goal" = "목표";
+"report.day_sun" = "일";
+"report.day_mon" = "월";
+"report.day_tue" = "화";
+"report.day_wed" = "수";
+"report.day_thu" = "목";
+"report.day_fri" = "금";
+"report.day_sat" = "토";
+"report.day_s" = "일";
+"report.day_m" = "월";
+"report.day_t" = "화";
+"report.day_w" = "수";
+"report.day_f" = "금";
+"report.avg" = "평균";
+
+
+// MARK: - Language Restart
+"settings.restart_required" = "재시작 필요";
+"settings.restart_message" = "언어 변경을 적용하려면 앱을 닫았다가 다시 열어주세요.";
+
+// MARK: - Shield Action Notifications
+"action.talk_to_coach" = "코치와 대화";
+"action.earn_screen_time" = "스크린 타임 획득";
+"action.times_up" = "시간 종료";
+"action.chat_coach_bonus" = "AI 코치와 채팅하여 보너스 시간을 얻으세요.";
+"action.get_personalized_advice" = "AI 코치로부터 맞춤 조언을 받으세요.";
+"action.complete_exercises" = "운동을 완료하여 앱을 잠금 해제하세요.";
+"action.unlock_expired" = "%d분 잠금 해제 시간이 만료되었습니다. 탭하여 차단을 다시 활성화하세요.";
+
+// MARK: - Quick Menu
+"quick.focus_mode" = "집중 모드";
+"quick.pomodoro_timer" = "뽀모도로 타이머";
+"quick.plank" = "플랭크";
+"quick.hold_for_time" = "시간 유지";
+"quick.squats" = "스쿼트";
+"quick.earn_per_rep" = "반복당 0.3분 획득";
+"quick.pushups" = "푸시업";
+"quick.pushups_earn" = "반복당 0.5분 획득";
+"quick.photo_task" = "사진 과제";
+"quick.verify_with_photo" = "사진으로 확인";
+
+// MARK: - Help Tips
+"help.tip1.title" = "디지털 웰빙";
+"help.tip1.desc" = "LockIn은 장기적인 집중력을 위해 뇌를 재프로그래밍합니다. 더 나은 습관을 만들면서 건강 점수가 성장하는 것을 지켜보세요.";
+"help.tip2.title" = "진행 상황 추적";
+"help.tip2.desc" = "연속 기록, 일일 사용량, 평균과의 비교를 확인하세요. 작은 승리가 큰 변화로 이어집니다.";
+"help.tip3.title" = "스크린 타임 획득";
+"help.tip3.desc" = "푸시업, 스쿼트, 플랭크 같은 운동을 완료하여 보너스 스크린 타임을 획득하세요. 몸을 움직이고 마음을 자유롭게 하세요.";
+"help.tip4.title" = "일일 목표 설정";
+"help.tip4.desc" = "스크린 타임 제한을 선택하고 진행 링이 채워지는 것을 지켜보세요. 목표 내로 유지하여 지속적인 습관을 만드세요.";
+"help.tip5.title" = "방해 요소 차단";
+"help.tip5.desc" = "한도에 도달했을 때 차단할 앱을 선택하세요. 주의력을 통제하고 중요한 것에 집중하세요.";
+"help.tip6.title" = "통계 확인";
+"help.tip6.desc" = "주간 패턴과 트렌드를 확인하세요. 사용량을 이해하는 것이 변화의 첫 걸음입니다.";
+"help.back" = "뒤로";
+"help.next" = "다음";
+"help.got_it" = "알겠습니다!";
+
+// MARK: - Photo Task Presets (Updated)
+"preset.clean_room" = "방 청소";
+"preset.homework" = "숙제 완료";
+"preset.workout" = "운동 루틴";
+"preset.cook" = "요리하기";
+"preset.read" = "10페이지 읽기";
+"preset.write" = "하루 계획 작성";
+
+// MARK: - Streak
+"streak.title" = "현재 연속 기록";
+"streak.days" = "일";
+"streak.best" = "최고 기록";
+"streak.keep_going" = "계속하세요!";
+"streak.lost" = "연속 기록 종료";
+
+// MARK: - History
+"history.title" = "활동 기록";
+"history.today" = "오늘";
+"history.yesterday" = "어제";
+"history.this_week" = "이번 주";
+"history.earlier" = "이전";
+"history.no_activity" = "아직 활동이 없습니다";
+
+// MARK: - Exercise Info
+"exercise.info" = "정보";
+"exercise.watch_demo" = "데모 보기";
+"exercise.coming_soon" = "곧 출시";
+"exercise.how_to_do_it" = "하는 방법";
+"exercise.rewards" = "보상";
+"exercise.got_it" = "알겠습니다!";
+"exercise.reward_info" = "완료한 세트마다 스크린 타임 획득";
+"exercise.reward_description" = "운동을 완료하여 스크린 타임을 획득하세요. 더 많은 반복 = 더 많은 시간!";
+
+// MARK: - Exercise Descriptions
+"exercise.desc.pushups" = "클래식 푸시업으로 상체 근력 강화";
+"exercise.desc.squats" = "올바른 스쿼트 자세로 다리와 코어 강화";
+"exercise.desc.plank" = "자세를 유지하여 코어 안정성 향상";
+"exercise.desc.jumpingJacks" = "심박수를 높이는 유산소 워밍업";
+"exercise.desc.lunges" = "통제된 움직임으로 대퇴사두근과 둔근 타겟";
+"exercise.desc.crunches" = "복근을 효과적으로 강화";
+"exercise.desc.shoulderPress" = "웨이트를 들어올려 어깨 근력 강화";
+"exercise.desc.legRaises" = "하복부와 고관절 굴근 타겟";
+"exercise.desc.highKnees" = "심박수와 지구력을 향상시키는 유산소 운동";
+"exercise.desc.pullUps" = "등과 팔을 위한 도전적인 상체 운동";
+"exercise.desc.wallSit" = "다리 근육을 강화하는 등척성 운동";
+"exercise.desc.sidePlank" = "외복사근 강화 및 균형 향상";
+"exercise.desc.photoVerification" = "사진 증거로 과제 확인";
+"exercise.desc.custom" = "사진 확인이 포함된 맞춤 과제 생성";
+
+// MARK: - Exercise Instructions
+"exercise.inst.pushups.1" = "어깨 너비로 손을 벌려 플랭크 자세에서 시작합니다.";
+"exercise.inst.pushups.2" = "가슴이 바닥에 거의 닿을 때까지 몸을 내립니다.";
+"exercise.inst.pushups.3" = "몸을 일직선으로 유지하고 코어를 조입니다.";
+"exercise.inst.pushups.4" = "시작 위치로 밀어 올리고 반복합니다.";
+
+"exercise.inst.squats.1" = "발을 어깨 너비로 벌리고 서세요.";
+"exercise.inst.squats.2" = "의자에 앉는 것처럼 몸을 내립니다.";
+"exercise.inst.squats.3" = "무릎을 발가락 뒤에 두고 가슴을 펴세요.";
+"exercise.inst.squats.4" = "뒤꿈치로 밀어 일어납니다.";
+
+"exercise.inst.plank.1" = "팔뚝을 바닥에 대고 푸시업 자세에서 시작합니다.";
+"exercise.inst.plank.2" = "머리부터 발꿈치까지 일직선을 유지합니다.";
+"exercise.inst.plank.3" = "코어를 조이고 바닥을 봅니다.";
+"exercise.inst.plank.4" = "고르게 호흡하면서 자세를 유지합니다.";
+
+"exercise.inst.jumpingJacks.1" = "팔을 옆에 두고 똑바로 서세요.";
+"exercise.inst.jumpingJacks.2" = "점프하여 다리를 벌리고 팔을 머리 위로 올립니다.";
+"exercise.inst.jumpingJacks.3" = "발을 벌리고 손을 위에서 맞닿게 착지합니다.";
+"exercise.inst.jumpingJacks.4" = "시작 위치로 점프하여 돌아가 반복합니다.";
+
+"exercise.inst.lunges.1" = "발을 엉덩이 너비로 벌리고 똑바로 서세요.";
+"exercise.inst.lunges.2" = "한 발로 앞으로 나가며 엉덩이를 내립니다.";
+"exercise.inst.lunges.3" = "양 무릎이 90도가 되고, 뒷무릎은 바닥 바로 위에.";
+"exercise.inst.lunges.4" = "앞발로 밀어 돌아가고 반대쪽으로 교대합니다.";
+
+"exercise.inst.crunches.1" = "무릎을 구부리고 발을 바닥에 대고 등을 대고 눕습니다.";
+"exercise.inst.crunches.2" = "머리 뒤에 손을 놓고 팔꿈치를 바깥으로.";
+"exercise.inst.crunches.3" = "복근을 수축하여 어깨를 바닥에서 들어 올립니다.";
+"exercise.inst.crunches.4" = "조절하며 내리고 반복합니다.";
+
+"exercise.inst.shoulderPress.1" = "어깨 높이에서 각 손에 웨이트를 들고 서거나 앉습니다.";
+"exercise.inst.shoulderPress.2" = "팔이 펴질 때까지 웨이트를 위로 밀어 올립니다.";
+"exercise.inst.shoulderPress.3" = "코어를 조이고 등을 곧게 유지합니다.";
+"exercise.inst.shoulderPress.4" = "천천히 어깨 높이로 내리고 반복합니다.";
+
+"exercise.inst.legRaises.1" = "다리를 펴고 등을 대고 눕습니다.";
+"exercise.inst.legRaises.2" = "다리를 곧게 유지하며 천장을 향해 들어 올립니다.";
+"exercise.inst.legRaises.3" = "바닥에 닿지 않게 천천히 내립니다.";
+"exercise.inst.legRaises.4" = "허리를 바닥에 밀착시킵니다.";
+
+"exercise.inst.highKnees.1" = "발을 엉덩이 너비로 벌리고 똑바로 서세요.";
+"exercise.inst.highKnees.2" = "제자리에서 달리며 무릎을 허리 높이까지 올립니다.";
+"exercise.inst.highKnees.3" = "균형과 속도를 위해 팔을 움직입니다.";
+"exercise.inst.highKnees.4" = "매번 앞꿈치로 가볍게 착지합니다.";
+
+"exercise.inst.pullUps.1" = "손을 어깨 너비로, 손바닥을 앞으로 하여 바에 매달립니다.";
+"exercise.inst.pullUps.2" = "턱이 바 위로 올라올 때까지 당깁니다.";
+"exercise.inst.pullUps.3" = "정상에서 견갑골을 모읍니다.";
+"exercise.inst.pullUps.4" = "조절하며 내리고 반복합니다.";
+
+"exercise.inst.wallSit.1" = "등을 벽에 대고 서세요.";
+"exercise.inst.wallSit.2" = "허벅지가 바닥과 평행이 될 때까지 미끄러져 내려갑니다.";
+"exercise.inst.wallSit.3" = "무릎을 90도로 유지하고, 발목 바로 위에.";
+"exercise.inst.wallSit.4" = "등을 벽에 평평하게 유지합니다.";
+
+"exercise.inst.sidePlank.1" = "다리를 펴고 포개어 옆으로 눕습니다.";
+"exercise.inst.sidePlank.2" = "팔뚝과 발 옆면으로 지지하며 엉덩이를 들어 올립니다.";
+"exercise.inst.sidePlank.3" = "머리부터 발까지 일직선을 유지합니다.";
+"exercise.inst.sidePlank.4" = "자세를 유지한 후 반대쪽으로 교대합니다.";
+
+"exercise.inst.photo.1" = "시작 지점을 기록하기 위해 '전' 사진을 찍습니다.";
+"exercise.inst.photo.2" = "과제나 활동을 완료합니다.";
+"exercise.inst.photo.3" = "완료된 과제를 보여주는 '후' 사진을 찍습니다.";
+"exercise.inst.photo.4" = "확인을 위해 제출하고 보상을 받습니다.";
+
+// MARK: - Paywall
+"paywall.pro" = "PRO";
+"paywall.title" = "스크린 타임을\n컨트롤하세요";
+"paywall.subtitle" = "집중력을 되찾고 스크린 타임을 50% 이상 줄인 수천 명과 함께하세요";
+"paywall.users_love" = "10,000명 이상이 LockIn을 사랑합니다";
+"paywall.feature_blocking" = "무제한 앱 및 웹사이트 차단";
+"paywall.feature_focus" = "작업 확인이 포함된 집중 세션";
+"paywall.feature_analytics" = "상세한 사용 분석 및 인사이트";
+"paywall.trial_toggle" = "확신이 안 서세요? 3일 무료 체험";
+"paywall.trial_subtitle" = "체험 기간 중 언제든 취소 가능, 무료";
+"paywall.choose_plan" = "플랜 선택";
+"paywall.loading_plans" = "플랜 로딩 중...";
+"paywall.annual" = "연간";
+"paywall.monthly" = "월간";
+"paywall.save" = "%@%% 절약";
+"paywall.billed_annually" = "%@/월 연간 결제";
+"paywall.legal_trial" = "3일 무료 체험 후 결제가 Apple ID 계정으로 청구됩니다. 구독은 기간 종료 24시간 전에 취소하지 않으면 자동 갱신됩니다.";
+"paywall.legal_no_trial" = "결제가 Apple ID 계정으로 청구됩니다. 구독은 기간 종료 24시간 전에 취소하지 않으면 자동 갱신됩니다.";
+"paywall.terms_of_service" = "이용약관";
+"paywall.privacy_policy" = "개인정보 처리방침";
+"paywall.restore_purchases" = "구매 복원";
+"paywall.no_purchases_found" = "이전 구매 내역이 없습니다";
+"paywall.start_trial" = "3일 무료 체험 시작";
+"paywall.subscribe_now" = "지금 구독";
+"paywall.cancel_in_app_store" = "App Store에서 취소";
+"paywall.per_year" = "/년";
+"paywall.per_month" = "/월";
+"paywall.welcome_title" = "LockIn에 오신 것을 환영합니다!";
+"paywall.welcome_message" = "집중의 여정이 지금 시작됩니다";
+"paywall.continue" = "계속";
+"paywall.error" = "오류";
+"paywall.ok" = "확인";
+"paywall.review1_text" = "드디어 폰 중독을 끊었어요!";
+"paywall.review1_author" = "Sarah M.";
+"paywall.review2_text" = "스크린 타임이 하루 3시간 줄었어요";
+"paywall.review2_author" = "James K.";
+"paywall.review3_text" = "써본 중 최고의 집중 앱";
+"paywall.review3_author" = "Emily R.";
+
+// MARK: - Home
+"home.todays_goal" = "오늘의 목표";
+"home.used" = "사용";
+"home.left" = "남음";
+
+// MARK: - Notifications
+"notification.earn_time_action" = "시간 획득";
+"notification.view_stats_action" = "통계 보기";
+"notification.daily_reminder_title" = "LockIn 시간이에요!";
+"notification.daily_reminder_body" = "일일 목표를 확인하고 스크린 타임을 획득하세요.";
+"notification.streak_risk_title" = "연속 기록이 위험해요! 🔥";
+"notification.streak_risk_body" = "%lld일 연속 기록 중이에요. 오늘 놓치지 마세요!";
+"notification.need_more_time_title" = "시간이 더 필요하세요?";
+"notification.need_more_time_body" = "빠른 운동을 완료하고 더 많은 스크린 시간을 획득하세요.";
+"notification.focus_complete_title" = "집중 세션 완료! 🎉";
+"notification.focus_complete_body" = "잘했어요! %lld분의 스크린 타임을 획득했습니다.";
+
+// MARK: - Coach
+"coach.title" = "AI 코치";
+"coach.your_ai_coach" = "당신의 AI 코치";
+"coach.description" = "맞춤형 가이드와 격려를 받으세요.";
+"coach.greeting_can_earn" = "안녕하세요! 오늘의 목표를 달성하셨네요. 대단해요! 🎉 추가 스크린 타임을 획득하시겠어요, 아니면 다른 도움이 필요하세요?";
+"coach.greeting_cant_earn" = "안녕하세요! 👋 집중 여정을 도와드리려고 해요. 오늘 무엇을 도와드릴까요?";
+"coach.prompt1" = "💭 스트레스 받아요";
+"coach.prompt2" = "🎯 집중하게 도와주세요";
+"coach.prompt3" = "😴 지루해요";
+"coach.ready_to_earn" = "스크린 타임을 획득할 준비됐나요?";
+"coach.earn_minutes" = "%lld분 획득";
+"coach.minutes_earned" = "%lld분을 획득했어요! 🎉";
+"coach.thanks_reflecting" = "공유해 주셔서 감사해요. 자신의 감정을 되돌아보는 건 강력한 한 걸음이에요.";
+"coach.bonus_acknowledgment" = "솔직하게 말씀해 주셔서 %lld분 보너스를 드렸어요. 💪";
+"coach.type_message" = "메시지를 입력하세요...";
+"coach.response_limit" = "오늘은 여기까지! 내일 더 이야기해요. 그동안 운동을 하거나 휴식을 취해보세요.";
+"coach.response_stress" = "이해해요. 스트레스는 힘들 수 있어요. 깊은 숨을 쉬는 걸 잊지 마세요. 기분 전환으로 운동은 어떠세요?";
+"coach.response_focus" = "산만한 세상에서 집중하기 어려울 수 있어요. 25분 동안 폰을 내려놓고 한 가지에 집중해보세요. 할 수 있어요!";
+"coach.response_bored" = "지루함은 창의력의 기회가 될 수 있어요! 끝없이 스크롤하는 대신, 새로운 걸 시도하거나 취미를 가져보는 건 어떨까요?";
+"coach.response_default" = "공유해 주셔서 감사해요. 집중 여정을 응원하고 있어요. 도움이 필요한 구체적인 게 있나요?";
+
+// MARK: - Detox
+"detox.title" = "디톡스";
+"detox.stay_focused" = "집중하세요!";
+"detox.digital_detox" = "디지털 디톡스";
+"detox.all_apps_blocked" = "모든 앱 차단됨";
+"detox.take_break" = "화면에서 벗어나 휴식하세요";
+"detox.remaining" = "남은 시간";
+"detox.duration" = "기간";
+"detox.end_detox" = "디톡스 종료";
+"detox.start_detox" = "디톡스 시작";
+
+// MARK: - Onboarding (New)
+
+// 연령대
+"onboarding.age_under_18" = "18세 미만";
+"onboarding.age_18_24" = "18-24세";
+"onboarding.age_25_30" = "25-30세";
+"onboarding.age_31_40" = "31-40세";
+"onboarding.age_41_50" = "41-50세";
+"onboarding.age_51_plus" = "51세 이상";
+
+// 하루 시간
+"onboarding.hours_1_2" = "1-2시간";
+"onboarding.hours_2_4" = "2-4시간";
+"onboarding.hours_4_6" = "4-6시간";
+"onboarding.hours_6_8" = "6-8시간";
+"onboarding.hours_8_plus" = "8시간 이상";
+
+// Onboarding Reviews
+"onboarding.review1_text" = "매일 5시간을 인스타그램에 낭비했어요. 이제 다시 책을 읽고 잠도 잘 자요.";
+"onboarding.review1_author" = "수진 K.";
+"onboarding.review2_text" = "첫 주에 생산성이 두 배가 되었어요. 드디어 일일 작업을 완료해요.";
+"onboarding.review2_author" = "민준 P.";
+"onboarding.review3_text" = "드디어 취미 시간이 생겼어요. LockIn 덕분에 저녁 시간을 되찾았어요.";
+"onboarding.review3_author" = "지은 L.";
+"onboarding.review4_text" = "작업 인증이 모든 것을 바꿨어요. 이제 시작한 일을 정말 끝내요.";
+"onboarding.review4_author" = "현우 C.";
+
+"onboarding.now" = "지금";
+"onboarding.how_it_works" = "사용 방법";
+"onboarding.block_apps" = "앱 차단";
+"onboarding.block_apps_desc" = "집중 시간에 차단할 앱을 선택하세요.";
+"onboarding.earn_time" = "시간 획득";
+"onboarding.earn_time_desc" = "빠른 운동을 완료하여 스크린 타임을 획득하세요.";
+"onboarding.spend_wisely" = "현명하게 사용";
+"onboarding.spend_wisely_desc" = "획득한 시간을 의식적으로 사용하세요.";
+"onboarding.schedule_freedom" = "자유 시간 예약";
+"onboarding.schedule_freedom_desc" = "차단된 앱을 언제 사용할 수 있는지 설정하세요.";
+"onboarding.select_apps_to_block" = "차단할 앱 선택";
+"onboarding.apps_blocked_by_default" = "앱은 기본적으로 차단됨";
+"onboarding.earn_screen_time" = "스크린 타임 획득";
+"onboarding.earn_screen_time_desc" = "운동을 완료하여 스크린 시간을 획득하세요.";
+"onboarding.unlock_window_title" = "잠금 해제 시간대";
+"onboarding.unlock_window_desc" = "차단된 앱을 언제 사용할 수 있는지 선택하세요.";
+"onboarding.how_it_works_explain" = "LockIn 작동 방식";
+"onboarding.how_it_works_detail" = "방해되는 앱을 차단하고, 운동으로 스크린 타임을 획득하고, 현명하게 사용하세요.";
+"onboarding.minutes_selected" = "선택된 분";
+"onboarding.min" = "분";
+"onboarding.almost_ready" = "거의 완료됐어요!";
+"onboarding.grant_permissions" = "권한 부여";
+"onboarding.screen_time" = "스크린 타임";
+"onboarding.required_to_block" = "앱 차단에 필요";
+"onboarding.camera" = "카메라";
+"onboarding.for_exercise_verification" = "운동 확인용";
+"onboarding.grant" = "허용";

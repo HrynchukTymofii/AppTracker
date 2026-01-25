@@ -1,0 +1,975 @@
+/*
+  Localizable.strings
+  LockIn
+
+  Chinese Simplified Localization
+*/
+
+// MARK: - Common
+"common.done" = "完成";
+"common.cancel" = "取消";
+"common.save" = "保存";
+"common.edit" = "编辑";
+"common.close" = "关闭";
+"common.back" = "返回";
+"common.next" = "下一步";
+"common.skip" = "跳过";
+"common.continue" = "继续";
+"common.error" = "错误";
+"common.success" = "成功";
+"common.loading" = "加载中...";
+"common.retry" = "重试";
+"common.get_started" = "开始";
+"common.of" = "/";
+
+// MARK: - Tab Bar
+"tab.home" = "首页";
+"tab.goals" = "目标";
+"tab.lockin" = "LockIn";
+"tab.stats" = "统计";
+"tab.profile" = "个人";
+
+// MARK: - Home
+"home.greeting" = "%@好";
+"home.morning" = "早上";
+"home.afternoon" = "下午";
+"home.evening" = "晚上";
+"home.help" = "帮助";
+"home.health_score" = "健康";
+"home.today_progress" = "今日进度";
+"home.screen_time" = "屏幕时间";
+"home.earned_time" = "已赚取";
+"home.top_apps" = "最常用应用";
+"home.daily_goal" = "每日目标";
+"home.change" = "更改";
+"home.upcoming" = "即将到来";
+"home.see_all" = "查看全部";
+"home.create_schedule" = "创建计划";
+"home.set_times_unblocked" = "设置应用解锁时间";
+"home.unblocked" = "已解锁";
+"home.every_day" = "每天";
+"home.weekdays" = "工作日";
+"home.weekends" = "周末";
+
+// MARK: - Today's Progress
+"progress.todays_progress" = "今日进度";
+"progress.earn" = "赚取";
+"progress.spent" = "已消耗";
+"progress.earned" = "已赚取";
+"progress.balance" = "余额";
+"progress.this_week" = "本周";
+
+// MARK: - LockIn (Earn Time)
+"lockin.title" = "赚取屏幕时间";
+"lockin.subtitle" = "完成运动来解锁应用时间";
+"lockin.balance" = "屏幕时间余额";
+"lockin.minutes" = "分钟";
+"lockin.earn" = "赚取";
+"lockin.earn_time" = "赚取时间";
+"lockin.transaction_history" = "交易历史";
+"lockin.no_activity" = "暂无活动";
+"lockin.complete_exercises" = "完成运动来赚取时间";
+"lockin.today" = "今日:";
+"lockin.earned" = "已赚取";
+"lockin.spent" = "已消费";
+"lockin.week" = "本周:";
+"lockin.task_in_progress" = "任务进行中";
+"lockin.continue" = "继续";
+"lockin.recent_activity" = "最近活动";
+"lockin.resets_in_hours" = "%d小时后重置";
+"lockin.favorites" = "收藏";
+"lockin.all_exercises" = "所有运动";
+"lockin.double_tap_add" = "双击添加";
+"lockin.double_tap_remove" = "双击移除";
+
+// MARK: - Exercises
+"exercise.pushups" = "俯卧撑";
+"exercise.squats" = "深蹲";
+"exercise.plank" = "平板支撑";
+"exercise.jumping_jacks" = "开合跳";
+"exercise.lunges" = "弓步";
+"exercise.crunches" = "卷腹";
+"exercise.shoulder_press" = "肩推";
+"exercise.leg_raises" = "抬腿";
+"exercise.high_knees" = "高抬腿";
+"exercise.pull_ups" = "引体向上";
+"exercise.wall_sit" = "靠墙静蹲";
+"exercise.side_plank" = "侧平板支撑";
+"exercise.photo_task" = "照片任务";
+"exercise.focus_mode" = "专注模式";
+"exercise.custom" = "自定义任务";
+"exercise.min_per_rep" = "分钟/次";
+"exercise.min_per_sec" = "分钟/秒";
+"exercise.camera_required" = "需要相机权限";
+"exercise.open_settings" = "打开设置";
+"exercise.enable_camera" = "启用相机";
+"exercise.great_job" = "干得漂亮!";
+"exercise.leg_day_champion" = "腿部训练冠军!";
+"exercise.core_of_steel" = "钢铁核心!";
+"exercise.min_earned" = "+%@分钟已赚取";
+"exercise.do_pushups" = "做俯卧撑";
+"exercise.do_squats" = "做深蹲";
+"exercise.hold_plank" = "保持平板支撑";
+"exercise.pushup_instructions" = "将手机放置在能从侧面看到上半身的位置。";
+"exercise.squat_instructions" = "站在手机前，让它能从侧面看到你的全身。";
+"exercise.plank_instructions" = "将手机放置在能从侧面看到全身的位置。保持身体挺直!";
+"exercise.start_pushups" = "开始俯卧撑";
+"exercise.start_squats" = "开始深蹲";
+"exercise.start_plank" = "开始平板支撑";
+"exercise.do_some_pushups" = "做几个俯卧撑...";
+"exercise.do_some_squats" = "做几个深蹲...";
+"exercise.hold_the_plank" = "保持平板支撑...";
+"exercise.pushups_label" = "俯卧撑";
+"exercise.squats_label" = "深蹲";
+"exercise.seconds" = "秒";
+"exercise.down" = "下";
+"exercise.up" = "上";
+"exercise.holding" = "保持中";
+"exercise.get_in_position" = "准备姿势";
+"exercise.paused" = "已暂停";
+"exercise.paused_get_back" = "已暂停 - 回到位置";
+"exercise.timer_pauses_info" = "如果你离开画面，计时器会暂停";
+"exercise.camera_tracking_pushups" = "要追踪你的俯卧撑，我们需要相机权限。";
+"exercise.camera_tracking_squats" = "要追踪你的深蹲，我们需要相机权限。";
+"exercise.camera_tracking_plank" = "要追踪你的平板支撑，我们需要相机权限。";
+"exercise.did_pushups" = "你做了%d个俯卧撑!";
+"exercise.did_squats" = "你做了%d个深蹲!";
+"exercise.held_for_seconds" = "你坚持了%d秒!";
+"exercise.finish_with_reward" = "完成 (+%@分钟)";
+"exercise.photo_task_desc" = "完成任务并用照片验证来赚取屏幕时间";
+"exercise.describe_task" = "描述你的任务";
+"exercise.task_placeholder" = "你要做什么? (例如: 打扫房间)";
+"exercise.or_choose_preset" = "或选择预设";
+"exercise.camera_permission_message" = "我们需要相机权限来验证你的运动和追踪进度。";
+"exercise.camera_photo_task_message" = "要拍摄任务验证照片，我们需要相机权限。";
+"exercise.before_photo" = "任务前照片";
+"exercise.after_photo" = "任务后照片";
+"exercise.show_completed" = "展示完成的任务";
+"exercise.take_starting_photo" = "拍摄起始点照片";
+"exercise.before" = "之前";
+"exercise.after" = "之后";
+"exercise.proof" = "证明";
+"exercise.go_complete_task" = "去完成你的任务!";
+"exercise.done_after_photo" = "完成了 - 拍摄完成照片";
+"exercise.done_verify_task" = "完成了 - 验证任务";
+"exercise.task_verified" = "任务已验证!";
+"exercise.type_message" = "输入消息...";
+"exercise.complete_anyway" = "仍然完成 (+%d分钟)";
+"exercise.reps" = "次";
+"exercise.seconds_unit" = "秒";
+"exercise.reward_per_rep" = "%.1f分钟/次 (最少%d), +%.1f 超过%d后";
+"exercise.reward_per_sec" = "%.1f分钟/秒 (最少%d秒), +%.1f 超过%d秒后";
+"exercise.verify_task" = "验证任务完成";
+"exercise.reward_per_unit" = "%.1f分钟/单位";
+
+// Photo Task Presets
+"exercise.preset.clean_room" = "打扫房间";
+"exercise.preset.do_dishes" = "洗碗";
+"exercise.preset.make_bed" = "整理床铺";
+"exercise.preset.organize_desk" = "整理书桌";
+"exercise.preset.take_walk" = "散步";
+"exercise.preset.read_book" = "读书";
+"exercise.preset.meditate" = "冥想";
+"exercise.preset.stretch" = "拉伸";
+"exercise.preset.drink_water" = "喝水";
+"exercise.preset.healthy_meal" = "健康饮食";
+
+// MARK: - Focus Mode
+"focus.title" = "专注模式";
+"focus.deep_focus" = "深度专注";
+"focus.description" = "屏蔽所有干扰，专注于重要的事情";
+"focus.session_duration" = "专注时长";
+"focus.apps_blocked" = "所有选中的应用将被锁定";
+"focus.earn_info" = "完成可赚取%@分钟";
+"focus.earn_minutes" = "完成可赚取%d分钟";
+"focus.no_interruptions" = "不受打扰地保持专注";
+"focus.start" = "开始专注";
+"focus.remaining" = "剩余";
+"focus.paused" = "已暂停";
+"focus.active" = "专注中";
+"focus.all_blocked" = "所有应用已锁定";
+"focus.end" = "结束";
+"focus.pause" = "暂停";
+"focus.resume" = "继续";
+"focus.add_time" = "+5分钟";
+"focus.complete" = "专注完成!";
+"focus.completed_session" = "你完成了%d分钟的专注";
+"focus.time_earned" = "赚取时间";
+"focus.cancel" = "取消";
+"focus.focus_session" = "专注时段";
+"focus.session_paused" = "专注已暂停";
+"focus.focus_active" = "专注中";
+"focus.minutes" = "+%@分钟";
+
+// MARK: - Profile
+"profile.settings" = "设置";
+"profile.achievements" = "成就";
+"profile.blocked_items" = "已锁定项目";
+"profile.blocked_items_desc" = "你锁定的应用和类别";
+"profile.app_settings" = "应用设置";
+"profile.unlock_window" = "解锁时长";
+"profile.unlock_window_desc" = "使用赚取时间时的访问时长";
+"profile.daily_goal" = "每日目标";
+"profile.daily_goal_desc" = "每天允许的最大屏幕时间";
+"profile.default_app_limit" = "默认应用限制";
+"profile.default_app_limit_desc" = "新锁定应用的默认每日限制";
+"profile.theme" = "主题";
+"profile.accent_color" = "强调色";
+"profile.notifications" = "通知";
+"profile.contact_us" = "联系我们";
+"profile.rate_us" = "给我们评分";
+"profile.logout" = "退出登录";
+"profile.apps" = "应用";
+"profile.categories" = "类别";
+"profile.min" = "分钟";
+"profile.pro" = "PRO";
+
+// MARK: - Stats
+"stats.streak" = "连续";
+"stats.tasks" = "任务";
+"stats.days" = "天";
+"stats.total_earned" = "总赚取";
+"stats.total_spent" = "总消费";
+"stats.weekly_stats" = "每周统计";
+"stats.today" = "今天";
+"stats.this_week" = "本周";
+"stats.last_week" = "上周";
+"stats.daily_avg" = "日均";
+"stats.vs_last_week" = "对比上周";
+"stats.less_screen_time" = "屏幕时间减少";
+"stats.more_screen_time" = "屏幕时间增加";
+"stats.share_progress" = "分享进度";
+"stats.share" = "分享";
+
+// MARK: - Achievements
+"achievements.title" = "成就";
+"achievements.unlocked" = "已解锁成就";
+"achievements.category.streak" = "连续";
+"achievements.category.tasks" = "任务";
+"achievements.category.time_earned" = "赚取时间";
+"achievements.category.health" = "健康";
+"achievements.category.balance" = "平衡";
+"achievements.category.special" = "特殊";
+"achievements.category.all" = "全部";
+
+// Achievement Names and Descriptions
+"achievement.streak_1.name" = "第一把火";
+"achievement.streak_1.desc" = "完成第一天";
+"achievement.streak_3.name" = "起步";
+"achievement.streak_3.desc" = "连续3天";
+"achievement.streak_7.name" = "周战士";
+"achievement.streak_7.desc" = "连续7天";
+"achievement.streak_14.name" = "双周冠军";
+"achievement.streak_14.desc" = "连续14天";
+"achievement.streak_30.name" = "月度大师";
+"achievement.streak_30.desc" = "连续30天";
+"achievement.streak_60.name" = "连续传奇";
+"achievement.streak_60.desc" = "连续60天";
+
+"achievement.tasks_1.name" = "第一步";
+"achievement.tasks_1.desc" = "完成1个任务";
+"achievement.tasks_5.name" = "任务达人";
+"achievement.tasks_5.desc" = "完成5个任务";
+"achievement.tasks_10.name" = "忙碌起来";
+"achievement.tasks_10.desc" = "完成10个任务";
+"achievement.tasks_25.name" = "效率高手";
+"achievement.tasks_25.desc" = "完成25个任务";
+"achievement.tasks_50.name" = "任务机器";
+"achievement.tasks_50.desc" = "完成50个任务";
+"achievement.tasks_100.name" = "百人俱乐部";
+"achievement.tasks_100.desc" = "完成100个任务";
+
+"achievement.time_5.name" = "最初几分钟";
+"achievement.time_5.desc" = "赚取5分钟";
+"achievement.time_30.name" = "时间建造者";
+"achievement.time_30.desc" = "累计赚取30分钟";
+"achievement.time_60.name" = "小时英雄";
+"achievement.time_60.desc" = "累计赚取1小时";
+"achievement.time_180.name" = "时间巨人";
+"achievement.time_180.desc" = "累计赚取3小时";
+"achievement.time_600.name" = "时间大师";
+"achievement.time_600.desc" = "累计赚取10小时";
+"achievement.time_1800.name" = "时间传奇";
+"achievement.time_1800.desc" = "累计赚取30小时";
+
+"achievement.health_60.name" = "上升中";
+"achievement.health_60.desc" = "达到60健康分数";
+"achievement.health_70.name" = "良好状态";
+"achievement.health_70.desc" = "达到70健康分数";
+"achievement.health_80.name" = "优秀";
+"achievement.health_80.desc" = "达到80健康分数";
+"achievement.health_90.name" = "完美状态";
+"achievement.health_90.desc" = "达到90健康分数";
+
+"achievement.balance_30.name" = "储蓄者";
+"achievement.balance_30.desc" = "积累30分钟余额";
+"achievement.balance_120.name" = "时间银行精英";
+"achievement.balance_120.desc" = "积累2小时余额";
+
+// MARK: - Goals / Blocking
+"goals.title" = "目标";
+"goals.today_usage" = "今日应用使用";
+"goals.loading" = "加载使用数据...";
+"goals.screen_time_required" = "需要屏幕时间权限";
+"goals.screen_time_description" = "LockIn需要屏幕时间权限来锁定应用和追踪使用情况。";
+"goals.grant_access" = "授予权限";
+"goals.requesting" = "请求中...";
+"goals.blocked_apps" = "已锁定应用";
+"goals.selected" = "已选择";
+"goals.select_apps_to_block" = "选择要锁定的应用";
+"goals.choose_apps" = "选择要锁定的应用和类别。你可以随时更改。";
+"goals.app_limits" = "应用限制";
+"goals.apps" = "应用";
+"goals.no_limits_set" = "未设置应用限制";
+"goals.set_daily_limits" = "为特定应用设置每日时间限制，更好地管理屏幕时间。";
+"goals.add_app_limit" = "添加应用限制";
+"goals.add_another_limit" = "添加另一个限制";
+"goals.set_limits" = "设置限制";
+"goals.daily_app_limits" = "每日应用限制";
+"goals.limit_description" = "设置每个应用的最大每日使用量。即使有赚取的时间也不能超过此限制。";
+"goals.select_apps_limits" = "选择应用以设置每日限制";
+"goals.no_limits_yet" = "未设置应用限制";
+"goals.add_limit_hint" = "点击\"添加应用限制\"为特定应用设置限制";
+"goals.limits_reset_info" = "限制在每天午夜重置。访问锁定应用时会自动追踪使用情况。";
+"goals.daily_limit_for" = "每日限制";
+"goals.of" = "共";
+"goals.limit_reached" = "已达限制";
+"goals.min_daily_limit" = "分钟每日限制";
+"goals.edit" = "编辑";
+"goals.remove_limit" = "移除限制";
+"goals.cancel" = "取消";
+"goals.done" = "完成";
+"goals.save" = "保存";
+"goals.minutes" = "分钟";
+"goals.share_progress" = "分享进度";
+"goals.used" = "已用";
+"goals.goal" = "目标";
+"goals.left" = "剩余";
+"goals.of_goal" = "目标的";
+"goals.daily_app_limits_desc" = "设置每个应用的最大每日使用量。即使有赚取的时间也不能超过此限制。";
+"goals.select_apps_to_set_limits" = "选择应用以设置每日限制";
+"goals.no_app_limits_set" = "未设置应用限制";
+"goals.tap_to_set_limits" = "点击\"添加应用限制\"为特定应用设置限制";
+"goals.of_minutes" = "共%d分钟";
+"goals.minutes_count" = "%d分钟";
+"goals.min_daily_limit" = "%d分钟每日限制";
+
+// MARK: - Shield Screen
+"shield.ready_to_unlock" = "准备解锁";
+"shield.app_blocked" = "应用已锁定";
+"shield.almost_there" = "快完成了";
+"shield.times_up" = "时间到";
+"shield.goal_complete" = "目标完成!";
+"shield.daily_goal_reached" = "已达每日目标";
+"shield.unlock" = "解锁%d分钟";
+"shield.stay_focused" = "保持专注";
+"shield.earn_time" = "赚取时间";
+"shield.earn_more_time" = "赚取更多时间";
+"shield.talk_to_coach" = "与教练交谈";
+"shield.close" = "关闭";
+"shield.site_limit_reached" = "网站限制已达";
+"shield.not_enough_time" = "时间不足";
+"shield.no_time_available" = "没有可用时间";
+"shield.unlock_minutes" = "解锁%d分钟";
+"shield.unlock_for_minutes" = "解锁%d分钟";
+"shield.earn_time_now" = "立即赚取时间";
+
+// Shield Descriptions - App
+"shield.goal_complete_desc" = "你已达到今日屏幕时间目标。\n\n准备休息一下？你的AI教练可以帮你赚取奖励时间。";
+"shield.time_up_desc" = "你今天%@的时间已用完。\n\n与AI教练聊聊如何养成更好的习惯。";
+"shield.ready_unlock_desc" = "%@已被锁定。\n\n你已赚取%@。\n解锁将使用%d分钟余额。";
+"shield.almost_there_desc" = "%@已被锁定。\n\n你有%@但需要%d分钟。\n再赚取%@即可解锁。";
+"shield.app_blocked_desc" = "%@已被锁定。\n\n完成运动来赚取屏幕时间。\n解锁需要%d分钟。";
+
+// Shield Descriptions - Web
+"shield.daily_goal_reached_desc" = "你已达到今日屏幕时间目标。\n\n与AI教练交谈来赚取奖励时间。";
+"shield.site_limit_desc" = "你今天的浏览时间已用完。\n\n与AI教练聊聊如何养成更好的习惯。";
+"shield.web_ready_unlock_desc" = "%@已被锁定。\n\n你已赚取%@。\n解锁将使用%d分钟。";
+"shield.web_not_enough_desc" = "%@已被锁定。\n\n你有%@但需要%d分钟。\n再赚取%@即可解锁。";
+"shield.web_no_time_desc" = "%@已被锁定。\n\n完成运动来赚取屏幕时间。\n解锁需要%d分钟。";
+
+// MARK: - Contact Us
+"contact.title" = "联系我们";
+"contact.header" = "我们很想听到您的声音!";
+"contact.description" = "有问题、反馈或需要帮助?联系我们，我们会尽快回复。";
+"contact.email_label" = "发送邮件给我们";
+"contact.send_email" = "发送邮件";
+"contact.get_in_touch" = "联系我们";
+"contact.love_to_hear" = "我们很想听到您的声音!分享反馈、报告问题或提问。";
+"contact.your_message" = "您的消息";
+"contact.placeholder" = "告诉我们您的想法...";
+"contact.send_message" = "发送消息";
+"contact.email_directly" = "或直接发邮件至:";
+
+// MARK: - Rate Us
+"rate.title" = "给我们评分";
+"rate.how_enjoying" = "您觉得LockIn怎么样?";
+"rate.tap_to_rate" = "点击星星评分";
+"rate.feedback" = "告诉我们如何改进";
+"rate.feedback_placeholder" = "您的反馈帮助我们让LockIn变得更好...";
+"rate.submit" = "提交反馈";
+"rate.rating_1" = "我们可以做得更好";
+"rate.rating_2" = "需要改进";
+"rate.rating_3" = "还可以";
+"rate.rating_4" = "很不错!";
+"rate.rating_5" = "非常喜欢!";
+"rate.enjoying" = "喜欢LockIn吗?";
+"rate.love_to_hear" = "我们想听听您的想法!您的反馈帮助我们改进。";
+"rate.can_do_better" = "可以做得更好";
+"rate.needs_improvement" = "需要改进";
+"rate.its_okay" = "还可以";
+"rate.really_good" = "真的很好!";
+"rate.love_it" = "非常喜欢!";
+"rate.how_improve" = "告诉我们如何改进";
+"rate.what_better" = "我们可以做得更好?";
+"rate.rate_app_store" = "在App Store评分";
+"rate.send_feedback" = "发送反馈";
+
+// MARK: - Help Tips
+"help.tip1.title" = "设置每日目标";
+"help.tip1.desc" = "在个人资料中选择屏幕时间限制。保持在限制内以养成健康习惯。";
+"help.tip2.title" = "赚取屏幕时间";
+"help.tip2.desc" = "去LockIn标签完成运动 - 做俯卧撑、深蹲、平板支撑或照片任务!";
+"help.tip3.title" = "专注模式";
+"help.tip3.desc" = "开始番茄钟来锁定所有应用，每专注一分钟赚取0.5分钟。";
+"help.tip4.title" = "锁定干扰应用";
+"help.tip4.desc" = "去目标标签选择要锁定的应用。还可以设置每个应用的时间限制。";
+"help.tip5.title" = "与教练交谈";
+"help.tip5.desc" = "达到每日限制了?与AI教练聊天反思并赚取额外时间。";
+"help.tip6.title" = "追踪进度";
+"help.tip6.desc" = "查看统计标签，观察健康分数随着习惯改善而提升。";
+"help.set_daily_goal" = "设置每日目标";
+"help.set_daily_goal_desc" = "在个人资料中选择屏幕时间限制。保持在限制内以养成健康习惯。";
+"help.earn_screen_time" = "赚取屏幕时间";
+"help.earn_screen_time_desc" = "去LockIn标签完成运动 - 做俯卧撑、深蹲、平板支撑或照片任务!";
+"help.focus_mode" = "专注模式";
+"help.focus_mode_desc" = "开始番茄钟来锁定所有应用，每专注一分钟赚取0.5分钟。";
+"help.block_apps" = "锁定干扰应用";
+"help.block_apps_desc" = "去目标标签选择要锁定的应用。还可以设置每个应用的时间限制。";
+"help.talk_to_coach" = "与教练交谈";
+"help.talk_to_coach_desc" = "达到每日限制了?与AI教练聊天反思并赚取额外时间。";
+"help.track_progress" = "追踪进度";
+"help.track_progress_desc" = "查看统计标签，观察健康分数随着习惯改善而提升。";
+
+// MARK: - Quick Actions
+"quick_actions.title" = "快捷操作";
+"quick_actions.focus_mode" = "专注模式";
+"quick_actions.pomodoro_timer" = "番茄钟";
+"quick_actions.hold_for_time" = "保持计时";
+"quick_actions.earn_per_rep" = "赚取%@分钟/次";
+"quick_actions.verify_with_photo" = "用照片验证";
+
+// MARK: - Time Formatting
+"time.minutes" = "%d分钟";
+"time.hours" = "%d小时";
+"time.hours_minutes" = "%d小时%d分钟";
+"time.today" = "今天";
+
+// MARK: - Errors
+"error.camera_permission" = "照片任务需要相机权限。";
+"error.no_apps_selected" = "请至少选择一个应用。";
+"error.insufficient_time" = "你没有足够的赚取时间。";
+
+// MARK: - Settings
+"settings.title" = "设置";
+"settings.accent_color" = "强调色";
+"settings.appearance" = "外观";
+"settings.language" = "语言";
+"settings.current_language" = "当前语言";
+"settings.select_language" = "选择语言";
+"settings.change_password" = "更改密码";
+"settings.enter_new_password" = "输入新密码";
+"settings.save_changes" = "保存更改";
+"settings.danger_zone" = "危险区域";
+"settings.delete_account" = "删除账户";
+"settings.delete_account_confirm" = "输入'Delete'确认";
+"settings.delete_account_warning" = "此操作不可逆。输入'Delete'确认。";
+"settings.type_delete" = "Delete";
+
+// Theme Modes
+"settings.theme.light" = "浅色";
+"settings.theme.dark" = "深色";
+"settings.theme.system" = "跟随系统";
+
+// Accent Colors
+"settings.color.blue" = "蓝色";
+"settings.color.purple" = "紫色";
+"settings.color.green" = "绿色";
+"settings.color.orange" = "橙色";
+"settings.color.pink" = "粉色";
+"settings.color.red" = "红色";
+"settings.color.teal" = "青色";
+"settings.color.indigo" = "靛蓝";
+
+// MARK: - Onboarding
+"onboarding.hello" = "你好!";
+"onboarding.welcome_to" = "欢迎来到";
+"onboarding.ready_to_help" = "我们准备帮助你";
+"onboarding.taking_control" = "掌控你的时间";
+"onboarding.lets_start" = "开始吧";
+"onboarding.how_old" = "你多大了?";
+"onboarding.personalize_exp" = "这有助于我们个性化你的体验";
+"onboarding.daily_screen_time" = "每日屏幕时间?";
+"onboarding.be_honest" = "诚实回答 - 我们不会评判";
+"onboarding.bad_news_good_news" = "我们有坏消息\n也有好消息";
+"onboarding.show_something" = "让我们向你展示关于屏幕时间的重要信息...";
+"onboarding.show_me" = "给我看看";
+"onboarding.the_bad_news" = "坏消息";
+"onboarding.the_good_news" = "好消息";
+"onboarding.at_hours_per_day" = "按每天%d小时计算，你将花费";
+"onboarding.looking_at_phone" = "看手机 今年";
+"onboarding.thats_approx" = "大约是";
+"onboarding.of_your_life" = "你的生命";
+"onboarding.you_read_right" = "是的，你没看错。你把大部分空闲时间花在看手机上，而这些时间本可以用来实现目标，过你想要的生活。";
+"onboarding.whats_good_news" = "好消息是什么?";
+"onboarding.can_help_get_back" = "LockIn可以帮你找回";
+"onboarding.turn_into_things" = "把它们变成你一直想实现的事情。\n\n更多时间给你的目标、热情和你爱的人。";
+"onboarding.lets_get_started" = "开始吧";
+"onboarding.first_step" = "让我们迈出第一步";
+"onboarding.connect_screen_time" = "LockIn将连接你的屏幕时间来提供";
+"onboarding.personalized_report" = "个性化专注报告";
+"onboarding.see_real_usage" = "查看真实使用数据";
+"onboarding.get_recommendations" = "获取个性化建议";
+"onboarding.track_progress" = "追踪进度";
+"onboarding.enable_screen_time" = "启用屏幕时间\n和应用锁定";
+"onboarding.secure_on_phone" = "100%信息安全，保存在你的手机上";
+"onboarding.permission_granted" = "权限已授予!";
+"onboarding.what_happens_next" = "接下来:";
+"onboarding.tap_continue" = "点击\"继续\"授权屏幕时间访问";
+"onboarding.select_apps" = "选择要锁定的应用和类别";
+"onboarding.tap_done" = "点击\"完成\"确认选择";
+"onboarding.enable_app_blocking" = "启用应用锁定";
+"onboarding.ready_to_block" = "准备锁定应用!";
+"onboarding.shield_when_open" = "当你尝试打开锁定的应用时，会显示盾牌。";
+"onboarding.stay_active_earn" = "保持活跃，赚取时间";
+"onboarding.complete_exercises_earn" = "完成运动和任务为锁定的应用赚取屏幕时间。";
+"onboarding.heres_reality" = "这是你的现实";
+"onboarding.based_on_usage" = "基于你实际的手机使用情况";
+"onboarding.todays_screen_time" = "今日屏幕时间";
+"onboarding.this_week" = "本周";
+"onboarding.life_on_phone" = "手机上的生活";
+"onboarding.at_this_rate" = "按这个速度，你将花费";
+"onboarding.lets_fix_this" = "让我们改变这个";
+"onboarding.your_potential" = "你的潜力";
+"onboarding.see_how_much" = "看看你能节省多少时间";
+"onboarding.reduce_by" = "减少屏幕时间%d%%";
+"onboarding.weekly_projection" = "每周预测";
+"onboarding.free_time_week" = "每周空闲时间";
+"onboarding.life_reclaimed" = "找回的生活";
+"onboarding.accomplish_goals" = "更快实现目标，更高效更充实";
+"onboarding.current" = "当前";
+"onboarding.with_lockin" = "使用LockIn";
+"onboarding.unlock_potential" = "释放你的潜力";
+"onboarding.hours_back" = "每周找回%d+小时";
+"onboarding.smart_coach" = "智能教练";
+"onboarding.task_verification" = "任务验证";
+"onboarding.focus_sessions" = "专注时段";
+"onboarding.daily_goals" = "每日目标";
+"onboarding.complete_tasks" = "完成任务";
+"onboarding.app_rating" = "应用评分";
+"onboarding.more_productive" = "更高效";
+"onboarding.start_free_trial" = "开始免费试用";
+"onboarding.days_free" = "3天免费";
+"onboarding.maybe_later" = "稍后再说";
+"onboarding.allow_notifications" = "允许通知";
+"onboarding.remind_overscrolling" = "这样我们可以提醒你过度滚动并帮助你保持目标";
+"onboarding.notifications_enabled" = "通知已启用!";
+"onboarding.scrolling_for" = "你已经滚动了30分钟。休息一下?";
+"onboarding.time_for_break" = "休息一下?";
+"onboarding.what_to_block" = "锁定什么?";
+"onboarding.change_this_later" = "别担心，你可以稍后更改";
+"onboarding.apps" = "应用";
+"onboarding.categories" = "类别";
+"onboarding.start_blocking" = "开始锁定";
+"onboarding.items_selected" = "已选择%d项";
+"onboarding.set_daily_goal" = "设置每日目标";
+"onboarding.how_much_allow" = "你想给自己\n多少屏幕时间?";
+"onboarding.per_day" = "每天";
+"onboarding.change_in_settings" = "你可以随时在设置中更改";
+"onboarding.set_my_goal" = "设置目标";
+"onboarding.days" = "天";
+"onboarding.years" = "年";
+"onboarding.projection_title" = "LockIn重塑你的大脑\n实现长期专注。";
+"onboarding.projection_subtitle" = "LockIn用户每周恢复%d+小时的专注时间。";
+"onboarding.without_lockin" = "没有LockIn";
+"onboarding.day_one" = "第1天";
+"onboarding.day_fourteen" = "第14天";
+"onboarding.commitment_title" = "做出承诺";
+"onboarding.committed" = "你已承诺！";
+"onboarding.press_and_hold" = "按住能量球3秒钟，承诺控制你的屏幕时间";
+"onboarding.taken_first_step" = "你已迈出与手机建立更健康关系的第一步";
+"onboarding.keep_holding" = "继续按住...";
+"onboarding.hold_the_orb" = "按住能量球以承诺";
+"onboarding.lets_set_up" = "让我们设置你的专注应用！";
+
+// MARK: - Auth
+"auth.welcome_to" = "欢迎来到LockIn";
+"auth.take_control" = "掌控你的屏幕时间";
+"auth.continue_google" = "使用Google继续";
+"auth.continue_apple" = "使用Apple继续";
+"auth.continue_email" = "使用邮箱继续";
+"auth.get_started" = "开始";
+"auth.already_have_account" = "我已有账户";
+"auth.privacy_policy" = "隐私政策";
+"auth.terms_of_service" = "服务条款";
+"auth.create_account" = "创建账户";
+"auth.welcome_back" = "欢迎回来";
+"auth.start_taking_control" = "开始掌控你的屏幕时间";
+"auth.goals_waiting" = "你的专注目标在等你";
+"auth.email" = "邮箱";
+"auth.password" = "密码";
+"auth.enter_password" = "输入密码";
+"auth.agree_to_terms" = "我同意LockIn的";
+"auth.terms_conditions" = "条款和条件";
+"auth.sign_in" = "登录";
+"auth.sign_up" = "注册";
+"auth.or_continue_with" = "或继续使用";
+"auth.no_account" = "没有账户?";
+"auth.have_account" = "已有账户?";
+
+// MARK: - Device Activity Report
+"report.no_data" = "无屏幕时间数据";
+"report.no_data_desc" = "使用设备后返回查看统计数据";
+"report.vs_last_week" = "对比上周";
+"report.less_screen_time" = "更少屏幕时间";
+"report.more_screen_time" = "更多屏幕时间";
+"report.vs" = "vs";
+"report.difference" = "差异";
+"report.total_hours" = "总时长";
+"report.daily_avg" = "日均";
+"report.peak_day" = "峰值日";
+"report.today" = "今天";
+"report.stats_per_day" = "每日统计";
+"report.total_time_per_app" = "每个应用总时长";
+"report.no_app_data" = "无应用使用数据";
+"report.less" = "少";
+"report.more" = "多";
+"report.streak" = "连续";
+"report.vs_avg" = "对比平均";
+"report.top_apps" = "热门应用";
+"report.no_app_usage" = "今日无应用使用";
+"report.start_using" = "使用应用以查看统计";
+"report.screen_time" = "屏幕时间";
+"report.notifications" = "通知";
+"report.todays_progress" = "今日进度";
+"report.used" = "已用";
+"report.left" = "剩余";
+"report.goal_reached" = "达成目标";
+"report.this_week" = "本周";
+"report.remaining" = "剩余";
+"report.of_goal" = "目标的";
+"report.goal" = "目标";
+"report.day_sun" = "周日";
+"report.day_mon" = "周一";
+"report.day_tue" = "周二";
+"report.day_wed" = "周三";
+"report.day_thu" = "周四";
+"report.day_fri" = "周五";
+"report.day_sat" = "周六";
+"report.day_s" = "日";
+"report.day_m" = "一";
+"report.day_t" = "二";
+"report.day_w" = "三";
+"report.day_f" = "五";
+"report.avg" = "平均";
+
+
+// MARK: - Language Restart
+"settings.restart_required" = "需要重启";
+"settings.restart_message" = "请关闭并重新打开应用以应用语言更改。";
+
+// MARK: - Shield Action Notifications
+"action.talk_to_coach" = "与教练交谈";
+"action.earn_screen_time" = "赚取屏幕时间";
+"action.times_up" = "时间到";
+"action.chat_coach_bonus" = "与AI教练聊天以获得奖励时间。";
+"action.get_personalized_advice" = "从AI教练获取个性化建议。";
+"action.complete_exercises" = "完成锻炼以解锁您的应用。";
+"action.unlock_expired" = "您的%d分钟解锁窗口已到期。点击重新启用阻止。";
+
+// MARK: - Quick Menu
+"quick.focus_mode" = "专注模式";
+"quick.pomodoro_timer" = "番茄钟";
+"quick.plank" = "平板支撑";
+"quick.hold_for_time" = "保持时间";
+"quick.squats" = "深蹲";
+"quick.earn_per_rep" = "每次获得0.3分钟";
+"quick.pushups" = "俯卧撑";
+"quick.pushups_earn" = "每次获得0.5分钟";
+"quick.photo_task" = "拍照任务";
+"quick.verify_with_photo" = "拍照验证";
+
+// MARK: - Help Tips
+"help.tip1.title" = "数字健康";
+"help.tip1.desc" = "LockIn重塑你的大脑以获得长期专注力。在养成更好习惯的同时观察你的健康分数增长。";
+"help.tip2.title" = "追踪进度";
+"help.tip2.desc" = "查看你的连续天数、每日使用量以及与平均值的比较。小胜利带来大改变。";
+"help.tip3.title" = "赚取屏幕时间";
+"help.tip3.desc" = "完成俯卧撑、深蹲和平板支撑等锻炼以获得额外屏幕时间。动动身体，释放心灵。";
+"help.tip4.title" = "设定每日目标";
+"help.tip4.desc" = "选择屏幕时间限制，观察进度环逐渐填满。保持在目标内以养成持久习惯。";
+"help.tip5.title" = "阻止干扰";
+"help.tip5.desc" = "选择达到限制时要阻止的应用。掌控你的注意力，专注于重要的事情。";
+"help.tip6.title" = "查看统计";
+"help.tip6.desc" = "检查你的每周模式和趋势。了解你的使用情况是改变的第一步。";
+"help.back" = "返回";
+"help.next" = "下一个";
+"help.got_it" = "明白了!";
+
+// MARK: - Photo Task Presets (Updated)
+"preset.clean_room" = "打扫房间";
+"preset.homework" = "完成作业";
+"preset.workout" = "锻炼";
+"preset.cook" = "做饭";
+"preset.read" = "阅读10页";
+"preset.write" = "写一天的计划";
+
+// MARK: - Streak
+"streak.title" = "当前连续天数";
+"streak.days" = "天";
+"streak.best" = "最佳记录";
+"streak.keep_going" = "继续加油!";
+"streak.lost" = "连续记录中断";
+
+// MARK: - History
+"history.title" = "活动历史";
+"history.today" = "今天";
+"history.yesterday" = "昨天";
+"history.this_week" = "本周";
+"history.earlier" = "更早";
+"history.no_activity" = "暂无活动";
+
+// MARK: - Exercise Info
+"exercise.info" = "信息";
+"exercise.watch_demo" = "观看演示";
+"exercise.coming_soon" = "即将推出";
+"exercise.how_to_do_it" = "如何做";
+"exercise.rewards" = "奖励";
+"exercise.got_it" = "明白了!";
+"exercise.reward_info" = "每完成一组可获得屏幕时间";
+"exercise.reward_description" = "完成锻炼以赚取屏幕时间。更多次数 = 更多时间!";
+
+// MARK: - Exercise Descriptions
+"exercise.desc.pushups" = "通过经典俯卧撑增强上半身力量";
+"exercise.desc.squats" = "用正确的深蹲姿势加强腿部和核心";
+"exercise.desc.plank" = "通过保持姿势改善核心稳定性";
+"exercise.desc.jumpingJacks" = "提高心率的有氧热身";
+"exercise.desc.lunges" = "通过控制动作锻炼股四头肌和臀部";
+"exercise.desc.crunches" = "有效加强腹肌";
+"exercise.desc.shoulderPress" = "通过举重增强肩部力量";
+"exercise.desc.legRaises" = "锻炼下腹部和髋屈肌";
+"exercise.desc.highKnees" = "改善心率和耐力的有氧运动";
+"exercise.desc.pullUps" = "针对背部和手臂的高难度上半身运动";
+"exercise.desc.wallSit" = "加强腿部肌肉的等长运动";
+"exercise.desc.sidePlank" = "加强斜肌并改善平衡";
+"exercise.desc.photoVerification" = "用照片证据验证你的任务";
+"exercise.desc.custom" = "创建带照片验证的自定义任务";
+
+// MARK: - Exercise Instructions
+"exercise.inst.pushups.1" = "从平板支撑姿势开始，双手与肩同宽。";
+"exercise.inst.pushups.2" = "放低身体直到胸部几乎触地。";
+"exercise.inst.pushups.3" = "保持身体挺直，核心收紧。";
+"exercise.inst.pushups.4" = "推回起始位置并重复。";
+
+"exercise.inst.squats.1" = "双脚与肩同宽站立。";
+"exercise.inst.squats.2" = "像坐椅子一样放低身体。";
+"exercise.inst.squats.3" = "保持膝盖在脚趾后面，胸部抬起。";
+"exercise.inst.squats.4" = "通过脚后跟发力站起。";
+
+"exercise.inst.plank.1" = "从俯卧撑姿势开始，前臂放在地上。";
+"exercise.inst.plank.2" = "保持身体从头到脚成一条直线。";
+"exercise.inst.plank.3" = "收紧核心，看着地面。";
+"exercise.inst.plank.4" = "保持姿势，均匀呼吸。";
+
+"exercise.inst.jumpingJacks.1" = "双臂放在身体两侧直立站好。";
+"exercise.inst.jumpingJacks.2" = "跳起，分开双腿，双臂举过头顶。";
+"exercise.inst.jumpingJacks.3" = "双脚分开落地，双手在头顶合拢。";
+"exercise.inst.jumpingJacks.4" = "跳回起始位置并重复。";
+
+"exercise.inst.lunges.1" = "双脚与髋同宽直立站好。";
+"exercise.inst.lunges.2" = "一只脚向前迈步，同时降低臀部。";
+"exercise.inst.lunges.3" = "双膝都应呈90度，后膝刚好在地面上方。";
+"exercise.inst.lunges.4" = "通过前脚发力返回，换另一侧。";
+
+"exercise.inst.crunches.1" = "仰卧，膝盖弯曲，双脚平放。";
+"exercise.inst.crunches.2" = "双手放在头后，肘部向外。";
+"exercise.inst.crunches.3" = "收缩腹肌，将肩膀抬离地面。";
+"exercise.inst.crunches.4" = "控制下放并重复。";
+
+"exercise.inst.shoulderPress.1" = "站立或坐下，每只手拿一个重物放在肩膀高度。";
+"exercise.inst.shoulderPress.2" = "将重物直接向上推直到手臂伸直。";
+"exercise.inst.shoulderPress.3" = "保持核心收紧，背部挺直。";
+"exercise.inst.shoulderPress.4" = "慢慢放低到肩膀高度并重复。";
+
+"exercise.inst.legRaises.1" = "仰卧，双腿伸直。";
+"exercise.inst.legRaises.2" = "保持双腿伸直，向天花板抬起。";
+"exercise.inst.legRaises.3" = "慢慢放下，不要触地。";
+"exercise.inst.legRaises.4" = "保持下背部紧贴地面。";
+
+"exercise.inst.highKnees.1" = "双脚与髋同宽直立站好。";
+"exercise.inst.highKnees.2" = "原地跑步，将膝盖抬到腰部高度。";
+"exercise.inst.highKnees.3" = "摆动手臂保持平衡和节奏。";
+"exercise.inst.highKnees.4" = "每次都轻轻落在脚尖上。";
+
+"exercise.inst.pullUps.1" = "双手与肩同宽，掌心向前握住单杠悬挂。";
+"exercise.inst.pullUps.2" = "向上拉直到下巴超过单杠。";
+"exercise.inst.pullUps.3" = "在顶部夹紧肩胛骨。";
+"exercise.inst.pullUps.4" = "控制下放并重复。";
+
+"exercise.inst.wallSit.1" = "背靠墙站立。";
+"exercise.inst.wallSit.2" = "向下滑动直到大腿与地面平行。";
+"exercise.inst.wallSit.3" = "保持膝盖呈90度，正好在脚踝上方。";
+"exercise.inst.wallSit.4" = "保持背部平贴墙面。";
+
+"exercise.inst.sidePlank.1" = "侧卧，双腿伸直叠放。";
+"exercise.inst.sidePlank.2" = "用前臂和脚侧支撑抬起臀部。";
+"exercise.inst.sidePlank.3" = "保持身体从头到脚成一条直线。";
+"exercise.inst.sidePlank.4" = "保持姿势，然后换边。";
+
+"exercise.inst.photo.1" = "拍一张'之前'的照片记录起点。";
+"exercise.inst.photo.2" = "完成你的任务或活动。";
+"exercise.inst.photo.3" = "拍一张'之后'的照片展示完成的任务。";
+"exercise.inst.photo.4" = "提交验证并领取奖励。";
+
+// MARK: - Paywall
+"paywall.pro" = "PRO";
+"paywall.title" = "掌控你的\n屏幕时间";
+"paywall.subtitle" = "加入成千上万重获专注力、减少50%以上屏幕时间的用户";
+"paywall.users_love" = "超过10,000名用户喜爱LockIn";
+"paywall.feature_blocking" = "无限制应用和网站屏蔽";
+"paywall.feature_focus" = "带任务验证的专注时段";
+"paywall.feature_analytics" = "详细的使用分析和洞察";
+"paywall.trial_toggle" = "不确定？免费试用3天";
+"paywall.trial_subtitle" = "试用期内随时取消，不收费";
+"paywall.choose_plan" = "选择你的方案";
+"paywall.loading_plans" = "加载方案中...";
+"paywall.annual" = "年度";
+"paywall.monthly" = "月度";
+"paywall.save" = "节省%@%%";
+"paywall.billed_annually" = "%@/月 按年计费";
+"paywall.legal_trial" = "3天免费试用期结束后，费用将从您的Apple ID账户扣除。除非在订阅期结束前24小时取消，否则订阅将自动续订。";
+"paywall.legal_no_trial" = "费用将从您的Apple ID账户扣除。除非在订阅期结束前24小时取消，否则订阅将自动续订。";
+"paywall.terms_of_service" = "服务条款";
+"paywall.privacy_policy" = "隐私政策";
+"paywall.restore_purchases" = "恢复购买";
+"paywall.no_purchases_found" = "未找到之前的购买记录";
+"paywall.start_trial" = "开始3天免费试用";
+"paywall.subscribe_now" = "立即订阅";
+"paywall.cancel_in_app_store" = "在App Store取消";
+"paywall.per_year" = "/年";
+"paywall.per_month" = "/月";
+"paywall.welcome_title" = "欢迎使用LockIn！";
+"paywall.welcome_message" = "你的专注之旅现在开始";
+"paywall.continue" = "继续";
+"paywall.error" = "错误";
+"paywall.ok" = "好的";
+"paywall.review1_text" = "终于戒掉了手机瘾！";
+"paywall.review1_author" = "Sarah M.";
+"paywall.review2_text" = "我的屏幕时间每天减少了3小时";
+"paywall.review2_author" = "James K.";
+"paywall.review3_text" = "我用过的最好的专注应用";
+"paywall.review3_author" = "Emily R.";
+
+// MARK: - Home
+"home.todays_goal" = "今日目标";
+"home.used" = "已用";
+"home.left" = "剩余";
+
+// MARK: - Notifications
+"notification.earn_time_action" = "赚取时间";
+"notification.view_stats_action" = "查看统计";
+"notification.daily_reminder_title" = "LockIn时间到！";
+"notification.daily_reminder_body" = "查看你的每日目标，赚取一些屏幕时间吧。";
+"notification.streak_risk_title" = "你的连续记录有风险！🔥";
+"notification.streak_risk_body" = "你已经连续%lld天了。今天不要断掉！";
+"notification.need_more_time_title" = "需要更多时间？";
+"notification.need_more_time_body" = "完成一个快速运动来赚取更多屏幕时间。";
+"notification.focus_complete_title" = "专注时段完成！🎉";
+"notification.focus_complete_body" = "干得好！你赚取了%lld分钟的屏幕时间。";
+
+// MARK: - Coach
+"coach.title" = "AI教练";
+"coach.your_ai_coach" = "你的AI教练";
+"coach.description" = "获得个性化的指导和鼓励。";
+"coach.greeting_can_earn" = "嗨！我注意到你完成了今天的目标。太棒了！🎉 想赚取一些额外的屏幕时间吗，还是我能帮你做些其他的事？";
+"coach.greeting_cant_earn" = "嗨！👋 我在这里帮助你的专注之旅。今天我能帮你什么？";
+"coach.prompt1" = "💭 我感到压力很大";
+"coach.prompt2" = "🎯 帮我集中注意力";
+"coach.prompt3" = "😴 我很无聊";
+"coach.ready_to_earn" = "准备好赚取屏幕时间了吗？";
+"coach.earn_minutes" = "赚取%lld分钟";
+"coach.minutes_earned" = "你赚取了%lld分钟！🎉";
+"coach.thanks_reflecting" = "感谢分享。反思自己的感受是很有力量的一步。";
+"coach.bonus_acknowledgment" = "因为你的坦诚，我给你加了%lld分钟奖励。💪";
+"coach.type_message" = "输入消息...";
+"coach.response_limit" = "今天就到这里吧！明天我们再聊。现在，试着做些运动或休息一下。";
+"coach.response_stress" = "我理解你。压力确实很难受。记得深呼吸。要不要做些运动来放松一下？";
+"coach.response_focus" = "在这个充满干扰的世界里保持专注确实很难。试着把手机放下25分钟，专注于一件事。你可以的！";
+"coach.response_bored" = "无聊可能是创造力的机会！与其无限滚动，不如尝试新事物或培养爱好？";
+"coach.response_default" = "感谢分享。我在这里支持你的专注之旅。有什么具体的事情我可以帮忙的吗？";
+
+// MARK: - Detox
+"detox.title" = "数字排毒";
+"detox.stay_focused" = "保持专注！";
+"detox.digital_detox" = "数字排毒";
+"detox.all_apps_blocked" = "所有应用已屏蔽";
+"detox.take_break" = "远离屏幕休息一下";
+"detox.remaining" = "剩余";
+"detox.duration" = "时长";
+"detox.end_detox" = "结束排毒";
+"detox.start_detox" = "开始排毒";
+
+// MARK: - Onboarding (New)
+
+// 年龄段
+"onboarding.age_under_18" = "18岁以下";
+"onboarding.age_18_24" = "18-24岁";
+"onboarding.age_25_30" = "25-30岁";
+"onboarding.age_31_40" = "31-40岁";
+"onboarding.age_41_50" = "41-50岁";
+"onboarding.age_51_plus" = "51岁以上";
+
+// 每天小时数
+"onboarding.hours_1_2" = "1-2小时";
+"onboarding.hours_2_4" = "2-4小时";
+"onboarding.hours_4_6" = "4-6小时";
+"onboarding.hours_6_8" = "6-8小时";
+"onboarding.hours_8_plus" = "8小时以上";
+
+// Onboarding Reviews
+"onboarding.review1_text" = "我每天浪费5小时刷Instagram。现在我又开始看书了，睡眠也变好了。";
+"onboarding.review1_author" = "小美";
+"onboarding.review2_text" = "第一周我的效率就翻倍了。我终于能完成每日任务了。";
+"onboarding.review2_author" = "志明";
+"onboarding.review3_text" = "终于有时间做我的爱好了。LockIn帮我找回了晚间时光。";
+"onboarding.review3_author" = "雨婷";
+"onboarding.review4_text" = "任务验证改变了一切。我现在真的能完成我开始的事情了。";
+"onboarding.review4_author" = "浩然";
+
+"onboarding.now" = "现在";
+"onboarding.how_it_works" = "使用方法";
+"onboarding.block_apps" = "屏蔽应用";
+"onboarding.block_apps_desc" = "选择在专注时间要屏蔽哪些应用。";
+"onboarding.earn_time" = "赚取时间";
+"onboarding.earn_time_desc" = "完成快速运动来赚取屏幕时间。";
+"onboarding.spend_wisely" = "明智使用";
+"onboarding.spend_wisely_desc" = "有意识地使用你赚取的时间。";
+"onboarding.schedule_freedom" = "安排自由时间";
+"onboarding.schedule_freedom_desc" = "设置屏蔽的应用何时可用。";
+"onboarding.select_apps_to_block" = "选择要屏蔽的应用";
+"onboarding.apps_blocked_by_default" = "应用默认被屏蔽";
+"onboarding.earn_screen_time" = "赚取屏幕时间";
+"onboarding.earn_screen_time_desc" = "完成运动来赚取屏幕时间。";
+"onboarding.unlock_window_title" = "解锁时间窗口";
+"onboarding.unlock_window_desc" = "选择屏蔽的应用何时可用。";
+"onboarding.how_it_works_explain" = "LockIn如何运作";
+"onboarding.how_it_works_detail" = "屏蔽干扰应用，通过运动赚取屏幕时间，明智地使用它。";
+"onboarding.minutes_selected" = "已选分钟数";
+"onboarding.min" = "分钟";
+"onboarding.almost_ready" = "就快完成了！";
+"onboarding.grant_permissions" = "授予权限";
+"onboarding.screen_time" = "屏幕使用时间";
+"onboarding.required_to_block" = "屏蔽应用所需";
+"onboarding.camera" = "相机";
+"onboarding.for_exercise_verification" = "用于运动验证";
+"onboarding.grant" = "授权";

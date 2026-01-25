@@ -1,0 +1,975 @@
+/*
+  Localizable.strings
+  LockIn
+
+  Japanese Localization
+*/
+
+// MARK: - Common
+"common.done" = "完了";
+"common.cancel" = "キャンセル";
+"common.save" = "保存";
+"common.edit" = "編集";
+"common.close" = "閉じる";
+"common.back" = "戻る";
+"common.next" = "次へ";
+"common.skip" = "スキップ";
+"common.continue" = "続ける";
+"common.error" = "エラー";
+"common.success" = "成功";
+"common.loading" = "読み込み中...";
+"common.retry" = "再試行";
+"common.get_started" = "始める";
+"common.of" = "/";
+
+// MARK: - Tab Bar
+"tab.home" = "ホーム";
+"tab.goals" = "目標";
+"tab.lockin" = "LockIn";
+"tab.stats" = "統計";
+"tab.profile" = "プロフィール";
+
+// MARK: - Home
+"home.greeting" = "%@";
+"home.morning" = "おはよう";
+"home.afternoon" = "こんにちは";
+"home.evening" = "こんばんは";
+"home.help" = "ヘルプ";
+"home.health_score" = "健康";
+"home.today_progress" = "今日の進捗";
+"home.screen_time" = "スクリーンタイム";
+"home.earned_time" = "獲得済み";
+"home.top_apps" = "よく使うアプリ";
+"home.daily_goal" = "毎日の目標";
+"home.change" = "変更";
+"home.upcoming" = "予定";
+"home.see_all" = "すべて見る";
+"home.create_schedule" = "スケジュールを作成";
+"home.set_times_unblocked" = "アプリのブロック解除時間を設定";
+"home.unblocked" = "ブロック解除";
+"home.every_day" = "毎日";
+"home.weekdays" = "平日";
+"home.weekends" = "週末";
+
+// MARK: - Today's Progress
+"progress.todays_progress" = "今日の進捗";
+"progress.earn" = "獲得";
+"progress.spent" = "消費";
+"progress.earned" = "獲得済み";
+"progress.balance" = "残高";
+"progress.this_week" = "今週";
+
+// MARK: - LockIn (Earn Time)
+"lockin.title" = "スクリーンタイムを獲得";
+"lockin.subtitle" = "エクササイズを完了してアプリ時間をアンロック";
+"lockin.balance" = "スクリーンタイム残高";
+"lockin.minutes" = "分";
+"lockin.earn" = "獲得";
+"lockin.earn_time" = "時間を獲得";
+"lockin.transaction_history" = "取引履歴";
+"lockin.no_activity" = "まだアクティビティがありません";
+"lockin.complete_exercises" = "エクササイズを完了して時間を獲得";
+"lockin.today" = "今日:";
+"lockin.earned" = "獲得";
+"lockin.spent" = "使用";
+"lockin.week" = "週:";
+"lockin.task_in_progress" = "タスク進行中";
+"lockin.continue" = "続ける";
+"lockin.recent_activity" = "最近のアクティビティ";
+"lockin.resets_in_hours" = "%d時間でリセット";
+"lockin.favorites" = "お気に入り";
+"lockin.all_exercises" = "すべてのエクササイズ";
+"lockin.double_tap_add" = "ダブルタップで追加";
+"lockin.double_tap_remove" = "ダブルタップで削除";
+
+// MARK: - Exercises
+"exercise.pushups" = "腕立て伏せ";
+"exercise.squats" = "スクワット";
+"exercise.plank" = "プランク";
+"exercise.jumping_jacks" = "ジャンピングジャック";
+"exercise.lunges" = "ランジ";
+"exercise.crunches" = "クランチ";
+"exercise.shoulder_press" = "ショルダープレス";
+"exercise.leg_raises" = "レッグレイズ";
+"exercise.high_knees" = "ハイニー";
+"exercise.pull_ups" = "懸垂";
+"exercise.wall_sit" = "ウォールシット";
+"exercise.side_plank" = "サイドプランク";
+"exercise.photo_task" = "フォトタスク";
+"exercise.focus_mode" = "集中モード";
+"exercise.custom" = "カスタムタスク";
+"exercise.min_per_rep" = "分/回";
+"exercise.min_per_sec" = "分/秒";
+"exercise.camera_required" = "カメラへのアクセスが必要です";
+"exercise.open_settings" = "設定を開く";
+"exercise.enable_camera" = "カメラを有効にする";
+"exercise.great_job" = "よくできました!";
+"exercise.leg_day_champion" = "レッグデイチャンピオン!";
+"exercise.core_of_steel" = "鋼の体幹!";
+"exercise.min_earned" = "+%@分獲得";
+"exercise.do_pushups" = "腕立て伏せをする";
+"exercise.do_squats" = "スクワットをする";
+"exercise.hold_plank" = "プランクをキープ";
+"exercise.pushup_instructions" = "カメラが横から上半身を見れるようにスマホを配置してください。";
+"exercise.squat_instructions" = "横から全身が見えるようにスマホの前に立ってください。";
+"exercise.plank_instructions" = "横から全身が見えるようにスマホを配置してください。体をまっすぐに保って!";
+"exercise.start_pushups" = "腕立て伏せを開始";
+"exercise.start_squats" = "スクワットを開始";
+"exercise.start_plank" = "プランクを開始";
+"exercise.do_some_pushups" = "腕立て伏せをしてください...";
+"exercise.do_some_squats" = "スクワットをしてください...";
+"exercise.hold_the_plank" = "プランクをキープ...";
+"exercise.pushups_label" = "腕立て伏せ";
+"exercise.squats_label" = "スクワット";
+"exercise.seconds" = "秒";
+"exercise.down" = "下";
+"exercise.up" = "上";
+"exercise.holding" = "キープ中";
+"exercise.get_in_position" = "ポジションについて";
+"exercise.paused" = "一時停止";
+"exercise.paused_get_back" = "一時停止 - ポジションに戻って";
+"exercise.timer_pauses_info" = "フレームから外れるとタイマーが一時停止します";
+"exercise.camera_tracking_pushups" = "腕立て伏せを追跡するには、カメラへのアクセスが必要です。";
+"exercise.camera_tracking_squats" = "スクワットを追跡するには、カメラへのアクセスが必要です。";
+"exercise.camera_tracking_plank" = "プランクを追跡するには、カメラへのアクセスが必要です。";
+"exercise.did_pushups" = "%d回の腕立て伏せを完了!";
+"exercise.did_squats" = "%d回のスクワットを完了!";
+"exercise.held_for_seconds" = "%d秒キープしました!";
+"exercise.finish_with_reward" = "完了 (+%@分)";
+"exercise.photo_task_desc" = "タスクを完了して写真で確認し、スクリーンタイムを獲得";
+"exercise.describe_task" = "タスクを説明";
+"exercise.task_placeholder" = "何をしますか? (例: 部屋を掃除する)";
+"exercise.or_choose_preset" = "またはプリセットを選択";
+"exercise.camera_permission_message" = "エクササイズを確認して進捗を追跡するには、カメラへのアクセスが必要です。";
+"exercise.camera_photo_task_message" = "タスク確認用の写真を撮るには、カメラへのアクセスが必要です。";
+"exercise.before_photo" = "ビフォー写真";
+"exercise.after_photo" = "アフター写真";
+"exercise.show_completed" = "完了したタスクを見せてください";
+"exercise.take_starting_photo" = "開始点の写真を撮ってください";
+"exercise.before" = "ビフォー";
+"exercise.after" = "アフター";
+"exercise.proof" = "証拠";
+"exercise.go_complete_task" = "タスクを完了してください!";
+"exercise.done_after_photo" = "完了 - アフター写真を撮る";
+"exercise.done_verify_task" = "完了 - タスクを確認";
+"exercise.task_verified" = "タスク確認完了!";
+"exercise.type_message" = "メッセージを入力...";
+"exercise.complete_anyway" = "とにかく完了 (+%d分)";
+"exercise.reps" = "回";
+"exercise.seconds_unit" = "秒";
+"exercise.reward_per_rep" = "%.1f分/回 (最小%d), +%.1f %d回以降";
+"exercise.reward_per_sec" = "%.1f分/秒 (最小%d秒), +%.1f %d秒以降";
+"exercise.verify_task" = "タスクを確認";
+"exercise.reward_per_unit" = "%.1f分/単位";
+
+// Photo Task Presets
+"exercise.preset.clean_room" = "部屋を掃除する";
+"exercise.preset.do_dishes" = "皿洗いをする";
+"exercise.preset.make_bed" = "ベッドメイク";
+"exercise.preset.organize_desk" = "机を整理する";
+"exercise.preset.take_walk" = "散歩する";
+"exercise.preset.read_book" = "本を読む";
+"exercise.preset.meditate" = "瞑想する";
+"exercise.preset.stretch" = "ストレッチ";
+"exercise.preset.drink_water" = "水を飲む";
+"exercise.preset.healthy_meal" = "健康的な食事";
+
+// MARK: - Focus Mode
+"focus.title" = "集中モード";
+"focus.deep_focus" = "ディープフォーカス";
+"focus.description" = "すべての気が散るものをブロックして重要なことに集中";
+"focus.session_duration" = "セッション時間";
+"focus.apps_blocked" = "選択したすべてのアプリがブロックされます";
+"focus.earn_info" = "完了で%@分獲得";
+"focus.earn_minutes" = "完了で%d分獲得";
+"focus.no_interruptions" = "中断なしで集中を維持";
+"focus.start" = "集中セッションを開始";
+"focus.remaining" = "残り";
+"focus.paused" = "一時停止中";
+"focus.active" = "集中中";
+"focus.all_blocked" = "すべてのアプリがブロックされています";
+"focus.end" = "終了";
+"focus.pause" = "一時停止";
+"focus.resume" = "再開";
+"focus.add_time" = "+5分";
+"focus.complete" = "素晴らしい集中力!";
+"focus.completed_session" = "%d分の集中セッションを完了しました";
+"focus.time_earned" = "獲得時間";
+"focus.cancel" = "キャンセル";
+"focus.focus_session" = "集中セッション";
+"focus.session_paused" = "セッション一時停止中";
+"focus.focus_active" = "集中中";
+"focus.minutes" = "+%@分";
+
+// MARK: - Profile
+"profile.settings" = "設定";
+"profile.achievements" = "実績";
+"profile.blocked_items" = "ブロック中のアイテム";
+"profile.blocked_items_desc" = "ブロックしたアプリとカテゴリ";
+"profile.app_settings" = "アプリ設定";
+"profile.unlock_window" = "アンロック時間";
+"profile.unlock_window_desc" = "獲得した時間を使用した際のアクセス時間";
+"profile.daily_goal" = "毎日の目標";
+"profile.daily_goal_desc" = "1日あたりの最大スクリーンタイム";
+"profile.default_app_limit" = "デフォルトアプリ制限";
+"profile.default_app_limit_desc" = "新しくブロックされたアプリのデフォルト日次制限";
+"profile.theme" = "テーマ";
+"profile.accent_color" = "アクセントカラー";
+"profile.notifications" = "通知";
+"profile.contact_us" = "お問い合わせ";
+"profile.rate_us" = "評価する";
+"profile.logout" = "ログアウト";
+"profile.apps" = "アプリ";
+"profile.categories" = "カテゴリ";
+"profile.min" = "分";
+"profile.pro" = "PRO";
+
+// MARK: - Stats
+"stats.streak" = "連続";
+"stats.tasks" = "タスク";
+"stats.days" = "日";
+"stats.total_earned" = "総獲得";
+"stats.total_spent" = "総使用";
+"stats.weekly_stats" = "週間統計";
+"stats.today" = "今日";
+"stats.this_week" = "今週";
+"stats.last_week" = "先週";
+"stats.daily_avg" = "1日平均";
+"stats.vs_last_week" = "先週比";
+"stats.less_screen_time" = "スクリーンタイム減少";
+"stats.more_screen_time" = "スクリーンタイム増加";
+"stats.share_progress" = "進捗を共有";
+"stats.share" = "共有";
+
+// MARK: - Achievements
+"achievements.title" = "実績";
+"achievements.unlocked" = "アンロック済み実績";
+"achievements.category.streak" = "連続";
+"achievements.category.tasks" = "タスク";
+"achievements.category.time_earned" = "獲得時間";
+"achievements.category.health" = "健康";
+"achievements.category.balance" = "バランス";
+"achievements.category.special" = "スペシャル";
+"achievements.category.all" = "すべて";
+
+// Achievement Names and Descriptions
+"achievement.streak_1.name" = "最初の炎";
+"achievement.streak_1.desc" = "最初の日を完了";
+"achievement.streak_3.name" = "スタート";
+"achievement.streak_3.desc" = "3日連続";
+"achievement.streak_7.name" = "週間ウォリアー";
+"achievement.streak_7.desc" = "7日連続";
+"achievement.streak_14.name" = "2週間チャンピオン";
+"achievement.streak_14.desc" = "14日連続";
+"achievement.streak_30.name" = "月間マスター";
+"achievement.streak_30.desc" = "30日連続";
+"achievement.streak_60.name" = "連続レジェンド";
+"achievement.streak_60.desc" = "60日連続";
+
+"achievement.tasks_1.name" = "最初の一歩";
+"achievement.tasks_1.desc" = "1つのタスクを完了";
+"achievement.tasks_5.name" = "タスクタックラー";
+"achievement.tasks_5.desc" = "5つのタスクを完了";
+"achievement.tasks_10.name" = "忙しくなってきた";
+"achievement.tasks_10.desc" = "10のタスクを完了";
+"achievement.tasks_25.name" = "生産性プロ";
+"achievement.tasks_25.desc" = "25のタスクを完了";
+"achievement.tasks_50.name" = "タスクマシン";
+"achievement.tasks_50.desc" = "50のタスクを完了";
+"achievement.tasks_100.name" = "センチュリークラブ";
+"achievement.tasks_100.desc" = "100のタスクを完了";
+
+"achievement.time_5.name" = "最初の分";
+"achievement.time_5.desc" = "5分獲得";
+"achievement.time_30.name" = "タイムビルダー";
+"achievement.time_30.desc" = "合計30分獲得";
+"achievement.time_60.name" = "アワーヒーロー";
+"achievement.time_60.desc" = "合計1時間獲得";
+"achievement.time_180.name" = "タイムタイタン";
+"achievement.time_180.desc" = "合計3時間獲得";
+"achievement.time_600.name" = "タイムマスター";
+"achievement.time_600.desc" = "合計10時間獲得";
+"achievement.time_1800.name" = "タイムレジェンド";
+"achievement.time_1800.desc" = "合計30時間獲得";
+
+"achievement.health_60.name" = "上昇中";
+"achievement.health_60.desc" = "健康スコア60に到達";
+"achievement.health_70.name" = "グッドバイブス";
+"achievement.health_70.desc" = "健康スコア70に到達";
+"achievement.health_80.name" = "エクセレント";
+"achievement.health_80.desc" = "健康スコア80に到達";
+"achievement.health_90.name" = "パーフェクトフォーム";
+"achievement.health_90.desc" = "健康スコア90に到達";
+
+"achievement.balance_30.name" = "セーバー";
+"achievement.balance_30.desc" = "30分の残高を蓄積";
+"achievement.balance_120.name" = "タイムバンクエリート";
+"achievement.balance_120.desc" = "2時間の残高を蓄積";
+
+// MARK: - Goals / Blocking
+"goals.title" = "目標";
+"goals.today_usage" = "今日のアプリ使用量";
+"goals.loading" = "使用データを読み込み中...";
+"goals.screen_time_required" = "スクリーンタイムへのアクセスが必要です";
+"goals.screen_time_description" = "LockInがアプリをブロックして使用状況を追跡するには、スクリーンタイムの許可が必要です。";
+"goals.grant_access" = "アクセスを許可";
+"goals.requesting" = "リクエスト中...";
+"goals.blocked_apps" = "ブロック中のアプリ";
+"goals.selected" = "選択済み";
+"goals.select_apps_to_block" = "ブロックするアプリを選択";
+"goals.choose_apps" = "ブロックしたいアプリとカテゴリを選択してください。いつでも変更できます。";
+"goals.app_limits" = "アプリ制限";
+"goals.apps" = "アプリ";
+"goals.no_limits_set" = "アプリ制限は設定されていません";
+"goals.set_daily_limits" = "特定のアプリに毎日の時間制限を設定して、スクリーンタイムを管理しましょう。";
+"goals.add_app_limit" = "アプリ制限を追加";
+"goals.add_another_limit" = "別の制限を追加";
+"goals.set_limits" = "制限を設定";
+"goals.daily_app_limits" = "毎日のアプリ制限";
+"goals.limit_description" = "各アプリの最大日次使用量を設定します。この制限は獲得した時間でも超えられません。";
+"goals.select_apps_limits" = "日次制限を設定するアプリを選択";
+"goals.no_limits_yet" = "アプリ制限は設定されていません";
+"goals.add_limit_hint" = "「アプリ制限を追加」をタップして特定のアプリに制限を設定";
+"goals.limits_reset_info" = "制限は毎日深夜にリセットされます。ブロックされたアプリにアクセスすると、使用状況が自動的に追跡されます。";
+"goals.daily_limit_for" = "日次制限";
+"goals.of" = "/";
+"goals.limit_reached" = "制限に達しました";
+"goals.min_daily_limit" = "分の日次制限";
+"goals.edit" = "編集";
+"goals.remove_limit" = "制限を削除";
+"goals.cancel" = "キャンセル";
+"goals.done" = "完了";
+"goals.save" = "保存";
+"goals.minutes" = "分";
+"goals.share_progress" = "進捗を共有";
+"goals.used" = "使用済み";
+"goals.goal" = "目標";
+"goals.left" = "残り";
+"goals.of_goal" = "目標の";
+"goals.daily_app_limits_desc" = "各アプリの最大日次使用量を設定します。この制限は獲得した時間でも超えられません。";
+"goals.select_apps_to_set_limits" = "日次制限を設定するアプリを選択";
+"goals.no_app_limits_set" = "アプリ制限は設定されていません";
+"goals.tap_to_set_limits" = "「アプリ制限を追加」をタップして特定のアプリに制限を設定";
+"goals.of_minutes" = "/%d分";
+"goals.minutes_count" = "%d分";
+"goals.min_daily_limit" = "%d分の日次制限";
+
+// MARK: - Shield Screen
+"shield.ready_to_unlock" = "アンロック準備完了";
+"shield.app_blocked" = "アプリがブロックされています";
+"shield.almost_there" = "もう少し";
+"shield.times_up" = "時間切れ";
+"shield.goal_complete" = "目標達成!";
+"shield.daily_goal_reached" = "毎日の目標に達しました";
+"shield.unlock" = "%d分アンロック";
+"shield.stay_focused" = "集中を維持";
+"shield.earn_time" = "時間を獲得";
+"shield.earn_more_time" = "もっと時間を獲得";
+"shield.talk_to_coach" = "コーチと話す";
+"shield.close" = "閉じる";
+"shield.site_limit_reached" = "サイト制限に達しました";
+"shield.not_enough_time" = "時間が足りません";
+"shield.no_time_available" = "利用可能な時間がありません";
+"shield.unlock_minutes" = "%dm アンロック";
+"shield.unlock_for_minutes" = "%dm アンロック";
+"shield.earn_time_now" = "今すぐ時間を獲得";
+
+// Shield Descriptions - App
+"shield.goal_complete_desc" = "毎日のスクリーンタイム目標を達成しました。\n\n休憩の準備はできていますか？AIコーチがボーナス時間の獲得をお手伝いします。";
+"shield.time_up_desc" = "今日の%@の時間を使い切りました。\n\nAIコーチと良い習慣について話しましょう。";
+"shield.ready_unlock_desc" = "%@はブロックされています。\n\n%@獲得済みです。\nアンロックには%dm使用します。";
+"shield.almost_there_desc" = "%@はブロックされています。\n\n%@ありますが%dm必要です。\nあと%@獲得するとアンロックできます。";
+"shield.app_blocked_desc" = "%@はブロックされています。\n\nエクササイズを完了してスクリーンタイムを獲得しましょう。\nアンロックには%dm必要です。";
+
+// Shield Descriptions - Web
+"shield.daily_goal_reached_desc" = "今日のスクリーンタイム目標を達成しました。\n\nAIコーチと話してボーナス時間を獲得しましょう。";
+"shield.site_limit_desc" = "今日のブラウジング時間を使い切りました。\n\nAIコーチと良い習慣について話しましょう。";
+"shield.web_ready_unlock_desc" = "%@はブロックされています。\n\n%@獲得済みです。\nアンロックには%dm使用します。";
+"shield.web_not_enough_desc" = "%@はブロックされています。\n\n%@ありますが%dm必要です。\nあと%@獲得するとアンロックできます。";
+"shield.web_no_time_desc" = "%@はブロックされています。\n\nエクササイズを完了してスクリーンタイムを獲得しましょう。\nアンロックには%dm必要です。";
+
+// MARK: - Contact Us
+"contact.title" = "お問い合わせ";
+"contact.header" = "ご連絡をお待ちしております!";
+"contact.description" = "質問、フィードバック、またはヘルプが必要ですか?お問い合わせいただければ、できるだけ早く返信いたします。";
+"contact.email_label" = "メールを送る";
+"contact.send_email" = "メールを送信";
+"contact.get_in_touch" = "お問い合わせ";
+"contact.love_to_hear" = "ご連絡をお待ちしております!フィードバックの共有、バグの報告、または質問をどうぞ。";
+"contact.your_message" = "メッセージ";
+"contact.placeholder" = "ご意見をお聞かせください...";
+"contact.send_message" = "メッセージを送信";
+"contact.email_directly" = "または直接メールでお問い合わせ:";
+
+// MARK: - Rate Us
+"rate.title" = "評価する";
+"rate.how_enjoying" = "LockInはいかがですか?";
+"rate.tap_to_rate" = "星をタップして評価";
+"rate.feedback" = "改善点を教えてください";
+"rate.feedback_placeholder" = "フィードバックはLockInの改善に役立ちます...";
+"rate.submit" = "フィードバックを送信";
+"rate.rating_1" = "改善の余地あり";
+"rate.rating_2" = "もう少し";
+"rate.rating_3" = "まあまあ";
+"rate.rating_4" = "かなり良い!";
+"rate.rating_5" = "最高!";
+"rate.enjoying" = "LockInを楽しんでいますか?";
+"rate.love_to_hear" = "ご意見をお聞かせください!フィードバックは改善に役立ちます。";
+"rate.can_do_better" = "改善できます";
+"rate.needs_improvement" = "改善が必要";
+"rate.its_okay" = "まあまあ";
+"rate.really_good" = "とても良い!";
+"rate.love_it" = "最高!";
+"rate.how_improve" = "改善点を教えてください";
+"rate.what_better" = "もっと良くできることは?";
+"rate.rate_app_store" = "App Storeで評価";
+"rate.send_feedback" = "フィードバックを送信";
+
+// MARK: - Help Tips
+"help.tip1.title" = "毎日の目標を設定";
+"help.tip1.desc" = "プロフィールでスクリーンタイムの制限を選択。健康的な習慣を作るために制限内に収まりましょう。";
+"help.tip2.title" = "スクリーンタイムを獲得";
+"help.tip2.desc" = "LockInタブに行ってエクササイズを完了 - 腕立て伏せ、スクワット、プランク、またはフォトタスク!";
+"help.tip3.title" = "集中モード";
+"help.tip3.desc" = "ポモドーロセッションを開始してすべてのアプリをブロック。集中1分ごとに0.5分獲得。";
+"help.tip4.title" = "気が散るアプリをブロック";
+"help.tip4.desc" = "目標タブに行ってブロックするアプリを選択。アプリごとの時間制限も設定できます。";
+"help.tip5.title" = "コーチと話す";
+"help.tip5.desc" = "毎日の制限に達しましたか?AIコーチとチャットして振り返り、ボーナス時間を獲得。";
+"help.tip6.title" = "進捗を追跡";
+"help.tip6.desc" = "統計タブをチェックして、習慣が改善されるにつれて健康スコアが上がるのを確認。";
+"help.set_daily_goal" = "毎日の目標を設定";
+"help.set_daily_goal_desc" = "プロフィールでスクリーンタイムの制限を選択。健康的な習慣を作るために制限内に収まりましょう。";
+"help.earn_screen_time" = "スクリーンタイムを獲得";
+"help.earn_screen_time_desc" = "LockInタブに行ってエクササイズを完了 - 腕立て伏せ、スクワット、プランク、またはフォトタスク!";
+"help.focus_mode" = "集中モード";
+"help.focus_mode_desc" = "ポモドーロセッションを開始してすべてのアプリをブロック。集中1分ごとに0.5分獲得。";
+"help.block_apps" = "気が散るアプリをブロック";
+"help.block_apps_desc" = "目標タブに行ってブロックするアプリを選択。アプリごとの時間制限も設定できます。";
+"help.talk_to_coach" = "コーチと話す";
+"help.talk_to_coach_desc" = "毎日の制限に達しましたか?AIコーチとチャットして振り返り、ボーナス時間を獲得。";
+"help.track_progress" = "進捗を追跡";
+"help.track_progress_desc" = "統計タブをチェックして、習慣が改善されるにつれて健康スコアが上がるのを確認。";
+
+// MARK: - Quick Actions
+"quick_actions.title" = "クイックアクション";
+"quick_actions.focus_mode" = "集中モード";
+"quick_actions.pomodoro_timer" = "ポモドーロタイマー";
+"quick_actions.hold_for_time" = "時間をキープ";
+"quick_actions.earn_per_rep" = "%@分/回獲得";
+"quick_actions.verify_with_photo" = "写真で確認";
+
+// MARK: - Time Formatting
+"time.minutes" = "%d分";
+"time.hours" = "%d時間";
+"time.hours_minutes" = "%d時間%d分";
+"time.today" = "今日";
+
+// MARK: - Errors
+"error.camera_permission" = "フォトタスクにはカメラの許可が必要です。";
+"error.no_apps_selected" = "少なくとも1つのアプリを選択してください。";
+"error.insufficient_time" = "獲得した時間が足りません。";
+
+// MARK: - Settings
+"settings.title" = "設定";
+"settings.accent_color" = "アクセントカラー";
+"settings.appearance" = "外観";
+"settings.language" = "言語";
+"settings.current_language" = "現在の言語";
+"settings.select_language" = "言語を選択";
+"settings.change_password" = "パスワードを変更";
+"settings.enter_new_password" = "新しいパスワードを入力";
+"settings.save_changes" = "変更を保存";
+"settings.danger_zone" = "危険ゾーン";
+"settings.delete_account" = "アカウントを削除";
+"settings.delete_account_confirm" = "'Delete'と入力して確認";
+"settings.delete_account_warning" = "この操作は取り消せません。確認するには'Delete'と入力してください。";
+"settings.type_delete" = "Delete";
+
+// Theme Modes
+"settings.theme.light" = "ライト";
+"settings.theme.dark" = "ダーク";
+"settings.theme.system" = "システム";
+
+// Accent Colors
+"settings.color.blue" = "ブルー";
+"settings.color.purple" = "パープル";
+"settings.color.green" = "グリーン";
+"settings.color.orange" = "オレンジ";
+"settings.color.pink" = "ピンク";
+"settings.color.red" = "レッド";
+"settings.color.teal" = "ティール";
+"settings.color.indigo" = "インディゴ";
+
+// MARK: - Onboarding
+"onboarding.hello" = "こんにちは!";
+"onboarding.welcome_to" = "ようこそ";
+"onboarding.ready_to_help" = "私たちはあなたの";
+"onboarding.taking_control" = "時間をコントロールするお手伝いをします";
+"onboarding.lets_start" = "始めましょう";
+"onboarding.how_old" = "何歳ですか?";
+"onboarding.personalize_exp" = "これによりあなたの体験をパーソナライズします";
+"onboarding.daily_screen_time" = "毎日のスクリーンタイムは?";
+"onboarding.be_honest" = "正直に - 批判しません";
+"onboarding.bad_news_good_news" = "悪いニュースと\n良いニュースがあります";
+"onboarding.show_something" = "あなたのスクリーンタイムについて重要なことをお見せします...";
+"onboarding.show_me" = "見せて";
+"onboarding.the_bad_news" = "悪いニュース";
+"onboarding.the_good_news" = "良いニュース";
+"onboarding.at_hours_per_day" = "1日%d時間だと、あなたは";
+"onboarding.looking_at_phone" = "今年、スマホを見て過ごすことになります";
+"onboarding.thats_approx" = "それは約";
+"onboarding.of_your_life" = "あなたの人生の";
+"onboarding.you_read_right" = "はい、正しく読みました。目標を達成して望む人生を生きる時間を、スマホを見ることに費やしています。";
+"onboarding.whats_good_news" = "良いニュースは?";
+"onboarding.can_help_get_back" = "LockInはあなたが取り戻すお手伝いができます";
+"onboarding.turn_into_things" = "そしてそれを、ずっとやりたかったことに変えましょう。\n\n目標、情熱、愛する人のためのもっと多くの時間。";
+"onboarding.lets_get_started" = "始めましょう";
+"onboarding.first_step" = "最初の一歩を踏み出しましょう";
+"onboarding.connect_screen_time" = "LockInはスクリーンタイムに接続して";
+"onboarding.personalized_report" = "パーソナライズされた集中レポートを提供します";
+"onboarding.see_real_usage" = "実際の使用データを確認";
+"onboarding.get_recommendations" = "パーソナライズされた推奨を取得";
+"onboarding.track_progress" = "時間の経過で進捗を追跡";
+"onboarding.enable_screen_time" = "スクリーンタイムと\nアプリブロックを有効化";
+"onboarding.secure_on_phone" = "情報は100%安全で、あなたのスマホに保存されます";
+"onboarding.permission_granted" = "許可されました!";
+"onboarding.what_happens_next" = "次に起こること:";
+"onboarding.tap_continue" = "「続ける」をタップしてスクリーンタイムアクセスを許可";
+"onboarding.select_apps" = "ブロックしたいアプリとカテゴリを選択";
+"onboarding.tap_done" = "「完了」をタップして選択を確認";
+"onboarding.enable_app_blocking" = "アプリブロックを有効化";
+"onboarding.ready_to_block" = "アプリをブロックする準備ができました!";
+"onboarding.shield_when_open" = "ブロックされたアプリを開こうとすると、シールドが表示されます。";
+"onboarding.stay_active_earn" = "アクティブでいて、時間を獲得";
+"onboarding.complete_exercises_earn" = "エクササイズとタスクを完了して、ブロックされたアプリのスクリーンタイムを獲得。";
+"onboarding.heres_reality" = "あなたの現実";
+"onboarding.based_on_usage" = "実際のスマホ使用に基づく";
+"onboarding.todays_screen_time" = "今日のスクリーンタイム";
+"onboarding.this_week" = "今週";
+"onboarding.life_on_phone" = "スマホの中の生活";
+"onboarding.at_this_rate" = "このペースで、あなたは";
+"onboarding.lets_fix_this" = "これを直しましょう";
+"onboarding.your_potential" = "あなたの可能性";
+"onboarding.see_how_much" = "どれだけ時間を節約できるか見てみましょう";
+"onboarding.reduce_by" = "スクリーンタイムを%d%%削減";
+"onboarding.weekly_projection" = "週間予測";
+"onboarding.free_time_week" = "週あたりの自由時間";
+"onboarding.life_reclaimed" = "取り戻した人生";
+"onboarding.accomplish_goals" = "より早く目標を達成し、より生産的で充実した生活を";
+"onboarding.current" = "現在";
+"onboarding.with_lockin" = "LockInを使用";
+"onboarding.unlock_potential" = "可能性を解き放つ";
+"onboarding.hours_back" = "毎週%d時間以上を取り戻す";
+"onboarding.smart_coach" = "スマートコーチ";
+"onboarding.task_verification" = "タスク確認";
+"onboarding.focus_sessions" = "集中セッション";
+"onboarding.daily_goals" = "毎日の目標";
+"onboarding.complete_tasks" = "完了したタスク";
+"onboarding.app_rating" = "アプリ評価";
+"onboarding.more_productive" = "より生産的";
+"onboarding.start_free_trial" = "無料トライアルを開始";
+"onboarding.days_free" = "3日間無料";
+"onboarding.maybe_later" = "後で";
+"onboarding.allow_notifications" = "通知を許可";
+"onboarding.remind_overscrolling" = "過度のスクロールについて通知し、目標を達成する手助けをします";
+"onboarding.notifications_enabled" = "通知が有効になりました!";
+"onboarding.scrolling_for" = "30分スクロールしています。休憩する?";
+"onboarding.time_for_break" = "休憩する?";
+"onboarding.what_to_block" = "何をブロック?";
+"onboarding.change_this_later" = "心配しないで、後で変更できます";
+"onboarding.apps" = "アプリ";
+"onboarding.categories" = "カテゴリ";
+"onboarding.start_blocking" = "ブロックを開始";
+"onboarding.items_selected" = "%d項目選択済み";
+"onboarding.set_daily_goal" = "毎日の目標を設定";
+"onboarding.how_much_allow" = "自分に許可する\nスクリーンタイムは?";
+"onboarding.per_day" = "1日あたり";
+"onboarding.change_in_settings" = "設定でいつでも変更できます";
+"onboarding.set_my_goal" = "目標を設定";
+"onboarding.days" = "日";
+"onboarding.years" = "歳";
+"onboarding.projection_title" = "LockInがあなたの脳を\n長期的な集中力のために再構築します。";
+"onboarding.projection_subtitle" = "LockInユーザーは毎週%d時間以上の集中時間を取り戻しています。";
+"onboarding.without_lockin" = "LockInなし";
+"onboarding.day_one" = "1日目";
+"onboarding.day_fourteen" = "14日目";
+"onboarding.commitment_title" = "コミットメントを作る";
+"onboarding.committed" = "コミットしました！";
+"onboarding.press_and_hold" = "スクリーンタイムをコントロールするために、オーブを3秒間押し続けてください";
+"onboarding.taken_first_step" = "スマホとのより健康的な関係への第一歩を踏み出しました";
+"onboarding.keep_holding" = "押し続けて...";
+"onboarding.hold_the_orb" = "コミットするためにオーブを押し続ける";
+"onboarding.lets_set_up" = "集中アプリを設定しましょう！";
+
+// MARK: - Auth
+"auth.welcome_to" = "LockInへようこそ";
+"auth.take_control" = "スクリーンタイムをコントロール";
+"auth.continue_google" = "Googleで続ける";
+"auth.continue_apple" = "Appleで続ける";
+"auth.continue_email" = "メールで続ける";
+"auth.get_started" = "始める";
+"auth.already_have_account" = "すでにアカウントをお持ちです";
+"auth.privacy_policy" = "プライバシーポリシー";
+"auth.terms_of_service" = "利用規約";
+"auth.create_account" = "アカウントを作成";
+"auth.welcome_back" = "おかえりなさい";
+"auth.start_taking_control" = "スクリーンタイムのコントロールを始めましょう";
+"auth.goals_waiting" = "あなたの集中目標が待っています";
+"auth.email" = "メール";
+"auth.password" = "パスワード";
+"auth.enter_password" = "パスワードを入力";
+"auth.agree_to_terms" = "LockInの利用規約に同意します";
+"auth.terms_conditions" = "利用規約";
+"auth.sign_in" = "サインイン";
+"auth.sign_up" = "サインアップ";
+"auth.or_continue_with" = "または以下で続ける";
+"auth.no_account" = "アカウントをお持ちでない?";
+"auth.have_account" = "すでにアカウントをお持ち?";
+
+// MARK: - Device Activity Report
+"report.no_data" = "スクリーンタイムデータなし";
+"report.no_data_desc" = "デバイスを使用して統計を確認してください";
+"report.vs_last_week" = "VS 先週";
+"report.less_screen_time" = "少ないスクリーンタイム";
+"report.more_screen_time" = "多いスクリーンタイム";
+"report.vs" = "vs";
+"report.difference" = "差";
+"report.total_hours" = "合計時間";
+"report.daily_avg" = "1日平均";
+"report.peak_day" = "ピーク日";
+"report.today" = "今日";
+"report.stats_per_day" = "日別統計";
+"report.total_time_per_app" = "アプリ別合計時間";
+"report.no_app_data" = "アプリ使用データなし";
+"report.less" = "少";
+"report.more" = "多";
+"report.streak" = "連続";
+"report.vs_avg" = "VS 平均";
+"report.top_apps" = "上位アプリ";
+"report.no_app_usage" = "今日のアプリ使用なし";
+"report.start_using" = "アプリを使って統計を見る";
+"report.screen_time" = "スクリーンタイム";
+"report.notifications" = "通知";
+"report.todays_progress" = "今日の進捗";
+"report.used" = "使用済み";
+"report.left" = "残り";
+"report.goal_reached" = "目標達成";
+"report.this_week" = "今週";
+"report.remaining" = "残り";
+"report.of_goal" = "目標の";
+"report.goal" = "目標";
+"report.day_sun" = "日";
+"report.day_mon" = "月";
+"report.day_tue" = "火";
+"report.day_wed" = "水";
+"report.day_thu" = "木";
+"report.day_fri" = "金";
+"report.day_sat" = "土";
+"report.day_s" = "日";
+"report.day_m" = "月";
+"report.day_t" = "火";
+"report.day_w" = "水";
+"report.day_f" = "金";
+"report.avg" = "平均";
+
+
+// MARK: - Language Restart
+"settings.restart_required" = "再起動が必要です";
+"settings.restart_message" = "言語の変更を適用するには、アプリを閉じて再度開いてください。";
+
+// MARK: - Shield Action Notifications
+"action.talk_to_coach" = "コーチと話す";
+"action.earn_screen_time" = "スクリーンタイムを獲得";
+"action.times_up" = "時間切れ";
+"action.chat_coach_bonus" = "AIコーチとチャットしてボーナス時間を獲得しましょう。";
+"action.get_personalized_advice" = "AIコーチから個別のアドバイスを受けましょう。";
+"action.complete_exercises" = "エクササイズを完了してアプリをロック解除しましょう。";
+"action.unlock_expired" = "%d分のロック解除時間が終了しました。タップしてブロックを再有効化してください。";
+
+// MARK: - Quick Menu
+"quick.focus_mode" = "集中モード";
+"quick.pomodoro_timer" = "ポモドーロタイマー";
+"quick.plank" = "プランク";
+"quick.hold_for_time" = "時間をキープ";
+"quick.squats" = "スクワット";
+"quick.earn_per_rep" = "0.3分/回獲得";
+"quick.pushups" = "腕立て伏せ";
+"quick.pushups_earn" = "0.5分/回獲得";
+"quick.photo_task" = "写真タスク";
+"quick.verify_with_photo" = "写真で確認";
+
+// MARK: - Help Tips
+"help.tip1.title" = "デジタルウェルネス";
+"help.tip1.desc" = "LockInは長期的な集中力のために脳を再プログラムします。健康的な習慣を築きながらヘルススコアの成長を見守りましょう。";
+"help.tip2.title" = "進捗を追跡";
+"help.tip2.desc" = "連続記録、毎日の使用量、平均との比較を確認。小さな勝利が大きな変化につながります。";
+"help.tip3.title" = "スクリーンタイムを獲得";
+"help.tip3.desc" = "腕立て伏せ、スクワット、プランクなどのエクササイズを完了してボーナススクリーンタイムを獲得。体を動かして心を解放しましょう。";
+"help.tip4.title" = "毎日の目標を設定";
+"help.tip4.desc" = "スクリーンタイム制限を選択し、進捗リングが満たされるのを見守りましょう。目標内に収まり、持続的な習慣を築きましょう。";
+"help.tip5.title" = "気が散るものをブロック";
+"help.tip5.desc" = "制限に達した時にブロックするアプリを選択。注意力をコントロールし、大切なことに集中しましょう。";
+"help.tip6.title" = "統計を確認";
+"help.tip6.desc" = "週間パターンとトレンドを確認。使用状況を理解することが変化への第一歩です。";
+"help.back" = "戻る";
+"help.next" = "次へ";
+"help.got_it" = "了解!";
+
+// MARK: - Photo Task Presets (Updated)
+"preset.clean_room" = "部屋を掃除する";
+"preset.homework" = "宿題を完成させる";
+"preset.workout" = "ワークアウト";
+"preset.cook" = "料理を作る";
+"preset.read" = "10ページ読む";
+"preset.write" = "1日の計画を書く";
+
+// MARK: - Streak
+"streak.title" = "現在の連続記録";
+"streak.days" = "日";
+"streak.best" = "最高記録";
+"streak.keep_going" = "その調子!";
+"streak.lost" = "連続記録が途切れました";
+
+// MARK: - History
+"history.title" = "活動履歴";
+"history.today" = "今日";
+"history.yesterday" = "昨日";
+"history.this_week" = "今週";
+"history.earlier" = "以前";
+"history.no_activity" = "まだ活動がありません";
+
+// MARK: - Exercise Info
+"exercise.info" = "情報";
+"exercise.watch_demo" = "デモを見る";
+"exercise.coming_soon" = "近日公開";
+"exercise.how_to_do_it" = "やり方";
+"exercise.rewards" = "報酬";
+"exercise.got_it" = "了解!";
+"exercise.reward_info" = "完了したセットごとにスクリーンタイムを獲得";
+"exercise.reward_description" = "エクササイズを完了してスクリーンタイムを獲得。回数が多いほど時間も多い!";
+
+// MARK: - Exercise Descriptions
+"exercise.desc.pushups" = "クラシックな腕立て伏せで上半身の強さを構築";
+"exercise.desc.squats" = "正しいスクワットフォームで脚と体幹を強化";
+"exercise.desc.plank" = "ポジションを維持して体幹の安定性を向上";
+"exercise.desc.jumpingJacks" = "心拍数を上げるカーディオウォームアップ";
+"exercise.desc.lunges" = "コントロールされた動きで大腿四頭筋と臀筋をターゲット";
+"exercise.desc.crunches" = "腹筋を効果的に強化";
+"exercise.desc.shoulderPress" = "ウェイトを持ち上げて肩の強さを構築";
+"exercise.desc.legRaises" = "下腹部と股関節屈筋をターゲット";
+"exercise.desc.highKnees" = "心拍数と持久力を向上させるカーディオエクササイズ";
+"exercise.desc.pullUps" = "背中と腕のための挑戦的な上半身エクササイズ";
+"exercise.desc.wallSit" = "脚の筋肉を強化するアイソメトリックエクササイズ";
+"exercise.desc.sidePlank" = "腹斜筋を強化しバランスを改善";
+"exercise.desc.photoVerification" = "写真証拠でタスクを確認";
+"exercise.desc.custom" = "写真確認付きのカスタムタスクを作成";
+
+// MARK: - Exercise Instructions
+"exercise.inst.pushups.1" = "手を肩幅に開いてプランクポジションから始めます。";
+"exercise.inst.pushups.2" = "胸が床にほぼ触れるまで体を下げます。";
+"exercise.inst.pushups.3" = "体をまっすぐに保ち、体幹を引き締めます。";
+"exercise.inst.pushups.4" = "開始位置に戻って繰り返します。";
+
+"exercise.inst.squats.1" = "足を肩幅に開いて立ちます。";
+"exercise.inst.squats.2" = "椅子に座るように体を下げます。";
+"exercise.inst.squats.3" = "膝をつま先の後ろに、胸を上げて保ちます。";
+"exercise.inst.squats.4" = "かかとで押して立ち上がります。";
+
+"exercise.inst.plank.1" = "前腕を床につけたプッシュアップ位置から始めます。";
+"exercise.inst.plank.2" = "頭からかかとまで体を一直線に保ちます。";
+"exercise.inst.plank.3" = "体幹を引き締め、床を見ます。";
+"exercise.inst.plank.4" = "均等に呼吸しながらポジションを維持します。";
+
+"exercise.inst.jumpingJacks.1" = "腕を体の横にして真っすぐ立ちます。";
+"exercise.inst.jumpingJacks.2" = "ジャンプして足を開き、腕を頭上に上げます。";
+"exercise.inst.jumpingJacks.3" = "足を広げ、手を上で合わせて着地します。";
+"exercise.inst.jumpingJacks.4" = "開始位置にジャンプして戻り、繰り返します。";
+
+"exercise.inst.lunges.1" = "足を腰幅に開いて真っすぐ立ちます。";
+"exercise.inst.lunges.2" = "片足を前に踏み出し、腰を下げます。";
+"exercise.inst.lunges.3" = "両膝を90度に、後ろの膝は床のすぐ上に。";
+"exercise.inst.lunges.4" = "前足で押して戻り、反対側に交代します。";
+
+"exercise.inst.crunches.1" = "膝を曲げて足を床につけ、仰向けになります。";
+"exercise.inst.crunches.2" = "頭の後ろに手を置き、肘を外に向けます。";
+"exercise.inst.crunches.3" = "腹筋を収縮させて肩を床から持ち上げます。";
+"exercise.inst.crunches.4" = "コントロールしながら下げて繰り返します。";
+
+"exercise.inst.shoulderPress.1" = "肩の高さで各手にウェイトを持って立つか座ります。";
+"exercise.inst.shoulderPress.2" = "腕が伸びるまでウェイトを真上に押し上げます。";
+"exercise.inst.shoulderPress.3" = "体幹を引き締め、背中をまっすぐに保ちます。";
+"exercise.inst.shoulderPress.4" = "ゆっくりと肩の高さまで下げて繰り返します。";
+
+"exercise.inst.legRaises.1" = "足を伸ばして仰向けに横になります。";
+"exercise.inst.legRaises.2" = "足をまっすぐに保ちながら天井に向かって上げます。";
+"exercise.inst.legRaises.3" = "床に触れないようにゆっくり下げます。";
+"exercise.inst.legRaises.4" = "腰を床に押し付けた状態を保ちます。";
+
+"exercise.inst.highKnees.1" = "足を腰幅に開いて真っすぐ立ちます。";
+"exercise.inst.highKnees.2" = "その場で走り、膝を腰の高さまで上げます。";
+"exercise.inst.highKnees.3" = "バランスとペースのために腕を振ります。";
+"exercise.inst.highKnees.4" = "毎回つま先で軽く着地します。";
+
+"exercise.inst.pullUps.1" = "手を肩幅に、手のひらを前に向けてバーにぶら下がります。";
+"exercise.inst.pullUps.2" = "あごがバーを超えるまで引き上げます。";
+"exercise.inst.pullUps.3" = "トップで肩甲骨を寄せます。";
+"exercise.inst.pullUps.4" = "コントロールしながら下がって繰り返します。";
+
+"exercise.inst.wallSit.1" = "背中を壁につけて立ちます。";
+"exercise.inst.wallSit.2" = "太ももが床と平行になるまで滑り降ります。";
+"exercise.inst.wallSit.3" = "膝を90度に保ち、くるぶしの真上に。";
+"exercise.inst.wallSit.4" = "背中を壁に平らにつけたまま維持します。";
+
+"exercise.inst.sidePlank.1" = "足を伸ばして重ねた状態で横向きに寝ます。";
+"exercise.inst.sidePlank.2" = "前腕と足の側面で支えながら腰を持ち上げます。";
+"exercise.inst.sidePlank.3" = "頭から足まで体を一直線に保ちます。";
+"exercise.inst.sidePlank.4" = "ポジションを維持してから反対側に交代します。";
+
+"exercise.inst.photo.1" = "開始点を記録するために「前」の写真を撮ります。";
+"exercise.inst.photo.2" = "タスクまたは活動を完了します。";
+"exercise.inst.photo.3" = "完了したタスクを示す「後」の写真を撮ります。";
+"exercise.inst.photo.4" = "確認のために提出して報酬を受け取ります。";
+
+// MARK: - Paywall
+"paywall.pro" = "PRO";
+"paywall.title" = "スクリーンタイムを\nコントロールしよう";
+"paywall.subtitle" = "集中力を取り戻し、スクリーンタイムを50%以上削減した何千人もの仲間に加わろう";
+"paywall.users_love" = "10,000人以上がLockInを愛用中";
+"paywall.feature_blocking" = "無制限のアプリ＆ウェブサイトブロック";
+"paywall.feature_focus" = "タスク確認付きフォーカスセッション";
+"paywall.feature_analytics" = "詳細な使用分析とインサイト";
+"paywall.trial_toggle" = "迷っている？3日間無料でお試し";
+"paywall.trial_subtitle" = "トライアル期間中いつでもキャンセル可能、料金なし";
+"paywall.choose_plan" = "プランを選択";
+"paywall.loading_plans" = "プラン読み込み中...";
+"paywall.annual" = "年間";
+"paywall.monthly" = "月間";
+"paywall.save" = "%@%%オフ";
+"paywall.billed_annually" = "%@/月（年間一括払い）";
+"paywall.legal_trial" = "3日間の無料トライアル終了後、お支払いはApple IDアカウントに請求されます。サブスクリプションは期間終了の24時間前までにキャンセルしない限り自動更新されます。";
+"paywall.legal_no_trial" = "お支払いはApple IDアカウントに請求されます。サブスクリプションは期間終了の24時間前までにキャンセルしない限り自動更新されます。";
+"paywall.terms_of_service" = "利用規約";
+"paywall.privacy_policy" = "プライバシーポリシー";
+"paywall.restore_purchases" = "購入を復元";
+"paywall.no_purchases_found" = "以前の購入が見つかりません";
+"paywall.start_trial" = "3日間無料トライアルを開始";
+"paywall.subscribe_now" = "今すぐ登録";
+"paywall.cancel_in_app_store" = "App Storeでキャンセル";
+"paywall.per_year" = "/年";
+"paywall.per_month" = "/月";
+"paywall.welcome_title" = "LockInへようこそ！";
+"paywall.welcome_message" = "集中の旅が今始まります";
+"paywall.continue" = "続ける";
+"paywall.error" = "エラー";
+"paywall.ok" = "OK";
+"paywall.review1_text" = "やっとスマホ依存から抜け出せた！";
+"paywall.review1_author" = "サラ M.";
+"paywall.review2_text" = "スクリーンタイムが1日3時間減った";
+"paywall.review2_author" = "ジェームズ K.";
+"paywall.review3_text" = "今まで使った中で最高のフォーカスアプリ";
+"paywall.review3_author" = "エミリー R.";
+
+// MARK: - Home
+"home.todays_goal" = "今日の目標";
+"home.used" = "使用済み";
+"home.left" = "残り";
+
+// MARK: - Notifications
+"notification.earn_time_action" = "時間を獲得";
+"notification.view_stats_action" = "統計を見る";
+"notification.daily_reminder_title" = "LockInの時間！";
+"notification.daily_reminder_body" = "今日の目標を確認して、スクリーンタイムを獲得しましょう。";
+"notification.streak_risk_title" = "連続記録が危険です！🔥";
+"notification.streak_risk_body" = "%lld日間連続記録中です。今日は途切れさせないで！";
+"notification.need_more_time_title" = "もっと時間が必要？";
+"notification.need_more_time_body" = "簡単なエクササイズを完了して、スクリーン時間を獲得しましょう。";
+"notification.focus_complete_title" = "フォーカスセッション完了！🎉";
+"notification.focus_complete_body" = "素晴らしい！%lld分のスクリーンタイムを獲得しました。";
+
+// MARK: - Coach
+"coach.title" = "AIコーチ";
+"coach.your_ai_coach" = "あなたのAIコーチ";
+"coach.description" = "パーソナライズされたガイダンスと励ましを受け取りましょう。";
+"coach.greeting_can_earn" = "こんにちは！今日の目標を達成しましたね。素晴らしい！🎉 追加のスクリーンタイムを獲得しますか？それとも他に何かお手伝いできることはありますか？";
+"coach.greeting_cant_earn" = "こんにちは！👋 あなたの集中の旅をサポートします。今日は何かお手伝いできますか？";
+"coach.prompt1" = "💭 ストレスを感じている";
+"coach.prompt2" = "🎯 集中を手伝って";
+"coach.prompt3" = "😴 退屈している";
+"coach.ready_to_earn" = "スクリーンタイムを獲得する準備はできましたか？";
+"coach.earn_minutes" = "%lld分を獲得";
+"coach.minutes_earned" = "%lld分を獲得しました！🎉";
+"coach.thanks_reflecting" = "共有してくれてありがとう。自分の気持ちを振り返ることは大きな一歩です。";
+"coach.bonus_acknowledgment" = "あなたの率直さに対して、%lld分のボーナスを追加しました。💪";
+"coach.type_message" = "メッセージを入力...";
+"coach.response_limit" = "今日はこれくらいにしましょう！明日また話しましょう。その間、エクササイズをしたり、休憩を取ったりしてください。";
+"coach.response_stress" = "わかります。ストレスは大変ですよね。深呼吸を忘れずに。気分転換にエクササイズはどうですか？";
+"coach.response_focus" = "気が散りやすい世界で集中するのは難しいですよね。25分間スマホを置いて、一つのことに集中してみてください。きっとできます！";
+"coach.response_bored" = "退屈は創造性のチャンスかも！無限スクロールの代わりに、新しいことを試したり、趣味を始めたりしませんか？";
+"coach.response_default" = "共有してくれてありがとう。あなたの集中の旅をサポートします。何か具体的にお手伝いできることはありますか？";
+
+// MARK: - Detox
+"detox.title" = "デトックス";
+"detox.stay_focused" = "集中しよう！";
+"detox.digital_detox" = "デジタルデトックス";
+"detox.all_apps_blocked" = "すべてのアプリがブロック中";
+"detox.take_break" = "画面から離れて休憩";
+"detox.remaining" = "残り時間";
+"detox.duration" = "期間";
+"detox.end_detox" = "デトックス終了";
+"detox.start_detox" = "デトックス開始";
+
+// MARK: - Onboarding (New)
+
+// 年齢層
+"onboarding.age_under_18" = "18歳未満";
+"onboarding.age_18_24" = "18-24歳";
+"onboarding.age_25_30" = "25-30歳";
+"onboarding.age_31_40" = "31-40歳";
+"onboarding.age_41_50" = "41-50歳";
+"onboarding.age_51_plus" = "51歳以上";
+
+// 1日の時間
+"onboarding.hours_1_2" = "1-2時間";
+"onboarding.hours_2_4" = "2-4時間";
+"onboarding.hours_4_6" = "4-6時間";
+"onboarding.hours_6_8" = "6-8時間";
+"onboarding.hours_8_plus" = "8時間以上";
+
+// Onboarding Reviews
+"onboarding.review1_text" = "毎日5時間をインスタグラムに費やしていました。今は本を読むようになり、よく眠れるようになりました。";
+"onboarding.review1_author" = "美咲 S.";
+"onboarding.review2_text" = "最初の週で生産性が2倍になりました。ついに毎日のタスクを完了できるようになりました。";
+"onboarding.review2_author" = "健太 K.";
+"onboarding.review3_text" = "やっと趣味の時間ができました。LockInのおかげで夜の時間を取り戻せました。";
+"onboarding.review3_author" = "あかり M.";
+"onboarding.review4_text" = "タスク認証が全てを変えました。今は始めたことを本当に終わらせています。";
+"onboarding.review4_author" = "翔太 T.";
+
+"onboarding.now" = "今すぐ";
+"onboarding.how_it_works" = "使い方";
+"onboarding.block_apps" = "アプリをブロック";
+"onboarding.block_apps_desc" = "集中時間中にブロックするアプリを選択します。";
+"onboarding.earn_time" = "時間を獲得";
+"onboarding.earn_time_desc" = "簡単なエクササイズを完了してスクリーンタイムを獲得。";
+"onboarding.spend_wisely" = "賢く使う";
+"onboarding.spend_wisely_desc" = "獲得した時間を意識的に使いましょう。";
+"onboarding.schedule_freedom" = "自由時間を設定";
+"onboarding.schedule_freedom_desc" = "ブロックされたアプリがいつ使えるか設定します。";
+"onboarding.select_apps_to_block" = "ブロックするアプリを選択";
+"onboarding.apps_blocked_by_default" = "アプリはデフォルトでブロック";
+"onboarding.earn_screen_time" = "スクリーンタイムを獲得";
+"onboarding.earn_screen_time_desc" = "エクササイズを完了してスクリーン時間を獲得。";
+"onboarding.unlock_window_title" = "ロック解除ウィンドウ";
+"onboarding.unlock_window_desc" = "ブロックされたアプリがいつ利用可能か選択します。";
+"onboarding.how_it_works_explain" = "LockInの仕組み";
+"onboarding.how_it_works_detail" = "気が散るアプリをブロックし、エクササイズでスクリーンタイムを獲得し、賢く使いましょう。";
+"onboarding.minutes_selected" = "選択した分数";
+"onboarding.min" = "分";
+"onboarding.almost_ready" = "もう少しで完了！";
+"onboarding.grant_permissions" = "権限を許可";
+"onboarding.screen_time" = "スクリーンタイム";
+"onboarding.required_to_block" = "アプリのブロックに必要";
+"onboarding.camera" = "カメラ";
+"onboarding.for_exercise_verification" = "エクササイズ確認用";
+"onboarding.grant" = "許可する";

@@ -1,0 +1,975 @@
+/*
+  Localizable.strings
+  LockIn
+
+  Ukrainian Localization
+*/
+
+// MARK: - Common
+"common.done" = "Готово";
+"common.cancel" = "Скасувати";
+"common.save" = "Зберегти";
+"common.edit" = "Редагувати";
+"common.close" = "Закрити";
+"common.back" = "Назад";
+"common.next" = "Далі";
+"common.skip" = "Пропустити";
+"common.continue" = "Продовжити";
+"common.error" = "Помилка";
+"common.success" = "Успішно";
+"common.loading" = "Завантаження...";
+"common.retry" = "Повторити";
+"common.get_started" = "Почати";
+"common.of" = "з";
+
+// MARK: - Tab Bar
+"tab.home" = "Головна";
+"tab.goals" = "Блокування";
+"tab.lockin" = "LockIn";
+"tab.stats" = "Статистика";
+"tab.profile" = "Профіль";
+
+// MARK: - Home
+"home.greeting" = "Добрий %@";
+"home.morning" = "ранок";
+"home.afternoon" = "день";
+"home.evening" = "вечір";
+"home.help" = "Допомога";
+"home.health_score" = "Здоров'я";
+"home.today_progress" = "Прогрес за сьогодні";
+"home.screen_time" = "Екранний час";
+"home.earned_time" = "Зароблено";
+"home.top_apps" = "Топ додатків";
+"home.daily_goal" = "Ціль на день";
+"home.change" = "Змінити";
+"home.upcoming" = "Заплановане";
+"home.see_all" = "Дивитись все";
+"home.create_schedule" = "Створити розклад";
+"home.set_times_unblocked" = "Встановіть час, коли додатки розблоковані";
+"home.unblocked" = "Розблоковано";
+"home.every_day" = "Щодня";
+"home.weekdays" = "Будні";
+"home.weekends" = "Вихідні";
+
+// MARK: - Today's Progress
+"progress.todays_progress" = "Сьогоднішній прогрес";
+"progress.earn" = "Заробити";
+"progress.spent" = "Витрачено";
+"progress.earned" = "Зароблено";
+"progress.balance" = "Баланс";
+"progress.this_week" = "Цього тижня";
+
+// MARK: - LockIn (Earn Time)
+"lockin.title" = "Заробити екранний час";
+"lockin.subtitle" = "Виконуйте вправи, щоб розблокувати час";
+"lockin.balance" = "Баланс екранного часу";
+"lockin.minutes" = "хв";
+"lockin.earn" = "Заробити";
+"lockin.earn_time" = "ЗАРОБИТИ ЧАС";
+"lockin.transaction_history" = "Історія транзакцій";
+"lockin.no_activity" = "Ще немає активності";
+"lockin.complete_exercises" = "Виконуйте вправи, щоб заробити час";
+"lockin.today" = "Сьогодні:";
+"lockin.earned" = "зароблено";
+"lockin.spent" = "витрачено";
+"lockin.week" = "Тиждень:";
+"lockin.task_in_progress" = "Завдання виконується";
+"lockin.continue" = "Продовжити";
+"lockin.recent_activity" = "ОСТАННЯ АКТИВНІСТЬ";
+"lockin.resets_in_hours" = "Скидається через %dг";
+"lockin.favorites" = "Улюблені";
+"lockin.all_exercises" = "Усі вправи";
+"lockin.double_tap_add" = "Подвійний тап для додавання";
+"lockin.double_tap_remove" = "Подвійний тап для видалення";
+
+// MARK: - Exercises
+"exercise.pushups" = "Віджимання";
+"exercise.squats" = "Присідання";
+"exercise.plank" = "Планка";
+"exercise.jumping_jacks" = "Стрибки з розведенням рук";
+"exercise.lunges" = "Випади";
+"exercise.crunches" = "Скручування";
+"exercise.shoulder_press" = "Жим плечима";
+"exercise.leg_raises" = "Підйом ніг";
+"exercise.high_knees" = "Біг на місці";
+"exercise.pull_ups" = "Підтягування";
+"exercise.wall_sit" = "Стілець біля стіни";
+"exercise.side_plank" = "Бічна планка";
+"exercise.photo_task" = "Фото завдання";
+"exercise.focus_mode" = "Режим фокусу";
+"exercise.custom" = "Власне завдання";
+"exercise.min_per_rep" = "хв/раз";
+"exercise.min_per_sec" = "хв/сек";
+"exercise.camera_required" = "Потрібен доступ до камери";
+"exercise.open_settings" = "Відкрити налаштування";
+"exercise.enable_camera" = "Увімкнути камеру";
+"exercise.great_job" = "Чудова робота!";
+"exercise.leg_day_champion" = "Чемпіон дня ніг!";
+"exercise.core_of_steel" = "Сталевий прес!";
+"exercise.min_earned" = "+%@ хв зароблено";
+"exercise.do_pushups" = "Віджимання";
+"exercise.do_squats" = "Присідання";
+"exercise.hold_plank" = "Тримати планку";
+"exercise.pushup_instructions" = "Розташуйте телефон так, щоб камера бачила вашу верхню частину тіла збоку.";
+"exercise.squat_instructions" = "Станьте перед телефоном так, щоб він бачив все ваше тіло збоку.";
+"exercise.plank_instructions" = "Розташуйте телефон, щоб бачити все тіло збоку. Тримайте тіло прямо!";
+"exercise.start_pushups" = "Почати віджимання";
+"exercise.start_squats" = "Почати присідання";
+"exercise.start_plank" = "Почати планку";
+"exercise.do_some_pushups" = "Зробіть віджимання...";
+"exercise.do_some_squats" = "Зробіть присідання...";
+"exercise.hold_the_plank" = "Тримайте планку...";
+"exercise.pushups_label" = "ВІДЖИМАННЯ";
+"exercise.squats_label" = "ПРИСІДАННЯ";
+"exercise.seconds" = "СЕКУНД";
+"exercise.down" = "ВНИЗ";
+"exercise.up" = "ВГОРУ";
+"exercise.holding" = "ТРИМАЄМО";
+"exercise.get_in_position" = "ЗАЙМІТЬ ПОЗИЦІЮ";
+"exercise.paused" = "ПАУЗА";
+"exercise.paused_get_back" = "ПАУЗА - Поверніться в позицію";
+"exercise.timer_pauses_info" = "Таймер зупиняється, якщо ви виходите з кадру";
+"exercise.camera_tracking_pushups" = "Для відстеження віджимань потрібен доступ до камери.";
+"exercise.camera_tracking_squats" = "Для відстеження присідань потрібен доступ до камери.";
+"exercise.camera_tracking_plank" = "Для відстеження планки потрібен доступ до камери.";
+"exercise.did_pushups" = "Ви зробили %d віджимань!";
+"exercise.did_squats" = "Ви зробили %d присідань!";
+"exercise.held_for_seconds" = "Ви протримались %d секунд!";
+"exercise.finish_with_reward" = "Завершити (+%@ хв)";
+"exercise.photo_task_desc" = "Виконайте завдання та підтвердьте його фото, щоб заробити екранний час";
+"exercise.describe_task" = "ОПИШІТЬ ВАШЕ ЗАВДАННЯ";
+"exercise.task_placeholder" = "Що ви зробите? (напр., Прибрати кімнату)";
+"exercise.or_choose_preset" = "АБО ОБЕРІТЬ ГОТОВЕ";
+"exercise.camera_permission_message" = "Нам потрібен доступ до камери для перевірки вправ та відстеження прогресу.";
+"exercise.camera_photo_task_message" = "Для фото підтвердження завдання потрібен доступ до камери.";
+"exercise.before_photo" = "Фото до";
+"exercise.after_photo" = "Фото після";
+"exercise.show_completed" = "Покажіть виконане завдання";
+"exercise.take_starting_photo" = "Зробіть фото початкового стану";
+"exercise.before" = "До";
+"exercise.after" = "Після";
+"exercise.proof" = "Доказ";
+"exercise.go_complete_task" = "Ідіть виконувати завдання!";
+"exercise.done_after_photo" = "Готово - Зробити фото після";
+"exercise.done_verify_task" = "Готово - Перевірити завдання";
+"exercise.task_verified" = "Завдання підтверджено!";
+"exercise.type_message" = "Введіть повідомлення...";
+"exercise.complete_anyway" = "Завершити все одно (+%d хв)";
+"exercise.reps" = "разів";
+"exercise.seconds_unit" = "секунд";
+"exercise.reward_per_rep" = "%.1f хв/раз (мін %d), +%.1f після %d";
+"exercise.reward_per_sec" = "%.1f хв/сек (мін %dс), +%.1f після %dс";
+"exercise.verify_task" = "Підтвердити виконання завдання";
+"exercise.reward_per_unit" = "%.1f хв за одиницю";
+
+// Photo Task Presets
+"exercise.preset.clean_room" = "Прибрати кімнату";
+"exercise.preset.do_dishes" = "Помити посуд";
+"exercise.preset.make_bed" = "Застелити ліжко";
+"exercise.preset.organize_desk" = "Прибрати стіл";
+"exercise.preset.take_walk" = "Прогулятися";
+"exercise.preset.read_book" = "Почитати книгу";
+"exercise.preset.meditate" = "Помедитувати";
+"exercise.preset.stretch" = "Зробити розтяжку";
+"exercise.preset.drink_water" = "Випити води";
+"exercise.preset.healthy_meal" = "З'їсти здорову їжу";
+
+// MARK: - Focus Mode
+"focus.title" = "Режим фокусу";
+"focus.deep_focus" = "Глибокий фокус";
+"focus.description" = "Заблокуйте всі відволікання та сконцентруйтесь на важливому";
+"focus.session_duration" = "Тривалість сесії";
+"focus.apps_blocked" = "Всі обрані додатки будуть заблоковані";
+"focus.earn_info" = "Заробіть %@ хвилин за виконання";
+"focus.earn_minutes" = "Заробіть %d хвилин за виконання";
+"focus.no_interruptions" = "Зосередьтесь без перерв";
+"focus.start" = "Почати сесію фокусу";
+"focus.remaining" = "Залишилось";
+"focus.paused" = "Пауза";
+"focus.active" = "Фокус активний";
+"focus.all_blocked" = "Всі додатки заблоковані";
+"focus.end" = "Завершити";
+"focus.pause" = "Пауза";
+"focus.resume" = "Продовжити";
+"focus.add_time" = "+5хв";
+"focus.complete" = "Чудовий фокус!";
+"focus.completed_session" = "Ви завершили %d хвилинну сесію фокусу";
+"focus.time_earned" = "Зароблено часу";
+"focus.cancel" = "Скасувати";
+"focus.focus_session" = "Сесія фокусу";
+"focus.session_paused" = "Сесія на паузі";
+"focus.focus_active" = "Фокус активний";
+"focus.minutes" = "+%@ хвилин";
+
+// MARK: - Profile
+"profile.settings" = "Налаштування";
+"profile.achievements" = "Досягнення";
+"profile.blocked_items" = "Заблоковані елементи";
+"profile.blocked_items_desc" = "Додатки та категорії, які ви заблокували";
+"profile.app_settings" = "Налаштування додатку";
+"profile.unlock_window" = "Вікно розблокування";
+"profile.unlock_window_desc" = "Скільки часу ви отримуєте при використанні заробленого часу";
+"profile.daily_goal" = "Ціль на день";
+"profile.daily_goal_desc" = "Максимальний екранний час на день";
+"profile.default_app_limit" = "Ліміт за замовчуванням";
+"profile.default_app_limit_desc" = "Стандартний денний ліміт для нових заблокованих додатків";
+"profile.theme" = "Тема";
+"profile.accent_color" = "Акцентний колір";
+"profile.notifications" = "Сповіщення";
+"profile.contact_us" = "Зв'язатися з нами";
+"profile.rate_us" = "Оцінити нас";
+"profile.logout" = "Вийти";
+"profile.apps" = "додатків";
+"profile.categories" = "категорій";
+"profile.min" = "хв";
+"profile.pro" = "PRO";
+
+// MARK: - Stats
+"stats.streak" = "Серія";
+"stats.tasks" = "Завдання";
+"stats.days" = "днів";
+"stats.total_earned" = "Всього зароблено";
+"stats.total_spent" = "Всього витрачено";
+"stats.weekly_stats" = "Статистика за тиждень";
+"stats.today" = "Сьогодні";
+"stats.this_week" = "Цей тиждень";
+"stats.last_week" = "Минулий тиждень";
+"stats.daily_avg" = "Середнє за день";
+"stats.vs_last_week" = "ПОРІВНЯНО З МИНУЛИМ ТИЖНЕМ";
+"stats.less_screen_time" = "менше екранного часу";
+"stats.more_screen_time" = "більше екранного часу";
+"stats.share_progress" = "Поділитись прогресом";
+"stats.share" = "Поділитись";
+
+// MARK: - Achievements
+"achievements.title" = "Досягнення";
+"achievements.unlocked" = "Розблоковано досягнень";
+"achievements.category.streak" = "Серія";
+"achievements.category.tasks" = "Завдання";
+"achievements.category.time_earned" = "Зароблений час";
+"achievements.category.health" = "Здоров'я";
+"achievements.category.balance" = "Баланс";
+"achievements.category.special" = "Особливі";
+"achievements.category.all" = "Всі";
+
+// Achievement Names and Descriptions
+"achievement.streak_1.name" = "Перше полум'я";
+"achievement.streak_1.desc" = "Завершіть перший день";
+"achievement.streak_3.name" = "Початок";
+"achievement.streak_3.desc" = "Серія 3 дні";
+"achievement.streak_7.name" = "Воїн тижня";
+"achievement.streak_7.desc" = "Серія 7 днів";
+"achievement.streak_14.name" = "Чемпіон двох тижнів";
+"achievement.streak_14.desc" = "Серія 14 днів";
+"achievement.streak_30.name" = "Майстер місяця";
+"achievement.streak_30.desc" = "Серія 30 днів";
+"achievement.streak_60.name" = "Легенда серій";
+"achievement.streak_60.desc" = "Серія 60 днів";
+
+"achievement.tasks_1.name" = "Перші кроки";
+"achievement.tasks_1.desc" = "Виконайте 1 завдання";
+"achievement.tasks_5.name" = "Працівник";
+"achievement.tasks_5.desc" = "Виконайте 5 завдань";
+"achievement.tasks_10.name" = "Зайнятий";
+"achievement.tasks_10.desc" = "Виконайте 10 завдань";
+"achievement.tasks_25.name" = "Профі продуктивності";
+"achievement.tasks_25.desc" = "Виконайте 25 завдань";
+"achievement.tasks_50.name" = "Машина завдань";
+"achievement.tasks_50.desc" = "Виконайте 50 завдань";
+"achievement.tasks_100.name" = "Клуб сотні";
+"achievement.tasks_100.desc" = "Виконайте 100 завдань";
+
+"achievement.time_5.name" = "Перші хвилини";
+"achievement.time_5.desc" = "Заробіть 5 хвилин";
+"achievement.time_30.name" = "Будівник часу";
+"achievement.time_30.desc" = "Заробіть 30 хвилин загалом";
+"achievement.time_60.name" = "Герой години";
+"achievement.time_60.desc" = "Заробіть 1 годину загалом";
+"achievement.time_180.name" = "Титан часу";
+"achievement.time_180.desc" = "Заробіть 3 години загалом";
+"achievement.time_600.name" = "Майстер часу";
+"achievement.time_600.desc" = "Заробіть 10 годин загалом";
+"achievement.time_1800.name" = "Легенда часу";
+"achievement.time_1800.desc" = "Заробіть 30 годин загалом";
+
+"achievement.health_60.name" = "На підйомі";
+"achievement.health_60.desc" = "Досягніть 60 балів здоров'я";
+"achievement.health_70.name" = "Добрий настрій";
+"achievement.health_70.desc" = "Досягніть 70 балів здоров'я";
+"achievement.health_80.name" = "Відмінно";
+"achievement.health_80.desc" = "Досягніть 80 балів здоров'я";
+"achievement.health_90.name" = "Ідеальна форма";
+"achievement.health_90.desc" = "Досягніть 90 балів здоров'я";
+
+"achievement.balance_30.name" = "Ощадливий";
+"achievement.balance_30.desc" = "Накопичте 30 хвилин балансу";
+"achievement.balance_120.name" = "Еліта банку часу";
+"achievement.balance_120.desc" = "Накопичте 2 години балансу";
+
+// MARK: - Goals / Blocking
+"goals.title" = "Блокування";
+"goals.today_usage" = "ВИКОРИСТАННЯ СЬОГОДНІ";
+"goals.loading" = "Завантаження даних...";
+"goals.screen_time_required" = "Потрібен доступ до Екранного часу";
+"goals.screen_time_description" = "LockIn потребує дозволу Екранного часу для блокування додатків та відстеження використання.";
+"goals.grant_access" = "Надати доступ";
+"goals.requesting" = "Запитуємо...";
+"goals.blocked_apps" = "ЗАБЛОКОВАНІ ДОДАТКИ";
+"goals.selected" = "обрано";
+"goals.select_apps_to_block" = "Оберіть додатки для блокування";
+"goals.choose_apps" = "Виберіть додатки та категорії для блокування. Це можна змінити будь-коли.";
+"goals.app_limits" = "ЛІМІТИ ДОДАТКІВ";
+"goals.apps" = "додатків";
+"goals.no_limits_set" = "Ліміти не встановлено";
+"goals.set_daily_limits" = "Встановіть денні ліміти для кращого контролю екранного часу.";
+"goals.add_app_limit" = "Додати ліміт";
+"goals.add_another_limit" = "Додати ще ліміт";
+"goals.set_limits" = "Встановити ліміти";
+"goals.daily_app_limits" = "Денні ліміти додатків";
+"goals.limit_description" = "Встановіть максимальне денне використання. Цей ліміт не можна перевищити навіть заробленим часом.";
+"goals.select_apps_limits" = "Оберіть додатки для встановлення лімітів";
+"goals.no_limits_yet" = "Ліміти ще не встановлено";
+"goals.add_limit_hint" = "Натисніть \"Додати ліміт\" для налаштування";
+"goals.limits_reset_info" = "Ліміти скидаються щодня опівночі. Використання відстежується автоматично.";
+"goals.daily_limit_for" = "Денний ліміт для";
+"goals.of" = "з";
+"goals.limit_reached" = "Ліміт досягнуто";
+"goals.min_daily_limit" = "хв денного ліміту";
+"goals.edit" = "Змінити";
+"goals.remove_limit" = "Видалити ліміт";
+"goals.cancel" = "Скасувати";
+"goals.done" = "Готово";
+"goals.save" = "Зберегти";
+"goals.minutes" = "хвилин";
+"goals.share_progress" = "Поділитись прогресом";
+"goals.used" = "Використано";
+"goals.goal" = "Ціль";
+"goals.left" = "Залишилось";
+"goals.of_goal" = "від цілі";
+"goals.daily_app_limits_desc" = "Встановіть максимальний щоденний час для кожного додатку. Цей ліміт не можна перевищити навіть із заробленим часом.";
+"goals.select_apps_to_set_limits" = "Виберіть додатки для встановлення лімітів";
+"goals.no_app_limits_set" = "Лімітів не встановлено";
+"goals.tap_to_set_limits" = "Натисніть \"Додати ліміт\" щоб встановити ліміти для додатків";
+"goals.of_minutes" = "з %dхв";
+"goals.minutes_count" = "%d хвилин";
+"goals.min_daily_limit" = "%d хв щоденний ліміт";
+
+// MARK: - Shield Screen
+"shield.ready_to_unlock" = "Готово до розблокування";
+"shield.app_blocked" = "Додаток заблоковано";
+"shield.almost_there" = "Майже готово";
+"shield.times_up" = "Час вийшов";
+"shield.goal_complete" = "Ціль досягнута!";
+"shield.daily_goal_reached" = "Денну ціль досягнуто";
+"shield.unlock" = "Розблокувати %dхв";
+"shield.stay_focused" = "Залишайтесь зосередженими";
+"shield.earn_time" = "Заробити час";
+"shield.earn_more_time" = "Заробити більше часу";
+"shield.talk_to_coach" = "Поговорити з тренером";
+"shield.close" = "Закрити";
+"shield.site_limit_reached" = "Ліміт Сайту Досягнуто";
+"shield.not_enough_time" = "Недостатньо Часу";
+"shield.no_time_available" = "Немає Доступного Часу";
+"shield.unlock_minutes" = "Розблокувати %dхв";
+"shield.unlock_for_minutes" = "Розблокувати на %dхв";
+"shield.earn_time_now" = "Заробити Час Зараз";
+
+// Shield Descriptions - App
+"shield.goal_complete_desc" = "Ви досягли щоденної мети екранного часу.\n\nГотові до перерви? Ваш ШІ-тренер може допомогти заробити бонусний час.";
+"shield.time_up_desc" = "Ви використали весь час для %@ сьогодні.\n\nПоговоріть з ШІ-тренером про кращі звички.";
+"shield.ready_unlock_desc" = "%@ заблоковано.\n\nВи заробили %@.\nРозблокування використає %dхв вашого балансу.";
+"shield.almost_there_desc" = "%@ заблоковано.\n\nУ вас є %@ але потрібно %dхв.\nЗаробіть ще %@ для розблокування.";
+"shield.app_blocked_desc" = "%@ заблоковано.\n\nВиконайте вправи щоб заробити екранний час.\nПотрібно %dхв для розблокування.";
+
+// Shield Descriptions - Web
+"shield.daily_goal_reached_desc" = "Ви досягли мети екранного часу на сьогодні.\n\nПоговоріть з ШІ-тренером щоб заробити бонусний час.";
+"shield.site_limit_desc" = "Ви використали весь час перегляду сьогодні.\n\nПоговоріть з ШІ-тренером про кращі звички.";
+"shield.web_ready_unlock_desc" = "%@ заблоковано.\n\nВи заробили %@.\nРозблокування використає %dхв вашого часу.";
+"shield.web_not_enough_desc" = "%@ заблоковано.\n\nУ вас є %@ але потрібно %dхв.\nЗаробіть ще %@ для розблокування.";
+"shield.web_no_time_desc" = "%@ заблоковано.\n\nВиконайте вправи щоб заробити екранний час.\nПотрібно %dхв для розблокування.";
+
+// MARK: - Contact Us
+"contact.title" = "Зв'язатися з нами";
+"contact.header" = "Ми раді вас почути!";
+"contact.description" = "Маєте питання, відгуки чи потрібна допомога? Напишіть нам, і ми відповімо якнайшвидше.";
+"contact.email_label" = "Надішліть нам email";
+"contact.send_email" = "Надіслати Email";
+"contact.get_in_touch" = "Зв'яжіться з нами";
+"contact.love_to_hear" = "Ми раді вас почути! Поділіться відгуком, повідомте про помилку або задайте питання.";
+"contact.your_message" = "Ваше повідомлення";
+"contact.placeholder" = "Розкажіть, що у вас на думці...";
+"contact.send_message" = "Надіслати повідомлення";
+"contact.email_directly" = "Або напишіть нам на:";
+
+// MARK: - Rate Us
+"rate.title" = "Оцініть нас";
+"rate.how_enjoying" = "Як вам LockIn?";
+"rate.tap_to_rate" = "Натисніть зірку для оцінки";
+"rate.feedback" = "Розкажіть, як ми можемо покращитись";
+"rate.feedback_placeholder" = "Ваш відгук допоможе зробити LockIn кращим...";
+"rate.submit" = "Надіслати відгук";
+"rate.rating_1" = "Можна краще";
+"rate.rating_2" = "Потребує роботи";
+"rate.rating_3" = "Нормально";
+"rate.rating_4" = "Досить добре!";
+"rate.rating_5" = "Обожнюю!";
+"rate.enjoying" = "Подобається LockIn?";
+"rate.love_to_hear" = "Ми раді почути вашу думку! Ваш відгук допомагає нам покращуватись.";
+"rate.can_do_better" = "Можна краще";
+"rate.needs_improvement" = "Потребує покращення";
+"rate.its_okay" = "Нормально";
+"rate.really_good" = "Дуже добре!";
+"rate.love_it" = "Обожнюю!";
+"rate.how_improve" = "Розкажіть, як покращитись";
+"rate.what_better" = "Що можна зробити краще?";
+"rate.rate_app_store" = "Оцінити в App Store";
+"rate.send_feedback" = "Надіслати відгук";
+
+// MARK: - Help Tips
+"help.tip1.title" = "Встановіть ціль на день";
+"help.tip1.desc" = "Виберіть ліміт екранного часу в Профілі. Дотримуйтесь його для здорових звичок.";
+"help.tip2.title" = "Заробляйте екранний час";
+"help.tip2.desc" = "Перейдіть на вкладку LockIn і виконуйте вправи - віджимання, присідання, планку або фото завдання!";
+"help.tip3.title" = "Режим фокусу";
+"help.tip3.desc" = "Почніть сесію Pomodoro, щоб заблокувати всі додатки та заробити 0.5 хвилини за кожну хвилину фокусу.";
+"help.tip4.title" = "Блокуйте відволікаючі додатки";
+"help.tip4.desc" = "Перейдіть на вкладку Блокування та виберіть додатки для блокування. Встановіть ліміти для кожного.";
+"help.tip5.title" = "Поговоріть з тренером";
+"help.tip5.desc" = "Досягли денного ліміту? Поспілкуйтесь з AI тренером для рефлексії та бонусного часу.";
+"help.tip6.title" = "Відстежуйте прогрес";
+"help.tip6.desc" = "Перевіряйте вкладку Статистика, щоб бачити покращення показника здоров'я.";
+"help.set_daily_goal" = "Встановіть ціль на день";
+"help.set_daily_goal_desc" = "Виберіть ліміт екранного часу в Профілі. Дотримуйтесь його для здорових звичок.";
+"help.earn_screen_time" = "Заробляйте екранний час";
+"help.earn_screen_time_desc" = "Перейдіть на вкладку LockIn і виконуйте вправи - віджимання, присідання, планку або фото завдання!";
+"help.focus_mode" = "Режим фокусу";
+"help.focus_mode_desc" = "Почніть сесію Pomodoro, щоб заблокувати всі додатки та заробити 0.5 хвилини за кожну хвилину фокусу.";
+"help.block_apps" = "Блокуйте відволікаючі додатки";
+"help.block_apps_desc" = "Перейдіть на вкладку Блокування та виберіть додатки для блокування. Встановіть ліміти для кожного.";
+"help.talk_to_coach" = "Поговоріть з тренером";
+"help.talk_to_coach_desc" = "Досягли денного ліміту? Поспілкуйтесь з AI тренером для рефлексії та бонусного часу.";
+"help.track_progress" = "Відстежуйте прогрес";
+"help.track_progress_desc" = "Перевіряйте вкладку Статистика, щоб бачити покращення показника здоров'я.";
+
+// MARK: - Quick Actions
+"quick_actions.title" = "Швидкі дії";
+"quick_actions.focus_mode" = "Режим фокусу";
+"quick_actions.pomodoro_timer" = "Таймер Pomodoro";
+"quick_actions.hold_for_time" = "Тримайте на час";
+"quick_actions.earn_per_rep" = "Заробіть %@ хв/раз";
+"quick_actions.verify_with_photo" = "Підтвердіть фото";
+
+// MARK: - Time Formatting
+"time.minutes" = "%d хвилин";
+"time.hours" = "%d годин";
+"time.hours_minutes" = "%dг %dхв";
+"time.today" = "сьогодні";
+
+// MARK: - Errors
+"error.camera_permission" = "Для фото завдань потрібен дозвіл камери.";
+"error.no_apps_selected" = "Будь ласка, виберіть хоча б один додаток.";
+"error.insufficient_time" = "У вас недостатньо заробленого часу.";
+
+// MARK: - Settings
+"settings.title" = "Налаштування";
+"settings.accent_color" = "Акцентний колір";
+"settings.appearance" = "Зовнішній вигляд";
+"settings.language" = "Мова";
+"settings.current_language" = "Поточна мова";
+"settings.select_language" = "Вибрати мову";
+"settings.change_password" = "Змінити пароль";
+"settings.enter_new_password" = "Введіть новий пароль";
+"settings.save_changes" = "Зберегти зміни";
+"settings.danger_zone" = "НЕБЕЗПЕЧНА ЗОНА";
+"settings.delete_account" = "Видалити акаунт";
+"settings.delete_account_confirm" = "Введіть 'Delete' для підтвердження";
+"settings.delete_account_warning" = "Ця дія незворотня. Введіть 'Delete' для підтвердження.";
+"settings.type_delete" = "Delete";
+
+// Theme Modes
+"settings.theme.light" = "Світла";
+"settings.theme.dark" = "Темна";
+"settings.theme.system" = "Системна";
+
+// Accent Colors
+"settings.color.blue" = "Синій";
+"settings.color.purple" = "Фіолетовий";
+"settings.color.green" = "Зелений";
+"settings.color.orange" = "Помаранчевий";
+"settings.color.pink" = "Рожевий";
+"settings.color.red" = "Червоний";
+"settings.color.teal" = "Бірюзовий";
+"settings.color.indigo" = "Індиго";
+
+// MARK: - Onboarding
+"onboarding.hello" = "Привіт!";
+"onboarding.welcome_to" = "Ласкаво просимо до";
+"onboarding.ready_to_help" = "Ми готові допомогти вам з";
+"onboarding.taking_control" = "контролем свого часу";
+"onboarding.lets_start" = "Почнімо";
+"onboarding.how_old" = "Скільки вам років?";
+"onboarding.personalize_exp" = "Це допоможе персоналізувати ваш досвід";
+"onboarding.daily_screen_time" = "Щоденний екранний час?";
+"onboarding.be_honest" = "Будьте чесними - ми не засуджуємо";
+"onboarding.bad_news_good_news" = "У нас є погані новини\nі хороші";
+"onboarding.show_something" = "Дозвольте показати вам дещо важливе про ваш екранний час...";
+"onboarding.show_me" = "Покажіть";
+"onboarding.the_bad_news" = "ПОГАНІ НОВИНИ";
+"onboarding.the_good_news" = "ХОРОШІ НОВИНИ";
+"onboarding.at_hours_per_day" = "При %d годинах на день, ви витратите";
+"onboarding.looking_at_phone" = "дивлячись у телефон ЦЬОГО РОКУ";
+"onboarding.thats_approx" = "Це приблизно";
+"onboarding.of_your_life" = "вашого життя";
+"onboarding.you_read_right" = "Так, ви правильно прочитали. Ви витрачаєте більшість вільного часу, дивлячись у телефон, хоча могли б досягати цілей і жити життям, яке хочете.";
+"onboarding.whats_good_news" = "А що хорошого?";
+"onboarding.can_help_get_back" = "LockIn може допомогти повернути";
+"onboarding.turn_into_things" = "І перетворити їх на те, чого ви завжди хотіли досягти.\n\nБільше часу для ваших цілей, захоплень та людей, яких ви любите.";
+"onboarding.lets_get_started" = "Почнімо";
+"onboarding.first_step" = "Зробимо перший крок";
+"onboarding.connect_screen_time" = "LockIn підключиться до вашого екранного часу, щоб надати ";
+"onboarding.personalized_report" = "персоналізований звіт про фокус";
+"onboarding.see_real_usage" = "Бачити реальні дані використання";
+"onboarding.get_recommendations" = "Отримувати персоналізовані рекомендації";
+"onboarding.track_progress" = "Відстежувати прогрес з часом";
+"onboarding.enable_screen_time" = "Увімкніть Екранний час\nта Блокування додатків";
+"onboarding.secure_on_phone" = "100% інформації захищено і залишається на вашому телефоні";
+"onboarding.permission_granted" = "Дозвіл надано!";
+"onboarding.what_happens_next" = "Що буде далі:";
+"onboarding.tap_continue" = "Натисніть \"Продовжити\" для авторизації Екранного часу";
+"onboarding.select_apps" = "Виберіть додатки та категорії для блокування";
+"onboarding.tap_done" = "Натисніть \"Готово\" для підтвердження";
+"onboarding.enable_app_blocking" = "Увімкнути блокування додатків";
+"onboarding.ready_to_block" = "Готово до блокування!";
+"onboarding.shield_when_open" = "Заблоковані додатки показуватимуть щит при спробі відкрити.";
+"onboarding.stay_active_earn" = "Будьте активні, заробляйте час";
+"onboarding.complete_exercises_earn" = "Виконуйте вправи та завдання, щоб заробити екранний час.";
+"onboarding.heres_reality" = "Ось ваша реальність";
+"onboarding.based_on_usage" = "На основі реального використання телефону";
+"onboarding.todays_screen_time" = "ЕКРАННИЙ ЧАС СЬОГОДНІ";
+"onboarding.this_week" = "ЦЕЙ ТИЖДЕНЬ";
+"onboarding.life_on_phone" = "Життя в телефоні";
+"onboarding.at_this_rate" = "Такими темпами ви витратите ";
+"onboarding.lets_fix_this" = "Виправимо це";
+"onboarding.your_potential" = "Ваш потенціал";
+"onboarding.see_how_much" = "Подивіться, скільки часу можна зекономити";
+"onboarding.reduce_by" = "Зменшити екранний час на %d%%";
+"onboarding.weekly_projection" = "ТИЖНЕВИЙ ПРОГНОЗ";
+"onboarding.free_time_week" = "Вільного часу/тиждень";
+"onboarding.life_reclaimed" = "Повернуто життя";
+"onboarding.accomplish_goals" = "Досягайте цілей швидше, будьте продуктивнішими";
+"onboarding.current" = "Зараз";
+"onboarding.with_lockin" = "З LockIn";
+"onboarding.unlock_potential" = "Розкрийте потенціал";
+"onboarding.hours_back" = "%d+ годин назад щотижня";
+"onboarding.smart_coach" = "Розумний тренер";
+"onboarding.task_verification" = "Перевірка завдань";
+"onboarding.focus_sessions" = "Сесії фокусу";
+"onboarding.daily_goals" = "Щоденні цілі";
+"onboarding.complete_tasks" = "Виконані завдання";
+"onboarding.app_rating" = "Рейтинг додатку";
+"onboarding.more_productive" = "Продуктивніше";
+"onboarding.start_free_trial" = "Почати безкоштовно";
+"onboarding.days_free" = "3 дні безкоштовно";
+"onboarding.maybe_later" = "Можливо пізніше";
+"onboarding.allow_notifications" = "Дозволити сповіщення";
+"onboarding.remind_overscrolling" = "Щоб нагадувати про надмірне гортання та допомагати досягати цілей";
+"onboarding.notifications_enabled" = "Сповіщення увімкнено!";
+"onboarding.scrolling_for" = "Ви гортаєте вже 30 хв. Час перерви?";
+"onboarding.time_for_break" = "Час перерви?";
+"onboarding.what_to_block" = "Що заблокувати?";
+"onboarding.change_this_later" = "Не хвилюйтесь, це можна змінити пізніше";
+"onboarding.apps" = "Додатки";
+"onboarding.categories" = "Категорії";
+"onboarding.start_blocking" = "Почати блокування";
+"onboarding.items_selected" = "%d елементів вибрано";
+"onboarding.set_daily_goal" = "Встановіть ціль на день";
+"onboarding.how_much_allow" = "Скільки екранного часу\nви хочете собі дозволити?";
+"onboarding.per_day" = "на день";
+"onboarding.change_in_settings" = "Це завжди можна змінити в Налаштуваннях";
+"onboarding.set_my_goal" = "Встановити ціль";
+"onboarding.days" = "днів";
+"onboarding.years" = "років";
+"onboarding.projection_title" = "LockIn перепрограмовує ваш мозок для\nдовготривалого фокусу.";
+"onboarding.projection_subtitle" = "Користувачі LockIn повертають %d+ годин фокусу щотижня.";
+"onboarding.without_lockin" = "Без LockIn";
+"onboarding.day_one" = "День 1";
+"onboarding.day_fourteen" = "День 14";
+"onboarding.commitment_title" = "Зроби зобов'язання";
+"onboarding.committed" = "Ти зобов'язався!";
+"onboarding.press_and_hold" = "Натисни і утримуй орб 3 секунди, щоб зобов'язатися контролювати свій екранний час";
+"onboarding.taken_first_step" = "Ти зробив перший крок до здоровіших стосунків з телефоном";
+"onboarding.keep_holding" = "Тримай далі...";
+"onboarding.hold_the_orb" = "Утримуй орб, щоб зобов'язатися";
+"onboarding.lets_set_up" = "Налаштуймо твій додаток для фокусу!";
+
+// MARK: - Auth
+"auth.welcome_to" = "Ласкаво просимо до LockIn";
+"auth.take_control" = "Візьміть під контроль екранний час";
+"auth.continue_google" = "Продовжити з Google";
+"auth.continue_apple" = "Продовжити з Apple";
+"auth.continue_email" = "Продовжити з Email";
+"auth.get_started" = "Почати";
+"auth.already_have_account" = "У мене вже є акаунт";
+"auth.privacy_policy" = "Політика конфіденційності";
+"auth.terms_of_service" = "Умови використання";
+"auth.create_account" = "Створити акаунт";
+"auth.welcome_back" = "З поверненням";
+"auth.start_taking_control" = "Почніть контролювати екранний час";
+"auth.goals_waiting" = "Ваші цілі фокусу чекають на вас";
+"auth.email" = "Email";
+"auth.password" = "Пароль";
+"auth.enter_password" = "Введіть пароль";
+"auth.agree_to_terms" = "Я погоджуюсь з ";
+"auth.terms_conditions" = "Умовами використання";
+"auth.sign_in" = "Увійти";
+"auth.sign_up" = "Зареєструватись";
+"auth.or_continue_with" = "або продовжити з";
+"auth.no_account" = "Немає акаунту?";
+"auth.have_account" = "Вже є акаунт?";
+
+// MARK: - Device Activity Report
+"report.no_data" = "Немає даних екранного часу";
+"report.no_data_desc" = "Використовуйте пристрій і поверніться, щоб побачити статистику";
+"report.vs_last_week" = "VS МИН. ТИЖНЯ";
+"report.less_screen_time" = "менше екранного часу";
+"report.more_screen_time" = "більше екранного часу";
+"report.vs" = "vs";
+"report.difference" = "різниця";
+"report.total_hours" = "Всього годин";
+"report.daily_avg" = "Денний середній";
+"report.peak_day" = "Піковий день";
+"report.today" = "Сьогодні";
+"report.stats_per_day" = "Статистика по днях";
+"report.total_time_per_app" = "Загальний час по додатках";
+"report.no_app_data" = "Немає даних використання";
+"report.less" = "Менше";
+"report.more" = "Більше";
+"report.streak" = "СЕРІЯ";
+"report.vs_avg" = "VS СЕРЕД.";
+"report.top_apps" = "Топ додатки";
+"report.no_app_usage" = "Немає використання додатків сьогодні";
+"report.start_using" = "Використовуйте додатки, щоб побачити статистику";
+"report.screen_time" = "Екранний час";
+"report.notifications" = "Сповіщення";
+"report.todays_progress" = "ПРОГРЕС СЬОГОДНІ";
+"report.used" = "використано";
+"report.left" = "залишилось";
+"report.goal_reached" = "Ціль досягнута";
+"report.this_week" = "Цього тижня";
+"report.remaining" = "Залишилось";
+"report.of_goal" = "Від цілі";
+"report.goal" = "ціль";
+"report.day_sun" = "Нд";
+"report.day_mon" = "Пн";
+"report.day_tue" = "Вт";
+"report.day_wed" = "Ср";
+"report.day_thu" = "Чт";
+"report.day_fri" = "Пт";
+"report.day_sat" = "Сб";
+"report.day_s" = "Н";
+"report.day_m" = "П";
+"report.day_t" = "В";
+"report.day_w" = "С";
+"report.day_f" = "П";
+"report.avg" = "серед.";
+
+
+// MARK: - Language Restart
+"settings.restart_required" = "Потрібен перезапуск";
+"settings.restart_message" = "Будь ласка, закрийте і відкрийте додаток знову, щоб застосувати зміну мови.";
+
+// MARK: - Shield Action Notifications
+"action.talk_to_coach" = "Поговорити з тренером";
+"action.earn_screen_time" = "Заробити екранний час";
+"action.times_up" = "Час вийшов";
+"action.chat_coach_bonus" = "Поспілкуйтеся з ШІ-тренером, щоб отримати бонусний час.";
+"action.get_personalized_advice" = "Отримайте персоналізовані поради від вашого ШІ-тренера.";
+"action.complete_exercises" = "Виконайте вправи, щоб розблокувати свої додатки.";
+"action.unlock_expired" = "Ваше %d-хвилинне вікно розблокування закінчилося. Натисніть, щоб повторно увімкнути блокування.";
+
+// MARK: - Quick Menu
+"quick.focus_mode" = "Режим фокусу";
+"quick.pomodoro_timer" = "Таймер Помодоро";
+"quick.plank" = "Планка";
+"quick.hold_for_time" = "Тримати час";
+"quick.squats" = "Присідання";
+"quick.earn_per_rep" = "Заробіть 0,3 хв/повт";
+"quick.pushups" = "Віджимання";
+"quick.pushups_earn" = "Заробіть 0,5 хв/повт";
+"quick.photo_task" = "Фото завдання";
+"quick.verify_with_photo" = "Підтвердити фото";
+
+// MARK: - Help Tips
+"help.tip1.title" = "Цифрове здоров'я";
+"help.tip1.desc" = "LockIn перепрограмовує ваш мозок для довготривалої концентрації. Спостерігайте, як зростає ваш показник здоров'я, будуючи кращі звички.";
+"help.tip2.title" = "Відстежуйте прогрес";
+"help.tip2.desc" = "Перегляньте вашу серію, щоденне використання та порівняння з середнім. Маленькі перемоги ведуть до великих змін.";
+"help.tip3.title" = "Заробіть екранний час";
+"help.tip3.desc" = "Виконуйте вправи як віджимання, присідання та планки, щоб заробити бонусний екранний час. Рухайте тілом, звільняйте розум.";
+"help.tip4.title" = "Встановіть денні цілі";
+"help.tip4.desc" = "Виберіть ліміт екранного часу і спостерігайте, як заповнюється ваше кільце прогресу. Тримайтесь в межах мети для формування тривалих звичок.";
+"help.tip5.title" = "Блокуйте відволікання";
+"help.tip5.desc" = "Виберіть додатки для блокування при досягненні ліміту. Контролюйте свою увагу і зосередьтесь на важливому.";
+"help.tip6.title" = "Перегляньте статистику";
+"help.tip6.desc" = "Перевірте ваші тижневі патерни та тренди. Розуміння використання - перший крок до змін.";
+"help.back" = "Назад";
+"help.next" = "Далі";
+"help.got_it" = "Зрозуміло!";
+
+// MARK: - Photo Task Presets (Updated)
+"preset.clean_room" = "Прибрати кімнату";
+"preset.homework" = "Виконати домашнє завдання";
+"preset.workout" = "Тренування";
+"preset.cook" = "Приготувати їжу";
+"preset.read" = "Прочитати 10 сторінок";
+"preset.write" = "Написати план на день";
+
+// MARK: - Streak
+"streak.title" = "Поточна Серія";
+"streak.days" = "днів";
+"streak.best" = "Найкраща Серія";
+"streak.keep_going" = "Продовжуй!";
+"streak.lost" = "Серія Втрачена";
+
+// MARK: - History
+"history.title" = "Історія Активності";
+"history.today" = "Сьогодні";
+"history.yesterday" = "Вчора";
+"history.this_week" = "Цей Тиждень";
+"history.earlier" = "Раніше";
+"history.no_activity" = "Ще немає активності";
+
+// MARK: - Exercise Info
+"exercise.info" = "Інформація";
+"exercise.watch_demo" = "Переглянути Демо";
+"exercise.coming_soon" = "Незабаром";
+"exercise.how_to_do_it" = "ЯК ВИКОНАТИ";
+"exercise.rewards" = "НАГОРОДИ";
+"exercise.got_it" = "Зрозуміло!";
+"exercise.reward_info" = "Заробляйте екранний час за кожен виконаний сет";
+"exercise.reward_description" = "Виконуйте вправи, щоб заробити екранний час. Більше повторень = більше часу!";
+
+// MARK: - Exercise Descriptions
+"exercise.desc.pushups" = "Будуйте силу верхньої частини тіла класичними віджиманнями";
+"exercise.desc.squats" = "Зміцніть ноги та кор правильною технікою присідань";
+"exercise.desc.plank" = "Покращте стабільність кору, утримуючи позицію";
+"exercise.desc.jumpingJacks" = "Кардіо розминка для підвищення пульсу";
+"exercise.desc.lunges" = "Працюйте над квадрицепсами та сідницями контрольованим рухом";
+"exercise.desc.crunches" = "Ефективно зміцніть м'язи живота";
+"exercise.desc.shoulderPress" = "Будуйте силу плечей підніманням ваги";
+"exercise.desc.legRaises" = "Працюйте над нижнім пресом та згиначами стегна";
+"exercise.desc.highKnees" = "Кардіо вправа для покращення пульсу та витривалості";
+"exercise.desc.pullUps" = "Складна вправа для верхньої частини тіла для спини та рук";
+"exercise.desc.wallSit" = "Ізометрична вправа для зміцнення м'язів ніг";
+"exercise.desc.sidePlank" = "Зміцніть косі м'язи та покращіть рівновагу";
+"exercise.desc.photoVerification" = "Підтвердіть завдання фото доказом";
+"exercise.desc.custom" = "Створіть власне завдання з фото підтвердженням";
+
+// MARK: - Exercise Instructions
+"exercise.inst.pushups.1" = "Почніть у позиції планки з руками на ширині плечей.";
+"exercise.inst.pushups.2" = "Опустіть тіло, поки груди майже не торкнуться підлоги.";
+"exercise.inst.pushups.3" = "Тримайте тіло прямим і кор напруженим.";
+"exercise.inst.pushups.4" = "Відштовхніться назад у початкову позицію і повторіть.";
+
+"exercise.inst.squats.1" = "Станьте, ноги на ширині плечей.";
+"exercise.inst.squats.2" = "Опустіть тіло, ніби сідаєте на стілець.";
+"exercise.inst.squats.3" = "Тримайте коліна за носками і груди підняті.";
+"exercise.inst.squats.4" = "Відштовхніться п'ятками, щоб встати.";
+
+"exercise.inst.plank.1" = "Почніть у позиції для віджимання з передпліччями на підлозі.";
+"exercise.inst.plank.2" = "Тримайте тіло в прямій лінії від голови до п'ят.";
+"exercise.inst.plank.3" = "Напружте кор і дивіться на підлогу.";
+"exercise.inst.plank.4" = "Утримуйте позицію, рівномірно дихаючи.";
+
+"exercise.inst.jumpingJacks.1" = "Станьте прямо з руками вздовж боків.";
+"exercise.inst.jumpingJacks.2" = "Підстрибніть, розставляючи ноги і піднімаючи руки над головою.";
+"exercise.inst.jumpingJacks.3" = "Приземліться з ногами нарізно і руками, що торкаються вгорі.";
+"exercise.inst.jumpingJacks.4" = "Підстрибніть назад у початкову позицію і повторіть.";
+
+"exercise.inst.lunges.1" = "Станьте прямо з ногами на ширині стегон.";
+"exercise.inst.lunges.2" = "Зробіть крок вперед однією ногою, опускаючи стегна.";
+"exercise.inst.lunges.3" = "Обидва коліна мають бути під 90 градусів, заднє коліно трохи над підлогою.";
+"exercise.inst.lunges.4" = "Відштовхніться передньою ногою, щоб повернутися, і поміняйте сторону.";
+
+"exercise.inst.crunches.1" = "Ляжте на спину із зігнутими колінами і стопами на підлозі.";
+"exercise.inst.crunches.2" = "Покладіть руки за голову, лікті назовні.";
+"exercise.inst.crunches.3" = "Підніміть плечі від підлоги, напружуючи прес.";
+"exercise.inst.crunches.4" = "Опустіться з контролем і повторіть.";
+
+"exercise.inst.shoulderPress.1" = "Станьте або сядьте з вагою в кожній руці на рівні плечей.";
+"exercise.inst.shoulderPress.2" = "Витисніть ваги прямо вгору, поки руки не випрямляться.";
+"exercise.inst.shoulderPress.3" = "Тримайте кор напруженим і спину прямою.";
+"exercise.inst.shoulderPress.4" = "Повільно опустіть до рівня плечей і повторіть.";
+
+"exercise.inst.legRaises.1" = "Ляжте на спину з витягнутими ногами.";
+"exercise.inst.legRaises.2" = "Тримаючи ноги прямими, підніміть їх до стелі.";
+"exercise.inst.legRaises.3" = "Повільно опустіть, не торкаючись підлоги.";
+"exercise.inst.legRaises.4" = "Тримайте поперек притиснутим до підлоги.";
+
+"exercise.inst.highKnees.1" = "Станьте прямо з ногами на ширині стегон.";
+"exercise.inst.highKnees.2" = "Бігайте на місці, піднімаючи коліна до рівня талії.";
+"exercise.inst.highKnees.3" = "Рухайте руками для рівноваги і темпу.";
+"exercise.inst.highKnees.4" = "Приземляйтесь м'яко на носки кожного разу.";
+
+"exercise.inst.pullUps.1" = "Повисніть на перекладині з руками на ширині плечей, долонями вперед.";
+"exercise.inst.pullUps.2" = "Підтягніться, поки підборіддя не буде над перекладиною.";
+"exercise.inst.pullUps.3" = "Зведіть лопатки разом угорі.";
+"exercise.inst.pullUps.4" = "Опустіться з контролем і повторіть.";
+
+"exercise.inst.wallSit.1" = "Станьте спиною до стіни.";
+"exercise.inst.wallSit.2" = "Зсуньтесь вниз, поки стегна не будуть паралельні підлозі.";
+"exercise.inst.wallSit.3" = "Тримайте коліна під 90 градусів, прямо над щиколотками.";
+"exercise.inst.wallSit.4" = "Тримайте спину рівно притиснутою до стіни.";
+
+"exercise.inst.sidePlank.1" = "Ляжте на бік з витягнутими і складеними ногами.";
+"exercise.inst.sidePlank.2" = "Підніміть стегна, спираючись на передпліччя і бік стопи.";
+"exercise.inst.sidePlank.3" = "Тримайте тіло в прямій лінії від голови до ніг.";
+"exercise.inst.sidePlank.4" = "Утримуйте позицію, потім поміняйте сторону.";
+
+"exercise.inst.photo.1" = "Зробіть фото 'до', щоб задокументувати початкову точку.";
+"exercise.inst.photo.2" = "Виконайте своє завдання або активність.";
+"exercise.inst.photo.3" = "Зробіть фото 'після', що показує виконане завдання.";
+"exercise.inst.photo.4" = "Надішліть для підтвердження і отримайте винагороду.";
+
+// MARK: - Paywall
+"paywall.pro" = "PRO";
+"paywall.title" = "Візьми під Контроль\nсвій Екранний Час";
+"paywall.subtitle" = "Приєднуйся до тисяч людей, які повернули концентрацію та зменшили екранний час на 50%+";
+"paywall.users_love" = "10 000+ користувачів люблять LockIn";
+"paywall.feature_blocking" = "Необмежене блокування додатків і сайтів";
+"paywall.feature_focus" = "Сесії фокусування з перевіркою завдань";
+"paywall.feature_analytics" = "Детальна аналітика використання та статистика";
+"paywall.trial_toggle" = "Не впевнені? Спробуйте 3 дні безкоштовно";
+"paywall.trial_subtitle" = "Скасуйте будь-коли протягом пробного періоду, без оплати";
+"paywall.choose_plan" = "Оберіть свій План";
+"paywall.loading_plans" = "Завантаження планів...";
+"paywall.annual" = "Річний";
+"paywall.monthly" = "Місячний";
+"paywall.save" = "ЗБЕРЕЖІТЬ %@%%";
+"paywall.billed_annually" = "%@/міс. з річною оплатою";
+"paywall.legal_trial" = "Після 3-денного безкоштовного пробного періоду оплата буде списана з вашого облікового запису Apple ID. Підписки автоматично поновлюються, якщо не скасовані за 24 години до закінчення періоду.";
+"paywall.legal_no_trial" = "Оплата буде списана з вашого облікового запису Apple ID. Підписки автоматично поновлюються, якщо не скасовані за 24 години до закінчення періоду.";
+"paywall.terms_of_service" = "Умови використання";
+"paywall.privacy_policy" = "Політика конфіденційності";
+"paywall.restore_purchases" = "Відновити покупки";
+"paywall.no_purchases_found" = "Попередніх покупок не знайдено";
+"paywall.start_trial" = "Почати 3-денний безкоштовний період";
+"paywall.subscribe_now" = "Підписатися зараз";
+"paywall.cancel_in_app_store" = "Скасувати в App Store";
+"paywall.per_year" = "/рік";
+"paywall.per_month" = "/міс.";
+"paywall.welcome_title" = "Ласкаво просимо до LockIn!";
+"paywall.welcome_message" = "Ваша подорож до фокусу починається зараз";
+"paywall.continue" = "Продовжити";
+"paywall.error" = "Помилка";
+"paywall.ok" = "OK";
+"paywall.review1_text" = "Нарешті позбувся залежності від телефону!";
+"paywall.review1_author" = "Сара М.";
+"paywall.review2_text" = "Мій екранний час зменшився на 3 години/день";
+"paywall.review2_author" = "Джеймс К.";
+"paywall.review3_text" = "Найкращий додаток для фокусування, який я використовував";
+"paywall.review3_author" = "Емілі Р.";
+
+// MARK: - Home
+"home.todays_goal" = "Ціль на сьогодні";
+"home.used" = "використано";
+"home.left" = "залишилось";
+
+// MARK: - Notifications
+"notification.earn_time_action" = "Заробити час";
+"notification.view_stats_action" = "Переглянути статистику";
+"notification.daily_reminder_title" = "Час для LockIn!";
+"notification.daily_reminder_body" = "Перевірте свою денну ціль та заробіть екранний час.";
+"notification.streak_risk_title" = "Ваша серія під загрозою! 🔥";
+"notification.streak_risk_body" = "У вас серія %lld днів. Не втрачайте її сьогодні!";
+"notification.need_more_time_title" = "Потрібно більше часу?";
+"notification.need_more_time_body" = "Виконайте швидку вправу, щоб заробити більше екранних хвилин.";
+"notification.focus_complete_title" = "Сесія фокусування завершена! 🎉";
+"notification.focus_complete_body" = "Чудова робота! Ви заробили %lld хвилин екранного часу.";
+
+// MARK: - Coach
+"coach.title" = "AI Коуч";
+"coach.your_ai_coach" = "Ваш AI Коуч";
+"coach.description" = "Отримуйте персоналізовані поради та підтримку.";
+"coach.greeting_can_earn" = "Привіт! Помітив, що ви досягли денної цілі. Чудова робота! 🎉 Хочете заробити додатковий екранний час, чи можу допомогти з чимось іншим?";
+"coach.greeting_cant_earn" = "Привіт! 👋 Я тут, щоб допомогти вам у вашій подорожі до концентрації. Чим можу допомогти сьогодні?";
+"coach.prompt1" = "💭 Відчуваю стрес";
+"coach.prompt2" = "🎯 Допоможи сфокусуватися";
+"coach.prompt3" = "😴 Мені нудно";
+"coach.ready_to_earn" = "Готові заробити екранний час?";
+"coach.earn_minutes" = "Заробити %lld хв";
+"coach.minutes_earned" = "Ви заробили %lld хвилин! 🎉";
+"coach.thanks_reflecting" = "Дякую за те, що поділились. Роздуми про свої почуття — це важливий крок.";
+"coach.bonus_acknowledgment" = "Я додав вам %lld бонусних хвилин за вашу відкритість. 💪";
+"coach.type_message" = "Напишіть повідомлення...";
+"coach.response_limit" = "Достатньо на сьогодні! Поговоримо завтра. А поки що спробуйте позайматися вправами або відпочити.";
+"coach.response_stress" = "Я розумію. Стрес буває важким. Не забувайте глибоко дихати. Може, зробите вправи для розслаблення?";
+"coach.response_focus" = "Сфокусуватися в нашому відволікаючому світі може бути важко. Спробуйте відкласти телефон на 25 хвилин і зосередитися на одній справі. Ви зможете!";
+"coach.response_bored" = "Нудьга може бути можливістю для творчості! Замість нескінченного скролінгу спробуйте щось нове або займіться хобі?";
+"coach.response_default" = "Дякую за те, що поділились. Я тут, щоб підтримати вас у подорожі до концентрації. Чи є щось конкретне, чим можу допомогти?";
+
+// MARK: - Detox
+"detox.title" = "Детокс";
+"detox.stay_focused" = "Тримайся сфокусованим!";
+"detox.digital_detox" = "Цифровий детокс";
+"detox.all_apps_blocked" = "Усі додатки заблоковані";
+"detox.take_break" = "Візьми перерву від екрана";
+"detox.remaining" = "Залишилось";
+"detox.duration" = "Тривалість";
+"detox.end_detox" = "Завершити детокс";
+"detox.start_detox" = "Почати детокс";
+
+// MARK: - Onboarding (New)
+
+// Вікові групи
+"onboarding.age_under_18" = "До 18";
+"onboarding.age_18_24" = "18-24";
+"onboarding.age_25_30" = "25-30";
+"onboarding.age_31_40" = "31-40";
+"onboarding.age_41_50" = "41-50";
+"onboarding.age_51_plus" = "51+";
+
+// Годин на день
+"onboarding.hours_1_2" = "1-2 години";
+"onboarding.hours_2_4" = "2-4 години";
+"onboarding.hours_4_6" = "4-6 годин";
+"onboarding.hours_6_8" = "6-8 годин";
+"onboarding.hours_8_plus" = "8+ годин";
+
+// Onboarding Reviews
+"onboarding.review1_text" = "Я втрачала 5 годин щодня в Instagram. Тепер я знову читаю книги і краще сплю.";
+"onboarding.review1_author" = "Оксана М.";
+"onboarding.review2_text" = "Моя продуктивність подвоїлась за перший тиждень. Нарешті я виконую щоденні завдання.";
+"onboarding.review2_author" = "Андрій К.";
+"onboarding.review3_text" = "Нарешті є час для хобі. LockIn допоміг мені повернути вечори.";
+"onboarding.review3_author" = "Юлія С.";
+"onboarding.review4_text" = "Верифікація завдань змінила все. Тепер я справді закінчую те, що починаю.";
+"onboarding.review4_author" = "Дмитро П.";
+
+"onboarding.now" = "Зараз";
+"onboarding.how_it_works" = "Як це працює";
+"onboarding.block_apps" = "Блокування додатків";
+"onboarding.block_apps_desc" = "Виберіть, які додатки блокувати під час часу для концентрації.";
+"onboarding.earn_time" = "Заробляйте час";
+"onboarding.earn_time_desc" = "Виконуйте швидкі вправи, щоб заробити екранний час.";
+"onboarding.spend_wisely" = "Витрачайте розумно";
+"onboarding.spend_wisely_desc" = "Використовуйте заробений час свідомо.";
+"onboarding.schedule_freedom" = "Плануйте свободу";
+"onboarding.schedule_freedom_desc" = "Встановіть, коли заблоковані додатки будуть доступні.";
+"onboarding.select_apps_to_block" = "Виберіть додатки для блокування";
+"onboarding.apps_blocked_by_default" = "Додатки заблоковані за замовчуванням";
+"onboarding.earn_screen_time" = "Заробіть екранний час";
+"onboarding.earn_screen_time_desc" = "Виконуйте вправи, щоб заробити екранні хвилини.";
+"onboarding.unlock_window_title" = "Вікно розблокування";
+"onboarding.unlock_window_desc" = "Виберіть, коли заблоковані додатки будуть доступні.";
+"onboarding.how_it_works_explain" = "Як працює LockIn";
+"onboarding.how_it_works_detail" = "Блокуйте відволікаючі додатки, заробляйте екранний час вправами та використовуйте його розумно.";
+"onboarding.minutes_selected" = "Обрано хвилин";
+"onboarding.min" = "хв";
+"onboarding.almost_ready" = "Майже готово!";
+"onboarding.grant_permissions" = "Надати дозволи";
+"onboarding.screen_time" = "Екранний час";
+"onboarding.required_to_block" = "Потрібно для блокування додатків";
+"onboarding.camera" = "Камера";
+"onboarding.for_exercise_verification" = "Для підтвердження вправ";
+"onboarding.grant" = "Надати";
