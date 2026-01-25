@@ -104,14 +104,15 @@ model AppEvent {
 }
 
 model OnboardingProgress {
-  id            String   @id @default(uuid())
-  visitorId     String   @unique  // anonymous identifier before signup
-  userId        String?  // linked after signup
-  lastScreen    String   // the screen where user left
-  completed     Boolean  @default(false)
-  convertedAt   DateTime? // when they completed purchase/signup
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id               String   @id @default(uuid())
+  visitorId        String   @unique  // anonymous identifier before signup
+  userId           String?  // linked after signup
+  lastScreen       String   // the screen where user left
+  totalTimeSeconds Int      @default(0)  // total time spent in onboarding
+  completed        Boolean  @default(false)
+  convertedAt      DateTime? // when they completed purchase/signup
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   @@index([visitorId])
   @@index([userId])
