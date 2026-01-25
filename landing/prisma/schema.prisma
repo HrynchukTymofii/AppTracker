@@ -1,0 +1,133 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearchPostgres"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Platform {
+  ios
+  android
+  web
+}
+
+enum PurchaseStatus {
+  trial
+  active
+  cancelled
+}
+
+enum PurchaseType {
+  subscription
+  purchase
+}
+
+model User{  
+  userId        String    @id @default(uuid())
+  isPro         Boolean   @default(false)
+  league        String    @default("Beginner")
+  points        Int       @default(0)
+  platform      String?
+  name          String?
+  email         String?
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  needSync      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  messages           UserMessage[]     @relation("UserMessages")
+
+  purchases Purchase[]
+
+  uploads AppUpload[]
+
+  appEvents AppEvent[]
+}
+
+model AppUpload{
+  id    String    @id @default(uuid())
+  uploadedAt   DateTime  @default(now())
+  platform Platform
+  userId String?
+  appId String 
+  
+  user  User? @relation(fields: [userId], references: [userId], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([appId])
+}
+
+
+model UserMessage {
+  id        String   @id @default(cuid())
+  topic     String
+  message   String
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation("UserMessages", fields: [userId], references: [userId])
+}
+
+model Purchase {
+  id String @id @default(uuid())
+  userId String
+  user      User     @relation(fields: [userId], references: [userId])
+
+  plan      String   // "monthly", "forever", or other plans in the future
+  status    PurchaseStatus @default(trial)
+  type      PurchaseType   @default(subscription)
+  startAt   DateTime @default(now())
+  endAt     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+}
+
+model AppEvent {
+  id        String   @id @default(uuid())
+  event     String
+  userId    String
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [userId])
+
+  @@index([userId])
+  @@index([event])
+}
+
+model OnboardingProgress {
+  id            String   @id @default(uuid())
+  visitorId     String   @unique  // anonymous identifier before signup
+  userId        String?  // linked after signup
+  lastScreen    String   // the screen where user left
+  completed     Boolean  @default(false)
+  convertedAt   DateTime? // when they completed purchase/signup
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([visitorId])
+  @@index([userId])
+  @@index([lastScreen])
+}
+
+model Waitlist {
+  id              Int      @id @default(autoincrement())
+  email           String   @unique
+  name            String?
+  deviceOS        String[] @map("device_os")
+  dailyScreenTime String   @map("daily_screen_time")
+  createdAt       DateTime @default(now()) @map("created_at")
+  emailSent       Boolean  @default(false) @map("email_sent")
+
+  @@map("waitlist")
+  @@index([email])
+  @@index([createdAt(sort: Desc)])
+}
