@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 
 const SUPPORT_EMAIL = "lockin@fibipals.com";
-const API_BASE_URL = "https://www.fibipals.com/api/apps/appBlocker";
+const API_BASE_URL = "https://lockin.fibipals.com/api";
 
 const SupportPage: React.FC = () => {
   const { t } = useLanguage();
